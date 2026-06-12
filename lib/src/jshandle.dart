@@ -35,5 +35,30 @@ class JSHandle extends JSHandleBase {
     await channel_dispose();
   }
 
-  // Properties like getProperty, getProperties, jsonValue, etc. can be added here
+  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) => evaluate(expression, arg);
+  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) => evaluateHandle(expression, arg);
+
+  Future<JSHandle> getProperty(String propertyName) async {
+    final result = await super.channel_getProperty(name: propertyName);
+    return ChannelOwner.from<JSHandle>(connection, result['handle'] as Map<String, dynamic>);
+  }
+
+  Future<Map<String, JSHandle>> getProperties() async {
+    final result = await super.channel_getPropertyList();
+    final map = <String, JSHandle>{};
+    for (final property in result['properties'] as List) {
+      map[property['name'] as String] = ChannelOwner.from<JSHandle>(
+        connection,
+        property['value'] as Map<String, dynamic>,
+      );
+    }
+    return map;
+  }
+  
+  Future<Map<String, JSHandle>> getPropertyList() => getProperties();
+
+  Future<dynamic> jsonValue() async {
+    final result = await super.channel_jsonValue();
+    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+  }
 }

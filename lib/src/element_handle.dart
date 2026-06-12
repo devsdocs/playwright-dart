@@ -2,6 +2,8 @@ import 'channel_owner.dart';
 import 'generated/channels.dart';
 import 'jshandle.dart';
 import 'serialization.dart';
+import 'frame.dart';
+import 'dart:convert';
 
 class ElementHandle extends ElementHandleBase implements JSHandle {
   ElementHandle(
@@ -31,6 +33,45 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       connection,
       result['handle'] as Map<String, dynamic>,
     );
+  }
+
+  @override
+  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) =>
+      evaluate(expression, arg);
+
+  @override
+  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) =>
+      evaluateHandle(expression, arg);
+
+  @override
+  Future<JSHandle> getProperty(String propertyName) async {
+    final result = await channel_getProperty(name: propertyName);
+    return ChannelOwner.from<JSHandle>(
+      connection,
+      result['handle'] as Map<String, dynamic>,
+    );
+  }
+
+  @override
+  Future<Map<String, JSHandle>> getProperties() async {
+    final result = await channel_getPropertyList();
+    final map = <String, JSHandle>{};
+    for (final property in result['properties'] as List) {
+      map[property['name'] as String] = ChannelOwner.from<JSHandle>(
+        connection,
+        property['value'] as Map<String, dynamic>,
+      );
+    }
+    return map;
+  }
+
+  @override
+  Future<Map<String, JSHandle>> getPropertyList() => getProperties();
+
+  @override
+  Future<dynamic> jsonValue() async {
+    final result = await channel_jsonValue();
+    return parseSerializedValue(result['value'] as Map<String, dynamic>);
   }
 
   @override
@@ -168,5 +209,99 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   Future<Map<String, dynamic>?> boundingBox() async {
     final result = await channel_boundingBox();
     return result['boundingBox'] as Map<String, dynamic>?;
+  }
+
+  Future<Frame?> contentFrame() async {
+    final result = await channel_contentFrame();
+    final frame = result['frame'];
+    if (frame == null) return null;
+    return ChannelOwner.from<Frame>(connection, frame as Map<String, dynamic>);
+  }
+
+  Future<Frame?> ownerFrame() async {
+    final result = await channel_ownerFrame();
+    final frame = result['frame'];
+    if (frame == null) return null;
+    return ChannelOwner.from<Frame>(connection, frame as Map<String, dynamic>);
+  }
+
+  Future<ElementHandle?> querySelector(String selector, {bool? strict}) async {
+    final result = await channel_querySelector(selector: selector, strict: strict);
+    final element = result['element'];
+    if (element == null) return null;
+    return ChannelOwner.from<ElementHandle>(connection, element as Map<String, dynamic>);
+  }
+
+  Future<List<ElementHandle>> querySelectorAll(String selector) async {
+    final result = await channel_querySelectorAll(selector: selector);
+    final elements = result['elements'] as List;
+    return elements.map((e) => ChannelOwner.from<ElementHandle>(connection, e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> dispatchEvent(String type, {dynamic eventInit}) async {
+    await channel_dispatchEvent(type: type, eventInit: serializeArgument(eventInit));
+  }
+
+  Future<List<int>> screenshot({
+    double? timeout,
+    String? type,
+    int? quality,
+    CommonScreenshotOptions? mixin,
+  }) async {
+    final result = await channel_screenshot(
+      timeout: timeout ?? 30000.0,
+      type: type,
+      quality: quality,
+      mixin: mixin ?? CommonScreenshotOptions(),
+    );
+    return base64Decode(result['binary'] as String);
+  }
+
+  Future<List<String>> selectOption({
+    dynamic values,
+    bool? force,
+    double? timeout,
+  }) async {
+    // For now we map string values to options
+    List<Map<String, dynamic>> options = [];
+    if (values is String) {
+      options.add({'valueOrLabel': values});
+    } else if (values is List) {
+      options.addAll(values.map((v) => {'valueOrLabel': v.toString()}));
+    }
+    
+    final result = await channel_selectOption(
+      options: options.isNotEmpty ? options : null,
+      force: force,
+      timeout: timeout ?? 30000.0,
+    );
+    return (result['values'] as List).cast<String>();
+  }
+
+  Future<void> selectText({bool? force, double? timeout}) async {
+    await channel_selectText(force: force, timeout: timeout ?? 30000.0);
+  }
+
+  Future<void> setInputFiles(List<String> files, {double? timeout}) async {
+    await channel_setInputFiles(
+      localPaths: files,
+      timeout: timeout ?? 30000.0,
+    );
+  }
+
+  Future<void> waitForElementState(String state, {double? timeout}) async {
+    await channel_waitForElementState(state: state, timeout: timeout ?? 30000.0);
+  }
+
+  Future<ElementHandle?> waitForSelector(String selector, {bool? strict, String? state, double? timeout}) async {
+    final result = await channel_waitForSelector(
+      selector: selector,
+      strict: strict,
+      state: state,
+      timeout: timeout ?? 30000.0,
+    );
+    final element = result['element'];
+    if (element == null) return null;
+    return ChannelOwner.from<ElementHandle>(connection, element as Map<String, dynamic>);
   }
 }

@@ -1,41 +1,74 @@
 import 'dart:io';
 
 void main() {
-  final channelsContent = File(
-    'lib/src/generated/channels.dart',
-  ).readAsStringSync();
-  final pageContent = File('lib/src/page.dart').readAsStringSync();
-  final frameContent = File('lib/src/frame.dart').readAsStringSync();
-  final browserContent = File('lib/src/browser.dart').readAsStringSync();
-  final contextContent = File(
-    'lib/src/browser_context.dart',
-  ).readAsStringSync();
-  final locatorContent = File('lib/src/locator.dart').readAsStringSync();
+  final channelsContent = File('lib/src/generated/channels.dart').readAsStringSync();
+  final srcDir = Directory('lib/src');
+  final srcFiles = srcDir.listSync().whereType<File>().where((f) => f.path.endsWith('.dart'));
 
-  final keyboardContent = File('lib/src/keyboard.dart').existsSync()
-      ? File('lib/src/keyboard.dart').readAsStringSync()
-      : '';
-  final mouseContent = File('lib/src/mouse.dart').existsSync()
-      ? File('lib/src/mouse.dart').readAsStringSync()
-      : '';
+  final Map<String, String> wrapperContents = {};
+  for (final file in srcFiles) {
+    // We assume the class name matches the file name in a basic way, or we just load all contents.
+    // Actually, let's just keep the content of the file to search through.
+    wrapperContents[file.path.split(Platform.pathSeparator).last] = file.readAsStringSync();
+  }
 
-  final Map<String, String> wrapperContents = {
-    'PageBase': pageContent,
-    'FrameBase': frameContent,
-    'BrowserBase': browserContent,
-    'BrowserContextBase': contextContent,
+  // Define which class names map to which files for searching
+  final fileMap = {
+    'Page': 'page.dart',
+    'Frame': 'frame.dart',
+    'Browser': 'browser.dart',
+    'BrowserContext': 'browser_context.dart',
+    'BrowserType': 'browser_type.dart',
+    'Playwright': 'playwright.dart',
+    'JSHandle': 'jshandle.dart',
+    'ElementHandle': 'element_handle.dart',
+    'LocalUtils': 'local_utils.dart',
+    'Request': 'request.dart',
+    'Response': 'response.dart',
+    'Route': 'route.dart',
+    'WebSocket': 'websocket.dart',
+    'Worker': 'worker.dart',
+    'Dialog': 'dialog.dart',
+    'Tracing': 'tracing.dart',
+    'CDPSession': 'cdp_session.dart',
+    'Artifact': 'artifact.dart',
+    'BindingCall': 'binding_call.dart',
+    'APIRequestContext': 'api_request_context.dart',
+    'Stream': 'stream.dart',
+    'WritableStream': 'writable_stream.dart',
+    'Disposable': 'disposable.dart',
+    'EventTarget': 'event_target.dart',
+    'WebSocketRoute': 'websocket_route.dart',
+    'DebugController': 'debug_controller.dart',
+    'Debugger': 'debugger.dart',
   };
 
   final Map<String, List<String>> missingMethods = {};
+  final List<String> missingClasses = [];
 
   final lines = channelsContent.split('\n');
   String? currentClass;
 
   for (final line in lines) {
     if (line.startsWith('abstract class ') && line.contains('Base extends')) {
-      final match = RegExp(r'abstract class (\w+Base)').firstMatch(line);
+      final match = RegExp(r'abstract class (\w+)Base').firstMatch(line);
       if (match != null) {
         currentClass = match.group(1);
+        
+        // Skip internal or unsupported classes for now
+        final skipClasses = ['Android', 'AndroidSocket', 'AndroidDevice', 'Electron', 'ElectronApplication', 'SocksSupport', 'Root', 'JsonPipe'];
+        if (skipClasses.contains(currentClass)) {
+          currentClass = null;
+          continue;
+        }
+
+        final fileName = fileMap[currentClass];
+        if (fileName == null || !wrapperContents.containsKey(fileName)) {
+          if (!missingClasses.contains(currentClass)) {
+            missingClasses.add(currentClass!);
+          }
+          currentClass = null; // Skip scanning methods since class is missing
+        }
       }
     }
 
@@ -44,77 +77,46 @@ void main() {
         final match = RegExp(r' channel_([a-zA-Z0-9_]+)\(').firstMatch(line);
         if (match != null) {
           final methodName = match.group(1)!;
-
-          if (currentClass == 'FrameBase') {
-            final hasInFrame =
-                frameContent.contains(' $methodName(') ||
-                frameContent.contains(' $methodName<');
-            final hasInLocator =
-                locatorContent.contains(' $methodName(') ||
-                locatorContent.contains(' $methodName<');
-
-            // Skip methods that don't make sense on Locator
-            final skipLocator = [
-              'addScriptTag',
-              'addStyleTag',
-              'waitForTimeout',
-              'waitForFunction',
-              'expect',
-              'title',
-              'frameElement',
-              'content',
-              'setContent',
-              'goto',
-              'evaluateExpression',
-              'evaluateExpressionHandle',
-              'evalOnSelector',
-              'evalOnSelectorAll',
-              'dragAndDrop',
-              'waitForSelector',
-            ].contains(methodName);
-
-            if (!hasInFrame) {
-              missingMethods.putIfAbsent('Frame', () => []).add(methodName);
-            }
-            if (!hasInLocator && !skipLocator) {
-              missingMethods.putIfAbsent('Locator', () => []).add(methodName);
-            }
-          } else if (wrapperContents.containsKey(currentClass)) {
-            final cleanClassName = currentClass.replaceAll('Base', '');
-            final wrapperContent = wrapperContents[currentClass]!;
-            bool hasMethod =
-                wrapperContent.contains(' $methodName(') ||
-                wrapperContent.contains(' $methodName<');
-
-            if (cleanClassName == 'Page') {
+          
+          final wrapperContent = wrapperContents[fileMap[currentClass]]!;
+          bool hasMethod = wrapperContent.contains(' $methodName(') || wrapperContent.contains(' $methodName<');
+          
+          if (currentClass == 'Page') {
               if (methodName.startsWith('keyboard')) {
-                final shortName =
-                    methodName.substring(8, 9).toLowerCase() +
-                    methodName.substring(9);
-                hasMethod = keyboardContent.contains(' $shortName(');
+                final shortName = methodName.substring(8, 9).toLowerCase() + methodName.substring(9);
+                hasMethod = wrapperContents['keyboard.dart']?.contains(' $shortName(') ?? false;
               } else if (methodName.startsWith('mouse')) {
-                final shortName =
-                    methodName.substring(5, 6).toLowerCase() +
-                    methodName.substring(6);
-                hasMethod = mouseContent.contains(' $shortName(');
+                final shortName = methodName.substring(5, 6).toLowerCase() + methodName.substring(6);
+                hasMethod = wrapperContents['mouse.dart']?.contains(' $shortName(') ?? false;
               }
-            }
+          }
 
-            if (!hasMethod) {
-              missingMethods
-                  .putIfAbsent(cleanClassName, () => [])
-                  .add(methodName);
-            }
+          if (!hasMethod) {
+            missingMethods.putIfAbsent(currentClass, () => []).add(methodName);
           }
         }
       }
     }
   }
 
-  print('=== Missing API Wrappers ===\n');
-  for (final entry in missingMethods.entries) {
-    print('${entry.key}:');
-    print('  ${entry.value.join(', ')}');
+  print('=== Missing Wrapper Classes ===\n');
+  if (missingClasses.isEmpty) {
+    print('None!\n');
+  } else {
+    for (var c in missingClasses) {
+      print('- $c');
+    }
     print('');
+  }
+
+  print('=== Missing API Wrappers in Existing Classes ===\n');
+  if (missingMethods.isEmpty) {
+    print('None!\n');
+  } else {
+    for (final entry in missingMethods.entries) {
+      print('${entry.key}:');
+      print('  ${entry.value.join(', ')}');
+      print('');
+    }
   }
 }

@@ -10,6 +10,24 @@ import 'frame.dart';
 import 'jshandle.dart';
 import 'page.dart';
 import 'local_utils.dart';
+import 'request.dart';
+import 'response.dart';
+import 'route.dart';
+import 'websocket_route.dart';
+import 'websocket.dart';
+import 'api_request_context.dart';
+import 'tracing.dart';
+import 'cdp_session.dart';
+import 'debugger.dart';
+import 'debug_controller.dart';
+import 'artifact.dart';
+import 'stream.dart';
+import 'writable_stream.dart';
+import 'disposable.dart';
+import 'dialog.dart';
+import 'worker.dart';
+import 'binding_call.dart';
+import 'event_target.dart';
 
 typedef ChannelOwnerFactory =
     ChannelOwner Function(
@@ -61,6 +79,24 @@ class Connection {
       'ElementHandle',
       (c, t, g, i, p) => ElementHandle(c, t, g, i, p),
     );
+    registerObjectFactory('Request', (c, t, g, i, p) => Request(c, t, g, i, p));
+    registerObjectFactory('Response', (c, t, g, i, p) => Response(c, t, g, i, p));
+    registerObjectFactory('Route', (c, t, g, i, p) => Route(c, t, g, i, p));
+    registerObjectFactory('WebSocketRoute', (c, t, g, i, p) => WebSocketRoute(c, t, g, i, p));
+    registerObjectFactory('WebSocket', (c, t, g, i, p) => PlaywrightWebSocket(c, t, g, i, p));
+    registerObjectFactory('APIRequestContext', (c, t, g, i, p) => APIRequestContext(c, t, g, i, p));
+    registerObjectFactory('Tracing', (c, t, g, i, p) => Tracing(c, t, g, i, p));
+    registerObjectFactory('CDPSession', (c, t, g, i, p) => CDPSession(c, t, g, i, p));
+    registerObjectFactory('Debugger', (c, t, g, i, p) => Debugger(c, t, g, i, p));
+    registerObjectFactory('DebugController', (c, t, g, i, p) => DebugController(c, t, g, i, p));
+    registerObjectFactory('Artifact', (c, t, g, i, p) => Artifact(c, t, g, i, p));
+    registerObjectFactory('Stream', (c, t, g, i, p) => PlaywrightStream(c, t, g, i, p));
+    registerObjectFactory('WritableStream', (c, t, g, i, p) => WritableStream(c, t, g, i, p));
+    registerObjectFactory('Disposable', (c, t, g, i, p) => Disposable(c, t, g, i, p));
+    registerObjectFactory('Dialog', (c, t, g, i, p) => Dialog(c, t, g, i, p));
+    registerObjectFactory('Worker', (c, t, g, i, p) => Worker(c, t, g, i, p));
+    registerObjectFactory('BindingCall', (c, t, g, i, p) => BindingCall(c, t, g, i, p));
+    registerObjectFactory('EventTarget', (c, t, g, i, p) => EventTarget(c, t, g, i, p));
   }
 
   void registerObjectFactory(String type, ChannelOwnerFactory factory) {
