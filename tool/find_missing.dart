@@ -56,6 +56,7 @@ void main() {
 
   final lines = channelsContent.split('\n');
   String? currentClass;
+  int methodsChecked = 0;
 
   for (final line in lines) {
     if (line.startsWith('abstract class ') && line.contains('Base extends')) {
@@ -101,6 +102,20 @@ void main() {
 
           if (!hasMethod) {
             missingMethods.putIfAbsent(currentClass, () => []).add(methodName);
+          } else {
+            methodsChecked++;
+            // Also check if it actually calls the channel_ function
+            bool callsChannel = wrapperContent.contains('channel_$methodName');
+            if (currentClass == 'Page' && (methodName.startsWith('keyboard') || methodName.startsWith('mouse'))) {
+              if (methodName.startsWith('keyboard')) {
+                callsChannel = wrapperContents['keyboard.dart']?.contains('channel_$methodName') ?? false;
+              } else {
+                callsChannel = wrapperContents['mouse.dart']?.contains('channel_$methodName') ?? false;
+              }
+            }
+            if (!callsChannel) {
+              missingMethods.putIfAbsent(currentClass, () => []).add('$methodName (missing channel call)');
+            }
           }
         }
       }
@@ -119,7 +134,7 @@ void main() {
 
   print('=== Missing API Wrappers in Existing Classes ===\n');
   if (missingMethods.isEmpty) {
-    print('None!\n');
+    print('None! (Checked $methodsChecked methods)\n');
   } else {
     for (final entry in missingMethods.entries) {
       print('${entry.key}:');
