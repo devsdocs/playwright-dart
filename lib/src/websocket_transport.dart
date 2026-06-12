@@ -39,8 +39,11 @@ class WebSocketTransport implements Transport {
     await _ws.close();
   }
 
-  static Future<WebSocketTransport> connect(String url) async {
-    final ws = await WebSocket.connect(url);
+  static Future<WebSocketTransport> connect(
+    String url, {
+    Map<String, dynamic>? headers,
+  }) async {
+    final ws = await WebSocket.connect(url, headers: headers);
     return WebSocketTransport(ws);
   }
 }

@@ -9,6 +9,7 @@ import 'element_handle.dart';
 import 'frame.dart';
 import 'jshandle.dart';
 import 'page.dart';
+import 'local_utils.dart';
 
 typedef ChannelOwnerFactory =
     ChannelOwner Function(
@@ -40,6 +41,10 @@ class Connection {
     registerObjectFactory(
       'BrowserType',
       (c, t, g, i, p) => BrowserType(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'LocalUtils',
+      (c, t, g, i, p) => LocalUtils(c, t, g, i, p),
     );
     registerObjectFactory('Browser', (c, t, g, i, p) => Browser(c, t, g, i, p));
     registerObjectFactory(
