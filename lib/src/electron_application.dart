@@ -1,4 +1,5 @@
 import 'generated/channels.dart';
+import 'serialization.dart';
 
 class ElectronApplication extends ElectronApplicationBase {
   ElectronApplication(
@@ -13,8 +14,25 @@ class ElectronApplication extends ElectronApplicationBase {
     return await channel_browserWindow(page: page);
   }
 
-  // Aliases for missing script check
-  Future<void> evaluateExpression() => Future.value();
-  Future<void> evaluateExpressionHandle() => Future.value();
-  Future<void> updateSubscription() => Future.value();
+  Future<dynamic> evaluateExpression(String expression, {bool? isFunction, dynamic arg}) async {
+    final result = await channel_evaluateExpression(
+      expression: expression,
+      isFunction: isFunction,
+      arg: serializeArgument(arg),
+    );
+    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+  }
+
+  Future<dynamic> evaluateExpressionHandle(String expression, {bool? isFunction, dynamic arg}) async {
+    final result = await channel_evaluateExpressionHandle(
+      expression: expression,
+      isFunction: isFunction,
+      arg: serializeArgument(arg),
+    );
+    return result['handle'];
+  }
+
+  Future<void> updateSubscription(String event, bool enabled) async {
+    await channel_updateSubscription(event: event, enabled: enabled);
+  }
 }

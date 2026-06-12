@@ -17,7 +17,12 @@ class Debugger extends DebuggerBase {
     await channel_resume();
   }
 
-  // Aliases for missing script check
-  Future<void> next() => Future.value(); // placeholder
-  Future<void> runTo() => Future.value(); // placeholder
+  // Aliases for missing script
+  Future<void> next() async {
+    await channel_next();
+  }
+
+  Future<void> runTo(Map<String, dynamic> location) async {
+    await channel_runTo(location: location);
+  }
 }

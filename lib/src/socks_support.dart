@@ -17,9 +17,19 @@ class SocksSupport extends SocksSupportBase {
     await channel_socksConnected(uid: uid, host: host, port: port);
   }
 
-  // Aliases for missing script check
-  Future<void> socksFailed() => Future.value();
-  Future<void> socksData() => Future.value();
-  Future<void> socksError() => Future.value();
-  Future<void> socksEnd() => Future.value();
+  Future<void> socksFailed(String uid, String errorCode) async {
+    await channel_socksFailed(uid: uid, errorCode: errorCode);
+  }
+
+  Future<void> socksData(String uid, String data) async {
+    await channel_socksData(uid: uid, data: data);
+  }
+
+  Future<void> socksError(String uid, String error) async {
+    await channel_socksError(uid: uid, error: error);
+  }
+
+  Future<void> socksEnd(String uid) async {
+    await channel_socksEnd(uid: uid);
+  }
 }
