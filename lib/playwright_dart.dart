@@ -11,6 +11,9 @@ export 'src/browser_context.dart';
 export 'src/page.dart';
 export 'src/frame.dart';
 export 'src/locator.dart';
+export 'src/file_payload.dart';
+export 'src/jshandle.dart';
+export 'src/element_handle.dart';
 export 'src/generated/channels.dart';
 
 class PlaywrightDart {

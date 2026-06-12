@@ -17,8 +17,57 @@ class Browser extends BrowserBase {
     return ChannelOwner.from<BrowserContext>(connection, result['context']);
   }
 
-  Future<void> close() async {
-    await super.channel_close();
+  Future<void> close({String? reason}) async {
+    await channel_close(reason: reason);
+  }
+
+  Future<dynamic> newBrowserCDPSession() async {
+    final result = await channel_newBrowserCDPSession();
+    return ChannelOwner.from(
+      connection,
+      result['session'] as Map<String, dynamic>,
+    );
+  }
+
+  Future<void> startTracing({
+    Page? page,
+    bool? screenshots,
+    List<String>? categories,
+  }) async {
+    await channel_startTracing(
+      page: page,
+      screenshots: screenshots,
+      categories: categories,
+    );
+  }
+
+  Future<List<int>> stopTracing() async {
+    final result = await channel_stopTracing();
+    return (result['binary'] as String).codeUnits;
+  }
+
+  Future<void> startServer() async {
+    throw UnimplementedError();
+  }
+
+  Future<void> stopServer() async {
+    throw UnimplementedError();
+  }
+
+  Future<void> killForTests() async {
+    throw UnimplementedError();
+  }
+
+  Future<String> defaultUserAgentForTest() async {
+    throw UnimplementedError();
+  }
+
+  Future<dynamic> newContextForReuse(Map<String, dynamic> options) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> disconnectFromReusedContext() async {
+    throw UnimplementedError();
   }
 
   Future<Page> newPage() async {

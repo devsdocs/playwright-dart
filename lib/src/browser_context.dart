@@ -20,7 +20,11 @@ class BrowserContext extends BrowserContextBase {
     await super.channel_addCookies(cookies: cookies);
   }
 
-  Future<void> clearCookies({String? name, String? domain, String? path}) async {
+  Future<void> clearCookies({
+    String? name,
+    String? domain,
+    String? path,
+  }) async {
     await super.channel_clearCookies(name: name, domain: domain, path: path);
   }
 
@@ -29,8 +33,14 @@ class BrowserContext extends BrowserContextBase {
     return result['cookies'] as List<dynamic>;
   }
 
-  Future<void> grantPermissions(List<String> permissions, {String? origin}) async {
-    await super.channel_grantPermissions(permissions: permissions, origin: origin);
+  Future<void> grantPermissions(
+    List<String> permissions, {
+    String? origin,
+  }) async {
+    await super.channel_grantPermissions(
+      permissions: permissions,
+      origin: origin,
+    );
   }
 
   Future<void> setExtraHTTPHeaders(Map<String, String> headers) async {
@@ -71,5 +81,108 @@ class BrowserContext extends BrowserContextBase {
 
   Future<void> close({String? reason}) async {
     await channel_close(reason: reason);
+  }
+
+  Future<void> setNetworkInterceptionPatterns(
+    List<Map<String, dynamic>> patterns,
+  ) async {
+    await channel_setNetworkInterceptionPatterns(patterns: patterns);
+  }
+
+  Future<void> pause() async {
+    await channel_pause();
+  }
+
+  Future<void> clockFastForward({
+    double? ticksNumber,
+    String? ticksString,
+  }) async {
+    await channel_clockFastForward(
+      ticksNumber: ticksNumber,
+      ticksString: ticksString,
+    );
+  }
+
+  Future<void> clockInstall({double? timeNumber, String? timeString}) async {
+    await channel_clockInstall(timeNumber: timeNumber, timeString: timeString);
+  }
+
+  Future<void> clockPauseAt({double? timeNumber, String? timeString}) async {
+    await channel_clockPauseAt(timeNumber: timeNumber, timeString: timeString);
+  }
+
+  Future<void> clockResume() async {
+    await channel_clockResume();
+  }
+
+  Future<void> clockRunFor({double? ticksNumber, String? ticksString}) async {
+    await channel_clockRunFor(
+      ticksNumber: ticksNumber,
+      ticksString: ticksString,
+    );
+  }
+
+  Future<void> clockSetFixedTime({
+    double? timeNumber,
+    String? timeString,
+  }) async {
+    await channel_clockSetFixedTime(
+      timeNumber: timeNumber,
+      timeString: timeString,
+    );
+  }
+
+  Future<void> clockSetSystemTime({
+    double? timeNumber,
+    String? timeString,
+  }) async {
+    await channel_clockSetSystemTime(
+      timeNumber: timeNumber,
+      timeString: timeString,
+    );
+  }
+
+  Future<void> exposeBinding(
+    String name,
+    Function callback, {
+    bool? handle,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> registerSelectorEngine(String name, String script) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> setTestIdAttributeName(String testIdAttributeName) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> setWebSocketInterceptionPatterns(List<dynamic> patterns) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> enableRecorder() async {
+    throw UnimplementedError();
+  }
+
+  Future<void> disableRecorder() async {
+    throw UnimplementedError();
+  }
+
+  Future<void> exposeConsoleApi() async {
+    throw UnimplementedError();
+  }
+
+  Future<dynamic> newCDPSession(dynamic pageOrFrame) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> createTempFiles() async {
+    throw UnimplementedError();
+  }
+
+  Future<void> updateSubscription() async {
+    throw UnimplementedError();
   }
 }

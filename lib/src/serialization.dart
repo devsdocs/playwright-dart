@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'generated/channels.dart';
 
 dynamic parseSerializedValue(Map<String, dynamic> value) {
@@ -13,13 +14,17 @@ dynamic parseSerializedValue(Map<String, dynamic> value) {
   }
   if (value.containsKey('a')) {
     final list = value['a'] as List;
-    return list.map((e) => parseSerializedValue(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => parseSerializedValue(e as Map<String, dynamic>))
+        .toList();
   }
   if (value.containsKey('o')) {
     final obj = value['o'] as List;
     final result = <String, dynamic>{};
     for (final entry in obj) {
-      result[entry['name'] as String] = parseSerializedValue(entry['value'] as Map<String, dynamic>);
+      result[entry['name'] as String] = parseSerializedValue(
+        entry['value'] as Map<String, dynamic>,
+      );
     }
     return result;
   }
@@ -46,4 +51,68 @@ SerializedValue serializeValue(dynamic value) {
     return SerializedValue(o: o);
   }
   return SerializedValue(v: 'undefined');
+}
+
+class SelectOptionParams {
+  final List<ElementHandleBase>? elements;
+  final List<Map<String, dynamic>>? options;
+  SelectOptionParams({this.elements, this.options});
+}
+
+SelectOptionParams parseSelectOptions(dynamic values) {
+  if (values == null) return SelectOptionParams();
+
+  final elements = <ElementHandleBase>[];
+  final options = <Map<String, dynamic>>[];
+
+  final list = values is List ? values : [values];
+  for (final item in list) {
+    if (item is ElementHandleBase) {
+      elements.add(item);
+    } else if (item is Map) {
+      options.add(item.cast<String, dynamic>());
+    } else if (item is String) {
+      options.add({'valueOrLabel': item});
+    }
+  }
+
+  return SelectOptionParams(
+    elements: elements.isNotEmpty ? elements : null,
+    options: options.isNotEmpty ? options : null,
+  );
+}
+
+class InputFilesParams {
+  final List<Map<String, dynamic>>? payloads;
+  final List<String>? localPaths;
+  InputFilesParams({this.payloads, this.localPaths});
+}
+
+InputFilesParams parseInputFiles(dynamic files) {
+  if (files == null) return InputFilesParams();
+
+  final payloads = <Map<String, dynamic>>[];
+  final localPaths = <String>[];
+
+  final list = files is List ? files : [files];
+  for (final item in list) {
+    if (item is String) {
+      localPaths.add(item);
+    } else if (item is Map) {
+      final map = item.cast<String, dynamic>();
+      if (map['buffer'] is List<int>) {
+        map['buffer'] = base64Encode(map['buffer'] as List<int>);
+      }
+      payloads.add(map);
+    } else {
+      try {
+        payloads.add(item.toJson() as Map<String, dynamic>);
+      } catch (_) {}
+    }
+  }
+
+  return InputFilesParams(
+    payloads: payloads.isNotEmpty ? payloads : null,
+    localPaths: localPaths.isNotEmpty ? localPaths : null,
+  );
 }

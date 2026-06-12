@@ -10,39 +10,48 @@ void main() async {
   print('Creating new page...');
   final page = await browser.newPage();
 
-  print('Navigating to playwright.dev...');
-  await page.goto('https://playwright.dev/');
+  final htmlContent = '''
+    <html>
+      <body>
+        <h1 id="header">Hello World</h1>
+        <button id="btn">Click Me</button>
+        <select id="dropdown">
+          <option value="opt1">Option 1</option>
+          <option value="opt2">Option 2</option>
+        </select>
+        <input type="file" id="file-upload" />
+      </body>
+    </html>
+  ''';
+  await page.setContent(htmlContent);
 
   final title = await page.title();
-  print('Page title: $title');
+  print('Page title: \$title');
 
-  print('Locating "Get started" link...');
-  final getStarted = page.getByRole('link', name: 'Get started');
-  final text = await getStarted.innerText();
-  print('Found link text: $text');
+  print('Testing click...');
+  final btn = page.locator('#btn');
+  await btn.click();
+  print('Button clicked!');
 
-  print('Clicking link...');
-  await getStarted.click();
+  print('Testing selectOption...');
+  final dropdown = page.locator('#dropdown');
+  final selected = await dropdown.selectOption('opt2');
+  print('Selected option: \$selected');
+
+  print('Testing setInputFiles...');
+  final fileUpload = page.locator('#file-upload');
+  await fileUpload.setInputFiles([
+    FilePayload(
+      name: 'test.txt',
+      mimeType: 'text/plain',
+      buffer: 'hello world'.codeUnits,
+    ),
+  ]);
+  print('File uploaded!');
 
   print('Evaluating document.title...');
   final evaluatedTitle = await page.mainFrame.evaluate('document.title');
-  print('Evaluated title: $evaluatedTitle');
-
-  print('Testing keyboard...');
-  await page.keyboard.press('Tab');
-  await page.keyboard.type('Hello Playwright');
-
-  print('Testing mouse...');
-  await page.mouse.move(100, 100);
-  await page.mouse.click(100, 100);
-
-  print('Fetching raw HTML content...');
-  final html = await page.content();
-  print('Page content length: ${html.length} characters');
-
-  print('Taking a screenshot...');
-  await page.screenshot(path: 'example.png');
-  print('Screenshot saved to example.png');
+  print('Evaluated title: \$evaluatedTitle');
 
   print('Closing browser...');
   await browser.close();

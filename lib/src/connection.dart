@@ -5,8 +5,10 @@ import 'playwright.dart';
 import 'browser_type.dart';
 import 'browser.dart';
 import 'browser_context.dart';
-import 'page.dart';
+import 'element_handle.dart';
 import 'frame.dart';
+import 'jshandle.dart';
+import 'page.dart';
 
 typedef ChannelOwnerFactory =
     ChannelOwner Function(
@@ -46,6 +48,14 @@ class Connection {
     );
     registerObjectFactory('Page', (c, t, g, i, p) => Page(c, t, g, i, p));
     registerObjectFactory('Frame', (c, t, g, i, p) => Frame(c, t, g, i, p));
+    registerObjectFactory(
+      'JSHandle',
+      (c, t, g, i, p) => JSHandle(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'ElementHandle',
+      (c, t, g, i, p) => ElementHandle(c, t, g, i, p),
+    );
   }
 
   void registerObjectFactory(String type, ChannelOwnerFactory factory) {

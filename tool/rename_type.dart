@@ -9,7 +9,7 @@ void main() {
     'lib/src/frame.dart',
     'lib/src/browser_context.dart',
     'lib/src/connection.dart',
-    'tool/generate_protocol.dart'
+    'tool/generate_protocol.dart',
   ];
 
   for (final file in files) {
