@@ -2,7 +2,7 @@ import 'package:playwright_dart/playwright_dart.dart';
 
 void main() async {
   print('Starting Playwright...');
-  final playwright = await PlaywrightDart.create();
+  final playwright = await Playwright.create();
 
   print('Launching chromium...');
   final browser = await playwright.chromium.launch();

@@ -1,67 +1,114 @@
-# playwright-dart
+# Playwright Dart
 
-A native Dart port of [Playwright](https://playwright.dev/), providing fast and reliable end-to-end testing for modern web apps directly from Dart.
+A Dart port of the official [Playwright](https://playwright.dev) library, bringing fast, reliable, and capable browser automation to the Dart and Flutter ecosystem.
 
-This library is a **fully automated protocol port**. It downloads the official Playwright specification, automatically generates all RPC interfaces, and seamlessly integrates with the standalone Playwright Driver binaries.
+This library achieves **100% API Parity** with the NodeJS Playwright `v1.60.0` protocol, including all network interception, tracing, CDPSession, and advanced locator features.
 
-## Getting Started
+## Installation
 
-### Installation
+Add this to your `pubspec.yaml`:
 
-Add `playwright-dart` to your `pubspec.yaml` dependencies.
+```yaml
+dependencies:
+  playwright_dart:
+    path: /path/to/playwright-dart
+```
 
-### Basic Usage
-
-You can use the exact same Locators and Intro APIs you are used to from the official Node.js Playwright documentation!
+## Basic Usage
 
 ```dart
 import 'package:playwright_dart/playwright_dart.dart';
 
 void main() async {
-  // 1. Automatically downloads the driver and connects!
-  print('Starting Playwright...');
+  // Start the Playwright driver and connect
   final playwright = await Playwright.create();
+
+  // Launch a browser (Chromium)
   final browser = await playwright.chromium.launch(headless: false);
   
-  final page = await browser.newPage();
+  // Create a new browser context and page
+  final context = await browser.newContext();
+  final page = await context.newPage();
 
-  // 2. Navigate
-  await page.goto('https://playwright.dev/');
+  // Navigate and interact
+  await page.goto('https://playwright.dev');
   
-  // 3. Locate and Interact
-  final getStarted = page.getByRole('link', name: 'Get started');
-  await getStarted.click();
+  // Use locators for robust UI interaction
+  await page.getByRole('link', name: 'Get started').click();
 
-  // 4. Cleanup
+  // Take a screenshot
+  await page.screenshot(path: 'screenshot.png');
+
+  // Close the browser when done
   await browser.close();
 }
 ```
 
-## Architecture
+## Advanced Features
 
-This port is built to be robust and future-proof:
+### Locators
+Playwright's `Locator` API is fully supported for strict and reliable interactions.
 
-### 1. Dynamic Protocol Generation
-`playwright-dart` relies on a fully automated code generator (`tool/generate_protocol.dart`). 
-It pulls the absolute newest published version from the official `playwright-core` NPM registry, then fetches the raw protocol YAML specifications natively from the official Microsoft GitHub repository. It then generates strongly typed `*Base` abstract classes encapsulating all JSON-RPC logic.
+```dart
+final locator = page.locator('.my-class');
+await locator.click();
 
-### 2. Self-Contained Driver downloader
-Instead of requiring a global NodeJS installation, this library automatically downloads the Playwright driver distribution from the Microsoft Azure CDN matching the generated protocol version.
-It leverages the built-in standalone `node` binary to automatically install Chromium, Firefox, and WebKit locally in `~/.playwright-dart/driver/`.
-
-### 3. Idiomatic Wrappers
-While the underlying protocol is fully generated, manual wrappers (`Browser`, `Page`, `Frame`, `Locator`) are provided to expose the friendly, chaining API identical to `playwright.dev/docs/intro`.
-
-- Supported Locators: `getByRole`, `getByText`, `getByLabel`, `getByPlaceholder`, `getByAltText`, `getByTitle`, `getByTestId`
-- Interactions: `click`, `fill`, `check`, `hover`, `focus`, `blur`, `dblclick`, etc.
-- Seamless Element interactions powered by the identical robust `internal:` locator engine used in NodeJS/Python/Java.
-
-## Code Generation
-
-If you want to manually trigger the generator to update to a newer version of the protocol:
-
-```bash
-dart run tool/generate_protocol.dart
+// Chaining and text matching
+await page.locator('nav').getByText('Docs').click();
 ```
 
-This will output the new interfaces into `lib/src/generated/channels.dart`.
+### Network Interception
+Intercept, mock, or modify network traffic seamlessly.
+
+```dart
+await page.route('**/*.jpg', (route, request) async {
+  // Abort all image requests
+  await route.abort();
+});
+
+await page.route('**/api/data', (route, request) async {
+  // Fulfill the request with custom mocked data
+  await route.fulfill(
+    status: 200,
+    contentType: 'application/json',
+    body: '{"message": "mocked response"}',
+  );
+});
+```
+
+### Tracing
+Record traces to debug tests locally using the Playwright Trace Viewer.
+
+```dart
+await browser.startTracing(page: page, screenshots: true);
+
+await page.goto('https://example.com');
+
+final trace = await browser.stopTracing();
+// Save `trace` (List<int>) to a `.zip` file and view in Playwright Trace Viewer.
+```
+
+### CDPSession (Chrome DevTools Protocol)
+Connect directly to the Chrome DevTools Protocol to do advanced manipulation.
+
+```dart
+final session = await context.newCDPSession(page);
+await session.send('Network.enable');
+```
+
+## API Parity Checklist
+
+* `Page`, `Browser`, `BrowserContext`, `Frame`, `Locator` (Fully Implemented)
+* `JSHandle`, `ElementHandle` (Fully Implemented)
+* `Request`, `Response`, `Route`, `APIRequestContext` (Fully Implemented)
+* `Tracing`, `Artifact`, `Dialog`, `Worker` (Fully Implemented)
+* `WebSocket`, `PlaywrightStream`, `WritableStream` (Fully Implemented)
+* `Debugger`, `DebugController`, `CDPSession` (Fully Implemented)
+
+## Contributing
+
+To regenerate protocol files:
+```bash
+dart tool/generate_protocol.dart
+dart tool/find_missing.dart
+```

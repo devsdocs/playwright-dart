@@ -2,6 +2,9 @@ import 'channel_owner.dart';
 import 'browser_type.dart';
 import 'local_utils.dart';
 import 'generated/channels.dart';
+import 'driver.dart';
+import 'transport.dart';
+import 'connection.dart';
 
 class Playwright extends PlaywrightBase {
   late final BrowserType chromium;
@@ -56,5 +59,22 @@ class Playwright extends PlaywrightBase {
       tracesDir: tracesDir,
     );
     return result['request'];
+  }
+
+  /// Launches the Playwright driver and connects to it, returning the [Playwright] instance.
+  static Future<Playwright> create() async {
+    final process = await Driver.run();
+    final transport = StdioTransport(process);
+    final connection = Connection(transport);
+
+    // Initialize the root object to get Playwright
+    final result = await connection.sendMessageToServer('', 'initialize', {
+      'sdkLanguage': 'javascript', 
+    });
+
+    return ChannelOwner.from<Playwright>(
+      connection,
+      result['playwright'] as Map<String, dynamic>,
+    );
   }
 }
