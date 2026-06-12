@@ -46,28 +46,49 @@ class Browser extends BrowserBase {
     return (result['binary'] as String).codeUnits;
   }
 
-  Future<void> startServer() async {
-    throw UnimplementedError();
+  Future<Map<String, dynamic>> startServer({
+    required String title,
+    String? workspaceDir,
+    Map<String, dynamic>? metadata,
+    String? host,
+    int? port,
+  }) async {
+    return await channel_startServer(
+      title: title,
+      workspaceDir: workspaceDir,
+      metadata: metadata,
+      host: host,
+      port: port,
+    );
   }
 
   Future<void> stopServer() async {
-    throw UnimplementedError();
+    await channel_stopServer();
   }
 
   Future<void> killForTests() async {
-    throw UnimplementedError();
+    await channel_killForTests();
   }
 
   Future<String> defaultUserAgentForTest() async {
-    throw UnimplementedError();
+    final result = await channel_defaultUserAgentForTest();
+    return result['userAgent'] as String;
   }
 
-  Future<dynamic> newContextForReuse(Map<String, dynamic> options) async {
-    throw UnimplementedError();
+  Future<BrowserContext> newContextForReuse({
+    Map<String, dynamic>? proxy,
+    Map<String, dynamic>? storageState,
+  }) async {
+    final result = await channel_newContextForReuse(
+      mixin: ContextOptions(),
+      proxy: proxy,
+      storageState: storageState,
+    );
+    return ChannelOwner.from<BrowserContext>(connection, result['context']);
   }
 
-  Future<void> disconnectFromReusedContext() async {
-    throw UnimplementedError();
+  Future<void> disconnectFromReusedContext({String reason = ''}) async {
+    await channel_disconnectFromReusedContext(reason: reason);
   }
 
   Future<Page> newPage() async {

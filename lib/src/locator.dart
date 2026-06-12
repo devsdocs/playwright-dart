@@ -263,16 +263,40 @@ class Locator {
     await frame.channel_hideHighlight(selector: selector);
   }
 
-  Future<void> drop({dynamic data, bool? force, double? timeout}) async {
-    throw UnimplementedError('drop not fully mapped yet');
+  Future<void> drop({
+    List<Map<String, dynamic>>? payloads,
+    List<String>? localPaths,
+    List<Map<String, dynamic>>? data,
+    double? timeout,
+  }) async {
+    await frame.drop(
+      selector,
+      payloads: payloads,
+      localPaths: localPaths,
+      data: data,
+      timeout: timeout,
+    );
   }
 
-  Future<String?> resolveSelector() async {
-    throw UnimplementedError('resolveSelector not fully mapped yet');
+  Future<Map<String, dynamic>> resolveSelector() async {
+    return await frame.resolveSelector(selector);
   }
 
-  Future<dynamic> ariaSnapshot() async {
-    throw UnimplementedError('ariaSnapshot not fully mapped yet');
+  Future<Map<String, dynamic>> ariaSnapshot({
+    String? mode,
+    String? track,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  }) async {
+    return await frame.ariaSnapshot(
+      selector,
+      mode: mode,
+      track: track,
+      depth: depth,
+      boxes: boxes,
+      timeout: timeout,
+    );
   }
 
   Locator querySelector(String subSelector) {
@@ -280,12 +304,12 @@ class Locator {
   }
 
   Future<List<Locator>> querySelectorAll(String subSelector) async {
-    // This requires counting elements and returning an array of locators
-    throw UnimplementedError('querySelectorAll not fully mapped yet');
+    final count = await frame.queryCount('$selector >> $subSelector');
+    return List.generate(count, (i) => locator('$subSelector >> nth=$i'));
   }
 
   Future<int> queryCount(String subSelector) async {
-    throw UnimplementedError('queryCount not fully mapped yet');
+    return await frame.queryCount('$selector >> $subSelector');
   }
 
   Future<dynamic> evaluate(String expression, [dynamic arg]) async {

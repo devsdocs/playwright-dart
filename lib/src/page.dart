@@ -338,11 +338,20 @@ class Page extends PageBase {
 
   Future<void> drop(
     String selector, {
-    dynamic data,
-    bool? force,
+    List<Map<String, dynamic>>? payloads,
+    List<String>? localPaths,
+    List<Map<String, dynamic>>? data,
+    bool? strict,
     double? timeout,
   }) {
-    return mainFrame.drop(selector, data: data, force: force, timeout: timeout);
+    return mainFrame.drop(
+      selector,
+      payloads: payloads,
+      localPaths: localPaths,
+      data: data,
+      strict: strict,
+      timeout: timeout,
+    );
   }
 
   Locator querySelector(String selector) {
@@ -385,52 +394,79 @@ class Page extends PageBase {
     );
   }
 
-  Future<dynamic> ariaSnapshot(String selector) {
-    return mainFrame.ariaSnapshot(selector);
+  Future<Map<String, dynamic>> ariaSnapshot(
+    String selector, {
+    String? mode,
+    String? track,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  }) {
+    return mainFrame.ariaSnapshot(
+      selector,
+      mode: mode,
+      track: track,
+      depth: depth,
+      boxes: boxes,
+      timeout: timeout,
+    );
   }
 
-  Future<dynamic> expect(
+  Future<Map<String, dynamic>> expect(
     String selector,
     String expression, {
-    dynamic expectedValue,
+    SerializedArgument? expectedValue,
+    List<ExpectedTextValue>? expectedText,
+    double? expectedNumber,
+    bool? useInnerText,
+    required bool isNot,
     double? timeout,
   }) {
     return mainFrame.expect(
       selector,
       expression,
       expectedValue: expectedValue,
+      expectedText: expectedText,
+      expectedNumber: expectedNumber,
+      useInnerText: useInnerText,
+      isNot: isNot,
       timeout: timeout,
     );
   }
 
-  Future<void> exposeBinding(
-    String name,
-    Function callback, {
-    bool? handle,
-  }) async {
-    throw UnimplementedError('exposeBinding not fully mapped yet');
+  Future<void> exposeBinding(String name) async {
+    await channel_exposeBinding(name: name);
   }
 
   Future<void> requestGC() async {
     await channel_requestGC();
   }
 
-  Future<void> registerLocatorHandler(Locator locator, Function handler) async {
-    throw UnimplementedError('registerLocatorHandler not fully mapped yet');
+  Future<Map<String, dynamic>> registerLocatorHandler(
+    Locator locator, {
+    bool? noWaitAfter,
+  }) async {
+    return await channel_registerLocatorHandler(
+      selector: locator.selector,
+      noWaitAfter: noWaitAfter,
+    );
   }
 
-  Future<void> unregisterLocatorHandler(Locator locator) async {
-    throw UnimplementedError('unregisterLocatorHandler not fully mapped yet');
+  Future<void> unregisterLocatorHandler(int uid) async {
+    await channel_unregisterLocatorHandler(uid: uid);
   }
 
   Future<void> setExtraHTTPHeaders(Map<String, String> headers) async {
-    throw UnimplementedError('setExtraHTTPHeaders not fully mapped yet');
+    final nameValueHeaders = headers.entries
+        .map((e) => NameValue(name: e.key, value: e.value))
+        .toList();
+    await channel_setExtraHTTPHeaders(headers: nameValueHeaders);
   }
 
-  Future<void> setNetworkInterceptionPatterns(List<dynamic> patterns) async {
-    throw UnimplementedError(
-      'setNetworkInterceptionPatterns not fully mapped yet',
-    );
+  Future<void> setNetworkInterceptionPatterns(
+    List<Map<String, dynamic>> patterns,
+  ) async {
+    await channel_setNetworkInterceptionPatterns(patterns: patterns);
   }
 
   Future<void> touchscreenTap(double x, double y) async {
@@ -441,24 +477,34 @@ class Page extends PageBase {
     await channel_bringToFront();
   }
 
-  Future<void> pickLocator() async {
-    throw UnimplementedError();
+  Future<Map<String, dynamic>> pickLocator() async {
+    return await channel_pickLocator();
   }
 
   Future<void> cancelPickLocator() async {
-    throw UnimplementedError();
+    await channel_cancelPickLocator();
   }
 
-  Future<void> screencastStart() async {
-    throw UnimplementedError();
+  Future<void> screencastStart({
+    Map<String, dynamic>? size,
+    int? quality,
+    bool? sendFrames,
+    bool? record,
+  }) async {
+    await channel_screencastStart(
+      size: size,
+      quality: quality,
+      sendFrames: sendFrames,
+      record: record,
+    );
   }
 
   Future<void> screencastStop() async {
-    throw UnimplementedError();
+    await channel_screencastStop();
   }
 
-  Future<void> setDockTile() async {
-    throw UnimplementedError();
+  Future<void> setDockTile(String image) async {
+    await channel_setDockTile(image: image);
   }
 
   // --- Console Messages ---

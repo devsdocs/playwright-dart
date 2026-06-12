@@ -1,3 +1,4 @@
+import 'channel_owner.dart';
 import 'generated/channels.dart';
 import 'locator.dart';
 import 'serialization.dart';
@@ -378,19 +379,42 @@ class Frame extends FrameBase {
 
   Future<void> drop(
     String selector, {
-    dynamic data,
-    bool? force,
+    List<Map<String, dynamic>>? payloads,
+    List<String>? localPaths,
+    List<Map<String, dynamic>>? data,
+    bool? strict,
     double? timeout,
   }) async {
-    throw UnimplementedError('drop not fully mapped yet');
+    await channel_drop(
+      selector: selector,
+      strict: strict,
+      payloads: payloads,
+      localPaths: localPaths,
+      data: data,
+      timeout: timeout ?? 30000.0,
+    );
   }
 
-  Future<String?> resolveSelector(String selector) async {
-    throw UnimplementedError('resolveSelector not fully mapped yet');
+  Future<Map<String, dynamic>> resolveSelector(String selector) async {
+    return await channel_resolveSelector(selector: selector);
   }
 
-  Future<dynamic> ariaSnapshot(String selector) async {
-    throw UnimplementedError('ariaSnapshot not fully mapped yet');
+  Future<Map<String, dynamic>> ariaSnapshot(
+    String selector, {
+    String? mode,
+    String? track,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  }) async {
+    return await channel_ariaSnapshot(
+      selector: selector,
+      mode: mode,
+      track: track,
+      depth: depth,
+      boxes: boxes,
+      timeout: timeout ?? 30000.0,
+    );
   }
 
   Future<dynamic> evaluateExpression(
@@ -398,7 +422,12 @@ class Frame extends FrameBase {
     bool? isFunction,
     dynamic arg,
   }) async {
-    throw UnimplementedError('evaluateExpression not fully mapped yet');
+    final result = await channel_evaluateExpression(
+      expression: expression,
+      isFunction: isFunction,
+      arg: serializeArgument(arg),
+    );
+    return parseSerializedValue(result['value'] as Map<String, dynamic>);
   }
 
   Future<dynamic> evaluateExpressionHandle(
@@ -406,20 +435,45 @@ class Frame extends FrameBase {
     bool? isFunction,
     dynamic arg,
   }) async {
-    throw UnimplementedError('evaluateExpressionHandle not fully mapped yet');
+    final result = await channel_evaluateExpressionHandle(
+      expression: expression,
+      isFunction: isFunction,
+      arg: serializeArgument(arg),
+    );
+    return ChannelOwner.from(
+      connection,
+      result['handle'] as Map<String, dynamic>,
+    );
   }
 
   Future<dynamic> frameElement() async {
-    throw UnimplementedError('frameElement not fully mapped yet');
+    final result = await channel_frameElement();
+    return ChannelOwner.from(
+      connection,
+      result['element'] as Map<String, dynamic>,
+    );
   }
 
-  Future<dynamic> expect(
+  Future<Map<String, dynamic>> expect(
     String selector,
     String expression, {
-    dynamic expectedValue,
+    SerializedArgument? expectedValue,
+    List<ExpectedTextValue>? expectedText,
+    double? expectedNumber,
+    bool? useInnerText,
+    required bool isNot,
     double? timeout,
   }) async {
-    throw UnimplementedError('expect not fully mapped yet');
+    return await channel_expect(
+      selector: selector,
+      expression: expression,
+      expectedValue: expectedValue,
+      expectedText: expectedText,
+      expectedNumber: expectedNumber,
+      useInnerText: useInnerText,
+      isNot: isNot,
+      timeout: timeout ?? 30000.0,
+    );
   }
 
   Locator querySelector(String selector) {
@@ -427,11 +481,14 @@ class Frame extends FrameBase {
   }
 
   Future<List<Locator>> querySelectorAll(String selector) async {
-    throw UnimplementedError('querySelectorAll not fully mapped yet');
+    final result = await channel_querySelectorAll(selector: selector);
+    final elements = result['elements'] as List? ?? [];
+    return elements.map((_) => locator(selector)).toList();
   }
 
   Future<int> queryCount(String selector) async {
-    throw UnimplementedError('queryCount not fully mapped yet');
+    final result = await channel_queryCount(selector: selector);
+    return result['value'] as int;
   }
 
   Future<List<String>> selectOption(

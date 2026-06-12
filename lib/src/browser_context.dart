@@ -1,4 +1,5 @@
 import 'channel_owner.dart';
+import 'frame.dart';
 import 'page.dart';
 import 'generated/channels.dart';
 
@@ -142,47 +143,82 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
-  Future<void> exposeBinding(
-    String name,
-    Function callback, {
-    bool? handle,
-  }) async {
-    throw UnimplementedError();
+  Future<void> exposeBinding(String name) async {
+    await channel_exposeBinding(name: name);
   }
 
-  Future<void> registerSelectorEngine(String name, String script) async {
-    throw UnimplementedError();
+  Future<void> registerSelectorEngine(
+    String name,
+    String source, {
+    bool? contentScript,
+  }) async {
+    await channel_registerSelectorEngine(
+      selectorEngine: SelectorEngine(
+        name: name,
+        source: source,
+        contentScript: contentScript,
+      ),
+    );
   }
 
   Future<void> setTestIdAttributeName(String testIdAttributeName) async {
-    throw UnimplementedError();
+    await channel_setTestIdAttributeName(
+      testIdAttributeName: testIdAttributeName,
+    );
   }
 
-  Future<void> setWebSocketInterceptionPatterns(List<dynamic> patterns) async {
-    throw UnimplementedError();
+  Future<void> setWebSocketInterceptionPatterns(
+    List<Map<String, dynamic>> patterns,
+  ) async {
+    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
   }
 
-  Future<void> enableRecorder() async {
-    throw UnimplementedError();
+  Future<void> enableRecorder({
+    String? language,
+    String? mode,
+    String? recorderMode,
+    bool? pauseOnNextStatement,
+    String? testIdAttributeName,
+  }) async {
+    await channel_enableRecorder(
+      language: language,
+      mode: mode,
+      recorderMode: recorderMode,
+      pauseOnNextStatement: pauseOnNextStatement,
+      testIdAttributeName: testIdAttributeName,
+    );
   }
 
   Future<void> disableRecorder() async {
-    throw UnimplementedError();
+    await channel_disableRecorder();
   }
 
   Future<void> exposeConsoleApi() async {
-    throw UnimplementedError();
+    await channel_exposeConsoleApi();
   }
 
-  Future<dynamic> newCDPSession(dynamic pageOrFrame) async {
-    throw UnimplementedError();
+  Future<dynamic> newCDPSession({Page? page, Frame? frame}) async {
+    final result = await channel_newCDPSession(page: page, frame: frame);
+    return ChannelOwner.from(
+      connection,
+      result['session'] as Map<String, dynamic>,
+    );
   }
 
-  Future<void> createTempFiles() async {
-    throw UnimplementedError();
+  Future<Map<String, dynamic>> createTempFiles({
+    String? rootDirName,
+    required List<Map<String, dynamic>> items,
+  }) async {
+    return await channel_createTempFiles(
+      rootDirName: rootDirName,
+      items: items,
+    );
   }
 
-  Future<void> updateSubscription() async {
-    throw UnimplementedError();
+  Future<void> updateSubscription({
+    required String event,
+    required bool enabled,
+  }) async {
+    await channel_updateSubscription(event: event, enabled: enabled);
   }
 }
