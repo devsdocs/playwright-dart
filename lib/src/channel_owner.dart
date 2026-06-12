@@ -4,7 +4,7 @@ import 'connection.dart';
 abstract class ChannelOwner {
   final Connection connection;
   final String guid;
-  final String type;
+  final String channelType;
   final ChannelOwner? parent;
   final Map<String, ChannelOwner> objects = {};
 
@@ -12,7 +12,7 @@ abstract class ChannelOwner {
 
   ChannelOwner(
     this.connection,
-    this.type,
+    this.channelType,
     this.guid,
     this.initializer, [
     this.parent,

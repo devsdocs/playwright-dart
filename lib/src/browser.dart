@@ -6,7 +6,7 @@ import 'generated/channels.dart';
 class Browser extends BrowserBase {
   Browser(
     super.connection,
-    super.type,
+    super.channelType,
     super.guid,
     super.initializer, [
     super.parent,

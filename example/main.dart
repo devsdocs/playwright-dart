@@ -24,6 +24,26 @@ void main() async {
   print('Clicking link...');
   await getStarted.click();
 
+  print('Evaluating document.title...');
+  final evaluatedTitle = await page.mainFrame.evaluate('document.title');
+  print('Evaluated title: $evaluatedTitle');
+
+  print('Testing keyboard...');
+  await page.keyboard.press('Tab');
+  await page.keyboard.type('Hello Playwright');
+
+  print('Testing mouse...');
+  await page.mouse.move(100, 100);
+  await page.mouse.click(100, 100);
+
+  print('Fetching raw HTML content...');
+  final html = await page.content();
+  print('Page content length: ${html.length} characters');
+
+  print('Taking a screenshot...');
+  await page.screenshot(path: 'example.png');
+  print('Screenshot saved to example.png');
+
   print('Closing browser...');
   await browser.close();
 

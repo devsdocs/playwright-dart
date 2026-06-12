@@ -157,7 +157,7 @@ class Connection {
 class _DummyChannelOwner extends ChannelOwner {
   _DummyChannelOwner(
     super.connection,
-    super.type,
+    super.channelType,
     super.guid,
     super.initializer, [
     super.parent,

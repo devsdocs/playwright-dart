@@ -5,7 +5,7 @@ import 'generated/channels.dart';
 class BrowserContext extends BrowserContextBase {
   BrowserContext(
     super.connection,
-    super.type,
+    super.channelType,
     super.guid,
     super.initializer, [
     super.parent,
@@ -14,5 +14,62 @@ class BrowserContext extends BrowserContextBase {
   Future<Page> newPage() async {
     final result = await super.channel_newPage();
     return ChannelOwner.from<Page>(connection, result['page']);
+  }
+
+  Future<void> addCookies(List<SetNetworkCookie> cookies) async {
+    await super.channel_addCookies(cookies: cookies);
+  }
+
+  Future<void> clearCookies({String? name, String? domain, String? path}) async {
+    await super.channel_clearCookies(name: name, domain: domain, path: path);
+  }
+
+  Future<List<dynamic>> cookies({List<String>? urls}) async {
+    final result = await super.channel_cookies(urls: urls ?? []);
+    return result['cookies'] as List<dynamic>;
+  }
+
+  Future<void> grantPermissions(List<String> permissions, {String? origin}) async {
+    await super.channel_grantPermissions(permissions: permissions, origin: origin);
+  }
+
+  Future<void> setExtraHTTPHeaders(Map<String, String> headers) async {
+    final mappedHeaders = headers.entries
+        .map((e) => NameValue(name: e.key, value: e.value))
+        .toList();
+    await super.channel_setExtraHTTPHeaders(headers: mappedHeaders);
+  }
+
+  Future<void> clearPermissions() async {
+    await channel_clearPermissions();
+  }
+
+  Future<void> setGeolocation(Map<String, dynamic>? geolocation) async {
+    await channel_setGeolocation(geolocation: geolocation);
+  }
+
+  Future<void> setHTTPCredentials(Map<String, dynamic>? credentials) async {
+    await channel_setHTTPCredentials(httpCredentials: credentials);
+  }
+
+  Future<void> setOffline(bool offline) async {
+    await channel_setOffline(offline: offline);
+  }
+
+  Future<Map<String, dynamic>> storageState({bool? indexedDB}) async {
+    final result = await channel_storageState(indexedDB: indexedDB);
+    return result;
+  }
+
+  Future<void> setStorageState(Map<String, dynamic> state) async {
+    await channel_setStorageState(storageState: state);
+  }
+
+  Future<void> addInitScript(String source) async {
+    await channel_addInitScript(source: source);
+  }
+
+  Future<void> close({String? reason}) async {
+    await channel_close(reason: reason);
   }
 }

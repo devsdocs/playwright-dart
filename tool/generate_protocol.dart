@@ -253,7 +253,7 @@ void main() async {
 
       buffer.writeln('abstract class ${name}Base$extendsClause {');
       buffer.writeln(
-        '  ${name}Base(super.connection, super.type, super.guid, super.initializer, [super.parent]);',
+        '  ${name}Base(super.connection, super.channelType, super.guid, super.initializer, [super.parent]);',
       );
       buffer.writeln();
 

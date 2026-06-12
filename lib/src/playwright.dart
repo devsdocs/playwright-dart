@@ -9,7 +9,7 @@ class Playwright extends PlaywrightBase {
 
   Playwright(
     super.connection,
-    super.type,
+    super.channelType,
     super.guid,
     super.initializer, [
     super.parent,
