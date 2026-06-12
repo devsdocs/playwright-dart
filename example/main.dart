@@ -26,7 +26,7 @@ void main() async {
   await page.setContent(htmlContent);
 
   final title = await page.title();
-  print('Page title: \$title');
+  print('Page title: $title');
 
   print('Testing click...');
   final btn = page.locator('#btn');
@@ -36,7 +36,7 @@ void main() async {
   print('Testing selectOption...');
   final dropdown = page.locator('#dropdown');
   final selected = await dropdown.selectOption('opt2');
-  print('Selected option: \$selected');
+  print('Selected option: $selected');
 
   print('Testing setInputFiles...');
   final fileUpload = page.locator('#file-upload');
@@ -51,7 +51,7 @@ void main() async {
 
   print('Evaluating document.title...');
   final evaluatedTitle = await page.mainFrame.evaluate('document.title');
-  print('Evaluated title: \$evaluatedTitle');
+  print('Evaluated title: $evaluatedTitle');
 
   print('Closing browser...');
   await browser.close();

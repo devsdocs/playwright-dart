@@ -460,4 +460,148 @@ class Page extends PageBase {
   Future<void> setDockTile() async {
     throw UnimplementedError();
   }
+
+  // --- Console Messages ---
+
+  Future<void> clearConsoleMessages() async {
+    await channel_clearConsoleMessages();
+  }
+
+  Future<Map<String, dynamic>> consoleMessages({
+    ConsoleMessagesFilter? filter,
+  }) async {
+    return await channel_consoleMessages(filter: filter);
+  }
+
+  // --- Page Errors ---
+
+  Future<void> clearPageErrors() async {
+    await channel_clearPageErrors();
+  }
+
+  Future<Map<String, dynamic>> pageErrors({
+    ConsoleMessagesFilter? filter,
+  }) async {
+    return await channel_pageErrors(filter: filter);
+  }
+
+  // --- Requests ---
+
+  Future<Map<String, dynamic>> requests() async {
+    return await channel_requests();
+  }
+
+  // --- Locator Handler ---
+
+  Future<void> resolveLocatorHandlerNoReply(int uid, {bool? remove}) async {
+    await channel_resolveLocatorHandlerNoReply(uid: uid, remove: remove);
+  }
+
+  // --- Screenshot Expect ---
+
+  Future<Map<String, dynamic>> expectScreenshot({
+    String? expected,
+    required double timeout,
+    required bool isNot,
+    Map<String, dynamic>? locator,
+    String? comparator,
+    int? maxDiffPixels,
+    double? maxDiffPixelRatio,
+    double? threshold,
+    bool? fullPage,
+    Rect? clip,
+    required CommonScreenshotOptions screenshotOptions,
+  }) async {
+    return await channel_expectScreenshot(
+      expected: expected,
+      timeout: timeout,
+      isNot: isNot,
+      locator: locator,
+      comparator: comparator,
+      maxDiffPixels: maxDiffPixels,
+      maxDiffPixelRatio: maxDiffPixelRatio,
+      threshold: threshold,
+      fullPage: fullPage,
+      clip: clip,
+      mixin: screenshotOptions,
+    );
+  }
+
+  // --- WebSocket Interception ---
+
+  Future<void> setWebSocketInterceptionPatterns(
+    List<Map<String, dynamic>> patterns,
+  ) async {
+    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
+  }
+
+  // --- JS/CSS Coverage ---
+
+  Future<void> startJSCoverage({
+    bool? resetOnNavigation,
+    bool? reportAnonymousScripts,
+  }) async {
+    await channel_startJSCoverage(
+      resetOnNavigation: resetOnNavigation,
+      reportAnonymousScripts: reportAnonymousScripts,
+    );
+  }
+
+  Future<Map<String, dynamic>> stopJSCoverage() async {
+    return await channel_stopJSCoverage();
+  }
+
+  Future<void> startCSSCoverage({bool? resetOnNavigation}) async {
+    await channel_startCSSCoverage(resetOnNavigation: resetOnNavigation);
+  }
+
+  Future<Map<String, dynamic>> stopCSSCoverage() async {
+    return await channel_stopCSSCoverage();
+  }
+
+  // --- Screencast ---
+
+  Future<Map<String, dynamic>> screencastShowOverlay(
+    String html, {
+    double? duration,
+  }) async {
+    return await channel_screencastShowOverlay(html: html, duration: duration);
+  }
+
+  Future<void> screencastRemoveOverlay(String id) async {
+    await channel_screencastRemoveOverlay(id: id);
+  }
+
+  Future<void> screencastChapter(
+    String title, {
+    String? description,
+    double? duration,
+  }) async {
+    await channel_screencastChapter(
+      title: title,
+      description: description,
+      duration: duration,
+    );
+  }
+
+  Future<void> screencastSetOverlayVisible(bool visible) async {
+    await channel_screencastSetOverlayVisible(visible: visible);
+  }
+
+  Future<void> screencastShowActions(ShowActionsOptions options) async {
+    await channel_screencastShowActions(mixin: options);
+  }
+
+  Future<void> screencastHideActions() async {
+    await channel_screencastHideActions();
+  }
+
+  // --- Subscription ---
+
+  Future<void> updateSubscription({
+    required String event,
+    required bool enabled,
+  }) async {
+    await channel_updateSubscription(event: event, enabled: enabled);
+  }
 }
