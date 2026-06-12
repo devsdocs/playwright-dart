@@ -41,6 +41,14 @@ void main() {
     'WebSocketRoute': 'websocket_route.dart',
     'DebugController': 'debug_controller.dart',
     'Debugger': 'debugger.dart',
+    'Android': 'android.dart',
+    'AndroidSocket': 'android_socket.dart',
+    'AndroidDevice': 'android_device.dart',
+    'Electron': 'electron.dart',
+    'ElectronApplication': 'electron_application.dart',
+    'Root': 'root.dart',
+    'SocksSupport': 'socks_support.dart',
+    'JsonPipe': 'json_pipe.dart',
   };
 
   final Map<String, List<String>> missingMethods = {};
@@ -56,7 +64,7 @@ void main() {
         currentClass = match.group(1);
         
         // Skip internal or unsupported classes for now
-        final skipClasses = ['Android', 'AndroidSocket', 'AndroidDevice', 'Electron', 'ElectronApplication', 'SocksSupport', 'Root', 'JsonPipe'];
+        final skipClasses = <String>[];
         if (skipClasses.contains(currentClass)) {
           currentClass = null;
           continue;

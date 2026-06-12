@@ -28,6 +28,14 @@ import 'dialog.dart';
 import 'worker.dart';
 import 'binding_call.dart';
 import 'event_target.dart';
+import 'android.dart';
+import 'android_device.dart';
+import 'android_socket.dart';
+import 'electron.dart';
+import 'electron_application.dart';
+import 'root.dart';
+import 'socks_support.dart';
+import 'json_pipe.dart';
 
 typedef ChannelOwnerFactory =
     ChannelOwner Function(
@@ -97,6 +105,14 @@ class Connection {
     registerObjectFactory('Worker', (c, t, g, i, p) => Worker(c, t, g, i, p));
     registerObjectFactory('BindingCall', (c, t, g, i, p) => BindingCall(c, t, g, i, p));
     registerObjectFactory('EventTarget', (c, t, g, i, p) => EventTarget(c, t, g, i, p));
+    registerObjectFactory('Android', (c, t, g, i, p) => Android(c, t, g, i, p));
+    registerObjectFactory('AndroidDevice', (c, t, g, i, p) => AndroidDevice(c, t, g, i, p));
+    registerObjectFactory('AndroidSocket', (c, t, g, i, p) => AndroidSocket(c, t, g, i, p));
+    registerObjectFactory('Electron', (c, t, g, i, p) => Electron(c, t, g, i, p));
+    registerObjectFactory('ElectronApplication', (c, t, g, i, p) => ElectronApplication(c, t, g, i, p));
+    registerObjectFactory('Root', (c, t, g, i, p) => Root(c, t, g, i, p));
+    registerObjectFactory('SocksSupport', (c, t, g, i, p) => SocksSupport(c, t, g, i, p));
+    registerObjectFactory('JsonPipe', (c, t, g, i, p) => JsonPipe(c, t, g, i, p));
   }
 
   void registerObjectFactory(String type, ChannelOwnerFactory factory) {
