@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'channel_owner.dart';
 import 'generated/channels.dart';
+import 'request.dart';
+import 'frame.dart';
 
 /// Response class represents responses which are received by page.
 /// Interface for Response
@@ -10,7 +11,8 @@ abstract interface class Response {
   String get url;
   Map<String, dynamic> get headers;
   bool get ok;
-  Future<dynamic> request();
+  Request get request;
+  Frame get frame;
   Future<List<int>> body();
   Future<String> text();
   Future<dynamic> json();
@@ -23,6 +25,11 @@ abstract interface class Response {
 }
 
 class ResponseImpl extends ResponseBase implements Response {
+  @override
+  Request get request =>
+      connection.objects[initializer['request']['guid']] as Request;
+  @override
+  Frame get frame => request.frame;
   ResponseImpl(
     super.connection,
     super.channelType,
@@ -58,14 +65,6 @@ class ResponseImpl extends ResponseBase implements Response {
   bool get ok => status >= 200 && status <= 299;
 
   @override
-  Future<dynamic> request() {
-    final req = initializer['request'];
-    if (req == null) return Future.value(null);
-    return Future.value(
-      ChannelOwner.from(connection, req as Map<String, dynamic>),
-    );
-  }
-
   /// Returns the buffer with response body.
   @override
   Future<List<int>> body() async {

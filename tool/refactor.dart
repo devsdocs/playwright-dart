@@ -83,7 +83,7 @@ void main() {
                   isOverride = true;
                 }
               }
-            // ignore: empty_catches
+              // ignore: empty_catches
             } catch (e) {}
             if (isOverride) continue;
 

@@ -7,6 +7,9 @@ import 'page.dart';
 
 /// Interface for Frame
 abstract interface class Frame {
+  Frame? get parentFrame;
+  List<Frame> get childFrames;
+  String get name;
   Stream<Map<String, dynamic>> get onNavigated;
   Stream<Map<String, dynamic>> get onLoadstate;
   String url();
@@ -267,6 +270,14 @@ abstract interface class Frame {
 }
 
 class FrameImpl extends FrameBase implements Frame {
+  @override
+  Frame? get parentFrame => initializer['parentFrame'] != null
+      ? connection.objects[initializer['parentFrame']['guid']] as Frame?
+      : null;
+  @override
+  List<Frame> get childFrames => objects.values.whereType<Frame>().toList();
+  @override
+  String get name => initializer['name'] as String;
   @override
   Stream<Map<String, dynamic>> get onNavigated {
     return onEvent

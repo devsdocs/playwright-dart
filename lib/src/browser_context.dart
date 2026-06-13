@@ -1,6 +1,7 @@
 import 'cdp_session.dart';
 import 'frame.dart';
 import 'page.dart';
+import 'browser.dart';
 import 'generated/channels.dart';
 import 'route.dart';
 import 'route_from_har.dart';
@@ -10,6 +11,7 @@ import 'route_from_har.dart';
 /// If a page opens another page, e.g. with a `window.open` call, the popup will belong to the parent page's browser context.
 /// Interface for BrowserContext
 abstract interface class BrowserContext {
+  Browser? get browser;
   Stream<Map<String, dynamic>> get onRecorderEvent;
   Stream<Map<String, dynamic>> get onResponse;
   Stream<Map<String, dynamic>> get onRequestFinished;
@@ -24,6 +26,7 @@ abstract interface class BrowserContext {
   Stream<BrowserContext> get onClose;
   Stream<Map<String, dynamic>> get onConsole;
   Stream<dynamic> get onBindingCall;
+  List<Page> get pages;
   Future<Page> newPage();
   Future<void> addCookies(List<SetNetworkCookie> cookies);
   Future<void> clearCookies({
@@ -114,6 +117,8 @@ abstract interface class BrowserContext {
 }
 
 class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
+  @override
+  Browser? get browser => parent is Browser ? parent as Browser : null;
   @override
   Stream<Map<String, dynamic>> get onRecorderEvent {
     return onEvent
@@ -209,6 +214,9 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
         .where((e) => e['event'] == 'bindingCall')
         .map((e) => e['params']['binding']);
   }
+
+  @override
+  List<Page> get pages => objects.values.whereType<Page>().toList();
 
   BrowserContextImpl(
     super.connection,

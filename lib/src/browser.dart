@@ -17,6 +17,8 @@ import 'playwright.dart';
 /// ```
 /// Interface for Browser
 abstract interface class Browser {
+  List<BrowserContext> get contexts;
+  String get version;
   Stream<Browser> get onClose;
   Stream<dynamic> get onContext;
   Future<BrowserContext> newContext({
@@ -51,6 +53,11 @@ abstract interface class Browser {
 }
 
 class BrowserImpl extends BrowserBase implements Browser {
+  @override
+  List<BrowserContext> get contexts =>
+      objects.values.whereType<BrowserContext>().toList();
+  @override
+  String get version => initializer['version'] as String;
   @override
   Stream<Browser> get onClose {
     return onEvent.where((e) => e['event'] == 'close').map((e) => this);

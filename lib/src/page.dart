@@ -28,6 +28,8 @@ import 'element_handle.dart';
 /// One Browser instance might have multiple Page instances.
 /// Interface for Page
 abstract interface class Page {
+  List<Frame> get frames;
+  List<Worker> get workers;
   Stream<dynamic> get onWebSocketRoute;
   Stream<Map<String, dynamic>> get onScreencastFrame;
   Stream<dynamic> get onRoute;
@@ -57,11 +59,7 @@ abstract interface class Page {
   Stream<Worker> get onWorker;
   Future<Request> waitForRequest(dynamic urlOrPredicate, {double? timeout});
   Future<Response> waitForResponse(dynamic urlOrPredicate, {double? timeout});
-  Future<T> _waitForNetworkEvent<T>(
-    Stream<T> stream,
-    dynamic urlOrPredicate, {
-    double? timeout,
-  });
+
   Stream<Artifact> get onDownload;
   Future<void> goto(
     String url, {
@@ -319,6 +317,10 @@ abstract interface class Page {
 }
 
 class PageImpl extends PageBase implements Page {
+  @override
+  List<Frame> get frames => objects.values.whereType<Frame>().toList();
+  @override
+  List<Worker> get workers => objects.values.whereType<Worker>().toList();
   @override
   Stream<dynamic> get onWebSocketRoute {
     return onEvent
@@ -628,7 +630,6 @@ class PageImpl extends PageBase implements Page {
     );
   }
 
-  @override
   Future<T> _waitForNetworkEvent<T>(
     Stream<T> stream,
     dynamic urlOrPredicate, {
