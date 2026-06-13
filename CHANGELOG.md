@@ -1,3 +1,7 @@
+## 0.1.1
+
+Dependencies bump
+
 ## 0.1.0
 
 Initial release — complete Dart SDK for Playwright with full API parity to Node.js `v1.60.0`.
