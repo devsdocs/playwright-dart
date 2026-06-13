@@ -552,7 +552,10 @@ class Page extends PageBase {
     await channel_setNetworkInterceptionPatterns(patterns: patterns);
   }
 
-  // Touchscreen API is now exposed via the `touchscreen` getter.
+  /// Touchscreen API also available through [this.touchscreen.tap()]
+  Future<void> touchscreenTap(double x, double y) async {
+    await channel_touchscreenTap(x: x, y: y);
+  }
 
   Future<void> bringToFront() async {
     await channel_bringToFront();
