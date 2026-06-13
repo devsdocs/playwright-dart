@@ -4,7 +4,9 @@ void main() {
   group('BrowserContext Extra HTTP Headers', () {
     test('should set extra headers on context', (page) async {
       final context = await browser.newContext();
-      await context.setExtraHTTPHeaders({'X-Context-Header': 'ctx-val'});
+      await context.setExtraHTTPHeaders([
+        NameValue(name: 'X-Context-Header', value: 'ctx-val'),
+      ]);
 
       final ctxPage = await context.newPage();
 

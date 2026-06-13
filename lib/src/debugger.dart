@@ -22,7 +22,7 @@ class Debugger extends DebuggerBase {
     await channel_next();
   }
 
-  Future<void> runTo(Map<String, dynamic> location) async {
-    await channel_runTo(location: DebuggerRunToLocation.fromJson(location));
+  Future<void> runTo(DebuggerRunToLocation location) async {
+    await channel_runTo(location: location);
   }
 }

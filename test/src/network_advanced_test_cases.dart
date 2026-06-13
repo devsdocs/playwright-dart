@@ -58,7 +58,7 @@ void main() {
         postData = route.request.postData;
         await route.fulfill(
           status: 200,
-          headers: {'content-type': 'text/plain'},
+          headers: [NameValue(name: 'content-type', value: 'text/plain')],
           body: 'OK',
         );
       });
@@ -85,7 +85,7 @@ void main() {
       await page.route('**/api/data', (route) async {
         await route.fulfill(
           status: 200,
-          headers: {'content-type': 'application/json'},
+          headers: [NameValue(name: 'content-type', value: 'application/json')],
           body: '{"result": "mocked"}',
         );
       });
@@ -102,7 +102,7 @@ void main() {
       await page.route('**/api/error', (route) async {
         await route.fulfill(
           status: 404,
-          headers: {'content-type': 'text/plain'},
+          headers: [NameValue(name: 'content-type', value: 'text/plain')],
           body: 'Not Found',
         );
       });

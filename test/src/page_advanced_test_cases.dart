@@ -23,7 +23,9 @@ void main() {
 
   group('Page Extra HTTP Headers', () {
     test('should set extra HTTP headers', (page) async {
-      await page.setExtraHTTPHeaders({'X-Custom-Header': 'test-value'});
+      await page.setExtraHTTPHeaders([
+        NameValue(name: 'X-Custom-Header', value: 'test-value'),
+      ]);
 
       // Set up route to capture request headers
       String? receivedHeader;
@@ -174,7 +176,9 @@ void main() {
 
   group('Page setViewportSize', () {
     test('should change viewport size', (page) async {
-      await page.setViewportSize({'width': 800, 'height': 600});
+      await page.setViewportSize(
+        PageSetViewportSizeViewportSize(width: 800, height: 600),
+      );
       final width = await page.evaluate('() => window.innerWidth');
       final height = await page.evaluate('() => window.innerHeight');
       expect(width, equals(800));

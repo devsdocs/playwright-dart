@@ -69,16 +69,13 @@ class Frame extends FrameBase {
   Future<void> goto(
     String url, {
     double? timeout,
-    String waitUntil = 'load',
+    LifecycleEvent? waitUntil,
     String? referer,
   }) async {
     await channel_goto(
       url: url,
       timeout: timeout ?? 30000.0,
-      waitUntil: LifecycleEvent.values.firstWhere(
-        (e) => e.value == waitUntil,
-        orElse: () => LifecycleEvent.load,
-      ),
+      waitUntil: waitUntil ?? LifecycleEvent.load,
       referer: referer,
     );
   }
@@ -122,7 +119,7 @@ class Frame extends FrameBase {
 
   /// Waits for the required load state to be reached.
   Future<void> waitForLoadState({
-    String state = 'load',
+    LifecycleEvent? state = LifecycleEvent.load,
     double? timeout,
   }) async {
     final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
@@ -131,7 +128,8 @@ class Frame extends FrameBase {
     // we wait for the next loadstate event matching our state. Playwright JS has a more complex Waiter.
     await onEvent
         .firstWhere(
-          (e) => e['event'] == 'loadstate' && e['params']['add'] == state,
+          (e) =>
+              e['event'] == 'loadstate' && e['params']['add'] == state?.value,
         )
         .timeout(
           timeoutDuration,
@@ -145,7 +143,7 @@ class Frame extends FrameBase {
   Future<void> waitForURL(
     dynamic urlOrPredicate, {
     double? timeout,
-    String waitUntil = 'load',
+    LifecycleEvent? waitUntil,
   }) async {
     final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
 
@@ -189,7 +187,7 @@ class Frame extends FrameBase {
   /// Waits for navigation to complete.
   Future<void> waitForNavigation({
     String? url,
-    String waitUntil = 'load',
+    LifecycleEvent? waitUntil,
     double? timeout,
   }) async {
     if (url != null) {
@@ -215,8 +213,8 @@ class Frame extends FrameBase {
     double? timeout,
     bool? strict,
     bool? trial,
-    Map<String, dynamic>? sourcePosition,
-    Map<String, dynamic>? targetPosition,
+    Point? sourcePosition,
+    Point? targetPosition,
     int? steps,
   }) async {
     await channel_dragAndDrop(
@@ -226,18 +224,8 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       strict: strict,
       trial: trial,
-      sourcePosition: sourcePosition != null
-          ? Point(
-              x: sourcePosition['x'] as double,
-              y: sourcePosition['y'] as double,
-            )
-          : null,
-      targetPosition: targetPosition != null
-          ? Point(
-              x: targetPosition['x'] as double,
-              y: targetPosition['y'] as double,
-            )
-          : null,
+      sourcePosition: sourcePosition,
+      targetPosition: targetPosition,
       steps: steps,
     );
   }
@@ -249,10 +237,10 @@ class Frame extends FrameBase {
     bool? strict,
     bool? trial,
     bool? noWaitAfter,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<FrameClickModifiersEnum>? modifiers,
+    Point? position,
     double? delay,
-    String? button,
+    FrameClickButtonEnum? button,
     int? clickCount,
     int? steps,
   }) async {
@@ -262,20 +250,10 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       strict: strict,
       trial: trial,
-
-      modifiers: modifiers
-          ?.map(
-            (e) =>
-                FrameClickModifiersEnum.values.firstWhere((m) => m.value == e),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
       delay: delay,
-      button: button != null
-          ? FrameClickButtonEnum.values.firstWhere((e) => e.value == button)
-          : null,
+      button: button,
       clickCount: clickCount,
       steps: steps,
     );
@@ -303,7 +281,7 @@ class Frame extends FrameBase {
     double? timeout,
     bool? strict,
     bool? trial,
-    Map<String, dynamic>? position,
+    Point? position,
   }) async {
     await channel_check(
       selector: selector,
@@ -311,9 +289,7 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       strict: strict,
       trial: trial,
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      position: position,
     );
   }
 
@@ -323,7 +299,7 @@ class Frame extends FrameBase {
     double? timeout,
     bool? strict,
     bool? trial,
-    Map<String, dynamic>? position,
+    Point? position,
   }) async {
     await channel_uncheck(
       selector: selector,
@@ -331,9 +307,7 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       strict: strict,
       trial: trial,
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      position: position,
     );
   }
 
@@ -343,8 +317,8 @@ class Frame extends FrameBase {
     double? timeout,
     bool? strict,
     bool? trial,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<FrameHoverModifiersEnum>? modifiers,
+    Point? position,
   }) async {
     await channel_hover(
       selector: selector,
@@ -352,15 +326,8 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       strict: strict,
       trial: trial,
-      modifiers: modifiers
-          ?.map(
-            (e) =>
-                FrameHoverModifiersEnum.values.firstWhere((m) => m.value == e),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
     );
   }
 
@@ -386,10 +353,10 @@ class Frame extends FrameBase {
     double? timeout,
     bool? strict,
     bool? trial,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<FrameDblclickModifiersEnum>? modifiers,
+    Point? position,
     double? delay,
-    String? button,
+    FrameDblclickButtonEnum? button,
     int? steps,
   }) async {
     await channel_dblclick(
@@ -398,20 +365,10 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       strict: strict,
       trial: trial,
-      modifiers: modifiers
-          ?.map(
-            (e) => FrameDblclickModifiersEnum.values.firstWhere(
-              (m) => m.value == e,
-            ),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
       delay: delay,
-      button: button != null
-          ? FrameDblclickButtonEnum.values.firstWhere((e) => e.value == button)
-          : null,
+      button: button,
       steps: steps,
     );
   }
@@ -455,8 +412,8 @@ class Frame extends FrameBase {
     double? timeout,
     bool? strict,
     bool? trial,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<FrameTapModifiersEnum>? modifiers,
+    Point? position,
   }) async {
     await channel_tap(
       selector: selector,
@@ -464,14 +421,8 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       strict: strict,
       trial: trial,
-      modifiers: modifiers
-          ?.map(
-            (e) => FrameTapModifiersEnum.values.firstWhere((m) => m.value == e),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
     );
   }
 
@@ -483,15 +434,12 @@ class Frame extends FrameBase {
   Future<void> setContent(
     String html, {
     double? timeout,
-    String waitUntil = 'load',
+    LifecycleEvent? waitUntil,
   }) async {
     await channel_setContent(
       html: html,
       timeout: timeout ?? 30000.0,
-      waitUntil: LifecycleEvent.values.firstWhere(
-        (e) => e.value == waitUntil,
-        orElse: () => LifecycleEvent.load,
-      ),
+      waitUntil: waitUntil ?? LifecycleEvent.load,
     );
   }
 
@@ -707,27 +655,23 @@ class Frame extends FrameBase {
 
   Future<void> drop(
     String selector, {
-    List<Map<String, dynamic>>? payloads,
+    List<FrameDropPayloadsItems>? payloads,
     List<String>? localPaths,
-    List<Map<String, dynamic>>? data,
+    List<FrameDropDataItems>? data,
     bool? strict,
     double? timeout,
-    Map<String, dynamic>? position,
-    List<dynamic>? streams,
+    Point? position,
+    List<WritableStreamBase>? streams,
   }) async {
     await channel_drop(
       selector: selector,
       strict: strict,
-      payloads: payloads
-          ?.map((e) => FrameDropPayloadsItems.fromJson(e))
-          .toList(),
+      payloads: payloads,
       localPaths: localPaths,
-      data: data?.map((e) => FrameDropDataItems.fromJson(e)).toList(),
+      data: data,
       timeout: timeout ?? 30000.0,
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
-      streams: streams?.map((s) => s as WritableStreamBase).toList(),
+      position: position,
+      streams: streams,
     );
   }
 
@@ -797,7 +741,7 @@ class Frame extends FrameBase {
     required bool isNot,
     double? timeout,
     dynamic expressionArg,
-    String? pseudo,
+    FrameExpectPseudoEnum? pseudo,
   }) async {
     return await channel_expect(
       selector: selector,
@@ -809,9 +753,7 @@ class Frame extends FrameBase {
       isNot: isNot,
       timeout: timeout ?? 30000.0,
       expressionArg: serializeArgument(expressionArg),
-      pseudo: pseudo != null
-          ? FrameExpectPseudoEnum.values.firstWhere((e) => e.value == pseudo)
-          : null,
+      pseudo: pseudo,
     );
   }
 
@@ -837,18 +779,31 @@ class Frame extends FrameBase {
     bool? force,
     double? timeout,
     bool? strict,
-    List<Map<String, dynamic>>? elements,
-    List<Map<String, dynamic>>? options,
+    List<ElementHandleBase>? elements,
+    List<ElementHandleSelectOptionOptionsItems>? options,
   }) async {
     final parsed = parseSelectOptions(values);
+    List<FrameSelectOptionOptionsItems>? finalOptions;
+    if (options != null) {
+      finalOptions = options
+          .map(
+            (e) => FrameSelectOptionOptionsItems(
+              value: e.value,
+              label: e.label,
+              index: e.index,
+              valueOrLabel: e.valueOrLabel,
+            ),
+          )
+          .toList();
+    } else if (parsed.options != null) {
+      finalOptions = parsed.options!
+          .map((e) => FrameSelectOptionOptionsItems.fromJson(e))
+          .toList();
+    }
     final result = await channel_selectOption(
       selector: selector,
-      elements: elements != null
-          ? elements.cast<ElementHandleBase>()
-          : parsed.elements,
-      options: (options ?? parsed.options)
-          ?.map((e) => FrameSelectOptionOptionsItems.fromJson(e))
-          .toList(),
+      elements: elements ?? parsed.elements,
+      options: finalOptions,
       strict: strict,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -862,24 +817,38 @@ class Frame extends FrameBase {
     bool? noWaitAfter,
     double? timeout,
     bool? strict,
-    List<Map<String, dynamic>>? payloads,
+    List<FrameDropPayloadsItems>? payloads,
     String? localDirectory,
     ChannelOwner? directoryStream,
     List<String>? localPaths,
     List<ChannelOwner>? streams,
   }) async {
     final parsed = parseInputFiles(files);
+    List<FrameSetInputFilesPayloadsItems>? finalPayloads;
+    if (payloads != null) {
+      finalPayloads = payloads
+          .map(
+            (e) => FrameSetInputFilesPayloadsItems(
+              name: e.name,
+              mimeType: e.mimeType,
+              buffer: e.buffer,
+            ),
+          )
+          .toList();
+    } else if (parsed.payloads != null) {
+      finalPayloads = parsed.payloads!
+          .map((e) => FrameSetInputFilesPayloadsItems.fromJson(e))
+          .toList();
+    }
     await channel_setInputFiles(
       selector: selector,
-      payloads: (payloads ?? parsed.payloads)
-          ?.map((e) => FrameSetInputFilesPayloadsItems.fromJson(e))
-          .toList(),
+      payloads: finalPayloads,
       localPaths: localPaths ?? parsed.localPaths,
       timeout: timeout ?? 30000.0,
       strict: strict,
       localDirectory: localDirectory,
       directoryStream: directoryStream as WritableStreamBase?,
-      streams: streams?.map((s) => s as WritableStreamBase).toList(),
+      streams: streams?.cast<WritableStreamBase>(),
     );
   }
 }

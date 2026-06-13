@@ -53,11 +53,11 @@ class Playwright extends PlaywrightBase {
     bool? ignoreHTTPSErrors,
     List<NameValue>? extraHTTPHeaders,
     bool? failOnStatusCode,
-    List<Map<String, dynamic>>? clientCertificates,
+    List<PlaywrightNewRequestClientCertificatesItems>? clientCertificates,
     int? maxRedirects,
-    Map<String, dynamic>? httpCredentials,
-    Map<String, dynamic>? proxy,
-    Map<String, dynamic>? storageState,
+    PlaywrightNewRequestHttpCredentials? httpCredentials,
+    PlaywrightNewRequestProxy? proxy,
+    PlaywrightNewRequestStorageState? storageState,
     String? tracesDir,
   }) async {
     final result = await super.channel_newRequest(
@@ -66,17 +66,11 @@ class Playwright extends PlaywrightBase {
       ignoreHTTPSErrors: ignoreHTTPSErrors,
       extraHTTPHeaders: extraHTTPHeaders,
       failOnStatusCode: failOnStatusCode,
-      clientCertificates: clientCertificates
-          ?.map((e) => PlaywrightNewRequestClientCertificatesItems.fromJson(e))
-          .toList(),
+      clientCertificates: clientCertificates,
       maxRedirects: maxRedirects,
-      httpCredentials: httpCredentials == null
-          ? null
-          : PlaywrightNewRequestHttpCredentials.fromJson(httpCredentials),
-      proxy: proxy == null ? null : PlaywrightNewRequestProxy.fromJson(proxy),
-      storageState: storageState == null
-          ? null
-          : PlaywrightNewRequestStorageState.fromJson(storageState),
+      httpCredentials: httpCredentials,
+      proxy: proxy,
+      storageState: storageState,
       tracesDir: tracesDir,
     );
     return result.request as APIRequestContext;

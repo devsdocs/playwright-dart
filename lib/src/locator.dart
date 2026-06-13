@@ -284,9 +284,9 @@ class Locator {
   }
 
   Future<void> drop({
-    List<Map<String, dynamic>>? payloads,
+    List<FrameDropPayloadsItems>? payloads,
     List<String>? localPaths,
-    List<Map<String, dynamic>>? data,
+    List<FrameDropDataItems>? data,
     double? timeout,
   }) async {
     await frame.drop(

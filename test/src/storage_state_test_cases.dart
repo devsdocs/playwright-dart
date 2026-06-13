@@ -23,7 +23,9 @@ void main() {
 
       // Create a new context and restore the state
       final newContext = await browser.newContext();
-      await newContext.setStorageState(state.toJson());
+      await newContext.setStorageState(
+        BrowserContextSetStorageStateStorageState.fromJson(state.toJson()),
+      );
 
       final restoredCookies = await newContext.cookies();
       expect(restoredCookies, isNotEmpty);

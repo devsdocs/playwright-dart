@@ -30,6 +30,9 @@ class BrowserContext extends BrowserContextBase {
     await super.channel_addCookies(cookies: cookies);
   }
 
+  /// Clears context cookies.
+  ///
+  /// Optionally filter by [name], [domain], or [path] (exact strings or regex).
   Future<void> clearCookies({
     String? name,
     String? domain,
@@ -62,6 +65,9 @@ class BrowserContext extends BrowserContextBase {
     return result.cookies;
   }
 
+  /// Grants specified permissions to the browser context.
+  ///
+  /// If [origin] is specified, the permissions are granted only for the given origin.
   Future<void> grantPermissions(
     List<String> permissions, {
     String? origin,
@@ -73,33 +79,29 @@ class BrowserContext extends BrowserContextBase {
   }
 
   /// The extra HTTP headers will be sent with every request the context initiates.
-  Future<void> setExtraHTTPHeaders(Map<String, String> headers) async {
-    final mappedHeaders = headers.entries
-        .map((e) => NameValue(name: e.key, value: e.value))
-        .toList();
-    await super.channel_setExtraHTTPHeaders(headers: mappedHeaders);
+  Future<void> setExtraHTTPHeaders(List<NameValue> headers) async {
+    await super.channel_setExtraHTTPHeaders(headers: headers);
   }
 
+  /// Clears all permission overrides for the browser context.
   Future<void> clearPermissions() async {
     await channel_clearPermissions();
   }
 
-  Future<void> setGeolocation(Map<String, dynamic>? geolocation) async {
-    await channel_setGeolocation(
-      geolocation: geolocation == null
-          ? null
-          : BrowserContextSetGeolocationGeolocation.fromJson(geolocation),
-    );
+  /// Sets the context's geolocation. Passing `null` clears the geolocation override.
+  Future<void> setGeolocation(
+    BrowserContextSetGeolocationGeolocation? geolocation,
+  ) async {
+    await channel_setGeolocation(geolocation: geolocation);
   }
 
-  Future<void> setHTTPCredentials(Map<String, dynamic>? httpCredentials) async {
-    await channel_setHTTPCredentials(
-      httpCredentials: httpCredentials == null
-          ? null
-          : BrowserContextSetHTTPCredentialsHttpCredentials.fromJson(
-              httpCredentials,
-            ),
-    );
+  /// Sets HTTP credentials for all requests in this context.
+  ///
+  /// Passing `null` disables authentication.
+  Future<void> setHTTPCredentials(
+    BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
+  ) async {
+    await channel_setHTTPCredentials(httpCredentials: httpCredentials);
   }
 
   /// Emulates network being offline or online.
@@ -115,12 +117,11 @@ class BrowserContext extends BrowserContextBase {
     return result;
   }
 
-  Future<void> setStorageState(Map<String, dynamic> storageState) async {
-    await channel_setStorageState(
-      storageState: BrowserContextSetStorageStateStorageState.fromJson(
-        storageState,
-      ),
-    );
+  /// Restores the storage state from a previously captured state object.
+  Future<void> setStorageState(
+    BrowserContextSetStorageStateStorageState storageState,
+  ) async {
+    await channel_setStorageState(storageState: storageState);
   }
 
   /// Adds a script which would be evaluated in one of the following scenarios:
@@ -130,29 +131,24 @@ class BrowserContext extends BrowserContextBase {
     await channel_addInitScript(source: source);
   }
 
+  /// Closes the browser context. All pages that belong to this context will be closed.
   Future<void> close({String? reason}) async {
     await channel_close(reason: reason);
   }
 
+  /// Sets the network interception patterns for this context.
   Future<void> setNetworkInterceptionPatterns(
-    List<Map<String, dynamic>> patterns,
+    List<BrowserContextSetNetworkInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setNetworkInterceptionPatterns(
-      patterns: patterns
-          .map(
-            (e) =>
-                BrowserContextSetNetworkInterceptionPatternsPatternsItems.fromJson(
-                  e,
-                ),
-          )
-          .toList(),
-    );
+    await channel_setNetworkInterceptionPatterns(patterns: patterns);
   }
 
+  /// Pauses the context for debugging.
   Future<void> pause() async {
     await channel_pause();
   }
 
+  /// Fast-forwards the clock by the specified amount of ticks.
   Future<void> clockFastForward({
     double? ticksNumber,
     String? ticksString,
@@ -163,18 +159,22 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
+  /// Installs fake timers and optionally sets the clock to the specified time.
   Future<void> clockInstall({double? timeNumber, String? timeString}) async {
     await channel_clockInstall(timeNumber: timeNumber, timeString: timeString);
   }
 
+  /// Pauses the clock at the specified time.
   Future<void> clockPauseAt({double? timeNumber, String? timeString}) async {
     await channel_clockPauseAt(timeNumber: timeNumber, timeString: timeString);
   }
 
+  /// Resumes the clock after being paused.
   Future<void> clockResume() async {
     await channel_clockResume();
   }
 
+  /// Advances the clock by the specified amount of ticks, firing any timers.
   Future<void> clockRunFor({double? ticksNumber, String? ticksString}) async {
     await channel_clockRunFor(
       ticksNumber: ticksNumber,
@@ -182,6 +182,7 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
+  /// Sets the clock to always return a fixed time.
   Future<void> clockSetFixedTime({
     double? timeNumber,
     String? timeString,
@@ -192,6 +193,7 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
+  /// Sets the system time but does not trigger any timers.
   Future<void> clockSetSystemTime({
     double? timeNumber,
     String? timeString,
@@ -202,10 +204,12 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
+  /// Exposes a binding with the given [name] to all pages in the context.
   Future<void> exposeBinding(String name) async {
     await channel_exposeBinding(name: name);
   }
 
+  /// Registers a custom selector engine with the given [name] and [source].
   Future<void> registerSelectorEngine(
     String name,
     String source, {
@@ -223,27 +227,21 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
+  /// Changes the default test ID attribute used by `getByTestId()` locators.
   Future<void> setTestIdAttributeName(String testIdAttributeName) async {
     await channel_setTestIdAttributeName(
       testIdAttributeName: testIdAttributeName,
     );
   }
 
+  /// Sets WebSocket interception patterns for this context.
   Future<void> setWebSocketInterceptionPatterns(
-    List<Map<String, dynamic>> patterns,
+    List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setWebSocketInterceptionPatterns(
-      patterns: patterns
-          .map(
-            (e) =>
-                BrowserContextSetWebSocketInterceptionPatternsPatternsItems.fromJson(
-                  e,
-                ),
-          )
-          .toList(),
-    );
+    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
   }
 
+  /// Enables the Playwright recorder/codegen in the browser context.
   Future<void> enableRecorder({
     String? language,
     BrowserContextEnableRecorderModeEnum? mode,
@@ -274,31 +272,34 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
+  /// Disables the Playwright recorder.
   Future<void> disableRecorder() async {
     await channel_disableRecorder();
   }
 
+  /// Exposes the Playwright console API into the browser context pages.
   Future<void> exposeConsoleApi() async {
     await channel_exposeConsoleApi();
   }
 
+  /// Creates a new Chrome DevTools Protocol session for the given [page] or [frame].
   Future<dynamic> newCDPSession({Page? page, Frame? frame}) async {
     final result = await channel_newCDPSession(page: page, frame: frame);
     return result.session as CDPSession;
   }
 
+  /// Creates temporary files that can be used with file inputs.
   Future<BrowserContextCreateTempFilesResult> createTempFiles({
     String? rootDirName,
-    required List<Map<String, dynamic>> items,
+    required List<BrowserContextCreateTempFilesItemsItems> items,
   }) async {
     return await channel_createTempFiles(
       rootDirName: rootDirName,
-      items: items
-          .map((e) => BrowserContextCreateTempFilesItemsItems.fromJson(e))
-          .toList(),
+      items: items,
     );
   }
 
+  /// Updates the subscription state for a specific event type in this context.
   Future<void> updateSubscription({
     required BrowserContextUpdateSubscriptionEventEnum event,
     required bool enabled,
@@ -333,6 +334,7 @@ class BrowserContext extends BrowserContextBase {
     });
   }
 
+  /// Removes a route previously set with [route].
   Future<void> unroute(
     String url, {
     Future<void> Function(Route route)? handler,

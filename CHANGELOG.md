@@ -1,3 +1,10 @@
+## 3.0.0
+
+- **Breaking**: Fully migrated the entire public API to use strongly-typed data structures and Enums for method parameters rather than untyped `Map<String, dynamic>` and `String` inputs. This enforces 100% compile-time parameter parity with the underlying Playwright channel protocol and unlocks full IDE type-checking for users.
+  - E.g., `page.setViewportSize({'width': 800, 'height': 600})` is now strictly `page.setViewportSize(PageSetViewportSizeViewportSize(width: 800, height: 600))`.
+  - All pointer event parameters like `click`, `hover`, and `dblclick` now require their specific enum types (e.g., `FrameClickModifiersEnum` instead of raw strings).
+- **Tooling**: Extended `tool/cross_check_types.dart` to strictly validate strongly-typed inputs, guaranteeing that there are 0 parameter type mismatches between the generated protocol schemas and our public Dart wrappers.
+
 ## 2.3.1
 
 - **Fix**: Generated structs (`BrowserNewContextStorageState`, `BrowserNewContextProxy`, etc.) now recursively serialize deep object properties and arrays when `toJson()` is called. This fixes the runtime `type 'X' is not a subtype of type 'Map<String, dynamic>'` errors encountered when using `page.setViewportSize` or `context.setStorageState` with nested definitions.

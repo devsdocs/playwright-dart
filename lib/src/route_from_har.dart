@@ -49,10 +49,7 @@ Future<void> sharedRouteFromHAR(
       if (result.action == LocalUtilsHarLookupResultActionEnum.fulfill) {
         await route.fulfill(
           status: result.status,
-          headers: result.headers?.fold<Map<String, String>>({}, (m, h) {
-            m[h.name] = h.value;
-            return m;
-          }),
+          headers: result.headers,
           body: result.body,
           isBase64: result.body != null ? true : null,
         );

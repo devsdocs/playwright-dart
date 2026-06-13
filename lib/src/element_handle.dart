@@ -130,10 +130,10 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     double? timeout,
     bool? trial,
     bool? noWaitAfter,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<ElementHandleClickModifiersEnum>? modifiers,
+    Point? position,
     double? delay,
-    String? button,
+    ElementHandleClickButtonEnum? button,
     int? clickCount,
     int? steps,
   }) async {
@@ -142,22 +142,10 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       timeout: timeout ?? 30000.0,
       trial: trial,
       noWaitAfter: noWaitAfter,
-      modifiers: modifiers
-          ?.map(
-            (e) => ElementHandleClickModifiersEnum.values.firstWhere(
-              (m) => m.value == e,
-            ),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
       delay: delay,
-      button: button != null
-          ? ElementHandleClickButtonEnum.values.firstWhere(
-              (e) => e.value == button,
-            )
-          : null,
+      button: button,
       clickCount: clickCount,
       steps: steps,
     );
@@ -167,32 +155,20 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     bool? force,
     double? timeout,
     bool? trial,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<ElementHandleDblclickModifiersEnum>? modifiers,
+    Point? position,
     double? delay,
-    String? button,
+    ElementHandleDblclickButtonEnum? button,
     int? steps,
   }) async {
     await channel_dblclick(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
-      modifiers: modifiers
-          ?.map(
-            (e) => ElementHandleDblclickModifiersEnum.values.firstWhere(
-              (m) => m.value == e,
-            ),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
       delay: delay,
-      button: button != null
-          ? ElementHandleDblclickButtonEnum.values.firstWhere(
-              (e) => e.value == button,
-            )
-          : null,
+      button: button,
       steps: steps,
     );
   }
@@ -205,23 +181,15 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     bool? force,
     double? timeout,
     bool? trial,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<ElementHandleHoverModifiersEnum>? modifiers,
+    Point? position,
   }) async {
     await channel_hover(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
-      modifiers: modifiers
-          ?.map(
-            (e) => ElementHandleHoverModifiersEnum.values.firstWhere(
-              (m) => m.value == e,
-            ),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
     );
   }
 
@@ -251,23 +219,15 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     bool? force,
     double? timeout,
     bool? trial,
-    List<String>? modifiers,
-    Map<String, dynamic>? position,
+    List<ElementHandleTapModifiersEnum>? modifiers,
+    Point? position,
   }) async {
     await channel_tap(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
-      modifiers: modifiers
-          ?.map(
-            (e) => ElementHandleTapModifiersEnum.values.firstWhere(
-              (m) => m.value == e,
-            ),
-          )
-          .toList(),
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      modifiers: modifiers,
+      position: position,
     );
   }
 
@@ -275,15 +235,13 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     bool? force,
     double? timeout,
     bool? trial,
-    Map<String, dynamic>? position,
+    Point? position,
   }) async {
     await channel_check(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      position: position,
     );
   }
 
@@ -291,15 +249,13 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     bool? force,
     double? timeout,
     bool? trial,
-    Map<String, dynamic>? position,
+    Point? position,
   }) async {
     await channel_uncheck(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
-      position: position != null
-          ? Point(x: position['x'] as double, y: position['y'] as double)
-          : null,
+      position: position,
     );
   }
 
@@ -439,26 +395,29 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     bool? force,
     double? timeout,
     List<ElementHandle>? elements,
-    List<Map<String, dynamic>>? options,
+    List<ElementHandleSelectOptionOptionsItems>? options,
   }) async {
-    // For now we map string values to options if provided
-    List<Map<String, dynamic>>? finalOptions = options;
+    List<ElementHandleSelectOptionOptionsItems>? finalOptions = options;
     if (finalOptions == null && values != null) {
       finalOptions = [];
       if (values is String) {
-        finalOptions.add({'valueOrLabel': values});
+        finalOptions.add(
+          ElementHandleSelectOptionOptionsItems(valueOrLabel: values),
+        );
       } else if (values is List) {
-        finalOptions.addAll(values.map((v) => {'valueOrLabel': v.toString()}));
+        finalOptions.addAll(
+          values.map(
+            (v) => ElementHandleSelectOptionOptionsItems(
+              valueOrLabel: v.toString(),
+            ),
+          ),
+        );
       }
     }
 
     final result = await channel_selectOption(
       elements: elements,
-      options: finalOptions?.isNotEmpty == true
-          ? finalOptions
-                ?.map((e) => ElementHandleSelectOptionOptionsItems.fromJson(e))
-                .toList()
-          : null,
+      options: finalOptions?.isNotEmpty == true ? finalOptions : null,
       force: force,
       timeout: timeout ?? 30000.0,
     );
@@ -472,7 +431,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   Future<void> setInputFiles(
     List<String> files, {
     double? timeout,
-    List<Map<String, dynamic>>? payloads,
+    List<ElementHandleSetInputFilesPayloadsItems>? payloads,
     String? localDirectory,
     ChannelOwner? directoryStream,
     List<String>? localPaths,
@@ -481,9 +440,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     await channel_setInputFiles(
       localPaths: localPaths ?? files,
       timeout: timeout ?? 30000.0,
-      payloads: payloads
-          ?.map((e) => ElementHandleSetInputFilesPayloadsItems.fromJson(e))
-          .toList(),
+      payloads: payloads,
       localDirectory: localDirectory,
       directoryStream: directoryStream as WritableStreamBase?,
       streams: streams?.map((s) => s as WritableStreamBase).toList(),

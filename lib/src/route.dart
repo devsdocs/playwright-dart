@@ -23,17 +23,13 @@ class Route extends RouteBase {
   /// Fulfills route's request with given response.
   Future<void> fulfill({
     int? status,
-    Map<String, String>? headers,
+    List<NameValue>? headers,
     String? body,
     bool? isBase64,
     String? contentType,
     String? fetchResponseUid,
   }) async {
-    final mappedHeaders =
-        headers?.entries
-            .map((e) => NameValue(name: e.key, value: e.value))
-            .toList() ??
-        [];
+    final mappedHeaders = headers ?? [];
     if (contentType != null) {
       mappedHeaders.add(NameValue(name: 'content-type', value: contentType));
     }
@@ -50,17 +46,14 @@ class Route extends RouteBase {
   Future<void> continueRoute({
     String? url,
     String? method,
-    Map<String, String>? headers,
+    List<NameValue>? headers,
     String? postData,
     bool isFallback = false,
   }) async {
-    final mappedHeaders = headers?.entries
-        .map((e) => NameValue(name: e.key, value: e.value))
-        .toList();
     await channel_continueValue(
       url: url,
       method: method,
-      headers: mappedHeaders,
+      headers: headers,
       postData: postData,
       isFallback: isFallback,
     );
@@ -73,7 +66,7 @@ class Route extends RouteBase {
   Future<void> continueValue({
     String? url,
     String? method,
-    Map<String, String>? headers,
+    List<NameValue>? headers,
     String? postData,
     bool isFallback = false,
   }) => continueRoute(

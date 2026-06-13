@@ -62,7 +62,9 @@ void main() {
 
   group('Page Emulate Media API', () {
     test('should emulate dark color scheme', (page) async {
-      await page.emulateMedia(colorScheme: 'dark');
+      await page.emulateMedia(
+        colorScheme: PageEmulateMediaColorSchemeEnum.dark,
+      );
       final isDark = await page.evaluate(
         '() => window.matchMedia("(prefers-color-scheme: dark)").matches',
       );
@@ -70,7 +72,9 @@ void main() {
     });
 
     test('should emulate light color scheme', (page) async {
-      await page.emulateMedia(colorScheme: 'light');
+      await page.emulateMedia(
+        colorScheme: PageEmulateMediaColorSchemeEnum.light,
+      );
       final isLight = await page.evaluate(
         '() => window.matchMedia("(prefers-color-scheme: light)").matches',
       );
@@ -78,7 +82,9 @@ void main() {
     });
 
     test('should emulate reduced motion', (page) async {
-      await page.emulateMedia(reducedMotion: 'reduce');
+      await page.emulateMedia(
+        reducedMotion: PageEmulateMediaReducedMotionEnum.reduce,
+      );
       final isReduced = await page.evaluate(
         '() => window.matchMedia("(prefers-reduced-motion: reduce)").matches',
       );
@@ -86,7 +92,7 @@ void main() {
     });
 
     test('should emulate print media', (page) async {
-      await page.emulateMedia(media: 'print');
+      await page.emulateMedia(media: PageEmulateMediaMediaEnum.print);
       final isPrint = await page.evaluate(
         '() => window.matchMedia("print").matches',
       );

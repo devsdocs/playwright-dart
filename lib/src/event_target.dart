@@ -9,9 +9,7 @@ class EventTarget extends EventTargetBase {
     super.parent,
   ]);
 
-  Future<void> waitForEventInfo(Map<String, dynamic> info) async {
-    await channel_waitForEventInfo(
-      info: EventTargetWaitForEventInfoInfo.fromJson(info),
-    );
+  Future<void> waitForEventInfo(EventTargetWaitForEventInfoInfo info) async {
+    await channel_waitForEventInfo(info: info);
   }
 }

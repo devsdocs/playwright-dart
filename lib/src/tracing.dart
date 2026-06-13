@@ -31,13 +31,11 @@ class Tracing extends TracingBase {
     return await channel_tracingStartChunk(name: name, title: title);
   }
 
-  Future<void> group(String name, {Map<String, dynamic>? location}) async {
-    await channel_tracingGroup(
-      name: name,
-      location: location == null
-          ? null
-          : TracingTracingGroupLocation.fromJson(location),
-    );
+  Future<void> group(
+    String name, {
+    TracingTracingGroupLocation? location,
+  }) async {
+    await channel_tracingGroup(name: name, location: location);
   }
 
   Future<void> groupEnd() async {
@@ -55,7 +53,6 @@ class Tracing extends TracingBase {
     await channel_tracingStop();
   }
 
-  // Aliases for missing script check
   Future<void> tracingStart({
     String? name,
     bool? snapshots,
@@ -67,12 +64,12 @@ class Tracing extends TracingBase {
     screenshots: screenshots,
     live: live,
   );
-  Future<TracingTracingStartChunkResult> tracingStartChunk({
-    String? name,
-    String? title,
-  }) => startChunk(name: name, title: title);
-  Future<void> tracingGroup(String name, {Map<String, dynamic>? location}) =>
-      group(name, location: location);
+  Future<void> tracingStartChunk({String? name, String? title}) =>
+      startChunk(name: name, title: title);
+  Future<void> tracingGroup(
+    String name, {
+    TracingTracingGroupLocation? location,
+  }) => group(name, location: location);
   Future<void> tracingGroupEnd() => groupEnd();
   Future<TracingTracingStopChunkResult> tracingStopChunk({
     TracingTracingStopChunkModeEnum mode =

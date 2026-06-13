@@ -43,12 +43,16 @@ class Page extends PageBase {
     touchscreen = Touchscreen(this);
   }
 
+  /// The browser context that the page belongs to.
   BrowserContext get context => parent as BrowserContext;
 
   String get _mainFrameGuid => initializer['mainFrame']['guid'];
 
+  /// The page's main frame. Page is guaranteed to have a main frame which
+  /// persists during navigations.
   Frame get mainFrame => connection.objects[_mainFrameGuid] as Frame;
 
+  /// Emitted when a console message is received from the page.
   Stream<ConsoleMessage> get onConsole {
     channel_updateSubscription(
       enabled: true,
@@ -70,6 +74,8 @@ class Page extends PageBase {
         });
   }
 
+  /// Emitted when a file chooser is supposed to appear, such as after clicking
+  /// an `<input type=file>` element.
   Stream<FileChooser> get onFileChooser {
     channel_updateSubscription(
       enabled: true,
@@ -83,6 +89,8 @@ class Page extends PageBase {
     });
   }
 
+  /// Emitted when a JavaScript dialog appears, such as `alert`, `prompt`,
+  /// `confirm` or `beforeunload`.
   Stream<Dialog> get onDialog {
     channel_updateSubscription(
       enabled: true,
@@ -166,6 +174,7 @@ class Page extends PageBase {
         });
   }
 
+  /// Emitted when a [WebSocket] request is issued.
   Stream<WebSocket> get onWebSocket {
     return onEvent.where((e) => e['event'] == 'webSocket').map((e) {
       final guid = e['params']['webSocket']['guid'];
@@ -173,14 +182,18 @@ class Page extends PageBase {
     });
   }
 
+  /// Emitted when the page closes.
   Stream<Page> get onClose {
     return onEvent.where((e) => e['event'] == 'close').map((e) => this);
   }
 
+  /// Emitted when the page crashes. Browser pages might crash if they try to
+  /// allocate too much memory.
   Stream<Page> get onCrash {
     return onEvent.where((e) => e['event'] == 'crash').map((e) => this);
   }
 
+  /// Emitted when an uncaught exception happens within the page.
   Stream<Exception> get onPageError {
     return context.onEvent
         .where(
@@ -195,6 +208,8 @@ class Page extends PageBase {
         });
   }
 
+  /// Returns the [Video] object associated with this page, or `null` if video
+  /// recording was not started.
   Video? video() {
     final videoInitializer = initializer['video'];
     if (videoInitializer == null) return null;
@@ -203,6 +218,7 @@ class Page extends PageBase {
     return Video(this, artifact);
   }
 
+  /// Emitted when the page opens a new tab or window.
   Stream<Page> get onPopup {
     return onEvent.where((e) => e['event'] == 'popup').map((e) {
       final guid = e['params']['page']['guid'];
@@ -210,6 +226,8 @@ class Page extends PageBase {
     });
   }
 
+  /// Emitted when a dedicated [WebWorker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
+  /// is spawned by the page.
   Stream<Worker> get onWorker {
     return onEvent.where((e) => e['event'] == 'worker').map((e) {
       final workerGuid = e['params']['worker']['guid'];
@@ -268,6 +286,8 @@ class Page extends PageBase {
         );
   }
 
+  /// Emitted when an attachment download is triggered, returning the [Artifact]
+  /// representing the downloaded file.
   Stream<Artifact> get onDownload {
     return onEvent.where((e) => e['event'] == 'download').map((e) {
       final artifactGuid = e['params']['artifact']['guid'];
@@ -285,7 +305,7 @@ class Page extends PageBase {
 
   /// Waits for the required load state to be reached.
   Future<void> waitForLoadState({
-    String state = 'load',
+    LifecycleEvent state = LifecycleEvent.load,
     double? timeout,
   }) async {
     await mainFrame.waitForLoadState(state: state, timeout: timeout);
@@ -295,7 +315,7 @@ class Page extends PageBase {
   Future<void> waitForURL(
     dynamic urlOrPredicate, {
     double? timeout,
-    String waitUntil = 'load',
+    LifecycleEvent? waitUntil,
   }) async {
     await mainFrame.waitForURL(
       urlOrPredicate,
@@ -307,7 +327,7 @@ class Page extends PageBase {
   /// Waits for navigation to complete.
   Future<void> waitForNavigation({
     String? url,
-    String waitUntil = 'load',
+    LifecycleEvent? waitUntil,
     double? timeout,
   }) async {
     await mainFrame.waitForNavigation(
@@ -341,6 +361,9 @@ class Page extends PageBase {
     return mainFrame.evaluate(expression, arg);
   }
 
+  /// Returns when element specified by selector satisfies [state] option.
+  ///
+  /// Resolves to `null` if waiting for `hidden` or `detached`.
   Future<void> waitForSelector(
     String selector, {
     FrameWaitForSelectorStateEnum? state,
@@ -366,6 +389,10 @@ class Page extends PageBase {
     );
   }
 
+  /// Routing provides the capability to modify network requests that are made by a page.
+  ///
+  /// Once routing is enabled, every request matching the url pattern will stall
+  /// unless it's continued, fulfilled or aborted.
   Future<void> route(String url, Future<void> Function(Route) handler) async {
     await channel_setNetworkInterceptionPatterns(
       patterns: [
@@ -418,38 +445,47 @@ class Page extends PageBase {
     return locator(selector);
   }
 
+  /// Allows locating input elements by the text of the associated `<label>` or
+  /// `aria-labelledby` element, or by the `aria-label` attribute.
   Locator getByLabel(String text, {bool exact = false}) {
     return exact
         ? locator('internal:label="$text"')
         : locator('internal:label=$text');
   }
 
+  /// Allows locating input elements by the placeholder text.
   Locator getByPlaceholder(String text, {bool exact = false}) {
     return exact
         ? locator('internal:attr=[placeholder="$text"]')
         : locator('internal:attr=[placeholder="$text"i]');
   }
 
+  /// Allows locating elements by their alt text.
   Locator getByAltText(String text, {bool exact = false}) {
     return exact
         ? locator('internal:attr=[alt="$text"]')
         : locator('internal:attr=[alt="$text"i]');
   }
 
+  /// Allows locating elements by their title attribute.
   Locator getByTitle(String text, {bool exact = false}) {
     return exact
         ? locator('internal:attr=[title="$text"]')
         : locator('internal:attr=[title="$text"i]');
   }
 
+  /// Locate element by the test id.
   Locator getByTestId(String testId) {
     return locator('internal:testid=[data-testid="$testId"]');
   }
 
-  Future<void> setViewportSize(Map<String, dynamic> viewportSize) async {
-    await channel_setViewportSize(
-      viewportSize: PageSetViewportSizeViewportSize.fromJson(viewportSize),
-    );
+  /// In the case of multiple pages in a single browser, each page can have its
+  /// own viewport size. However, [Browser.newContext] allows to set viewport
+  /// size (and more) for all pages in the context at once.
+  Future<void> setViewportSize(
+    PageSetViewportSizeViewportSize viewportSize,
+  ) async {
+    await channel_setViewportSize(viewportSize: viewportSize);
   }
 
   /// Returns the buffer with the captured screenshot.
@@ -494,7 +530,7 @@ class Page extends PageBase {
     dynamic width,
     dynamic height,
     bool? preferCSSPageSize,
-    Map<String, dynamic>? margin,
+    PagePdfMargin? margin,
     bool? tagged,
     bool? outline,
   }) async {
@@ -510,7 +546,7 @@ class Page extends PageBase {
       width: width,
       height: height,
       preferCSSPageSize: preferCSSPageSize,
-      margin: margin == null ? null : PagePdfMargin.fromJson(margin),
+      margin: margin,
       tagged: tagged,
       outline: outline,
     );
@@ -521,36 +557,34 @@ class Page extends PageBase {
     return buffer;
   }
 
-  Future<void> reload({double? timeout, String waitUntil = 'load'}) async {
+  /// Reloads the current page.
+  Future<void> reload({double? timeout, LifecycleEvent? waitUntil}) async {
     await channel_reload(
       timeout: timeout ?? 30000.0,
-      waitUntil: LifecycleEvent.values.firstWhere(
-        (e) => e.value == waitUntil,
-        orElse: () => LifecycleEvent.load,
-      ),
+      waitUntil: waitUntil ?? LifecycleEvent.load,
     );
   }
 
-  Future<void> goBack({double? timeout, String waitUntil = 'load'}) async {
+  /// Navigate to the previous page in history.
+  Future<void> goBack({double? timeout, LifecycleEvent? waitUntil}) async {
     await channel_goBack(
       timeout: timeout ?? 30000.0,
-      waitUntil: LifecycleEvent.values.firstWhere(
-        (e) => e.value == waitUntil,
-        orElse: () => LifecycleEvent.load,
-      ),
+      waitUntil: waitUntil ?? LifecycleEvent.load,
     );
   }
 
-  Future<void> goForward({double? timeout, String waitUntil = 'load'}) async {
+  /// Navigate to the next page in history.
+  Future<void> goForward({double? timeout, LifecycleEvent? waitUntil}) async {
     await channel_goForward(
       timeout: timeout ?? 30000.0,
-      waitUntil: LifecycleEvent.values.firstWhere(
-        (e) => e.value == waitUntil,
-        orElse: () => LifecycleEvent.load,
-      ),
+      waitUntil: waitUntil ?? LifecycleEvent.load,
     );
   }
 
+  /// Adds a script which would be evaluated in one of the following scenarios:
+  ///
+  /// - Whenever the page is navigated.
+  /// - Whenever the child frame is attached or navigated.
   Future<void> addInitScript(String source) async {
     await channel_addInitScript(source: source);
   }
@@ -562,46 +596,33 @@ class Page extends PageBase {
     await channel_close(runBeforeUnload: runBeforeUnload, reason: reason);
   }
 
+  /// This method changes the CSS `media` type through the `media` argument, and/or
+  /// the `prefers-color-scheme`, `prefers-reduced-motion`, `forced-colors`, and
+  /// `contrast` media features.
   Future<void> emulateMedia({
-    String? media,
-    String? colorScheme,
-    String? reducedMotion,
-    String? forcedColors,
-    String? contrast,
+    PageEmulateMediaMediaEnum? media,
+    PageEmulateMediaColorSchemeEnum? colorScheme,
+    PageEmulateMediaReducedMotionEnum? reducedMotion,
+    PageEmulateMediaForcedColorsEnum? forcedColors,
+    PageEmulateMediaContrastEnum? contrast,
   }) async {
     await channel_emulateMedia(
-      media: media != null
-          ? PageEmulateMediaMediaEnum.values.firstWhere((e) => e.value == media)
-          : null,
-      colorScheme: colorScheme != null
-          ? PageEmulateMediaColorSchemeEnum.values.firstWhere(
-              (e) => e.value == colorScheme,
-            )
-          : null,
-      reducedMotion: reducedMotion != null
-          ? PageEmulateMediaReducedMotionEnum.values.firstWhere(
-              (e) => e.value == reducedMotion,
-            )
-          : null,
-      forcedColors: forcedColors != null
-          ? PageEmulateMediaForcedColorsEnum.values.firstWhere(
-              (e) => e.value == forcedColors,
-            )
-          : null,
-      contrast: contrast != null
-          ? PageEmulateMediaContrastEnum.values.firstWhere(
-              (e) => e.value == contrast,
-            )
-          : null,
+      media: media,
+      colorScheme: colorScheme,
+      reducedMotion: reducedMotion,
+      forcedColors: forcedColors,
+      contrast: contrast,
     );
   }
 
   // --- Frame proxies ---
 
+  /// Clicks an element matching [selector].
   Future<void> click(String selector, {bool? force, double? timeout}) {
     return mainFrame.click(selector, force: force, timeout: timeout);
   }
 
+  /// Fills an `<input>`, `<textarea>` or `[contenteditable]` element with [value].
   Future<void> fill(
     String selector,
     String value, {
@@ -611,30 +632,38 @@ class Page extends PageBase {
     return mainFrame.fill(selector, value, force: force, timeout: timeout);
   }
 
+  /// Checks an element matching [selector] by performing the following steps:
+  /// scrolling into view, clicking, and verifying it is checked.
   Future<void> check(String selector, {bool? force, double? timeout}) {
     return mainFrame.check(selector, force: force, timeout: timeout);
   }
 
+  /// Unchecks an element matching [selector].
   Future<void> uncheck(String selector, {bool? force, double? timeout}) {
     return mainFrame.uncheck(selector, force: force, timeout: timeout);
   }
 
+  /// Hovers over an element matching [selector].
   Future<void> hover(String selector, {bool? force, double? timeout}) {
     return mainFrame.hover(selector, force: force, timeout: timeout);
   }
 
+  /// Focuses the element matching [selector].
   Future<void> focus(String selector, {double? timeout}) {
     return mainFrame.focus(selector, timeout: timeout);
   }
 
+  /// Removes keyboard focus from the element matching [selector].
   Future<void> blur(String selector, {double? timeout}) {
     return mainFrame.blur(selector, timeout: timeout);
   }
 
+  /// Double-clicks an element matching [selector].
   Future<void> dblclick(String selector, {bool? force, double? timeout}) {
     return mainFrame.dblclick(selector, force: force, timeout: timeout);
   }
 
+  /// Sends a `keydown`, `keypress`/`input`, and `keyup` event for each character in the text.
   Future<void> type(
     String selector,
     String text, {
@@ -644,6 +673,7 @@ class Page extends PageBase {
     return mainFrame.type(selector, text, delay: delay, timeout: timeout);
   }
 
+  /// Focuses the element matching [selector], and then uses [Keyboard.down] and [Keyboard.up].
   Future<void> press(
     String selector,
     String key, {
@@ -653,18 +683,23 @@ class Page extends PageBase {
     return mainFrame.press(selector, key, delay: delay, timeout: timeout);
   }
 
+  /// Taps an element matching [selector].
   Future<void> tap(String selector, {bool? force, double? timeout}) {
     return mainFrame.tap(selector, force: force, timeout: timeout);
   }
 
+  /// Gets the full HTML contents of the page, including the doctype.
   Future<String> content() {
     return mainFrame.content();
   }
 
+  /// Sets the HTML content of the page.
   Future<void> setContent(String html, {double? timeout}) {
     return mainFrame.setContent(html, timeout: timeout);
   }
 
+  /// Finds an element matching [selector] within the page, and passes it as
+  /// the first argument to [expression].
   Future<dynamic> evalOnSelector(
     String selector,
     String expression, [
@@ -673,6 +708,8 @@ class Page extends PageBase {
     return mainFrame.evalOnSelector(selector, expression, arg);
   }
 
+  /// Finds all elements matching [selector] within the page, and passes the
+  /// array of matched elements as the first argument to [expression].
   Future<dynamic> evalOnSelectorAll(
     String selector,
     String expression, [
@@ -681,6 +718,7 @@ class Page extends PageBase {
     return mainFrame.evalOnSelectorAll(selector, expression, arg);
   }
 
+  /// Returns element attribute value.
   Future<String?> getAttribute(
     String selector,
     String name, {
@@ -689,54 +727,67 @@ class Page extends PageBase {
     return mainFrame.getAttribute(selector, name, timeout: timeout);
   }
 
+  /// Returns `element.innerHTML`.
   Future<String> innerHTML(String selector, {double? timeout}) {
     return mainFrame.innerHTML(selector, timeout: timeout);
   }
 
+  /// Returns `element.innerText`.
   Future<String> innerText(String selector, {double? timeout}) {
     return mainFrame.innerText(selector, timeout: timeout);
   }
 
+  /// Returns `input.value` for the selected `<input>`, `<textarea>` or `<select>` element.
   Future<String> inputValue(String selector, {double? timeout}) {
     return mainFrame.inputValue(selector, timeout: timeout);
   }
 
+  /// Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
   Future<bool> isChecked(String selector, {double? timeout}) {
     return mainFrame.isChecked(selector, timeout: timeout);
   }
 
+  /// Returns whether the element is disabled.
   Future<bool> isDisabled(String selector, {double? timeout}) {
     return mainFrame.isDisabled(selector, timeout: timeout);
   }
 
+  /// Returns whether the element is enabled.
   Future<bool> isEnabled(String selector, {double? timeout}) {
     return mainFrame.isEnabled(selector, timeout: timeout);
   }
 
+  /// Returns whether the element is hidden.
   Future<bool> isHidden(String selector) {
     return mainFrame.isHidden(selector);
   }
 
+  /// Returns whether the element is visible.
   Future<bool> isVisible(String selector) {
     return mainFrame.isVisible(selector);
   }
 
+  /// Returns whether the element is editable.
   Future<bool> isEditable(String selector, {double? timeout}) {
     return mainFrame.isEditable(selector, timeout: timeout);
   }
 
+  /// Adds a `<script>` tag into the page with the desired URL or content.
   Future<void> addScriptTag({String? url, String? content, String? type}) {
     return mainFrame.addScriptTag(url: url, content: content, type: type);
   }
 
+  /// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a `<style type="text/css">` tag with the content.
   Future<void> addStyleTag({String? url, String? content}) {
     return mainFrame.addStyleTag(url: url, content: content);
   }
 
+  /// Waits for the given [timeout] in milliseconds.
   Future<void> waitForTimeout(double timeout) {
     return mainFrame.waitForTimeout(timeout);
   }
 
+  /// Returns when the [expression] returns a truthy value, polling at regular intervals.
   Future<dynamic> waitForFunction(
     String expression, [
     dynamic arg,
@@ -751,6 +802,7 @@ class Page extends PageBase {
     );
   }
 
+  /// Dispatches a [type] event on the element matching [selector].
   Future<void> dispatchEvent(
     String selector,
     String type, {
@@ -765,19 +817,22 @@ class Page extends PageBase {
     );
   }
 
+  /// Highlights the element(s) matching [selector] in the page.
   Future<void> highlight(String selector) {
     return mainFrame.highlight(selector);
   }
 
+  /// Removes all highlights created by [highlight].
   Future<void> hideHighlight() async {
     await channel_hideHighlight();
   }
 
+  /// Performs a drag-and-drop of files onto an element matching [selector].
   Future<void> drop(
     String selector, {
-    List<Map<String, dynamic>>? payloads,
+    List<FrameDropPayloadsItems>? payloads,
     List<String>? localPaths,
-    List<Map<String, dynamic>>? data,
+    List<FrameDropDataItems>? data,
     bool? strict,
     double? timeout,
   }) {
@@ -791,18 +846,22 @@ class Page extends PageBase {
     );
   }
 
+  /// Returns a [Locator] for the first element matching [selector].
   Locator querySelector(String selector) {
     return mainFrame.querySelector(selector);
   }
 
+  /// Returns a list of [Locator]s for all elements matching [selector].
   Future<List<Locator>> querySelectorAll(String selector) {
     return mainFrame.querySelectorAll(selector);
   }
 
+  /// Returns the number of elements matching [selector].
   Future<int> queryCount(String selector) {
     return mainFrame.queryCount(selector);
   }
 
+  /// Returns the array of option values that have been successfully selected.
   Future<List<String>> selectOption(
     String selector,
     dynamic values, {
@@ -817,6 +876,7 @@ class Page extends PageBase {
     );
   }
 
+  /// Sets the value of the file input to these file paths or files.
   Future<void> setInputFiles(
     String selector,
     dynamic files, {
@@ -831,6 +891,7 @@ class Page extends PageBase {
     );
   }
 
+  /// Captures the accessibility tree snapshot of the element matching [selector].
   Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
     String? mode,
@@ -851,6 +912,7 @@ class Page extends PageBase {
     );
   }
 
+  /// Performs an assertion against the element matching [selector].
   Future<FrameExpectResult> expect(
     String selector,
     String expression, {
@@ -873,14 +935,17 @@ class Page extends PageBase {
     );
   }
 
+  /// Exposes a binding with the given [name] to the page.
   Future<void> exposeBinding(String name) async {
     await channel_exposeBinding(name: name);
   }
 
+  /// Requests garbage collection in the page's JavaScript runtime.
   Future<void> requestGC() async {
     await channel_requestGC();
   }
 
+  /// Registers a handler to be called when a locator matching the given selector appears.
   Future<PageRegisterLocatorHandlerResult> registerLocatorHandler(
     Locator selector, {
     bool? noWaitAfter,
@@ -891,27 +956,21 @@ class Page extends PageBase {
     );
   }
 
+  /// Unregisters a locator handler previously registered with [registerLocatorHandler].
   Future<void> unregisterLocatorHandler(int uid) async {
     await channel_unregisterLocatorHandler(uid: uid);
   }
 
-  Future<void> setExtraHTTPHeaders(Map<String, String> headers) async {
-    final nameValueHeaders = headers.entries
-        .map((e) => NameValue(name: e.key, value: e.value))
-        .toList();
-    await channel_setExtraHTTPHeaders(headers: nameValueHeaders);
+  /// Sets extra HTTP headers that will be sent with every request the page initiates.
+  Future<void> setExtraHTTPHeaders(List<NameValue> headers) async {
+    await channel_setExtraHTTPHeaders(headers: headers);
   }
 
+  /// Sets the network interception patterns for this page.
   Future<void> setNetworkInterceptionPatterns(
-    List<Map<String, dynamic>> patterns,
+    List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setNetworkInterceptionPatterns(
-      patterns: patterns
-          .map(
-            (e) => PageSetNetworkInterceptionPatternsPatternsItems.fromJson(e),
-          )
-          .toList(),
-    );
+    await channel_setNetworkInterceptionPatterns(patterns: patterns);
   }
 
   /// Touchscreen API also available through [this.touchscreen.tap()]
@@ -919,46 +978,54 @@ class Page extends PageBase {
     await channel_touchscreenTap(x: x, y: y);
   }
 
+  /// Brings page to front (activates tab).
   Future<void> bringToFront() async {
     await channel_bringToFront();
   }
 
+  /// Opens the element picker for selecting a locator.
   Future<PagePickLocatorResult> pickLocator() async {
     return await channel_pickLocator();
   }
 
+  /// Cancels the element picker started by [pickLocator].
   Future<void> cancelPickLocator() async {
     await channel_cancelPickLocator();
   }
 
+  /// Starts screen recording for the page.
   Future<void> screencastStart({
-    Map<String, dynamic>? size,
+    PageScreencastStartSize? size,
     int? quality,
     bool? sendFrames,
     bool? record,
   }) async {
     await channel_screencastStart(
-      size: size == null ? null : PageScreencastStartSize.fromJson(size),
+      size: size,
       quality: quality,
       sendFrames: sendFrames,
       record: record,
     );
   }
 
+  /// Stops screen recording.
   Future<void> screencastStop() async {
     await channel_screencastStop();
   }
 
+  /// Sets the dock tile image (macOS specific).
   Future<void> setDockTile(String image) async {
     await channel_setDockTile(image: image);
   }
 
   // --- Console Messages ---
 
+  /// Clears all stored console messages.
   Future<void> clearConsoleMessages() async {
     await channel_clearConsoleMessages();
   }
 
+  /// Returns console messages logged since the last call to [clearConsoleMessages].
   Future<PageConsoleMessagesResult> consoleMessages({
     ConsoleMessagesFilter? filter,
   }) async {
@@ -967,10 +1034,12 @@ class Page extends PageBase {
 
   // --- Page Errors ---
 
+  /// Clears all stored page errors.
   Future<void> clearPageErrors() async {
     await channel_clearPageErrors();
   }
 
+  /// Returns page errors logged since the last call to [clearPageErrors].
   Future<PagePageErrorsResult> pageErrors({
     ConsoleMessagesFilter? filter,
   }) async {
@@ -979,23 +1048,26 @@ class Page extends PageBase {
 
   // --- Requests ---
 
+  /// Returns all requests made by the page.
   Future<PageRequestsResult> requests() async {
     return await channel_requests();
   }
 
   // --- Locator Handler ---
 
+  /// Resolves a locator handler registered via [registerLocatorHandler].
   Future<void> resolveLocatorHandlerNoReply(int uid, {bool? remove}) async {
     await channel_resolveLocatorHandlerNoReply(uid: uid, remove: remove);
   }
 
   // --- Screenshot Expect ---
 
+  /// Performs a screenshot comparison assertion.
   Future<PageExpectScreenshotResult> expectScreenshot({
     String? expected,
     required double timeout,
     required bool isNot,
-    Map<String, dynamic>? locator,
+    PageExpectScreenshotLocator? locator,
     String? comparator,
     int? maxDiffPixels,
     double? maxDiffPixelRatio,
@@ -1008,9 +1080,7 @@ class Page extends PageBase {
       expected: expected,
       timeout: timeout,
       isNot: isNot,
-      locator: locator == null
-          ? null
-          : PageExpectScreenshotLocator.fromJson(locator),
+      locator: locator,
       comparator: comparator,
       maxDiffPixels: maxDiffPixels,
       maxDiffPixelRatio: maxDiffPixelRatio,
@@ -1023,21 +1093,16 @@ class Page extends PageBase {
 
   // --- WebSocket Interception ---
 
+  /// Sets WebSocket interception patterns for this page.
   Future<void> setWebSocketInterceptionPatterns(
-    List<Map<String, dynamic>> patterns,
+    List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setWebSocketInterceptionPatterns(
-      patterns: patterns
-          .map(
-            (e) =>
-                PageSetWebSocketInterceptionPatternsPatternsItems.fromJson(e),
-          )
-          .toList(),
-    );
+    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
   }
 
   // --- JS/CSS Coverage ---
 
+  /// Starts JavaScript coverage collection.
   Future<void> startJSCoverage({
     bool? resetOnNavigation,
     bool? reportAnonymousScripts,
@@ -1048,20 +1113,24 @@ class Page extends PageBase {
     );
   }
 
+  /// Stops JavaScript coverage collection and returns the coverage report.
   Future<PageStopJSCoverageResult> stopJSCoverage() async {
     return await channel_stopJSCoverage();
   }
 
+  /// Starts CSS coverage collection.
   Future<void> startCSSCoverage({bool? resetOnNavigation}) async {
     await channel_startCSSCoverage(resetOnNavigation: resetOnNavigation);
   }
 
+  /// Stops CSS coverage collection and returns the coverage report.
   Future<PageStopCSSCoverageResult> stopCSSCoverage() async {
     return await channel_stopCSSCoverage();
   }
 
   // --- Screencast ---
 
+  /// Shows an overlay on the screencast recording.
   Future<PageScreencastShowOverlayResult> screencastShowOverlay(
     String html, {
     double? duration,
@@ -1069,10 +1138,12 @@ class Page extends PageBase {
     return await channel_screencastShowOverlay(html: html, duration: duration);
   }
 
+  /// Removes a screencast overlay by [id].
   Future<void> screencastRemoveOverlay(String id) async {
     await channel_screencastRemoveOverlay(id: id);
   }
 
+  /// Adds a new chapter marker to the screencast recording.
   Future<void> screencastChapter(
     String title, {
     String? description,
@@ -1085,29 +1156,28 @@ class Page extends PageBase {
     );
   }
 
+  /// Sets the visibility of the screencast overlay.
   Future<void> screencastSetOverlayVisible(bool visible) async {
     await channel_screencastSetOverlayVisible(visible: visible);
   }
 
+  /// Shows action indicators on the screencast.
   Future<void> screencastShowActions(ShowActionsOptions options) async {
     await channel_screencastShowActions(showActionsOptions: options);
   }
 
+  /// Hides action indicators from the screencast.
   Future<void> screencastHideActions() async {
     await channel_screencastHideActions();
   }
 
   // --- Subscription ---
 
+  /// Updates the subscription state for a specific event type.
   Future<void> updateSubscription({
-    required String event,
+    required PageUpdateSubscriptionEventEnum event,
     required bool enabled,
   }) async {
-    await channel_updateSubscription(
-      event: PageUpdateSubscriptionEventEnum.values.firstWhere(
-        (e) => e.value == event,
-      ),
-      enabled: enabled,
-    );
+    await channel_updateSubscription(event: event, enabled: enabled);
   }
 }

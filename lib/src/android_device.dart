@@ -173,15 +173,13 @@ class AndroidDevice extends AndroidDeviceBase {
     required ContextOptions contextOptions,
     String? pkg,
     List<String>? args,
-    Map<String, dynamic>? proxy,
+    AndroidDeviceLaunchBrowserProxy? proxy,
   }) async {
     final result = await channel_launchBrowser(
       contextOptions: contextOptions,
       pkg: pkg,
       args: args,
-      proxy: proxy == null
-          ? null
-          : AndroidDeviceLaunchBrowserProxy.fromJson(proxy),
+      proxy: proxy,
     );
     return result.context as BrowserContext;
   }

@@ -29,18 +29,16 @@ class Browser extends BrowserBase {
   /// It won't share cookies/cache with other browser contexts.
   Future<BrowserContext> newContext({
     ContextOptions? options,
-    Map<String, dynamic>? proxy,
-    Map<String, dynamic>? storageState,
+    BrowserNewContextProxy? proxy,
+    BrowserNewContextStorageState? storageState,
   }) async {
     if (proxy != null) {
       options ??= ContextOptions();
     }
     final result = await super.channel_newContext(
       contextOptions: options ?? ContextOptions(),
-      proxy: proxy == null ? null : BrowserNewContextProxy.fromJson(proxy),
-      storageState: storageState == null
-          ? null
-          : BrowserNewContextStorageState.fromJson(storageState),
+      proxy: proxy,
+      storageState: storageState,
     );
     final context = result.context as BrowserContext;
     final playwright =
@@ -141,17 +139,13 @@ class Browser extends BrowserBase {
   }
 
   Future<BrowserContext> newContextForReuse({
-    Map<String, dynamic>? proxy,
-    Map<String, dynamic>? storageState,
+    BrowserNewContextForReuseProxy? proxy,
+    BrowserNewContextForReuseStorageState? storageState,
   }) async {
     final result = await channel_newContextForReuse(
       contextOptions: ContextOptions(),
-      proxy: proxy == null
-          ? null
-          : BrowserNewContextForReuseProxy.fromJson(proxy),
-      storageState: storageState == null
-          ? null
-          : BrowserNewContextForReuseStorageState.fromJson(storageState),
+      proxy: proxy,
+      storageState: storageState,
     );
     return result.context as BrowserContext;
   }

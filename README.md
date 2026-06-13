@@ -22,9 +22,9 @@ A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable 
 
 ## 📦 Seamless Experience (No Node.js Required!)
 
-You **do not** need to install Node.js to use this package! 
+You **do not** need to install Node.js to use this package!
 
-To guarantee 100% compatibility across operating systems without forcing users to manage Node versions, `playwright_dart` automatically downloads a pre-compiled Playwright Driver directly from Microsoft's CDN. This driver **bundles its own isolated, perfectly compatible version of Node.js** (`node.exe` / `node`). 
+To guarantee 100% compatibility across operating systems without forcing users to manage Node versions, `playwright_dart` automatically downloads a pre-compiled Playwright Driver directly from Microsoft's CDN. This driver **bundles its own isolated, perfectly compatible version of Node.js** (`node.exe` / `node`).
 
 This means your users and CI pipelines can run browser automation seamlessly out-of-the-box using only Dart. No `npm install`, no global node requirements!
 
@@ -32,7 +32,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^2.3.1
+  playwright_dart: ^3.0.0
 ```
 
 ## Quick Start
@@ -88,7 +88,6 @@ void main() async {
   await browser.close();
 }
 ```
-
 
 ## Locators
 

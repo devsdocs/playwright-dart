@@ -56,11 +56,41 @@ void main() async {
     return content.substring(braceStartIndex, endIndex);
   }
 
+  String? extractParamType(String sig, String paramName) {
+    int idx = sig.indexOf(RegExp('\\b$paramName\\b'));
+    if (idx == -1) return null;
+    String before = sig.substring(0, idx).trim();
+    int lastComma = -1;
+    int openParenCount = 0;
+    int openBracketCount = 0;
+    for (int i = before.length - 1; i >= 0; i--) {
+      if (before[i] == '>') {
+        openParenCount++;
+      } else if (before[i] == '<') {
+        openParenCount--;
+      } else if (before[i] == ',' &&
+          openParenCount == 0 &&
+          openBracketCount == 0) {
+        lastComma = i;
+        break;
+      } else if (before[i] == '{' || before[i] == '[') {
+        lastComma = i;
+        break;
+      }
+    }
+    String typeAndKeywords = before.substring(lastComma + 1).trim();
+    typeAndKeywords = typeAndKeywords
+        .replaceAll('required ', '')
+        .replaceAll('covariant ', '');
+    return typeAndKeywords.isEmpty ? 'dynamic' : typeAndKeywords;
+  }
+
   int missingClasses = 0;
   int missingCommands = 0;
   int missingWrapperClasses = 0;
   int missingWrapperCommands = 0;
   int missingWrapperParameters = 0;
+  int typeMismatches = 0;
 
   for (final entry in protocol.entries) {
     final name = entry.key;
@@ -158,6 +188,69 @@ void main() async {
                       'MISSING IN WRAPPER: Parameter $paramName in command $name.$cmdName ($targetClassName.$targetCmdName)',
                     );
                     missingWrapperParameters++;
+                  } else {
+                    final channelSigMatch = RegExp(
+                      '\\bchannel_$cmdName\\s*\\(([^)]*)\\)',
+                    ).firstMatch(dartContent);
+                    if (channelSigMatch != null) {
+                      String channelSig = channelSigMatch.group(1)!;
+                      String? channelParamType = extractParamType(
+                        channelSig,
+                        paramName,
+                      );
+                      String? wrapperParamType = extractParamType(
+                        sig,
+                        paramName,
+                      );
+
+                      if (channelParamType != null &&
+                          wrapperParamType != null) {
+                        String cleanChannelType = channelParamType.replaceAll(
+                          '?',
+                          '',
+                        );
+                        String cleanWrapperType = wrapperParamType.replaceAll(
+                          '?',
+                          '',
+                        );
+
+                        bool isNativeType(String t) {
+                          if (t == 'Object' || t == 'void') return true;
+                          return t == 'String' ||
+                              t == 'int' ||
+                              t == 'double' ||
+                              t == 'num' ||
+                              t == 'bool' ||
+                              t == 'dynamic' ||
+                              t.startsWith('Map<') ||
+                              t == 'Map' ||
+                              t == 'List<String>' ||
+                              t == 'List<int>' ||
+                              t == 'List<double>' ||
+                              t == 'List<num>' ||
+                              t == 'List<bool>' ||
+                              t == 'List<dynamic>' ||
+                              t.startsWith('List<Map') ||
+                              t.startsWith('List<Object>');
+                        }
+
+                        if (cleanChannelType == 'SerializedArgument' ||
+                            cleanChannelType == 'SerializedError') {
+                          // Ignore serialized wrapper arguments
+                          continue;
+                        }
+
+                        bool channelIsCustom = !isNativeType(cleanChannelType);
+                        bool wrapperIsNative = isNativeType(cleanWrapperType);
+
+                        if (channelIsCustom && wrapperIsNative) {
+                          print(
+                            "PARAMETER TYPE MISMATCH: $name.$cmdName parameter '$paramName' - Wrapper uses native '$wrapperParamType' but Channel expects '$channelParamType'",
+                          );
+                          typeMismatches++;
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -183,12 +276,13 @@ void main() async {
       missingCommands > 0 ||
       missingWrapperClasses > 0 ||
       missingWrapperCommands > 0 ||
-      missingWrapperParameters > 0) {
+      missingWrapperParameters > 0 ||
+      typeMismatches > 0) {
     print(
       'Found $missingClasses missing classes/structs and $missingCommands missing commands in generated channels.',
     );
     print(
-      'Found $missingWrapperClasses missing interface wrappers, $missingWrapperCommands missing wrapper commands, and $missingWrapperParameters missing wrapper parameters in lib/src.',
+      'Found $missingWrapperClasses missing interface wrappers, $missingWrapperCommands missing wrapper commands, $missingWrapperParameters missing wrapper parameters, and $typeMismatches parameter type mismatches in lib/src.',
     );
     exit(1);
   } else {
