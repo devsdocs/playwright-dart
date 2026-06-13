@@ -1,4 +1,3 @@
-import 'channel_owner.dart';
 import 'generated/channels.dart';
 
 class APIRequestContext extends APIRequestContextBase {
@@ -10,7 +9,7 @@ class APIRequestContext extends APIRequestContextBase {
     super.parent,
   ]);
 
-  Future<dynamic> fetch(
+  Future<APIResponse> fetch(
     String url, {
     String? method,
     List<NameValue>? headers,
@@ -38,19 +37,16 @@ class APIRequestContext extends APIRequestContextBase {
       maxRedirects: maxRedirects,
       maxRetries: maxRetries,
     );
-    return ChannelOwner.from(
-      connection,
-      result.response as Map<String, dynamic>,
-    );
+    return result.response;
   }
 
-  Future<dynamic> get(
+  Future<APIResponse> get(
     String url, {
     List<NameValue>? headers,
     double? timeout,
   }) => fetch(url, method: 'GET', headers: headers, timeout: timeout);
 
-  Future<dynamic> post(
+  Future<APIResponse> post(
     String url, {
     List<NameValue>? headers,
     String? postData,
@@ -65,7 +61,7 @@ class APIRequestContext extends APIRequestContextBase {
     timeout: timeout,
   );
 
-  Future<dynamic> put(
+  Future<APIResponse> put(
     String url, {
     List<NameValue>? headers,
     String? postData,
@@ -80,13 +76,13 @@ class APIRequestContext extends APIRequestContextBase {
     timeout: timeout,
   );
 
-  Future<dynamic> delete(
+  Future<APIResponse> delete(
     String url, {
     List<NameValue>? headers,
     double? timeout,
   }) => fetch(url, method: 'DELETE', headers: headers, timeout: timeout);
 
-  Future<dynamic> patch(
+  Future<APIResponse> patch(
     String url, {
     List<NameValue>? headers,
     String? postData,
@@ -101,7 +97,7 @@ class APIRequestContext extends APIRequestContextBase {
     timeout: timeout,
   );
 
-  Future<dynamic> head(
+  Future<APIResponse> head(
     String url, {
     List<NameValue>? headers,
     double? timeout,

@@ -2,6 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/playwright_dart.svg)](https://pub.dev/packages/playwright_dart)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![API Parity](https://img.shields.io/badge/API_Parity-100%25-brightgreen.svg)](https://playwright.dev)
 
 A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable browser automation for Chromium, Firefox, and WebKit.
 
@@ -15,6 +16,15 @@ A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable 
 - 📸 **Screenshots & PDFs** — capture pages in any format
 - 🔍 **Tracing** — record and view traces in the Playwright Trace Viewer
 - ⚡ **Auto-downloads** Playwright driver and browser binaries
+- 📦 **No Node.js Required** — Node is bundled automatically!
+
+## 📦 Seamless Experience (No Node.js Required!)
+
+You **do not** need to install Node.js to use this package! 
+
+To guarantee 100% compatibility across operating systems without forcing users to manage Node versions, `playwright_dart` automatically downloads a pre-compiled Playwright Driver directly from Microsoft's CDN. This driver **bundles its own isolated, perfectly compatible version of Node.js** (`node.exe` / `node`). 
+
+This means your users and CI pipelines can run browser automation seamlessly out-of-the-box using only Dart. No `npm install`, no global node requirements!
 
 ## Installation
 

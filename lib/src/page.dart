@@ -10,6 +10,8 @@ import 'mouse.dart';
 import 'touchscreen.dart';
 import 'route.dart';
 import 'dialog.dart';
+import 'worker.dart';
+import 'artifact.dart';
 
 /// Page provides methods to interact with a single tab or extension background page in a browser.
 ///
@@ -43,6 +45,20 @@ class Page extends PageBase {
     return onEvent.where((e) => e['event'] == 'dialog').map((e) {
       final dialogGuid = e['params']['dialog']['guid'];
       return connection.objects[dialogGuid] as Dialog;
+    });
+  }
+
+  Stream<Worker> get onWorker {
+    return onEvent.where((e) => e['event'] == 'worker').map((e) {
+      final workerGuid = e['params']['worker']['guid'];
+      return connection.objects[workerGuid] as Worker;
+    });
+  }
+
+  Stream<Artifact> get onDownload {
+    return onEvent.where((e) => e['event'] == 'download').map((e) {
+      final artifactGuid = e['params']['artifact']['guid'];
+      return connection.objects[artifactGuid] as Artifact;
     });
   }
 

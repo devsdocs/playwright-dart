@@ -29,7 +29,9 @@ import 'src/storage_state_test_cases.dart' as storage_state_test_cases;
 import 'src/pdf_test_cases.dart' as pdf_test_cases;
 import 'src/init_script_test_cases.dart' as init_script_test_cases;
 import 'src/cdp_session_test_cases.dart' as cdp_session_test_cases;
-
+import 'src/worker_test_cases.dart' as worker_test_cases;
+import 'src/download_test_cases.dart' as download_test_cases;
+import 'src/api_request_context_test_cases.dart' as api_request_context_test_cases;
 void main() {
   setUpAll(() async {
     await setupBrowser();
@@ -66,5 +68,8 @@ void main() {
   pdf_test_cases.main();
   init_script_test_cases.main();
   cdp_session_test_cases.main();
+  worker_test_cases.main();
+  download_test_cases.main();
+  api_request_context_test_cases.main();
   real_world_test_cases.main();
 }

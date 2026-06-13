@@ -5,6 +5,7 @@ import 'generated/channels.dart';
 import 'driver.dart';
 import 'transport.dart';
 import 'connection.dart';
+import 'api_request_context.dart';
 
 /// The main Playwright module. Provides access to browser types (Chromium, Firefox, WebKit).
 class Playwright extends PlaywrightBase {
@@ -41,8 +42,7 @@ class Playwright extends PlaywrightBase {
 
   /// Creates an APIRequestContext to send network requests directly from the
   /// Playwright runner without requiring a browser instance.
-  // Returns APIRequestContext, which will be implemented in Phase 8
-  Future<dynamic> newRequest({
+  Future<APIRequestContext> newRequest({
     String? baseURL,
     String? userAgent,
     bool? ignoreHTTPSErrors,
@@ -68,7 +68,7 @@ class Playwright extends PlaywrightBase {
       storageState: storageState,
       tracesDir: tracesDir,
     );
-    return result.request;
+    return result.request as APIRequestContext;
   }
 
   /// Closes the playwright connection and terminates the driver.
