@@ -1,3 +1,20 @@
 # https://dart.dev/tools/private-files
 # Created by `dart pub`
 .dart_tool/
+pubspec.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Playwright driver downloads (users download their own)
+playwright-driver/
+
+# Build outputs
+build/
+doc/api/

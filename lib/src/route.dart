@@ -1,4 +1,5 @@
 import 'generated/channels.dart';
+import 'request.dart';
 
 class Route extends RouteBase {
   Route(
@@ -9,20 +10,26 @@ class Route extends RouteBase {
     super.parent,
   ]);
 
+  Request get request =>
+      connection.objects[initializer['request']['guid']] as Request;
+
   Future<void> abort({String? errorCode}) async {
     await channel_abort(errorCode: errorCode);
   }
 
   Future<void> fulfill({
     int? status,
-    List<NameValue>? headers,
+    Map<String, String>? headers,
     String? body,
     bool? isBase64,
     String? fetchResponseUid,
   }) async {
+    final mappedHeaders = headers?.entries
+        .map((e) => NameValue(name: e.key, value: e.value))
+        .toList();
     await channel_fulfill(
       status: status,
-      headers: headers,
+      headers: mappedHeaders,
       body: body,
       isBase64: isBase64,
       fetchResponseUid: fetchResponseUid,
@@ -32,14 +39,17 @@ class Route extends RouteBase {
   Future<void> continueRoute({
     String? url,
     String? method,
-    List<NameValue>? headers,
+    Map<String, String>? headers,
     String? postData,
     bool isFallback = false,
   }) async {
+    final mappedHeaders = headers?.entries
+        .map((e) => NameValue(name: e.key, value: e.value))
+        .toList();
     await channel_continueValue(
       url: url,
       method: method,
-      headers: headers,
+      headers: mappedHeaders,
       postData: postData,
       isFallback: isFallback,
     );
@@ -52,7 +62,7 @@ class Route extends RouteBase {
   Future<void> continueValue({
     String? url,
     String? method,
-    List<NameValue>? headers,
+    Map<String, String>? headers,
     String? postData,
     bool isFallback = false,
   }) => continueRoute(

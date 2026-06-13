@@ -1,60 +1,54 @@
+// Example demonstrating basic Playwright Dart usage.
+//
+// This script launches Chromium, navigates to a page, interacts with
+// elements using the Locator API, evaluates JavaScript, and takes a screenshot.
 import 'package:playwright_dart/playwright_dart.dart';
 
 void main() async {
-  print('Starting Playwright...');
+  // Create a Playwright instance (auto-downloads driver if needed)
   final playwright = await Playwright.create();
 
-  print('Launching chromium...');
+  // Launch a Chromium browser
   final browser = await playwright.chromium.launch();
 
-  print('Creating new page...');
+  // Create a new page
   final page = await browser.newPage();
 
-  final htmlContent = '''
+  // Set page content with interactive elements
+  await page.setContent('''
     <html>
+      <head><title>Playwright Dart Example</title></head>
       <body>
         <h1 id="header">Hello World</h1>
         <button id="btn">Click Me</button>
+        <input type="text" id="name" placeholder="Enter your name" />
         <select id="dropdown">
           <option value="opt1">Option 1</option>
           <option value="opt2">Option 2</option>
         </select>
-        <input type="file" id="file-upload" />
       </body>
     </html>
-  ''';
-  await page.setContent(htmlContent);
+  ''');
 
+  // Get the page title
   final title = await page.title();
   print('Page title: $title');
 
-  print('Testing click...');
-  final btn = page.locator('#btn');
-  await btn.click();
+  // Use Locator API for interactions
+  await page.locator('#btn').click();
   print('Button clicked!');
 
-  print('Testing selectOption...');
-  final dropdown = page.locator('#dropdown');
-  final selected = await dropdown.selectOption('opt2');
-  print('Selected option: $selected');
+  await page.locator('#name').fill('Playwright Dart');
+  print('Input filled!');
 
-  print('Testing setInputFiles...');
-  final fileUpload = page.locator('#file-upload');
-  await fileUpload.setInputFiles([
-    FilePayload(
-      name: 'test.txt',
-      mimeType: 'text/plain',
-      buffer: 'hello world'.codeUnits,
-    ),
-  ]);
-  print('File uploaded!');
+  final selected = await page.locator('#dropdown').selectOption('opt2');
+  print('Selected: $selected');
 
-  print('Evaluating document.title...');
-  final evaluatedTitle = await page.mainFrame.evaluate('document.title');
-  print('Evaluated title: $evaluatedTitle');
+  // Evaluate JavaScript
+  final result = await page.mainFrame.evaluate('document.title');
+  print('Evaluated title: $result');
 
-  print('Closing browser...');
+  // Clean up
   await browser.close();
-
   print('Done!');
 }

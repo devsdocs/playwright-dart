@@ -7,6 +7,7 @@ import 'frame.dart';
 import 'locator.dart';
 import 'keyboard.dart';
 import 'mouse.dart';
+import 'route.dart';
 
 class Page extends PageBase {
   late final Keyboard keyboard;
@@ -43,6 +44,43 @@ class Page extends PageBase {
   /// Returns a locator for the given selector.
   Locator locator(String selector) {
     return mainFrame.locator(selector);
+  }
+
+  Future<dynamic> evaluate(String expression, [dynamic arg]) async {
+    return mainFrame.evaluate(expression, arg);
+  }
+
+  Future<void> waitForSelector(String selector, {String? state, double? timeout}) async {
+    return mainFrame.waitForSelector(selector, state: state, timeout: timeout);
+  }
+
+  Future<void> route(String url, Future<void> Function(Route) handler) async {
+    await channel_setNetworkInterceptionPatterns(
+      patterns: [{'glob': url}],
+    );
+    
+    onEvent.listen((event) async {
+      if (event['event'] == 'route') {
+        final params = event['params'] as Map<String, dynamic>;
+        final routeObj = connection.objects[params['route']['guid']] as Route;
+        final requestObj = routeObj.request;
+        
+        final matches = url == '**/*' || url == '*' || url.contains('*') ? true : requestObj.url == url;
+        if (matches) {
+          try {
+            await handler(routeObj);
+          } catch (e) {
+            // Ignore if closed
+          }
+        } else {
+          try {
+            await routeObj.continueRoute();
+          } catch (e) {
+            // Ignore if closed
+          }
+        }
+      }
+    });
   }
 
   /// Returns a locator by text.

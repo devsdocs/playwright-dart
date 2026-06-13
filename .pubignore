@@ -1,0 +1,4 @@
+# Internal development files not needed by package consumers
+dart-port-plan/
+tool/
+bin/

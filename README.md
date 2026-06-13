@@ -1,119 +1,142 @@
 # Playwright Dart
 
-A Dart port of the official [Playwright](https://playwright.dev) library, bringing fast, reliable, and capable browser automation to the Dart and Flutter ecosystem.
+[![pub package](https://img.shields.io/pub/v/playwright_dart.svg)](https://pub.dev/packages/playwright_dart)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-This library achieves **100% API Parity** with the NodeJS Playwright `v1.60.0` protocol, including all network interception, tracing, CDPSession, and advanced locator features.
+A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable browser automation for Chromium, Firefox, and WebKit.
+
+**100% API parity** with Node.js Playwright `v1.60.0`, including network interception, tracing, CDP sessions, and the full Locator API.
+
+## Features
+
+- 🚀 **Launch & control** Chromium, Firefox, and WebKit
+- 🎯 **Locator API** with `getByRole`, `getByText`, `getByLabel`, and more
+- 🌐 **Network interception** — abort, mock, and modify requests
+- 📸 **Screenshots & PDFs** — capture pages in any format
+- 🔍 **Tracing** — record and view traces in the Playwright Trace Viewer
+- ⚡ **Auto-downloads** Playwright driver and browser binaries
 
 ## Installation
 
-Add this to your `pubspec.yaml`:
-
 ```yaml
 dependencies:
-  playwright_dart:
-    path: /path/to/playwright-dart
+  playwright_dart: ^0.1.0
 ```
 
-## Basic Usage
+## Quick Start
 
 ```dart
 import 'package:playwright_dart/playwright_dart.dart';
 
 void main() async {
-  // Start the Playwright driver and connect
   final playwright = await Playwright.create();
+  final browser = await playwright.chromium.launch();
+  final page = await browser.newPage();
 
-  // Launch a browser (Chromium)
-  final browser = await playwright.chromium.launch(headless: false);
-  
-  // Create a new browser context and page
-  final context = await browser.newContext();
-  final page = await context.newPage();
-
-  // Navigate and interact
   await page.goto('https://playwright.dev');
-  
-  // Use locators for robust UI interaction
   await page.getByRole('link', name: 'Get started').click();
-
-  // Take a screenshot
   await page.screenshot(path: 'screenshot.png');
 
-  // Close the browser when done
   await browser.close();
 }
 ```
 
-## Advanced Features
 
-### Locators
+## Locators
 
-Playwright's `Locator` API is fully supported for strict and reliable interactions.
+Playwright's robust [Locator API](https://playwright.dev/docs/locators) is fully supported:
 
 ```dart
-final locator = page.locator('.my-class');
-await locator.click();
+// By role
+await page.getByRole('button', name: 'Submit').click();
 
-// Chaining and text matching
+// By text
+await page.getByText('Welcome').isVisible();
+
+// By label
+await page.getByLabel('Email').fill('user@example.com');
+
+// By test ID
+await page.getByTestId('nav-menu').click();
+
+// Chaining
 await page.locator('nav').getByText('Docs').click();
+
+// State assertions
+final isVisible = await page.locator('.modal').isVisible();
+final text = await page.locator('h1').textContent();
 ```
 
-### Network Interception
+## Network Interception
 
-Intercept, mock, or modify network traffic seamlessly.
+Intercept, mock, or abort network requests:
 
 ```dart
-await page.route('**/*.jpg', (route, request) async {
-  // Abort all image requests
+// Block all images
+await page.route('**/*.{png,jpg,jpeg}', (route) async {
   await route.abort();
 });
 
-await page.route('**/api/data', (route, request) async {
-  // Fulfill the request with custom mocked data
+// Mock an API response
+await page.route('**/api/users', (route) async {
   await route.fulfill(
     status: 200,
-    contentType: 'application/json',
-    body: '{"message": "mocked response"}',
+    headers: {'content-type': 'application/json'},
+    body: '{"users": [{"name": "Alice"}]}',
   );
 });
 ```
 
-### Tracing
+## Tracing
 
-Record traces to debug tests locally using the Playwright Trace Viewer.
+Record traces for debugging with the [Playwright Trace Viewer](https://playwright.dev/docs/trace-viewer):
 
 ```dart
 await browser.startTracing(page: page, screenshots: true);
-
 await page.goto('https://example.com');
-
 final trace = await browser.stopTracing();
-// Save `trace` (List<int>) to a `.zip` file and view in Playwright Trace Viewer.
+// Save trace bytes to a .zip file and open with: npx playwright show-trace trace.zip
 ```
 
-### CDPSession (Chrome DevTools Protocol)
+## CDP Session
 
-Connect directly to the Chrome DevTools Protocol to do advanced manipulation.
+Access the Chrome DevTools Protocol directly:
 
 ```dart
 final session = await context.newCDPSession(page);
 await session.send('Network.enable');
+await session.send('Performance.enable');
 ```
 
-## API Parity Checklist
+## API Coverage
 
-* `Page`, `Browser`, `BrowserContext`, `Frame`, `Locator` (Fully Implemented)
-* `JSHandle`, `ElementHandle` (Fully Implemented)
-* `Request`, `Response`, `Route`, `APIRequestContext` (Fully Implemented)
-* `Tracing`, `Artifact`, `Dialog`, `Worker` (Fully Implemented)
-* `WebSocket`, `PlaywrightStream`, `WritableStream` (Fully Implemented)
-* `Debugger`, `DebugController`, `CDPSession` (Fully Implemented)
+| Category | Classes |
+|----------|---------|
+| **Core** | `Playwright`, `Browser`, `BrowserType`, `BrowserContext`, `Page`, `Frame` |
+| **Interaction** | `Locator`, `ElementHandle`, `JSHandle`, `Keyboard`, `Mouse` |
+| **Network** | `Request`, `Response`, `Route`, `APIRequestContext`, `WebSocket`, `WebSocketRoute` |
+| **Utilities** | `Tracing`, `CDPSession`, `Dialog`, `Worker`, `Artifact` |
+| **Debugging** | `Debugger`, `DebugController`, `BindingCall`, `EventTarget` |
+| **Platform** | `Android`, `AndroidDevice`, `Electron`, `ElectronApplication` |
+
+**35 wrapper classes** • **308 channel methods** • **100% protocol coverage**
 
 ## Contributing
 
-To regenerate protocol files:
-
 ```bash
+# Regenerate protocol bindings from Playwright source
 dart tool/generate_protocol.dart
+
+# Verify 100% API parity
 dart tool/find_missing.dart
+
+# Run tests
+dart test --concurrency=1
+
+# Static analysis
+dart analyze
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE) for details.

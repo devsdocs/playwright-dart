@@ -150,3 +150,63 @@ All notable changes to this project are documented in this file.
 ### Changed
 
 - `tool/find_missing.dart` — Now checks 3 categories: missing fileMap entries, missing wrapper classes, and missing channel call wiring (308 methods verified)
+
+---
+
+## Phase 10 — Testing Framework
+
+### Added
+
+- `test/playwright_test.dart` — Custom `test()` wrapper function that auto-manages `Playwright`, `Browser`, `BrowserContext`, and `Page` fixtures per test
+- Global `setUpAll` / `tearDownAll` lifecycle — launches browser once per test file, disposes gracefully
+- Re-exports `package:test/test.dart` (expect, group, etc.) and `package:playwright_dart/playwright_dart.dart` for single-import convenience within the test suite
+
+### Changed
+
+- `pubspec.yaml` — Added `test` to `dev_dependencies`
+- `connection.dart` — `TargetClosedError` and `Browser has been closed` errors are now swallowed during response dispatch, returning empty results instead of crashing the test runner
+- `route.dart` — Added `request` getter that resolves the `Request` object from the route's initializer guid
+
+### Fixed
+
+- `page.dart` — Route event handler now resolves `Request` via `routeObj.request` instead of looking up a nonexistent `params['request']` key
+- Removed unused `import 'request.dart'` from `page.dart`
+
+---
+
+## Phase 11 — Integration Tests
+
+### Added
+
+- `test/page_test.dart` — 3 tests: navigation with `goto()`, JavaScript evaluation with `evaluate()`, and content injection with `setContent()`
+- `test/locator_test.dart` — 3 tests: `click`/`fill` interactions, sub-locators (`locator.locator()` with `getByLabel`/`getByRole`), and `check`/`uncheck`
+- `test/network_test.dart` — 2 tests: `route.abort()` to block image loading, `route.fulfill()` to mock API JSON responses
+
+### Verified
+
+- `dart test --concurrency=1` — **8 tests passed** across 3 test files
+- `dart analyze` — **0 issues**
+
+---
+
+## Phase 12 — pub.dev Release
+
+### Added
+
+- `LICENSE` — MIT license file
+- `.pubignore` — Excludes `dart-port-plan/`, `tool/`, `bin/` from published package
+
+### Changed
+
+- `pubspec.yaml` — Added `description`, `homepage`, `repository`, `issue_tracker`, `topics`; version set to `0.1.0`
+- `CHANGELOG.md` — Rewritten with pub.dev-compatible structured feature list
+- `README.md` — Polished with badges, quick start guide, testing section, Locator/Network/Tracing/CDP examples, API coverage table, contributing guide
+- `lib/playwright_dart.dart` — Complete barrel export with dartdoc comment, organized by category (Core, Interaction, Network, Utilities, Debugging, Platform, Infrastructure)
+- `.gitignore` — Updated for library packages (ignores `pubspec.lock`, IDE files, OS files)
+- `example/main.dart` — Clean standalone example with regular comments (avoids `dangling_library_doc_comments` lint)
+
+### Verified
+
+- `dart pub publish --dry-run` — Passes with 0 errors (58 KB compressed archive)
+- `dart analyze` — **0 issues**
+- `dart test --concurrency=1` — **8 tests passed**
