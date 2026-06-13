@@ -1,3 +1,10 @@
+## 1.0.0
+
+First stable major release.
+
+- Promoted package version to `1.0.0`.
+- Includes all features and fixes delivered in the `0.1.x` line.
+
 ## 0.1.2
 
 Update pubspec information
