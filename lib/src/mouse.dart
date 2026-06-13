@@ -34,6 +34,15 @@ class Mouse {
     );
   }
 
+  Future<void> dblclick(
+    double x,
+    double y, {
+    double? delay,
+    PageMouseClickButtonEnum? button,
+  }) async {
+    await click(x, y, delay: delay, button: button, clickCount: 2);
+  }
+
   Future<void> wheel(double deltaX, double deltaY) async {
     await page.channel_mouseWheel(deltaX: deltaX, deltaY: deltaY);
   }

@@ -17,6 +17,11 @@ import 'src/file_upload_test_cases.dart' as file_upload_test_cases;
 import 'src/page_navigation_test_cases.dart' as page_navigation_test_cases;
 import 'src/locator_advanced_test_cases.dart' as locator_advanced_test_cases;
 import 'src/evaluate_test_cases.dart' as evaluate_test_cases;
+import 'src/page_advanced_test_cases.dart' as page_advanced_test_cases;
+import 'src/browser_context_advanced_test_cases.dart'
+    as browser_context_advanced_test_cases;
+import 'src/network_advanced_test_cases.dart' as network_advanced_test_cases;
+import 'src/input_devices_test_cases.dart' as input_devices_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -43,5 +48,9 @@ void main() {
   page_navigation_test_cases.main();
   locator_advanced_test_cases.main();
   evaluate_test_cases.main();
+  page_advanced_test_cases.main();
+  browser_context_advanced_test_cases.main();
+  network_advanced_test_cases.main();
+  input_devices_test_cases.main();
   real_world_test_cases.main();
 }
