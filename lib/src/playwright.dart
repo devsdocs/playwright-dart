@@ -1,3 +1,5 @@
+import 'package:playwright_dart/src/websocket_transport.dart';
+
 import 'channel_owner.dart';
 import 'browser_type.dart';
 import 'browser.dart';
@@ -6,7 +8,6 @@ import 'generated/channels.dart';
 import 'driver.dart';
 import 'transport.dart';
 import 'connection.dart';
-import 'remote_connect.dart';
 
 class Playwright extends PlaywrightBase {
   late final BrowserType chromium;
@@ -90,10 +91,23 @@ class PlaywrightDart {
     Map<String, dynamic>? headers,
     double? timeout,
   }) async {
-    return connectRemotePlaywright(
-      wsEndpoint,
-      headers: headers,
-      timeout: timeout,
-    );
+      final wsTransport = await WebSocketTransport.connect(
+        wsEndpoint,
+        headers: headers,
+      );
+      final newConnection = Connection(wsTransport);
+    
+      final result = await newConnection.sendMessageToServer('', 'initialize', {
+        'sdkLanguage': 'javascript',
+      });
+    
+      final preconnectedBrowser = result['preconnectedBrowser'];
+      if (preconnectedBrowser != null) {
+        return ChannelOwner.from<Browser>(newConnection, preconnectedBrowser);
+      }
+    
+      throw Exception(
+        'No preconnected browser found on the remote Playwright server.',
+      );
   }
 }
