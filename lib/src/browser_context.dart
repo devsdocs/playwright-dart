@@ -115,9 +115,11 @@ class BrowserContext extends BrowserContextBase {
     return result;
   }
 
-  Future<void> setStorageState(Map<String, dynamic> state) async {
+  Future<void> setStorageState(Map<String, dynamic> storageState) async {
     await channel_setStorageState(
-      storageState: BrowserContextSetStorageStateStorageState.fromJson(state),
+      storageState: BrowserContextSetStorageStateStorageState.fromJson(
+        storageState,
+      ),
     );
   }
 
