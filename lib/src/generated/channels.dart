@@ -5001,8 +5001,9 @@ abstract class APIRequestContextBase extends ChannelOwner {
     if (failOnStatusCode != null) params['failOnStatusCode'] = failOnStatusCode;
     if (formData != null) params['formData'] = formData;
     if (headers != null) params['headers'] = headers;
-    if (ignoreHTTPSErrors != null)
+    if (ignoreHTTPSErrors != null) {
       params['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
+    }
     if (jsonData != null) params['jsonData'] = jsonData;
     if (maxRedirects != null) params['maxRedirects'] = maxRedirects;
     if (maxRetries != null) params['maxRetries'] = maxRetries;
@@ -5088,8 +5089,9 @@ abstract class AndroidBase extends ChannelOwner {
   }) async {
     final params = <String, dynamic>{};
     if (host != null) params['host'] = host;
-    if (omitDriverInstall != null)
+    if (omitDriverInstall != null) {
       params['omitDriverInstall'] = omitDriverInstall;
+    }
     if (port != null) params['port'] = port;
     final response = await connection.sendMessageToServer(
       guid,
@@ -5273,7 +5275,7 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     Map<String, dynamic>? proxy,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
+    params.addAll(mixin.toJson());
     if (args != null) params['args'] = args;
     if (pkg != null) params['pkg'] = pkg;
     if (proxy != null) params['proxy'] = proxy;
@@ -5450,7 +5452,7 @@ abstract class AndroidDeviceBase extends EventTargetBase {
   }) async {
     final params = <String, dynamic>{};
     params['androidSelector'] = androidSelector.toJson();
-    if (state != null) params['state'] = state?.value;
+    if (state != null) params['state'] = state.value;
     params['timeout'] = timeout;
     final response = await connection.sendMessageToServer(guid, 'wait', params);
     return;
@@ -5654,7 +5656,7 @@ abstract class BrowserBase extends ChannelOwner {
     Map<String, dynamic>? storageState,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
+    params.addAll(mixin.toJson());
     if (proxy != null) params['proxy'] = proxy;
     if (storageState != null) params['storageState'] = storageState;
     final response = await connection.sendMessageToServer(
@@ -5671,7 +5673,7 @@ abstract class BrowserBase extends ChannelOwner {
     Map<String, dynamic>? storageState,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
+    params.addAll(mixin.toJson());
     if (proxy != null) params['proxy'] = proxy;
     if (storageState != null) params['storageState'] = storageState;
     final response = await connection.sendMessageToServer(
@@ -5713,7 +5715,7 @@ abstract class BrowserBase extends ChannelOwner {
   }) async {
     final params = <String, dynamic>{};
     if (categories != null) params['categories'] = categories;
-    if (page != null) params['page'] = page?.guid;
+    if (page != null) params['page'] = page.guid;
     if (screenshots != null) params['screenshots'] = screenshots;
     final response = await connection.sendMessageToServer(
       guid,
@@ -5794,8 +5796,9 @@ abstract class BrowserContextBase extends EventTargetBase {
     final params = <String, dynamic>{};
     if (domain != null) params['domain'] = domain;
     if (domainRegexFlags != null) params['domainRegexFlags'] = domainRegexFlags;
-    if (domainRegexSource != null)
+    if (domainRegexSource != null) {
       params['domainRegexSource'] = domainRegexSource;
+    }
     if (name != null) params['name'] = name;
     if (nameRegexFlags != null) params['nameRegexFlags'] = nameRegexFlags;
     if (nameRegexSource != null) params['nameRegexSource'] = nameRegexSource;
@@ -5992,15 +5995,17 @@ abstract class BrowserContextBase extends EventTargetBase {
     if (handleSIGINT != null) params['handleSIGINT'] = handleSIGINT;
     if (language != null) params['language'] = language;
     if (launchOptions != null) params['launchOptions'] = launchOptions;
-    if (mode != null) params['mode'] = mode?.value;
+    if (mode != null) params['mode'] = mode.value;
     if (omitCallTracking != null) params['omitCallTracking'] = omitCallTracking;
     if (outputFile != null) params['outputFile'] = outputFile;
-    if (pauseOnNextStatement != null)
+    if (pauseOnNextStatement != null) {
       params['pauseOnNextStatement'] = pauseOnNextStatement;
-    if (recorderMode != null) params['recorderMode'] = recorderMode?.value;
+    }
+    if (recorderMode != null) params['recorderMode'] = recorderMode.value;
     if (saveStorage != null) params['saveStorage'] = saveStorage;
-    if (testIdAttributeName != null)
+    if (testIdAttributeName != null) {
       params['testIdAttributeName'] = testIdAttributeName;
+    }
     final response = await connection.sendMessageToServer(
       guid,
       'enableRecorder',
@@ -6054,8 +6059,8 @@ abstract class BrowserContextBase extends EventTargetBase {
     PageBase? page,
   }) async {
     final params = <String, dynamic>{};
-    if (frame != null) params['frame'] = frame?.guid;
-    if (page != null) params['page'] = page?.guid;
+    if (frame != null) params['frame'] = frame.guid;
+    if (page != null) params['page'] = page.guid;
     final response = await connection.sendMessageToServer(
       guid,
       'newCDPSession',
@@ -6285,7 +6290,7 @@ abstract class BrowserTypeBase extends ChannelOwner {
     double? slowMo,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
+    params.addAll(mixin.toJson());
     if (slowMo != null) params['slowMo'] = slowMo;
     final response = await connection.sendMessageToServer(
       guid,
@@ -6303,8 +6308,8 @@ abstract class BrowserTypeBase extends ChannelOwner {
     required String userDataDir,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin1.toJson() as Map<String, dynamic>);
-    params.addAll(mixin2.toJson() as Map<String, dynamic>);
+    params.addAll(mixin1.toJson());
+    params.addAll(mixin2.toJson());
     if (slowMo != null) params['slowMo'] = slowMo;
     params['userDataDir'] = userDataDir;
     final response = await connection.sendMessageToServer(
@@ -6409,11 +6414,13 @@ abstract class DebugControllerBase extends ChannelOwner {
     String? testIdAttributeName,
   }) async {
     final params = <String, dynamic>{};
-    if (generateAutoExpect != null)
+    if (generateAutoExpect != null) {
       params['generateAutoExpect'] = generateAutoExpect;
+    }
     params['mode'] = mode.value;
-    if (testIdAttributeName != null)
+    if (testIdAttributeName != null) {
       params['testIdAttributeName'] = testIdAttributeName;
+    }
     final response = await connection.sendMessageToServer(
       guid,
       'setRecorderMode',
@@ -6549,28 +6556,31 @@ abstract class ElectronBase extends ChannelOwner {
     String? tracesDir,
   }) async {
     final params = <String, dynamic>{};
-    if (acceptDownloads != null)
-      params['acceptDownloads'] = acceptDownloads?.value;
+    if (acceptDownloads != null) {
+      params['acceptDownloads'] = acceptDownloads.value;
+    }
     if (args != null) params['args'] = args;
     if (artifactsDir != null) params['artifactsDir'] = artifactsDir;
     if (bypassCSP != null) params['bypassCSP'] = bypassCSP;
     if (chromiumSandbox != null) params['chromiumSandbox'] = chromiumSandbox;
-    if (colorScheme != null) params['colorScheme'] = colorScheme?.value;
+    if (colorScheme != null) params['colorScheme'] = colorScheme.value;
     if (cwd != null) params['cwd'] = cwd;
     if (env != null) params['env'] = env;
     if (executablePath != null) params['executablePath'] = executablePath;
     if (extraHTTPHeaders != null) params['extraHTTPHeaders'] = extraHTTPHeaders;
     if (geolocation != null) params['geolocation'] = geolocation;
     if (httpCredentials != null) params['httpCredentials'] = httpCredentials;
-    if (ignoreHTTPSErrors != null)
+    if (ignoreHTTPSErrors != null) {
       params['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
+    }
     if (locale != null) params['locale'] = locale;
     if (offline != null) params['offline'] = offline;
     if (recordVideo != null) params['recordVideo'] = recordVideo;
     if (selectorEngines != null) params['selectorEngines'] = selectorEngines;
     if (strictSelectors != null) params['strictSelectors'] = strictSelectors;
-    if (testIdAttributeName != null)
+    if (testIdAttributeName != null) {
       params['testIdAttributeName'] = testIdAttributeName;
+    }
     params['timeout'] = timeout;
     if (timezoneId != null) params['timezoneId'] = timezoneId;
     if (tracesDir != null) params['tracesDir'] = tracesDir;
@@ -6695,7 +6705,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }) async {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['timeout'] = timeout;
     if (trial != null) params['trial'] = trial;
     final response = await connection.sendMessageToServer(
@@ -6719,13 +6729,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     bool? trial,
   }) async {
     final params = <String, dynamic>{};
-    if (button != null) params['button'] = button?.value;
+    if (button != null) params['button'] = button.value;
     if (clickCount != null) params['clickCount'] = clickCount;
     if (delay != null) params['delay'] = delay;
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
     if (noWaitAfter != null) params['noWaitAfter'] = noWaitAfter;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     if (steps != null) params['steps'] = steps;
     params['timeout'] = timeout;
     if (trial != null) params['trial'] = trial;
@@ -6760,11 +6770,11 @@ abstract class ElementHandleBase extends JSHandleBase {
     bool? trial,
   }) async {
     final params = <String, dynamic>{};
-    if (button != null) params['button'] = button?.value;
+    if (button != null) params['button'] = button.value;
     if (delay != null) params['delay'] = delay;
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     if (steps != null) params['steps'] = steps;
     params['timeout'] = timeout;
     if (trial != null) params['trial'] = trial;
@@ -6881,7 +6891,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['timeout'] = timeout;
     if (trial != null) params['trial'] = trial;
     final response = await connection.sendMessageToServer(
@@ -7068,10 +7078,10 @@ abstract class ElementHandleBase extends JSHandleBase {
     ElementHandleScreenshotTypeEnum? type,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
+    params.addAll(mixin.toJson());
     if (quality != null) params['quality'] = quality;
     params['timeout'] = timeout;
-    if (type != null) params['type'] = type?.value;
+    if (type != null) params['type'] = type.value;
     final response = await connection.sendMessageToServer(
       guid,
       'screenshot',
@@ -7140,8 +7150,9 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
   }) async {
     final params = <String, dynamic>{};
-    if (directoryStream != null)
-      params['directoryStream'] = directoryStream?.guid;
+    if (directoryStream != null) {
+      params['directoryStream'] = directoryStream.guid;
+    }
     if (localDirectory != null) params['localDirectory'] = localDirectory;
     if (localPaths != null) params['localPaths'] = localPaths;
     if (payloads != null) params['payloads'] = payloads;
@@ -7165,7 +7176,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['timeout'] = timeout;
     if (trial != null) params['trial'] = trial;
     final response = await connection.sendMessageToServer(guid, 'tap', params);
@@ -7205,7 +7216,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }) async {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['timeout'] = timeout;
     if (trial != null) params['trial'] = trial;
     final response = await connection.sendMessageToServer(
@@ -7239,7 +7250,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }) async {
     final params = <String, dynamic>{};
     params['selector'] = selector;
-    if (state != null) params['state'] = state?.value;
+    if (state != null) params['state'] = state.value;
     if (strict != null) params['strict'] = strict;
     params['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -7329,7 +7340,7 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     if (boxes != null) params['boxes'] = boxes;
     if (depth != null) params['depth'] = depth;
-    if (mode != null) params['mode'] = mode?.value;
+    if (mode != null) params['mode'] = mode.value;
     if (selector != null) params['selector'] = selector;
     params['timeout'] = timeout;
     if (track != null) params['track'] = track;
@@ -7364,7 +7375,7 @@ abstract class FrameBase extends ChannelOwner {
   }) async {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['selector'] = selector;
     if (strict != null) params['strict'] = strict;
     params['timeout'] = timeout;
@@ -7392,13 +7403,13 @@ abstract class FrameBase extends ChannelOwner {
     bool? trial,
   }) async {
     final params = <String, dynamic>{};
-    if (button != null) params['button'] = button?.value;
+    if (button != null) params['button'] = button.value;
     if (clickCount != null) params['clickCount'] = clickCount;
     if (delay != null) params['delay'] = delay;
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
     if (noWaitAfter != null) params['noWaitAfter'] = noWaitAfter;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['selector'] = selector;
     if (steps != null) params['steps'] = steps;
     if (strict != null) params['strict'] = strict;
@@ -7430,11 +7441,11 @@ abstract class FrameBase extends ChannelOwner {
     bool? trial,
   }) async {
     final params = <String, dynamic>{};
-    if (button != null) params['button'] = button?.value;
+    if (button != null) params['button'] = button.value;
     if (delay != null) params['delay'] = delay;
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['selector'] = selector;
     if (steps != null) params['steps'] = steps;
     if (strict != null) params['strict'] = strict;
@@ -7483,13 +7494,15 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
     params['source'] = source;
-    if (sourcePosition != null)
-      params['sourcePosition'] = sourcePosition?.toJson();
+    if (sourcePosition != null) {
+      params['sourcePosition'] = sourcePosition.toJson();
+    }
     if (steps != null) params['steps'] = steps;
     if (strict != null) params['strict'] = strict;
     params['target'] = target;
-    if (targetPosition != null)
-      params['targetPosition'] = targetPosition?.toJson();
+    if (targetPosition != null) {
+      params['targetPosition'] = targetPosition.toJson();
+    }
     params['timeout'] = timeout;
     if (trial != null) params['trial'] = trial;
     final response = await connection.sendMessageToServer(
@@ -7514,7 +7527,7 @@ abstract class FrameBase extends ChannelOwner {
     if (data != null) params['data'] = data;
     if (localPaths != null) params['localPaths'] = localPaths;
     if (payloads != null) params['payloads'] = payloads;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['selector'] = selector;
     if (streams != null) params['streams'] = streams;
     if (strict != null) params['strict'] = strict;
@@ -7621,12 +7634,13 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     if (expectedNumber != null) params['expectedNumber'] = expectedNumber;
     if (expectedText != null) params['expectedText'] = expectedText;
-    if (expectedValue != null)
-      params['expectedValue'] = expectedValue?.toJson();
+    if (expectedValue != null) {
+      params['expectedValue'] = expectedValue.toJson();
+    }
     params['expression'] = expression;
     if (expressionArg != null) params['expressionArg'] = expressionArg;
     params['isNot'] = isNot;
-    if (pseudo != null) params['pseudo'] = pseudo?.value;
+    if (pseudo != null) params['pseudo'] = pseudo.value;
     if (selector != null) params['selector'] = selector;
     params['timeout'] = timeout;
     if (useInnerText != null) params['useInnerText'] = useInnerText;
@@ -7710,7 +7724,7 @@ abstract class FrameBase extends ChannelOwner {
     if (referer != null) params['referer'] = referer;
     params['timeout'] = timeout;
     params['url'] = url;
-    if (waitUntil != null) params['waitUntil'] = waitUntil?.value;
+    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(guid, 'goto', params);
     return FrameGotoResult.fromJson(response, connection: connection);
   }
@@ -7753,7 +7767,7 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['selector'] = selector;
     if (strict != null) params['strict'] = strict;
     params['timeout'] = timeout;
@@ -8029,7 +8043,7 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     params['html'] = html;
     params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil?.value;
+    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'setContent',
@@ -8049,8 +8063,9 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
   }) async {
     final params = <String, dynamic>{};
-    if (directoryStream != null)
-      params['directoryStream'] = directoryStream?.guid;
+    if (directoryStream != null) {
+      params['directoryStream'] = directoryStream.guid;
+    }
     if (localDirectory != null) params['localDirectory'] = localDirectory;
     if (localPaths != null) params['localPaths'] = localPaths;
     if (payloads != null) params['payloads'] = payloads;
@@ -8078,7 +8093,7 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
     if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['selector'] = selector;
     if (strict != null) params['strict'] = strict;
     params['timeout'] = timeout;
@@ -8136,7 +8151,7 @@ abstract class FrameBase extends ChannelOwner {
   }) async {
     final params = <String, dynamic>{};
     if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position?.toJson();
+    if (position != null) params['position'] = position.toJson();
     params['selector'] = selector;
     if (strict != null) params['strict'] = strict;
     params['timeout'] = timeout;
@@ -8183,7 +8198,7 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     if (omitReturnValue != null) params['omitReturnValue'] = omitReturnValue;
     params['selector'] = selector;
-    if (state != null) params['state'] = state?.value;
+    if (state != null) params['state'] = state.value;
     if (strict != null) params['strict'] = strict;
     params['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -8356,8 +8371,9 @@ abstract class LocalUtilsBase extends ChannelOwner {
     if (exposeNetwork != null) params['exposeNetwork'] = exposeNetwork;
     if (headers != null) params['headers'] = headers;
     if (slowMo != null) params['slowMo'] = slowMo;
-    if (socksProxyRedirectPortForTest != null)
+    if (socksProxyRedirectPortForTest != null) {
       params['socksProxyRedirectPortForTest'] = socksProxyRedirectPortForTest;
+    }
     params['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
@@ -8491,8 +8507,9 @@ abstract class LocalUtilsBase extends ChannelOwner {
     required String zipFile,
   }) async {
     final params = <String, dynamic>{};
-    if (additionalSources != null)
+    if (additionalSources != null) {
       params['additionalSources'] = additionalSources;
+    }
     params['entries'] = entries;
     params['includeSources'] = includeSources;
     params['mode'] = mode.value;
@@ -8577,7 +8594,7 @@ abstract class PageBase extends EventTargetBase {
     ConsoleMessagesFilter? filter,
   }) async {
     final params = <String, dynamic>{};
-    if (filter != null) params['filter'] = filter?.value;
+    if (filter != null) params['filter'] = filter.value;
     final response = await connection.sendMessageToServer(
       guid,
       'consoleMessages',
@@ -8594,11 +8611,11 @@ abstract class PageBase extends EventTargetBase {
     PageEmulateMediaReducedMotionEnum? reducedMotion,
   }) async {
     final params = <String, dynamic>{};
-    if (colorScheme != null) params['colorScheme'] = colorScheme?.value;
-    if (contrast != null) params['contrast'] = contrast?.value;
-    if (forcedColors != null) params['forcedColors'] = forcedColors?.value;
-    if (media != null) params['media'] = media?.value;
-    if (reducedMotion != null) params['reducedMotion'] = reducedMotion?.value;
+    if (colorScheme != null) params['colorScheme'] = colorScheme.value;
+    if (contrast != null) params['contrast'] = contrast.value;
+    if (forcedColors != null) params['forcedColors'] = forcedColors.value;
+    if (media != null) params['media'] = media.value;
+    if (reducedMotion != null) params['reducedMotion'] = reducedMotion.value;
     final response = await connection.sendMessageToServer(
       guid,
       'emulateMedia',
@@ -8621,15 +8638,16 @@ abstract class PageBase extends EventTargetBase {
     required double timeout,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
-    if (clip != null) params['clip'] = clip?.toJson();
+    params.addAll(mixin.toJson());
+    if (clip != null) params['clip'] = clip.toJson();
     if (comparator != null) params['comparator'] = comparator;
     if (expected != null) params['expected'] = expected;
     if (fullPage != null) params['fullPage'] = fullPage;
     params['isNot'] = isNot;
     if (locator != null) params['locator'] = locator;
-    if (maxDiffPixelRatio != null)
+    if (maxDiffPixelRatio != null) {
       params['maxDiffPixelRatio'] = maxDiffPixelRatio;
+    }
     if (maxDiffPixels != null) params['maxDiffPixels'] = maxDiffPixels;
     if (threshold != null) params['threshold'] = threshold;
     params['timeout'] = timeout;
@@ -8663,7 +8681,7 @@ abstract class PageBase extends EventTargetBase {
   }) async {
     final params = <String, dynamic>{};
     params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil?.value;
+    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'goBack',
@@ -8678,7 +8696,7 @@ abstract class PageBase extends EventTargetBase {
   }) async {
     final params = <String, dynamic>{};
     params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil?.value;
+    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'goForward',
@@ -8767,7 +8785,7 @@ abstract class PageBase extends EventTargetBase {
     required double y,
   }) async {
     final params = <String, dynamic>{};
-    if (button != null) params['button'] = button?.value;
+    if (button != null) params['button'] = button.value;
     if (clickCount != null) params['clickCount'] = clickCount;
     if (delay != null) params['delay'] = delay;
     params['x'] = x;
@@ -8785,7 +8803,7 @@ abstract class PageBase extends EventTargetBase {
     int? clickCount,
   }) async {
     final params = <String, dynamic>{};
-    if (button != null) params['button'] = button?.value;
+    if (button != null) params['button'] = button.value;
     if (clickCount != null) params['clickCount'] = clickCount;
     final response = await connection.sendMessageToServer(
       guid,
@@ -8817,7 +8835,7 @@ abstract class PageBase extends EventTargetBase {
     int? clickCount,
   }) async {
     final params = <String, dynamic>{};
-    if (button != null) params['button'] = button?.value;
+    if (button != null) params['button'] = button.value;
     if (clickCount != null) params['clickCount'] = clickCount;
     final response = await connection.sendMessageToServer(
       guid,
@@ -8846,7 +8864,7 @@ abstract class PageBase extends EventTargetBase {
     ConsoleMessagesFilter? filter,
   }) async {
     final params = <String, dynamic>{};
-    if (filter != null) params['filter'] = filter?.value;
+    if (filter != null) params['filter'] = filter.value;
     final response = await connection.sendMessageToServer(
       guid,
       'pageErrors',
@@ -8872,8 +8890,9 @@ abstract class PageBase extends EventTargetBase {
     String? width,
   }) async {
     final params = <String, dynamic>{};
-    if (displayHeaderFooter != null)
+    if (displayHeaderFooter != null) {
       params['displayHeaderFooter'] = displayHeaderFooter;
+    }
     if (footerTemplate != null) params['footerTemplate'] = footerTemplate;
     if (format != null) params['format'] = format;
     if (headerTemplate != null) params['headerTemplate'] = headerTemplate;
@@ -8882,8 +8901,9 @@ abstract class PageBase extends EventTargetBase {
     if (margin != null) params['margin'] = margin;
     if (outline != null) params['outline'] = outline;
     if (pageRanges != null) params['pageRanges'] = pageRanges;
-    if (preferCSSPageSize != null)
+    if (preferCSSPageSize != null) {
       params['preferCSSPageSize'] = preferCSSPageSize;
+    }
     if (printBackground != null) params['printBackground'] = printBackground;
     if (scale != null) params['scale'] = scale;
     if (tagged != null) params['tagged'] = tagged;
@@ -8925,7 +8945,7 @@ abstract class PageBase extends EventTargetBase {
   }) async {
     final params = <String, dynamic>{};
     params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil?.value;
+    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'reload',
@@ -9017,7 +9037,7 @@ abstract class PageBase extends EventTargetBase {
     required ShowActionsOptions mixin,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
+    params.addAll(mixin.toJson());
     final response = await connection.sendMessageToServer(
       guid,
       'screencastShowActions',
@@ -9081,12 +9101,12 @@ abstract class PageBase extends EventTargetBase {
     PageScreenshotTypeEnum? type,
   }) async {
     final params = <String, dynamic>{};
-    params.addAll(mixin.toJson() as Map<String, dynamic>);
-    if (clip != null) params['clip'] = clip?.toJson();
+    params.addAll(mixin.toJson());
+    if (clip != null) params['clip'] = clip.toJson();
     if (fullPage != null) params['fullPage'] = fullPage;
     if (quality != null) params['quality'] = quality;
     params['timeout'] = timeout;
-    if (type != null) params['type'] = type?.value;
+    if (type != null) params['type'] = type.value;
     final response = await connection.sendMessageToServer(
       guid,
       'screenshot',
@@ -9160,8 +9180,9 @@ abstract class PageBase extends EventTargetBase {
 
   Future<void> channel_startCSSCoverage({bool? resetOnNavigation}) async {
     final params = <String, dynamic>{};
-    if (resetOnNavigation != null)
+    if (resetOnNavigation != null) {
       params['resetOnNavigation'] = resetOnNavigation;
+    }
     final response = await connection.sendMessageToServer(
       guid,
       'startCSSCoverage',
@@ -9175,10 +9196,12 @@ abstract class PageBase extends EventTargetBase {
     bool? resetOnNavigation,
   }) async {
     final params = <String, dynamic>{};
-    if (reportAnonymousScripts != null)
+    if (reportAnonymousScripts != null) {
       params['reportAnonymousScripts'] = reportAnonymousScripts;
-    if (resetOnNavigation != null)
+    }
+    if (resetOnNavigation != null) {
       params['resetOnNavigation'] = resetOnNavigation;
+    }
     final response = await connection.sendMessageToServer(
       guid,
       'startJSCoverage',
@@ -9271,13 +9294,15 @@ abstract class PlaywrightBase extends ChannelOwner {
   }) async {
     final params = <String, dynamic>{};
     if (baseURL != null) params['baseURL'] = baseURL;
-    if (clientCertificates != null)
+    if (clientCertificates != null) {
       params['clientCertificates'] = clientCertificates;
+    }
     if (extraHTTPHeaders != null) params['extraHTTPHeaders'] = extraHTTPHeaders;
     if (failOnStatusCode != null) params['failOnStatusCode'] = failOnStatusCode;
     if (httpCredentials != null) params['httpCredentials'] = httpCredentials;
-    if (ignoreHTTPSErrors != null)
+    if (ignoreHTTPSErrors != null) {
       params['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
+    }
     if (maxRedirects != null) params['maxRedirects'] = maxRedirects;
     if (proxy != null) params['proxy'] = proxy;
     if (storageState != null) params['storageState'] = storageState;
@@ -9616,7 +9641,7 @@ abstract class TracingBase extends ChannelOwner {
   }) async {
     final params = <String, dynamic>{};
     params['options'] = options.toJson();
-    if (page != null) params['page'] = page?.guid;
+    if (page != null) params['page'] = page.guid;
     final response = await connection.sendMessageToServer(
       guid,
       'harStart',

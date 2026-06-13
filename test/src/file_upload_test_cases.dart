@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:playwright_dart/src/file_payload.dart';
 import '../test_helper.dart';
 
 void main() {
@@ -19,21 +18,21 @@ void main() {
           });
         </script>
       ''');
-      
+
       final payload = FilePayload(
         name: 'test.txt',
         mimeType: 'text/plain',
         buffer: utf8.encode('Hello from Playwright Dart!'),
       );
-      
+
       await page.locator('#upload').setInputFiles([payload]);
-      
+
       // Wait for file reader to load
       await page.waitForFunction('() => fileContent !== ""');
-      
+
       final fileName = await page.evaluate('() => fileName');
       final fileContent = await page.evaluate('() => fileContent');
-      
+
       expect(fileName, equals('test.txt'));
       expect(fileContent, equals('Hello from Playwright Dart!'));
     });

@@ -79,7 +79,11 @@ void main() {
         expect(title, contains('Playwright'));
 
         // Click "Get started" link - use a more specific selector
-        await page.locator('.hero__subtitle a, a.getStarted, a:has-text("Get started")').click(timeout: 15000);
+        await page
+            .locator(
+              '.hero__subtitle a, a.getStarted, a:has-text("Get started")',
+            )
+            .click(timeout: 15000);
 
         // Verify navigation to intro/installation page
         final currentUrl = await page.evaluate('() => window.location.href');

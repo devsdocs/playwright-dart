@@ -319,7 +319,8 @@ void main() async {
             type.length - (type.endsWith('?') ? 2 : 1),
           );
           if (innerType == 'double') {
-            parser = '(json[\'$wireName\'] as List?)?.map((e) => (e as num).toDouble()).toList()';
+            parser =
+                '(json[\'$wireName\'] as List?)?.map((e) => (e as num).toDouble()).toList()';
           } else if (innerType == 'String' ||
               innerType == 'int' ||
               innerType == 'bool' ||

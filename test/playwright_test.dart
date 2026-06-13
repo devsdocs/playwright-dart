@@ -14,6 +14,9 @@ import 'src/emulation_test_cases.dart' as emulation_test_cases;
 import 'src/touchscreen_test_cases.dart' as touchscreen_test_cases;
 import 'src/waiting_test_cases.dart' as waiting_test_cases;
 import 'src/file_upload_test_cases.dart' as file_upload_test_cases;
+import 'src/page_navigation_test_cases.dart' as page_navigation_test_cases;
+import 'src/locator_advanced_test_cases.dart' as locator_advanced_test_cases;
+import 'src/evaluate_test_cases.dart' as evaluate_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -37,5 +40,8 @@ void main() {
   touchscreen_test_cases.main();
   waiting_test_cases.main();
   file_upload_test_cases.main();
+  page_navigation_test_cases.main();
+  locator_advanced_test_cases.main();
+  evaluate_test_cases.main();
   real_world_test_cases.main();
 }

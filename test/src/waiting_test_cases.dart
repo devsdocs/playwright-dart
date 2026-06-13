@@ -14,7 +14,7 @@ void main() {
           }, 500);
         </script>
       ''');
-      
+
       await page.waitForSelector('#target');
       final text = await page.locator('#target').innerText();
       expect(text, equals('Hello'));
@@ -27,7 +27,7 @@ void main() {
           setTimeout(() => { window.myVar = true; }, 500);
         </script>
       ''');
-      
+
       final result = await page.waitForFunction('() => window.myVar === true');
       expect(result, isNotNull);
     });
@@ -36,7 +36,10 @@ void main() {
       final startTime = DateTime.now();
       await page.waitForTimeout(500);
       final endTime = DateTime.now();
-      expect(endTime.difference(startTime).inMilliseconds, greaterThanOrEqualTo(450));
+      expect(
+        endTime.difference(startTime).inMilliseconds,
+        greaterThanOrEqualTo(450),
+      );
     });
   });
 }
