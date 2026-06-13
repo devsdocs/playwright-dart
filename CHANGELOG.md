@@ -1,3 +1,7 @@
+## 0.1.2
+
+Update pubspec information
+
 ## 0.1.1
 
 Dependencies bump
