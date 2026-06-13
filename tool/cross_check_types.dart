@@ -30,14 +30,39 @@ void main() async {
   int missingClasses = 0;
   int missingCommands = 0;
 
+  String allSrcContent = '';
+  final srcDir = Directory('lib/src');
+  for (final entity in srcDir.listSync(recursive: true)) {
+    if (entity is File &&
+        entity.path.endsWith('.dart') &&
+        !entity.path.contains('generated')) {
+      allSrcContent += '${entity.readAsStringSync()}\n';
+    }
+  }
+
+  int missingWrapperClasses = 0;
+  int missingWrapperCommands = 0;
+
   for (final entry in protocol.entries) {
     final name = entry.key;
     final def = entry.value as Map;
 
     if (def['type'] == 'interface') {
       if (!dartContent.contains('abstract class ${name}Base extends')) {
-        print('MISSING INTERFACE: $name');
+        print('MISSING IN CHANNELS: Interface $name');
         missingClasses++;
+      }
+
+      // Wrapper check
+      String wrapperClassName = name;
+      if (name == 'Stream') wrapperClassName = 'PlaywrightStream';
+      if (name == 'WebSocket') wrapperClassName = 'PlaywrightWebSocket';
+
+      if (!allSrcContent.contains('class $wrapperClassName ') &&
+          !allSrcContent.contains('class $wrapperClassName{') &&
+          !allSrcContent.contains('class $wrapperClassName\n')) {
+        print('MISSING IN WRAPPER: Class $wrapperClassName (YAML: $name)');
+        missingWrapperClasses++;
       }
 
       if (def.containsKey('commands')) {
@@ -45,32 +70,72 @@ void main() async {
         for (final cmdKey in commands.keys) {
           final cmdName = _sanitizeName(cmdKey.toString());
           if (!dartContent.contains('channel_$cmdName(')) {
-            print('MISSING COMMAND: $name.$cmdName');
+            print('MISSING IN CHANNELS: Command $name.$cmdName');
             missingCommands++;
+          }
+
+          // Very loose check for wrapper command
+          String wrapperCmdName = cmdName;
+          if (name == 'Page') {
+            if (cmdName.startsWith('keyboard')) {
+              wrapperCmdName = cmdName.replaceFirst('keyboard', '');
+              wrapperCmdName = wrapperCmdName.isEmpty
+                  ? cmdName
+                  : wrapperCmdName[0].toLowerCase() +
+                        wrapperCmdName.substring(1);
+            } else if (cmdName.startsWith('mouse')) {
+              wrapperCmdName = cmdName.replaceFirst('mouse', '');
+              wrapperCmdName = wrapperCmdName.isEmpty
+                  ? cmdName
+                  : wrapperCmdName[0].toLowerCase() +
+                        wrapperCmdName.substring(1);
+            } else if (cmdName.startsWith('touchscreen')) {
+              wrapperCmdName = cmdName.replaceFirst('touchscreen', '');
+              wrapperCmdName = wrapperCmdName.isEmpty
+                  ? cmdName
+                  : wrapperCmdName[0].toLowerCase() +
+                        wrapperCmdName.substring(1);
+            }
+          }
+
+          if (!allSrcContent.contains(' $wrapperCmdName(') &&
+              !allSrcContent.contains('get $wrapperCmdName')) {
+            print(
+              'MISSING IN WRAPPER: Command $name.$cmdName (mapped to $wrapperCmdName)',
+            );
+            missingWrapperCommands++;
           }
         }
       }
     } else if (def['type'] == 'object') {
       if (!dartContent.contains('class $name {')) {
-        print('MISSING STRUCT: $name');
+        print('MISSING IN CHANNELS: Struct $name');
         missingClasses++;
       }
     } else if (def['type'] == 'enum') {
       if (!dartContent.contains('enum $name {')) {
-        print('MISSING ENUM: $name');
+        print('MISSING IN CHANNELS: Enum $name');
         missingClasses++;
       }
     }
   }
 
   print('Cross-check complete.');
-  if (missingClasses > 0 || missingCommands > 0) {
+  if (missingClasses > 0 ||
+      missingCommands > 0 ||
+      missingWrapperClasses > 0 ||
+      missingWrapperCommands > 0) {
     print(
-      'Found $missingClasses missing classes/structs and $missingCommands missing commands.',
+      'Found $missingClasses missing classes/structs and $missingCommands missing commands in generated channels.',
+    );
+    print(
+      'Found $missingWrapperClasses missing interface wrappers and $missingWrapperCommands missing wrapper commands in lib/src.',
     );
     exit(1);
   } else {
-    print('All YML types map successfully to Dart types in channels.dart!');
+    print(
+      'All YML types map successfully to Dart types in channels.dart and wrapper classes!',
+    );
   }
 }
 
