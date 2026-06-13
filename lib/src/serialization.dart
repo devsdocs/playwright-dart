@@ -18,8 +18,8 @@ dynamic parseSerializedValue(SerializedValue value) {
   if (value.o != null) {
     final result = <String, dynamic>{};
     for (final entry in value.o!) {
-      result[entry['name'] as String] = parseSerializedValue(
-        SerializedValue.fromJson(entry['value'] as Map<String, dynamic>),
+      result[entry['k'] as String] = parseSerializedValue(
+        SerializedValue.fromJson(entry['v'] as Map<String, dynamic>),
       );
     }
     return result;
@@ -42,7 +42,7 @@ SerializedValue serializeValue(dynamic value) {
   }
   if (value is Map<String, dynamic>) {
     final o = value.entries
-        .map((e) => {'name': e.key, 'value': serializeValue(e.value).toJson()})
+        .map((e) => {'k': e.key, 'v': serializeValue(e.value).toJson()})
         .toList();
     return SerializedValue(o: o);
   }
