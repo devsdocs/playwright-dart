@@ -101,14 +101,14 @@ class Frame extends FrameBase {
     return parseSerializedValue(result.value);
   }
 
-  Future<void> waitForSelector(
+  Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
     FrameWaitForSelectorStateEnum? state,
     double? timeout,
     bool? strict,
     bool? omitReturnValue,
   }) async {
-    await channel_waitForSelector(
+    return await channel_waitForSelector(
       selector: selector,
       state: state,
       timeout: timeout ?? 30000.0,

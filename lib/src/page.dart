@@ -299,8 +299,18 @@ class Page extends PageBase {
   /// last redirect.
   ///
   /// `url` - URL to navigate page to. The url should include scheme, e.g. `https://`.
-  Future<void> goto(String url) async {
-    await mainFrame.goto(url);
+  Future<void> goto(
+    String url, {
+    double? timeout,
+    LifecycleEvent? waitUntil,
+    String? referer,
+  }) async {
+    await mainFrame.goto(
+      url,
+      timeout: timeout,
+      waitUntil: waitUntil,
+      referer: referer,
+    );
   }
 
   /// Waits for the required load state to be reached.
@@ -364,7 +374,7 @@ class Page extends PageBase {
   /// Returns when element specified by selector satisfies [state] option.
   ///
   /// Resolves to `null` if waiting for `hidden` or `detached`.
-  Future<void> waitForSelector(
+  Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
     FrameWaitForSelectorStateEnum? state,
     double? timeout,
