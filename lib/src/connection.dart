@@ -271,7 +271,12 @@ class Connection {
     // Normal event
     final object = objects[guid];
     if (object != null) {
+      if (method == 'console' || method == 'request' || method == 'response') {
+        print('RCV EVENT on $guid: $method -> $params');
+      }
       object.emitEvent(method, params);
+    } else {
+      print('Warning: Received event $method for unknown object $guid');
     }
   }
 

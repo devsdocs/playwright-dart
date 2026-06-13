@@ -1,5 +1,6 @@
 import 'channel_owner.dart';
 import 'generated/channels.dart';
+import 'frame.dart';
 
 /// Whenever the page sends a request for a network resource the following sequence of events are emitted by Page:
 /// - `page.on('request')` emitted when the request is issued by the page.
@@ -14,6 +15,9 @@ class Request extends RequestBase {
 
   /// URL of the request.
   String get url => initializer['url'] as String;
+
+  /// Frame that initiated this request.
+  Frame get frame => connection.objects[initializer['frame']['guid']] as Frame;
 
   /// Resource type of the request.
   String get resourceType => initializer['resourceType'] as String;

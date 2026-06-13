@@ -26,7 +26,7 @@ export 'src/page.dart';
 export 'src/frame.dart';
 export 'src/locator.dart';
 export 'src/selectors.dart';
-export 'src/generated/channels.dart' hide Channel;
+export 'src/generated/channels.dart' hide Channel, ConsoleMessage;
 
 // Interaction
 export 'src/element_handle.dart';
@@ -34,6 +34,7 @@ export 'src/jshandle.dart';
 export 'src/locator_assertions.dart';
 export 'src/keyboard.dart';
 export 'src/mouse.dart';
+export 'src/file_chooser.dart';
 
 // Network
 export 'src/request.dart';
@@ -47,6 +48,8 @@ export 'src/websocket_route.dart';
 export 'src/tracing.dart';
 export 'src/cdp_session.dart';
 export 'src/dialog.dart';
+export 'src/console_message.dart';
+export 'src/video.dart';
 export 'src/worker.dart';
 export 'src/artifact.dart';
 export 'src/stream.dart';

@@ -41,5 +41,23 @@ void main() {
         greaterThanOrEqualTo(450),
       );
     });
+
+    test('should wait for request', (page) async {
+      page.onRequest.listen((req) => print('REQ: \${req.url}'));
+
+      final requestFuture = page.waitForRequest(
+        'http://localhost/dummy-endpoint',
+      );
+
+      await Future.delayed(Duration(milliseconds: 100));
+
+      await page.evaluate('''() => {
+        fetch('http://localhost/dummy-endpoint');
+      }''');
+
+      final request = await requestFuture;
+      expect(request.url, contains('dummy-endpoint'));
+      expect(request.method, equals('GET'));
+    });
   });
 }

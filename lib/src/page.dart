@@ -1,18 +1,27 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'generated/channels.dart';
+import 'browser_context.dart';
+import 'generated/channels.dart' as channels;
+import 'generated/channels.dart' hide ConsoleMessage;
 import 'frame.dart';
 import 'locator.dart';
 import 'keyboard.dart';
 import 'mouse.dart';
 import 'touchscreen.dart';
 import 'route.dart';
+import 'video.dart';
+import 'console_message.dart';
+import 'file_chooser.dart';
 import 'dialog.dart';
 import 'worker.dart';
 import 'artifact.dart';
 import 'route_from_har.dart';
+import 'request.dart';
+import 'response.dart';
+import 'element_handle.dart';
 
 /// Page provides methods to interact with a single tab or extension background page in a browser.
 ///
@@ -34,9 +43,45 @@ class Page extends PageBase {
     touchscreen = Touchscreen(this);
   }
 
+  BrowserContext get context => parent as BrowserContext;
+
   String get _mainFrameGuid => initializer['mainFrame']['guid'];
 
   Frame get mainFrame => connection.objects[_mainFrameGuid] as Frame;
+
+  Stream<ConsoleMessage> get onConsole {
+    channel_updateSubscription(
+      enabled: true,
+      event: PageUpdateSubscriptionEventEnum.console,
+    );
+    return context.onEvent
+        .where(
+          (e) =>
+              e['event'] == 'console' &&
+              e['params']['page'] != null &&
+              e['params']['page']['guid'] == guid,
+        )
+        .map((e) {
+          final message = channels.ConsoleMessage.fromJson(
+            e['params'],
+            connection: connection,
+          );
+          return ConsoleMessage(this, message);
+        });
+  }
+
+  Stream<FileChooser> get onFileChooser {
+    channel_updateSubscription(
+      enabled: true,
+      event: PageUpdateSubscriptionEventEnum.fileChooser,
+    );
+    return onEvent.where((e) => e['event'] == 'fileChooser').map((e) {
+      final elementGuid = e['params']['element']['guid'];
+      final element = connection.objects[elementGuid] as ElementHandle;
+      final isMultiple = e['params']['isMultiple'] as bool;
+      return FileChooser(this, element, isMultiple);
+    });
+  }
 
   Stream<Dialog> get onDialog {
     channel_updateSubscription(
@@ -49,11 +94,178 @@ class Page extends PageBase {
     });
   }
 
+  /// Emitted when a page issues a request.
+  Stream<Request> get onRequest {
+    channel_updateSubscription(
+      enabled: true,
+      event: PageUpdateSubscriptionEventEnum.request,
+    );
+    return context.onEvent
+        .where(
+          (e) =>
+              e['event'] == 'request' &&
+              e['params']['page'] != null &&
+              e['params']['page']['guid'] == guid,
+        )
+        .map((e) {
+          final requestGuid = e['params']['request']['guid'];
+          return connection.objects[requestGuid] as Request;
+        });
+  }
+
+  /// Emitted when a response is received.
+  Stream<Response> get onResponse {
+    channel_updateSubscription(
+      enabled: true,
+      event: PageUpdateSubscriptionEventEnum.response,
+    );
+    return context.onEvent
+        .where(
+          (e) =>
+              e['event'] == 'response' &&
+              e['params']['page'] != null &&
+              e['params']['page']['guid'] == guid,
+        )
+        .map((e) {
+          final responseGuid = e['params']['response']['guid'];
+          return connection.objects[responseGuid] as Response;
+        });
+  }
+
+  /// Emitted when a request finishes successfully.
+  Stream<Request> get onRequestFinished {
+    channel_updateSubscription(
+      enabled: true,
+      event: PageUpdateSubscriptionEventEnum.requestFinished,
+    );
+    return context.onEvent
+        .where((e) => e['event'] == 'requestFinished')
+        .map((e) {
+          final requestGuid = e['params']['request']['guid'];
+          return connection.objects[requestGuid] as Request;
+        })
+        .where((request) => request.frame.page == this);
+  }
+
+  /// Emitted when a request fails.
+  Stream<Request> get onRequestFailed {
+    channel_updateSubscription(
+      enabled: true,
+      event: PageUpdateSubscriptionEventEnum.requestFailed,
+    );
+    return context.onEvent
+        .where(
+          (e) =>
+              e['event'] == 'requestFailed' &&
+              e['params']['page'] != null &&
+              e['params']['page']['guid'] == guid,
+        )
+        .map((e) {
+          final requestGuid = e['params']['request']['guid'];
+          return connection.objects[requestGuid] as Request;
+        });
+  }
+
+  Stream<WebSocket> get onWebSocket {
+    return onEvent.where((e) => e['event'] == 'webSocket').map((e) {
+      final guid = e['params']['webSocket']['guid'];
+      return connection.objects[guid] as WebSocket;
+    });
+  }
+
+  Stream<Page> get onClose {
+    return onEvent.where((e) => e['event'] == 'close').map((e) => this);
+  }
+
+  Stream<Page> get onCrash {
+    return onEvent.where((e) => e['event'] == 'crash').map((e) => this);
+  }
+
+  Stream<Exception> get onPageError {
+    return context.onEvent
+        .where(
+          (e) =>
+              e['event'] == 'pageError' &&
+              e['params']['page'] != null &&
+              e['params']['page']['guid'] == guid,
+        )
+        .map((e) {
+          final errorPayload = e['params']['error']['error'];
+          return Exception(errorPayload['message']);
+        });
+  }
+
+  Video? video() {
+    final videoInitializer = initializer['video'];
+    if (videoInitializer == null) return null;
+    final artifactGuid = videoInitializer['guid'];
+    final artifact = connection.objects[artifactGuid] as Artifact;
+    return Video(this, artifact);
+  }
+
+  Stream<Page> get onPopup {
+    return onEvent.where((e) => e['event'] == 'popup').map((e) {
+      final guid = e['params']['page']['guid'];
+      return connection.objects[guid] as Page;
+    });
+  }
+
   Stream<Worker> get onWorker {
     return onEvent.where((e) => e['event'] == 'worker').map((e) {
       final workerGuid = e['params']['worker']['guid'];
       return connection.objects[workerGuid] as Worker;
     });
+  }
+
+  /// Waits for the matching request and returns it.
+  Future<Request> waitForRequest(
+    dynamic urlOrPredicate, {
+    double? timeout,
+  }) async {
+    return await _waitForNetworkEvent(
+      onRequest,
+      urlOrPredicate,
+      timeout: timeout,
+    );
+  }
+
+  /// Waits for the matching response and returns it.
+  Future<Response> waitForResponse(
+    dynamic urlOrPredicate, {
+    double? timeout,
+  }) async {
+    return await _waitForNetworkEvent(
+      onResponse,
+      urlOrPredicate,
+      timeout: timeout,
+    );
+  }
+
+  Future<T> _waitForNetworkEvent<T>(
+    Stream<T> stream,
+    dynamic urlOrPredicate, {
+    double? timeout,
+  }) async {
+    final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
+    return await stream
+        .firstWhere((event) {
+          final url = (event as dynamic).url as String;
+          if (urlOrPredicate is String) {
+            return url.contains(urlOrPredicate) ||
+                RegExp(urlOrPredicate).hasMatch(url);
+          } else if (urlOrPredicate is RegExp) {
+            return urlOrPredicate.hasMatch(url);
+          } else if (urlOrPredicate is bool Function(T)) {
+            return urlOrPredicate(event);
+          }
+          return false;
+        })
+        .timeout(
+          timeoutDuration,
+          onTimeout: () => throw Exception(
+            'Timeout ${timeoutDuration.inMilliseconds}ms exceeded',
+          ),
+        );
   }
 
   Stream<Artifact> get onDownload {
@@ -69,6 +281,40 @@ class Page extends PageBase {
   /// `url` - URL to navigate page to. The url should include scheme, e.g. `https://`.
   Future<void> goto(String url) async {
     await mainFrame.goto(url);
+  }
+
+  /// Waits for the required load state to be reached.
+  Future<void> waitForLoadState({
+    String state = 'load',
+    double? timeout,
+  }) async {
+    await mainFrame.waitForLoadState(state: state, timeout: timeout);
+  }
+
+  /// Waits for the main frame to navigate to the given URL.
+  Future<void> waitForURL(
+    dynamic urlOrPredicate, {
+    double? timeout,
+    String waitUntil = 'load',
+  }) async {
+    await mainFrame.waitForURL(
+      urlOrPredicate,
+      timeout: timeout,
+      waitUntil: waitUntil,
+    );
+  }
+
+  /// Waits for navigation to complete.
+  Future<void> waitForNavigation({
+    String? url,
+    String waitUntil = 'load',
+    double? timeout,
+  }) async {
+    await mainFrame.waitForNavigation(
+      url: url,
+      waitUntil: waitUntil,
+      timeout: timeout,
+    );
   }
 
   /// Returns the page's title.

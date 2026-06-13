@@ -36,5 +36,22 @@ void main() {
       expect(fileName, equals('test.txt'));
       expect(fileContent, equals('Hello from Playwright Dart!'));
     });
+
+    test('should capture file chooser and set files', (page) async {
+      await page.setContent('''
+        <input type="file" id="upload" multiple />
+      ''');
+
+      final fileChooserFuture = page.onFileChooser.first;
+
+      // Trigger file chooser
+      await page.locator('#upload').click();
+
+      final fileChooser = await fileChooserFuture;
+
+      expect(fileChooser.isMultiple, isTrue);
+      expect(fileChooser.element, isNotNull);
+      expect(fileChooser.page, equals(page));
+    });
   });
 }

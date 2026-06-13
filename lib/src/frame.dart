@@ -3,6 +3,7 @@ import 'generated/channels.dart';
 import 'jshandle.dart';
 import 'locator.dart';
 import 'serialization.dart';
+import 'page.dart';
 
 class Frame extends FrameBase {
   Frame(
@@ -12,6 +13,12 @@ class Frame extends FrameBase {
     super.initializer, [
     super.parent,
   ]);
+
+  /// Returns the frame's URL.
+  String url() => initializer['url'] as String;
+
+  /// Returns the page containing this frame.
+  Page get page => parent as Page;
 
   /// Returns a locator for the given selector.
   Locator locator(String selector) {
@@ -92,6 +99,94 @@ class Frame extends FrameBase {
       state: state,
       timeout: timeout ?? 30000.0,
     );
+  }
+
+  /// Waits for the required load state to be reached.
+  Future<void> waitForLoadState({
+    String state = 'load',
+    double? timeout,
+  }) async {
+    final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
+
+    // Some events might have already occurred if we check the current state, but for simplicity
+    // we wait for the next loadstate event matching our state. Playwright JS has a more complex Waiter.
+    await onEvent
+        .firstWhere(
+          (e) => e['event'] == 'loadstate' && e['params']['add'] == state,
+        )
+        .timeout(
+          timeoutDuration,
+          onTimeout: () => throw Exception(
+            'Timeout ${timeoutDuration.inMilliseconds}ms exceeded while waiting for $state',
+          ),
+        );
+  }
+
+  /// Waits for the main frame to navigate to the given URL.
+  Future<void> waitForURL(
+    dynamic urlOrPredicate, {
+    double? timeout,
+    String waitUntil = 'load',
+  }) async {
+    final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
+
+    bool matches(String currentUrl) {
+      if (urlOrPredicate is String) {
+        return currentUrl.contains(urlOrPredicate) ||
+            RegExp(urlOrPredicate).hasMatch(currentUrl);
+      } else if (urlOrPredicate is RegExp) {
+        return urlOrPredicate.hasMatch(currentUrl);
+      } else if (urlOrPredicate is bool Function(String)) {
+        return urlOrPredicate(currentUrl);
+      }
+      return false;
+    }
+
+    // Check if currently matching
+    final currentUrl = url();
+    if (matches(currentUrl)) {
+      await waitForLoadState(state: waitUntil, timeout: timeout);
+      return;
+    }
+
+    await onEvent
+        .firstWhere((e) {
+          if (e['event'] == 'navigated') {
+            final targetUrl = e['params']['url'] as String;
+            return matches(targetUrl);
+          }
+          return false;
+        })
+        .timeout(
+          timeoutDuration,
+          onTimeout: () => throw Exception(
+            'Timeout ${timeoutDuration.inMilliseconds}ms exceeded while waiting for url $urlOrPredicate',
+          ),
+        );
+
+    await waitForLoadState(state: waitUntil, timeout: timeout);
+  }
+
+  /// Waits for navigation to complete.
+  Future<void> waitForNavigation({
+    String? url,
+    String waitUntil = 'load',
+    double? timeout,
+  }) async {
+    if (url != null) {
+      await waitForURL(url, timeout: timeout, waitUntil: waitUntil);
+    } else {
+      final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
+      await onEvent
+          .firstWhere((e) => e['event'] == 'navigated')
+          .timeout(
+            timeoutDuration,
+            onTimeout: () => throw Exception(
+              'Timeout ${timeoutDuration.inMilliseconds}ms exceeded while waiting for navigation',
+            ),
+          );
+      await waitForLoadState(state: waitUntil, timeout: timeout);
+    }
   }
 
   Future<void> dragAndDrop(
