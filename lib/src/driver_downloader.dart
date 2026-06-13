@@ -35,13 +35,11 @@ Future<String> downloadDriver() async {
   final driverDir = Directory(
     p.join(userHome, '.playwright-dart', 'driver', driverVersion),
   );
-  final executablePath = p.join(
-    driverDir.path,
-    Platform.isWindows ? 'playwright.cmd' : 'playwright.sh',
-  );
+  final cliPath = p.join(driverDir.path, 'package', 'cli.js');
+  final markerPath = p.join(driverDir.path, '.installed');
 
-  if (File(executablePath).existsSync()) {
-    return executablePath;
+  if (File(cliPath).existsSync() && File(markerPath).existsSync()) {
+    return driverDir.path;
   }
 
   print('Downloading Playwright driver $driverVersion...');
@@ -96,15 +94,14 @@ Future<String> downloadDriver() async {
     driverDir.path,
     Platform.isWindows ? 'node.exe' : 'node',
   );
-  final cliPath = p.join(driverDir.path, 'package', 'cli.js');
-
   final installProcess = Process.runSync(nodePath, [cliPath, 'install']);
   if (installProcess.exitCode != 0) {
     print(installProcess.stdout);
     print(installProcess.stderr);
-    throw StateError('Failed to install browsers: \${installProcess.exitCode}');
+    throw StateError('Failed to install browsers: ${installProcess.exitCode}');
   }
 
+  File(markerPath).writeAsStringSync('done');
   print('Driver and browsers downloaded successfully.');
   return driverDir.path;
 }
