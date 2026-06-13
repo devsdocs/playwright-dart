@@ -3479,7 +3479,7 @@ class NetworkCookie {
     return NetworkCookie(
       crHasCrossSiteAncestor: json['_crHasCrossSiteAncestor'],
       domain: (json['domain'])!,
-      expires: (json['expires'] as num).toDouble(),
+      expires: (json['expires'])!,
       httpOnly: (json['httpOnly'])!,
       name: (json['name'])!,
       partitionKey: json['partitionKey'],
@@ -4540,7 +4540,7 @@ class SerializedValue {
       e: json['e'],
       h: json['h'],
       id: json['id'],
-      n: (json['n'] as num?)?.toDouble(),
+      n: json['n'],
       o: (json['o'] as List?)?.cast<Map<String, dynamic>>(),
       r: json['r'],
       ref: json['ref'],
@@ -4608,9 +4608,7 @@ class SetNetworkCookie {
     return SetNetworkCookie(
       crHasCrossSiteAncestor: json['_crHasCrossSiteAncestor'],
       domain: json['domain'],
-      expires: json['expires'] == null
-          ? null
-          : (json['expires'] as num).toDouble(),
+      expires: json['expires'],
       httpOnly: json['httpOnly'],
       name: (json['name'])!,
       partitionKey: json['partitionKey'],
@@ -7632,7 +7630,9 @@ abstract class FrameBase extends ChannelOwner {
     final params = <String, dynamic>{};
     if (expectedNumber != null) params['expectedNumber'] = expectedNumber;
     if (expectedText != null) params['expectedText'] = expectedText;
-    if (expectedValue != null) params['expectedValue'] = expectedValue.toJson();
+    if (expectedValue != null) {
+      params['expectedValue'] = expectedValue.toJson();
+    }
     params['expression'] = expression;
     if (expressionArg != null) params['expressionArg'] = expressionArg;
     params['isNot'] = isNot;

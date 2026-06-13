@@ -18,3 +18,5 @@ playwright-driver/
 # Build outputs
 build/
 doc/api/
+.protocol_cache/
+.protocol_cache.json

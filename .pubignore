@@ -2,3 +2,5 @@
 dart-port-plan/
 tool/
 bin/
+.protocol_cache/
+.protocol_cache.json
