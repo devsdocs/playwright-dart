@@ -12,6 +12,10 @@ topics:
   - automation
   - e2e
   - playwright
+platforms:
+  linux:
+  macos:
+  windows:
 
 environment:
   sdk: ^3.12.0
