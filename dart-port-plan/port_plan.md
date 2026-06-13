@@ -1,53 +1,224 @@
-# Playwright Dart Port Implementation Plan
+# Playwright Dart Port — Implementation Plan
 
-Based on the Playwright documentation (specifically `library.md` and the protocol architecture), here is the detailed assessment and implementation plan for porting Playwright to Dart.
+A complete Dart SDK for [Playwright](https://playwright.dev), ported from the official Node.js `v1.60.0` codebase. This document describes the architecture, implementation phases, and current completion status.
 
-## Proposed Architecture
+## Architecture
 
-Playwright uses a client/server architecture. The Node.js server (`playwright-core`) executes the browser automation, while the client (Dart) communicates with it using a JSON RPC protocol.
+Playwright uses a **client/server architecture**. The Node.js server (`playwright-core`) executes browser automation, while this Dart SDK communicates with it via a JSON-RPC protocol over stdio.
 
 ### Core Components
-1. **Connection Layer**: A transport layer (spawning `node playwright.js run-driver`) communicating via JSON over standard I/O (stdin/stdout) or WebSockets.
-2. **Base Object Model (`ChannelOwner`)**: Every Playwright object (Browser, Page, Locator) will extend a Dart base class `ChannelOwner`, tracking the `guid` to match the server object and dispatching method calls to the protocol.
-3. **Protocol Generator**: A tool that reads `packages/protocol/src/protocol.yml` to generate Dart types, method parameters, and Channel interfaces.
-4. **Public API Surface**: The user-facing Dart API that delegates calls to the auto-generated channel interfaces.
 
-## Port Priorities (Phased Implementation)
+| Component | File(s) | Description |
+|---|---|---|
+| **Transport** | `transport.dart`, `websocket_transport.dart` | Bidirectional stdio/WebSocket channel to the Playwright driver process |
+| **Connection** | `connection.dart` | JSON-RPC message routing — tracks `id` for request/response, `guid` for object identity, dispatches `__create__`/`__dispose__`/events |
+| **ChannelOwner** | `channel_owner.dart` | Base class for all protocol objects. Manages `guid`, parent/child relationships, event streams, and lifecycle |
+| **Protocol Generator** | `tool/generate_protocol.dart` | Parses `protocol.yml` from Playwright source and emits `generated/channels.dart` |
+| **Generated Channels** | `generated/channels.dart` | Auto-generated abstract `*Base` classes containing all `channel_*` RPC dispatch methods |
+| **Wrapper Classes** | `lib/src/*.dart` | User-facing API classes extending the generated bases, providing ergonomic Dart methods |
+| **Parity Checker** | `tool/find_missing.dart` | Scans `channels.dart` and cross-references wrappers to detect missing fileMap entries, missing classes, missing methods, and missing channel calls |
+| **Serialization** | `serialization.dart` | `serializeArgument()` / `parseSerializedValue()` for crossing the RPC bridge |
+| **Driver** | `driver.dart`, `driver_downloader.dart` | Locates or downloads the Playwright Node.js driver binary, spawns it as a child process |
 
-### Phase 1: Transport & Connection (Foundation)
-- Implement a driver runner that fetches or locates the Playwright Node.js binaries.
-- Implement the `Connection` class to handle JSON-RPC message serialization and routing.
-- Support request/response tracking (`id`) and object routing (`guid`).
+### Message Flow
 
-### Phase 2: Protocol Code Generation
-- Create a Dart script to parse `protocol.yml`.
-- Generate `channels.dart` with Dart classes for all protocol parameters, results, and events (e.g., `PageChannel`, `BrowserChannel`).
+```
+Dart Code ──▶ Wrapper Method ──▶ channel_*() ──▶ Connection.sendMessageToServer()
+                                                        │
+                                                        ▼
+                                                 StdioTransport ──▶ Playwright Node.js Server
+                                                        │
+                                                        ▼
+                                              Response / Event dispatched back
+```
 
-### Phase 3: Object Lifecycle
-- Implement `ChannelOwner` in Dart to manage object instantiation (`__create__`), parenting (`__adopt__`), and cleanup (`__dispose__`).
-- Map initializers from the server to Dart constructors.
+---
 
-### Phase 4: Core Automation (Playwright, Browser, Page)
-- Implement `Playwright` and `BrowserType` (supporting `launch` and `connect`).
-- Implement `Browser`, `BrowserContext`, `Page`, and `Frame`.
-- Wire up core methods: `goto()`, `close()`, `evaluate()`.
+## Implementation Phases
 
-### Phase 5: Actionability & Locators
-- Implement `Locator` and `ElementHandle`.
-- Implement user interactions (`click()`, `fill()`, `check()`) ensuring auto-waiting is inherently handled by the server.
+### Phase 1: Transport & Connection (Foundation) ✅
 
-### Phase 6: Network & Advanced Features
-- Implement network interception (`Route`, `Request`, `Response`).
-- Implement `Dialog`, `Download`, and Tracing.
+- [x] Implement `Driver` to spawn `node playwright.js run-driver`
+- [x] Implement `DriverDownloader` for automatic binary management
+- [x] Implement `StdioTransport` for JSON-over-stdio communication
+- [x] Implement `WebSocketTransport` for remote browser connections
+- [x] Implement `Connection` class with request/response tracking (`id`), object routing (`guid`), and event dispatch
 
-### Phase 7: Testing Framework Integration
-- Develop a `playwright_test` Dart package providing a `test()` runner with built-in fixtures (like `page`, `context`) similar to `@playwright/test` for Node.js.
+### Phase 2: Protocol Code Generation ✅
 
-## Verification Plan
+- [x] Create `tool/generate_protocol.dart` to parse the official Playwright `protocol.yml`
+- [x] Generate `lib/src/generated/channels.dart` with all abstract `*Base` classes
+- [x] Generate typed parameters, enums, and mixins (e.g. `ContextOptions`, `AndroidSelector`, `SerializedArgument`)
+- [x] Ensure generator references official remote Playwright repo, not local copies
 
-### Automated Tests
-- Create a test suite modeled after Playwright's `tests/library/` and `tests/page/`.
-- Validate each API feature against Chromium, Firefox, and WebKit.
+### Phase 3: Object Lifecycle ✅
 
-### Manual Verification
-- Build a simple Dart console application that launches a browser, navigates to `example.com`, takes a screenshot, and closes the browser to prove the end-to-end RPC transport works.
+- [x] Implement `ChannelOwner` base class with `guid` management
+- [x] Handle `__create__` — instantiate objects via registered factories
+- [x] Handle `__dispose__` — clean up parent/child/connection references, close event streams
+- [x] Implement `RootChannelOwner` for the connection root
+- [x] Add broadcast `StreamController`-based event system (`emitEvent()` / `onEvent`)
+- [x] Implement `ChannelOwner.from<T>()` for typed object resolution from wire data
+
+### Phase 4: Core Automation ✅
+
+- [x] `Playwright` — `chromium`, `firefox`, `webkit` browser type accessors, `newRequest()`, static `Playwright.create()` entry point
+- [x] `BrowserType` — `launch()`, `launchPersistentContext()`, `connect()`, `connectOverCDP()`, `connectToWorker()`
+- [x] `Browser` — `newContext()`, `newPage()`, `close()`, `startTracing()`, `stopTracing()`, `newBrowserCDPSession()`, `contexts`
+- [x] `BrowserContext` — `newPage()`, `cookies()`, `addCookies()`, `clearCookies()`, `grantPermissions()`, `setGeolocation()`, `setHTTPCredentials()`, `setExtraHTTPHeaders()`, `route()`, `unroute()`, `storageState()`, `newCDPSession()`, `harStart()`, `harExport()`, `close()`
+- [x] `Page` — `goto()`, `close()`, `evaluate()`, `evaluateHandle()`, `waitForSelector()`, `waitForLoadState()`, `waitForNavigation()`, `waitForEvent()`, `screenshot()`, `pdf()`, `title()`, `content()`, `setContent()`, `addScriptTag()`, `addStyleTag()`, `route()`, `unroute()`, `emulateMedia()`, `setViewportSize()`, `bringToFront()`, `opener()`, all locator shortcuts
+- [x] `Frame` — full mirroring of `Page` frame-level methods (`goto`, `click`, `fill`, `check`, `evaluate`, `waitForSelector`, `querySelector`, `querySelectorAll`, `selectOption`, `setInputFiles`, `dragAndDrop`, `ariaSnapshot`, etc.)
+
+### Phase 5: Actionability & Locators ✅
+
+- [x] `Locator` — `click()`, `fill()`, `check()`, `uncheck()`, `hover()`, `focus()`, `blur()`, `dblclick()`, `tap()`, `press()`, `type()`, `getAttribute()`, `innerText()`, `textContent()`, `innerHTML()`, `inputValue()`, `isVisible()`, `isHidden()`, `isEnabled()`, `isDisabled()`, `isEditable()`, `isChecked()`, `selectOption()`, `setInputFiles()`, `dispatchEvent()`, `highlight()`, `hideHighlight()`, `drop()`, `ariaSnapshot()`, `waitFor()`, `dragTo()`, `evaluate()`, `evaluateAll()`
+- [x] `Locator` sub-locators — `getByText()`, `getByRole()`, `getByLabel()`, `getByPlaceholder()`, `getByAltText()`, `getByTitle()`, `getByTestId()`
+- [x] `ElementHandle` — `contentFrame()`, `ownerFrame()`, `querySelector()`, `querySelectorAll()`, `dispatchEvent()`, `screenshot()`, `selectOption()`, `selectText()`, `setInputFiles()`, `waitForElementState()`, `waitForSelector()`, `fill()`, `click()`, `dblclick()`, `tap()`, `hover()`, `focus()`, `type()`, `press()`, `getAttribute()`, `textContent()`, `innerText()`, `innerHTML()`, `inputValue()`, `isVisible()`, `isHidden()`, `isEnabled()`, `isDisabled()`, `isEditable()`, `isChecked()`, `check()`, `uncheck()`, `scrollIntoViewIfNeeded()`, `boundingBox()`
+- [x] `JSHandle` — `evaluateExpression()`, `evaluateExpressionHandle()`, `getPropertyList()`, `getProperty()`, `jsonValue()`, `dispose()`
+- [x] `Keyboard` — `down()`, `up()`, `insertText()`, `type()`, `press()`
+- [x] `Mouse` — `move()`, `down()`, `up()`, `click()`, `dblclick()`, `wheel()`
+
+### Phase 6: Network & Advanced Features ✅
+
+- [x] `Request` — `response()`, `rawRequestHeaders()`, `sizes()`
+- [x] `Response` — `finished()`, `body()`, `securityDetails()`, `serverAddr()`, `rawResponseHeaders()`
+- [x] `Route` — `abort()`, `continue_()`, `fulfill()`, `fallback()`, `redirectNavigationRequest()`
+- [x] `WebSocket` (PlaywrightWebSocket) — registered channel wrapper
+- [x] `WebSocketRoute` — `close()`, `closePage()`, `closeServer()`, `send()`, `ensureOpened()`
+- [x] `APIRequestContext` — `fetch()`, `storageState()`, `dispose()`, `fetchResponseBody()`, `fetchLog()`
+- [x] `Dialog` — `accept()`, `dismiss()`
+- [x] `Worker` — `evaluateExpression()`, `evaluateExpressionHandle()`
+- [x] `Tracing` — `tracingStart()`, `tracingStop()`, `tracingStartChunk()`, `tracingStopChunk()`
+- [x] `CDPSession` — `send()`, `detach()`
+- [x] `Artifact` — `pathAfterFinished()`, `saveAs()`, `saveAsStream()`, `stream()`, `failure()`, `cancel()`, `delete()`
+- [x] `Stream` (PlaywrightStream) — `read()`, `close()`
+- [x] `WritableStream` — `write()`, `close()`
+
+### Phase 7: Debugging, Events & Low-Level ✅
+
+- [x] `Debugger` — `resume()`, `next()`, `runTo()`
+- [x] `DebugController` — `initialize()`, `navigate()`, `setRecorderMode()`, `highlight()`, `hideHighlight()`, `resume()`, `kill()`, `closeAllBrowsers()`
+- [x] `BindingCall` — `reject()`, `resolve()`
+- [x] `EventTarget` — `waitForEventInfo()`
+- [x] `Disposable` — registered channel wrapper
+
+### Phase 8: Experimental & Platform-Specific ✅
+
+- [x] `Android` — `devices()`
+- [x] `AndroidDevice` — `wait()`, `fill()`, `tap()`, `drag()`, `fling()`, `longTap()`, `pinchClose()`, `pinchOpen()`, `scroll()`, `swipe()`, `info()`, `screenshot()`, `inputType()`, `inputPress()`, `inputTap()`, `inputSwipe()`, `inputDrag()`, `launchBrowser()`, `open()`, `shell()`, `installApk()`, `push()`, `connectToWebView()`, `close()`
+- [x] `AndroidSocket` — `write()`, `close()`
+- [x] `Electron` — `launch()`
+- [x] `ElectronApplication` — `browserWindow()`, `evaluateExpression()`, `evaluateExpressionHandle()`, `updateSubscription()`
+- [x] `Root` — `initialize()`
+- [x] `SocksSupport` — `socksConnected()`, `socksFailed()`, `socksData()`, `socksError()`, `socksEnd()`
+- [x] `JsonPipe` — `send()`, `close()`
+
+### Phase 9: Convenience & Documentation ✅
+
+- [x] Migrate `PlaywrightDart.create()` to `Playwright.create()` as idiomatic static factory
+- [x] Clean up `lib/playwright_dart.dart` as a unified export barrel
+- [x] `README.md` with usage examples for browser launch, locators, routing, tracing, CDP
+- [x] This implementation plan document
+
+---
+
+## File Inventory
+
+### Wrapper Classes (35 total — 100% coverage of generated protocol)
+
+| # | Class | File | Base Class |
+|---|---|---|---|
+| 1 | `Playwright` | `playwright.dart` | `PlaywrightBase` |
+| 2 | `BrowserType` | `browser_type.dart` | `BrowserTypeBase` |
+| 3 | `Browser` | `browser.dart` | `BrowserBase` |
+| 4 | `BrowserContext` | `browser_context.dart` | `BrowserContextBase` |
+| 5 | `Page` | `page.dart` | `PageBase` |
+| 6 | `Frame` | `frame.dart` | `FrameBase` |
+| 7 | `Locator` | `locator.dart` | *(standalone, uses Frame)* |
+| 8 | `JSHandle` | `jshandle.dart` | `JSHandleBase` |
+| 9 | `ElementHandle` | `element_handle.dart` | `ElementHandleBase` |
+| 10 | `LocalUtils` | `local_utils.dart` | `LocalUtilsBase` |
+| 11 | `Request` | `request.dart` | `RequestBase` |
+| 12 | `Response` | `response.dart` | `ResponseBase` |
+| 13 | `Route` | `route.dart` | `RouteBase` |
+| 14 | `PlaywrightWebSocket` | `websocket.dart` | `WebSocketBase` |
+| 15 | `WebSocketRoute` | `websocket_route.dart` | `WebSocketRouteBase` |
+| 16 | `APIRequestContext` | `api_request_context.dart` | `APIRequestContextBase` |
+| 17 | `Dialog` | `dialog.dart` | `DialogBase` |
+| 18 | `Worker` | `worker.dart` | `WorkerBase` |
+| 19 | `Tracing` | `tracing.dart` | `TracingBase` |
+| 20 | `CDPSession` | `cdp_session.dart` | `CDPSessionBase` |
+| 21 | `Artifact` | `artifact.dart` | `ArtifactBase` |
+| 22 | `PlaywrightStream` | `stream.dart` | `StreamBase` |
+| 23 | `WritableStream` | `writable_stream.dart` | `WritableStreamBase` |
+| 24 | `Debugger` | `debugger.dart` | `DebuggerBase` |
+| 25 | `DebugController` | `debug_controller.dart` | `DebugControllerBase` |
+| 26 | `BindingCall` | `binding_call.dart` | `BindingCallBase` |
+| 27 | `EventTarget` | `event_target.dart` | `EventTargetBase` |
+| 28 | `Disposable` | `disposable.dart` | `DisposableBase` |
+| 29 | `Android` | `android.dart` | `AndroidBase` |
+| 30 | `AndroidDevice` | `android_device.dart` | `AndroidDeviceBase` |
+| 31 | `AndroidSocket` | `android_socket.dart` | `AndroidSocketBase` |
+| 32 | `Electron` | `electron.dart` | `ElectronBase` |
+| 33 | `ElectronApplication` | `electron_application.dart` | `ElectronApplicationBase` |
+| 34 | `Root` | `root.dart` | `RootBase` |
+| 35 | `SocksSupport` | `socks_support.dart` | `SocksSupportBase` |
+| — | `JsonPipe` | `json_pipe.dart` | `JsonPipeBase` |
+
+### Infrastructure Files
+
+| File | Purpose |
+|---|---|
+| `channel_owner.dart` | Base class with guid, event streams, lifecycle |
+| `connection.dart` | JSON-RPC dispatch, 35 registered object factories |
+| `driver.dart` | Spawns the Playwright Node.js driver process |
+| `driver_downloader.dart` | Downloads Playwright binaries |
+| `transport.dart` | Stdio-based transport layer |
+| `websocket_transport.dart` | WebSocket-based transport layer |
+| `serialization.dart` | Argument serialization/deserialization |
+| `keyboard.dart` | Keyboard input helper |
+| `mouse.dart` | Mouse input helper |
+| `locator.dart` | Locator API (standalone, delegates to Frame) |
+| `file_payload.dart` | File upload payload model |
+| `version.dart` | SDK version constants |
+
+### Tools
+
+| File | Purpose |
+|---|---|
+| `tool/generate_protocol.dart` | Generates `channels.dart` from Playwright `protocol.yml` |
+| `tool/find_missing.dart` | Validates 100% parity — checks fileMap, wrapper classes, method wrappers, and channel call presence |
+
+---
+
+## Verification Status
+
+```
+$ dart analyze
+Analyzing playwright-dart...
+No issues found!
+
+$ dart tool/find_missing.dart
+=== Missing fileMap Entries ===
+None!
+
+=== Missing Wrapper Classes ===
+None!
+
+=== Missing API Wrappers in Existing Classes ===
+None! (Checked 308 methods)
+```
+
+- **35 abstract Base classes** generated from `protocol.yml`
+- **35 wrapper classes** implemented (+ `Locator` standalone)
+- **308 channel methods** verified with actual `channel_*` dispatch calls
+- **0 TODOs** remaining
+- **0 `Future.value()` placeholder stubs** remaining
+
+---
+
+## Future Work
+
+- [ ] **Phase 10: Testing Framework** — Develop a `playwright_test` Dart package with built-in fixtures (`page`, `context`) similar to `@playwright/test`
+- [ ] **Phase 11: Integration Tests** — Build a test suite modeled after Playwright's `tests/library/` and `tests/page/`
+- [ ] **Phase 12: pub.dev Release** — Package for public distribution with proper versioning and changelog
