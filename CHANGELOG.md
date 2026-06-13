@@ -1,3 +1,10 @@
+## 3.2.0
+
+- **Feature**: Added a native `Logger` and a `debug` flag to `PlaywrightDart.create(debug: true)`. When enabled, it natively intercepts and logs all raw protocol JSON messages sent to and received from the Playwright driver directly to the terminal stdout.
+- **Feature**: Introduced `Logger.info()` to clearly print CLI operations like background driver extraction without relying on unstructured `print` calls.
+- **Refactor**: Completely reorganized the internal repository architecture. Flattened the massive `lib/src/` directory into cleanly isolated logic domains (`core/`, `network/`, `interaction/`, `infrastructure/`, `utils/`, `platform/`, `debugging/`). 
+- **Refactor**: Updated all internal tools and scripts inside `tool/` to target the newly mapped architecture while achieving zero static analysis warnings and a perfectly green test suite.
+
 ## 3.1.0
 
 - **Feature**: Completed full isolation of internal implementation classes (e.g. `ElementHandleImpl`, `PageImpl`), exclusively exposing pure interface types across the entire public API boundary. This vastly improves the developer experience by preventing unintentional access to underlying channel mechanisms.
