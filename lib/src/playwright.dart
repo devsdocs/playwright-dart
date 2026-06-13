@@ -82,32 +82,4 @@ class PlaywrightDart {
       result['playwright'] as Map<String, dynamic>,
     );
   }
-
-  /// Connects directly to a remote Playwright server over WebSocket.
-  ///
-  /// This method does not require local browser installation.
-  static Future<Browser> connect(
-    String wsEndpoint, {
-    Map<String, dynamic>? headers,
-    double? timeout,
-  }) async {
-      final wsTransport = await WebSocketTransport.connect(
-        wsEndpoint,
-        headers: headers,
-      );
-      final newConnection = Connection(wsTransport);
-    
-      final result = await newConnection.sendMessageToServer('', 'initialize', {
-        'sdkLanguage': 'javascript',
-      });
-    
-      final preconnectedBrowser = result['preconnectedBrowser'];
-      if (preconnectedBrowser != null) {
-        return ChannelOwner.from<Browser>(newConnection, preconnectedBrowser);
-      }
-    
-      throw Exception(
-        'No preconnected browser found on the remote Playwright server.',
-      );
-  }
 }

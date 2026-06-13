@@ -52,10 +52,21 @@ class BrowserType extends BrowserTypeBase {
     );
   }
 
-  Future<Browser> connectOverCDP({required String endpointURL}) async {
+  Future<Browser> connectOverCDP({
+    required String endpointURL,
+    List<NameValue>? headers,
+    bool? isLocal,
+    bool? noDefaults,
+    double? slowMo,
+    double timeout = 30000.0,
+  }) async {
     final result = await super.channel_connectOverCDP(
       endpointURL: endpointURL,
-      timeout: 30000.0,
+      headers: headers,
+      isLocal: isLocal,
+      noDefaults: noDefaults,
+      slowMo: slowMo,
+      timeout: timeout,
     );
     return result.browser as Browser;
   }

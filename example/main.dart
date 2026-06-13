@@ -7,9 +7,10 @@ import 'package:playwright_dart/playwright_dart.dart';
 void main() async {
   // Connect directly to a remote Playwright endpoint.
   // This avoids local browser installation/download.
-  final browser = await PlaywrightDart.connect('ws://127.0.0.1:3000/ws');
+  final playwright = await PlaywrightDart.create();
 
   // Create a new page
+  final browser = await playwright.chromium.launch();
   final page = await browser.newPage();
 
   // Set page content with interactive elements
