@@ -19,7 +19,7 @@ void main() async {
 
   print('Navigating to Wikipedia (images will be blocked)...');
   await page.goto('https://en.wikipedia.org/wiki/Main_Page');
-  
+
   print('Page loaded successfully without images!');
 
   await browser.close();

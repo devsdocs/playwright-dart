@@ -12,16 +12,13 @@ void main() async {
   print('Title from JS: $title');
 
   // Evaluate JavaScript passing complex objects
-  final data = {
-    'name': 'Playwright',
-    'language': 'Dart'
-  };
-  
+  final data = {'name': 'Playwright', 'language': 'Dart'};
+
   final message = await page.evaluate(
     '(data) => `Hello \${data["name"]} from \${data["language"]}!`',
-    data
+    data,
   );
-  
+
   print('Evaluated Message: $message');
 
   await browser.close();

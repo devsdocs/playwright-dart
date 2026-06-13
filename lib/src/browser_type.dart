@@ -22,18 +22,18 @@ class BrowserType extends BrowserTypeBase {
   ]);
 
   /// Launches a new local browser instance.
-  /// 
+  ///
   /// Automatically downloads the browser binary if it is not already installed.
   Future<Browser> launch() async {
     await ensureBrowsersInstalled();
     final result = await super.channel_launch(
-      mixin: LaunchOptions(timeout: 30000.0),
+      mixinValue: LaunchOptions(timeout: 30000.0),
     );
     return result.browser as Browser;
   }
 
   /// Launches a browser that uses a persistent local profile directory.
-  /// 
+  ///
   /// A persistent context allows cookies, local storage, and caches to be preserved
   /// across sessions.
   Future<BrowserContext> launchPersistentContext(
@@ -44,8 +44,8 @@ class BrowserType extends BrowserTypeBase {
   }) async {
     await ensureBrowsersInstalled();
     final result = await super.channel_launchPersistentContext(
-      mixin1: launchOptions ?? LaunchOptions(timeout: 30000.0),
-      mixin2: contextOptions ?? ContextOptions(),
+      mixin1Value: launchOptions ?? LaunchOptions(timeout: 30000.0),
+      mixin2Value: contextOptions ?? ContextOptions(),
       userDataDir: userDataDir,
       slowMo: slowMo,
     );
@@ -89,7 +89,7 @@ class BrowserType extends BrowserTypeBase {
   }
 
   /// Connects to a standard Playwright server over WebSockets.
-  /// 
+  ///
   /// Typically used when connecting to an instance launched via `BrowserType.launchServer`.
   Future<Browser> connect(
     String wsEndpoint, {
@@ -110,7 +110,7 @@ class BrowserType extends BrowserTypeBase {
     );
 
     final pipe = result.pipe as JsonPipe;
-    
+
     final transport = JsonPipeTransport(pipe);
     final remoteConnection = Connection(transport);
 

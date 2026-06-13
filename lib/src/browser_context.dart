@@ -1,10 +1,10 @@
-import 'channel_owner.dart';
+import 'cdp_session.dart';
 import 'frame.dart';
 import 'page.dart';
 import 'generated/channels.dart';
 
 /// BrowserContexts provide a way to operate multiple independent browser sessions.
-/// 
+///
 /// If a page opens another page, e.g. with a `window.open` call, the popup will belong to the parent page's browser context.
 class BrowserContext extends BrowserContextBase {
   BrowserContext(
@@ -22,7 +22,7 @@ class BrowserContext extends BrowserContextBase {
   }
 
   /// Adds cookies into this browser context.
-  /// 
+  ///
   /// All pages within this context will have these cookies installed.
   Future<void> addCookies(List<SetNetworkCookie> cookies) async {
     await super.channel_addCookies(cookies: cookies);
@@ -37,7 +37,7 @@ class BrowserContext extends BrowserContextBase {
   }
 
   /// Returns the browser context cookies.
-  /// 
+  ///
   /// If no [urls] are specified, this method returns cookies for all pages.
   Future<List<NetworkCookie>> cookies({List<String>? urls}) async {
     final result = await super.channel_cookies(urls: urls ?? []);
@@ -217,10 +217,7 @@ class BrowserContext extends BrowserContextBase {
 
   Future<dynamic> newCDPSession({Page? page, Frame? frame}) async {
     final result = await channel_newCDPSession(page: page, frame: frame);
-    return ChannelOwner.from(
-      connection,
-      result.session as Map<String, dynamic>,
-    );
+    return result.session as CDPSession;
   }
 
   Future<BrowserContextCreateTempFilesResult> createTempFiles({

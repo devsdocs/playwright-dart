@@ -79,11 +79,11 @@ class Playwright extends PlaywrightBase {
 
 /// The entrypoint for Playwright Dart.
 class PlaywrightDart {
-  /// Launches the background Playwright driver and connects to it, returning the 
+  /// Launches the background Playwright driver and connects to it, returning the
   /// root [Playwright] API instance.
-  /// 
-  /// Set [autoClose] to false if you want to manually manage the Playwright 
-  /// driver lifecycle (Python/Java pattern) instead of auto-shutting down 
+  ///
+  /// Set [autoClose] to false if you want to manually manage the Playwright
+  /// driver lifecycle (Python/Java pattern) instead of auto-shutting down
   /// when the last browser is closed.
   static Future<Playwright> create({bool autoClose = true}) async {
     final process = await Driver.run();

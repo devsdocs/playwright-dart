@@ -3,7 +3,7 @@ import 'generated/channels.dart';
 import 'serialization.dart';
 
 /// Locators are the central piece of Playwright's auto-waiting and retry-ability.
-/// 
+///
 /// In a nutshell, locators represent a way to find element(s) on the page at any moment.
 class Locator {
   /// The frame this locator belongs to.
@@ -58,7 +58,7 @@ class Locator {
   }
 
   /// Click an element.
-  /// 
+  ///
   /// It will wait for the element to be visible, enabled and stable.
   Future<void> click({bool? force, double? timeout}) async {
     await frame.channel_click(

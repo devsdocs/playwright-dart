@@ -172,7 +172,7 @@ class AndroidDevice extends AndroidDeviceBase {
     Map<String, dynamic>? proxy,
   }) async {
     final result = await channel_launchBrowser(
-      mixin: mixin,
+      mixinValue: mixin,
       pkg: pkg,
       args: args,
       proxy: proxy,

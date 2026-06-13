@@ -261,15 +261,21 @@ void main() async {
   }
 
   String sanitizeName(String name) {
-    if (name == 'return') return 'returnValue';
-    if (name == 'default') return 'defaultValue';
-    if (name == 'continue') return 'continueValue';
-    if (name == 'switch') return 'switchValue';
-    if (name == 'class') return 'classValue';
-    if (name == 'bool') return 'boolValue';
-    if (name.startsWith(r'$')) return name.substring(1);
-    if (name.startsWith('_')) return name.substring(1);
-    return name;
+    String cleanName = name;
+    if (cleanName.startsWith(r'$')) cleanName = cleanName.substring(1);
+    if (cleanName.startsWith('_')) cleanName = cleanName.substring(1);
+
+    if (cleanName == 'return') return 'returnValue';
+    if (cleanName == 'default') return 'defaultValue';
+    if (cleanName == 'continue') return 'continueValue';
+    if (cleanName == 'switch') return 'switchValue';
+    if (cleanName == 'class') return 'classValue';
+    if (cleanName == 'bool') return 'boolValue';
+    if (cleanName == 'mixin') return 'mixinValue';
+    if (cleanName == 'mixin1') return 'mixin1Value';
+    if (cleanName == 'mixin2') return 'mixin2Value';
+
+    return cleanName;
   }
 
   void generateProperties(
@@ -543,7 +549,7 @@ void main() async {
             '    final response = await connection.sendMessageToServer(guid, \'$cmdWireName\', {});',
           );
         } else {
-          buffer.writeln('    final params = <String, dynamic>{};');
+          buffer.writeln('    final payload = <String, dynamic>{};');
           for (final p in paramList) {
             final pName = p['name'];
             final pWire = p['wireName'];
@@ -562,7 +568,7 @@ void main() async {
                   .replaceAll('Base', '');
 
               if (interfaces.contains(baseType)) {
-                val = '$pName${p['nullable'] ? '?' : ''}.guid';
+                val = '{\'guid\': $pName.guid}';
               } else if (knownEnums.contains(baseType)) {
                 val = '$pName${p['nullable'] ? '?' : ''}.value';
               } else if (p['type'].endsWith('?')) {
@@ -574,18 +580,18 @@ void main() async {
 
             if (p['wireName'].startsWith(r'$')) {
               buffer.writeln(
-                '    params.addAll($val as Map<String, dynamic>);',
+                '    payload.addAll($val as Map<String, dynamic>);',
               );
             } else if (p['nullable']) {
               buffer.writeln(
-                '    if ($pName != null) params[\'$pWire\'] = $val;',
+                '    if ($pName != null) payload[\'$pWire\'] = $val;',
               );
             } else {
-              buffer.writeln('    params[\'$pWire\'] = $val;');
+              buffer.writeln('    payload[\'$pWire\'] = $val;');
             }
           }
           buffer.writeln(
-            '    final response = await connection.sendMessageToServer(guid, \'$cmdWireName\', params);',
+            '    final response = await connection.sendMessageToServer(guid, \'$cmdWireName\', payload);',
           );
         }
         if (returnType == 'void') {

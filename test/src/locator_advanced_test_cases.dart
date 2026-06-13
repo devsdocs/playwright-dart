@@ -184,6 +184,34 @@ void main() {
       await page.locator('#delayed').waitFor();
       expect(await page.locator('#delayed').textContent(), equals('Appeared'));
     });
+
+    test('should drag and drop', (page) async {
+      await page.setContent('''
+        <div id="source" draggable="true" style="width:50px;height:50px;background:red;">Source</div>
+        <div id="target" style="width:100px;height:100px;background:blue;">Target</div>
+        <script>
+          let dropped = false;
+          const target = document.getElementById('target');
+          target.addEventListener('dragover', (e) => e.preventDefault());
+          target.addEventListener('drop', (e) => {
+            dropped = true;
+          });
+        </script>
+      ''');
+
+      await page.locator('#source').dragTo(page.locator('#target'));
+      expect(await page.evaluate('() => dropped'), isTrue);
+    });
+
+    test('should highlight element', (page) async {
+      await page.setContent('<div id="box">Box</div>');
+      await page.locator('#box').highlight();
+
+      final count = await page.evaluate(
+        '() => document.querySelectorAll("x-pw-glass").length',
+      );
+      expect(count, greaterThanOrEqualTo(1));
+    });
   });
 
   group('Locator By* API', () {

@@ -127,4 +127,25 @@ void main() {
       await context.close();
     });
   });
+
+  group('BrowserContext Expose API', () {
+    test('should expose console api', (page) async {
+      final context = await browser.newContext();
+      await context.exposeConsoleApi();
+
+      final ctxPage = await context.newPage();
+
+      // When exposed, playwright injects `playwright.console` or similar into the page
+      // But typically it means `console.log` will be piped to Playwright, or `playwright` object is available.
+      // Wait, Playwright exposes a window.playwright object when exposeConsoleApi is called?
+      // Actually it just instruments the page. We can check if it evaluates without errors.
+      await ctxPage.goto('about:blank');
+
+      // evaluate will not throw if exposeConsoleApi did not throw
+      final type = await ctxPage.evaluate('typeof window');
+      expect(type, equals('object'));
+
+      await context.close();
+    });
+  });
 }

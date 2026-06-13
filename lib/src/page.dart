@@ -12,7 +12,7 @@ import 'route.dart';
 import 'dialog.dart';
 
 /// Page provides methods to interact with a single tab or extension background page in a browser.
-/// 
+///
 /// One Browser instance might have multiple Page instances.
 class Page extends PageBase {
   late final Keyboard keyboard;
@@ -71,7 +71,7 @@ class Page extends PageBase {
   }
 
   /// Returns the value of the `expression` invocation.
-  /// 
+  ///
   /// If the function passed to the `page.evaluate` returns a Promise, then `page.evaluate` would wait for the promise to resolve and return its value.
   /// If the function passed to the `page.evaluate` returns a non-Serializable value, then `page.evaluate` resolves to `undefined`.
   Future<dynamic> evaluate(String expression, [dynamic arg]) async {
@@ -87,7 +87,7 @@ class Page extends PageBase {
   }
 
   /// Routing provides the capability to modify network requests that are made by a page.
-  /// 
+  ///
   /// Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
   Future<void> route(String url, Future<void> Function(Route) handler) async {
     await channel_setNetworkInterceptionPatterns(
@@ -190,7 +190,7 @@ class Page extends PageBase {
           : null,
       quality: quality,
       fullPage: fullPage,
-      mixin: CommonScreenshotOptions(),
+      mixinValue: CommonScreenshotOptions(),
     );
     final buffer = base64Decode(result.binary);
     if (path != null) {
@@ -200,7 +200,7 @@ class Page extends PageBase {
   }
 
   /// Returns the PDF buffer.
-  /// 
+  ///
   /// `path` - The file path to save the PDF to. If `path` is a relative path, then it is resolved relative to the current working directory.
   Future<Uint8List> pdf({String? path, String? format, bool? landscape}) async {
     final result = await channel_pdf(format: format, landscape: landscape);
@@ -228,7 +228,7 @@ class Page extends PageBase {
   }
 
   /// Closes the page.
-  /// 
+  ///
   /// If `runBeforeUnload` is `true`, a `beforeunload` dialog might be summoned and should be handled manually via `page.onDialog`.
   Future<void> close({bool? runBeforeUnload, String? reason}) async {
     await channel_close(runBeforeUnload: runBeforeUnload, reason: reason);
@@ -676,7 +676,7 @@ class Page extends PageBase {
       threshold: threshold,
       fullPage: fullPage,
       clip: clip,
-      mixin: screenshotOptions,
+      mixinValue: screenshotOptions,
     );
   }
 
@@ -742,7 +742,7 @@ class Page extends PageBase {
   }
 
   Future<void> screencastShowActions(ShowActionsOptions options) async {
-    await channel_screencastShowActions(mixin: options);
+    await channel_screencastShowActions(mixinValue: options);
   }
 
   Future<void> screencastHideActions() async {

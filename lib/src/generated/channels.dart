@@ -4959,23 +4959,23 @@ abstract class APIRequestContextBase extends ChannelOwner {
   ]);
 
   Future<void> channel_dispose({String? reason}) async {
-    final params = <String, dynamic>{};
-    if (reason != null) params['reason'] = reason;
+    final payload = <String, dynamic>{};
+    if (reason != null) payload['reason'] = reason;
     final response = await connection.sendMessageToServer(
       guid,
       'dispose',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_disposeAPIResponse({required String fetchUid}) async {
-    final params = <String, dynamic>{};
-    params['fetchUid'] = fetchUid;
+    final payload = <String, dynamic>{};
+    payload['fetchUid'] = fetchUid;
     final response = await connection.sendMessageToServer(
       guid,
       'disposeAPIResponse',
-      params,
+      payload,
     );
     return;
   }
@@ -4996,27 +4996,29 @@ abstract class APIRequestContextBase extends ChannelOwner {
     required double timeout,
     required String url,
   }) async {
-    final params = <String, dynamic>{};
-    if (encodedParams != null) params['encodedParams'] = encodedParams;
-    if (failOnStatusCode != null) params['failOnStatusCode'] = failOnStatusCode;
-    if (formData != null) params['formData'] = formData;
-    if (headers != null) params['headers'] = headers;
-    if (ignoreHTTPSErrors != null) {
-      params['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
+    final payload = <String, dynamic>{};
+    if (encodedParams != null) payload['encodedParams'] = encodedParams;
+    if (failOnStatusCode != null) {
+      payload['failOnStatusCode'] = failOnStatusCode;
     }
-    if (jsonData != null) params['jsonData'] = jsonData;
-    if (maxRedirects != null) params['maxRedirects'] = maxRedirects;
-    if (maxRetries != null) params['maxRetries'] = maxRetries;
-    if (method != null) params['method'] = method;
-    if (multipartData != null) params['multipartData'] = multipartData;
-    if (params != null) params['params'] = params;
-    if (postData != null) params['postData'] = postData;
-    params['timeout'] = timeout;
-    params['url'] = url;
+    if (formData != null) payload['formData'] = formData;
+    if (headers != null) payload['headers'] = headers;
+    if (ignoreHTTPSErrors != null) {
+      payload['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
+    }
+    if (jsonData != null) payload['jsonData'] = jsonData;
+    if (maxRedirects != null) payload['maxRedirects'] = maxRedirects;
+    if (maxRetries != null) payload['maxRetries'] = maxRetries;
+    if (method != null) payload['method'] = method;
+    if (multipartData != null) payload['multipartData'] = multipartData;
+    if (params != null) payload['params'] = params;
+    if (postData != null) payload['postData'] = postData;
+    payload['timeout'] = timeout;
+    payload['url'] = url;
     final response = await connection.sendMessageToServer(
       guid,
       'fetch',
-      params,
+      payload,
     );
     return APIRequestContextFetchResult.fromJson(
       response,
@@ -5027,12 +5029,12 @@ abstract class APIRequestContextBase extends ChannelOwner {
   Future<APIRequestContextFetchLogResult> channel_fetchLog({
     required String fetchUid,
   }) async {
-    final params = <String, dynamic>{};
-    params['fetchUid'] = fetchUid;
+    final payload = <String, dynamic>{};
+    payload['fetchUid'] = fetchUid;
     final response = await connection.sendMessageToServer(
       guid,
       'fetchLog',
-      params,
+      payload,
     );
     return APIRequestContextFetchLogResult.fromJson(
       response,
@@ -5043,12 +5045,12 @@ abstract class APIRequestContextBase extends ChannelOwner {
   Future<APIRequestContextFetchResponseBodyResult> channel_fetchResponseBody({
     required String fetchUid,
   }) async {
-    final params = <String, dynamic>{};
-    params['fetchUid'] = fetchUid;
+    final payload = <String, dynamic>{};
+    payload['fetchUid'] = fetchUid;
     final response = await connection.sendMessageToServer(
       guid,
       'fetchResponseBody',
-      params,
+      payload,
     );
     return APIRequestContextFetchResponseBodyResult.fromJson(
       response,
@@ -5059,12 +5061,12 @@ abstract class APIRequestContextBase extends ChannelOwner {
   Future<APIRequestContextStorageStateResult> channel_storageState({
     bool? indexedDB,
   }) async {
-    final params = <String, dynamic>{};
-    if (indexedDB != null) params['indexedDB'] = indexedDB;
+    final payload = <String, dynamic>{};
+    if (indexedDB != null) payload['indexedDB'] = indexedDB;
     final response = await connection.sendMessageToServer(
       guid,
       'storageState',
-      params,
+      payload,
     );
     return APIRequestContextStorageStateResult.fromJson(
       response,
@@ -5087,16 +5089,16 @@ abstract class AndroidBase extends ChannelOwner {
     bool? omitDriverInstall,
     int? port,
   }) async {
-    final params = <String, dynamic>{};
-    if (host != null) params['host'] = host;
+    final payload = <String, dynamic>{};
+    if (host != null) payload['host'] = host;
     if (omitDriverInstall != null) {
-      params['omitDriverInstall'] = omitDriverInstall;
+      payload['omitDriverInstall'] = omitDriverInstall;
     }
-    if (port != null) params['port'] = port;
+    if (port != null) payload['port'] = port;
     final response = await connection.sendMessageToServer(
       guid,
       'devices',
-      params,
+      payload,
     );
     return AndroidDevicesResult.fromJson(response, connection: connection);
   }
@@ -5119,12 +5121,12 @@ abstract class AndroidDeviceBase extends EventTargetBase {
   Future<AndroidDeviceConnectToWebViewResult> channel_connectToWebView({
     required String socketName,
   }) async {
-    final params = <String, dynamic>{};
-    params['socketName'] = socketName;
+    final payload = <String, dynamic>{};
+    payload['socketName'] = socketName;
     final response = await connection.sendMessageToServer(
       guid,
       'connectToWebView',
-      params,
+      payload,
     );
     return AndroidDeviceConnectToWebViewResult.fromJson(
       response,
@@ -5138,12 +5140,16 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     double? speed,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['dest'] = dest.toJson();
-    if (speed != null) params['speed'] = speed;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'drag', params);
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['dest'] = dest.toJson();
+    if (speed != null) payload['speed'] = speed;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'drag',
+      payload,
+    );
     return;
   }
 
@@ -5152,11 +5158,15 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     required String text,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['text'] = text;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'fill', params);
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['text'] = text;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'fill',
+      payload,
+    );
     return;
   }
 
@@ -5166,15 +5176,15 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     double? speed,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['direction'] = direction.value;
-    if (speed != null) params['speed'] = speed;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['direction'] = direction.value;
+    if (speed != null) payload['speed'] = speed;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'fling',
-      params,
+      payload,
     );
     return;
   }
@@ -5182,9 +5192,13 @@ abstract class AndroidDeviceBase extends EventTargetBase {
   Future<AndroidDeviceInfoResult> channel_info({
     required AndroidSelector androidSelector,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    final response = await connection.sendMessageToServer(guid, 'info', params);
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    final response = await connection.sendMessageToServer(
+      guid,
+      'info',
+      payload,
+    );
     return AndroidDeviceInfoResult.fromJson(response, connection: connection);
   }
 
@@ -5193,25 +5207,25 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     required int steps,
     required Point to,
   }) async {
-    final params = <String, dynamic>{};
-    params['from'] = from.toJson();
-    params['steps'] = steps;
-    params['to'] = to.toJson();
+    final payload = <String, dynamic>{};
+    payload['from'] = from.toJson();
+    payload['steps'] = steps;
+    payload['to'] = to.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'inputDrag',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_inputPress({required String key}) async {
-    final params = <String, dynamic>{};
-    params['key'] = key;
+    final payload = <String, dynamic>{};
+    payload['key'] = key;
     final response = await connection.sendMessageToServer(
       guid,
       'inputPress',
-      params,
+      payload,
     );
     return;
   }
@@ -5220,35 +5234,35 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     required List<Point> segments,
     required int steps,
   }) async {
-    final params = <String, dynamic>{};
-    params['segments'] = segments;
-    params['steps'] = steps;
+    final payload = <String, dynamic>{};
+    payload['segments'] = segments;
+    payload['steps'] = steps;
     final response = await connection.sendMessageToServer(
       guid,
       'inputSwipe',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_inputTap({required Point point}) async {
-    final params = <String, dynamic>{};
-    params['point'] = point.toJson();
+    final payload = <String, dynamic>{};
+    payload['point'] = point.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'inputTap',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_inputType({required String text}) async {
-    final params = <String, dynamic>{};
-    params['text'] = text;
+    final payload = <String, dynamic>{};
+    payload['text'] = text;
     final response = await connection.sendMessageToServer(
       guid,
       'inputType',
-      params,
+      payload,
     );
     return;
   }
@@ -5257,32 +5271,32 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     List<String>? args,
     required String file,
   }) async {
-    final params = <String, dynamic>{};
-    if (args != null) params['args'] = args;
-    params['file'] = file;
+    final payload = <String, dynamic>{};
+    if (args != null) payload['args'] = args;
+    payload['file'] = file;
     final response = await connection.sendMessageToServer(
       guid,
       'installApk',
-      params,
+      payload,
     );
     return;
   }
 
   Future<AndroidDeviceLaunchBrowserResult> channel_launchBrowser({
-    required ContextOptions mixin,
+    required ContextOptions mixinValue,
     List<String>? args,
     String? pkg,
     Map<String, dynamic>? proxy,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
-    if (args != null) params['args'] = args;
-    if (pkg != null) params['pkg'] = pkg;
-    if (proxy != null) params['proxy'] = proxy;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
+    if (args != null) payload['args'] = args;
+    if (pkg != null) payload['pkg'] = pkg;
+    if (proxy != null) payload['proxy'] = proxy;
     final response = await connection.sendMessageToServer(
       guid,
       'launchBrowser',
-      params,
+      payload,
     );
     return AndroidDeviceLaunchBrowserResult.fromJson(
       response,
@@ -5294,13 +5308,13 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     required AndroidSelector androidSelector,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'longTap',
-      params,
+      payload,
     );
     return;
   }
@@ -5308,9 +5322,13 @@ abstract class AndroidDeviceBase extends EventTargetBase {
   Future<AndroidDeviceOpenResult> channel_open({
     required String command,
   }) async {
-    final params = <String, dynamic>{};
-    params['command'] = command;
-    final response = await connection.sendMessageToServer(guid, 'open', params);
+    final payload = <String, dynamic>{};
+    payload['command'] = command;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'open',
+      payload,
+    );
     return AndroidDeviceOpenResult.fromJson(response, connection: connection);
   }
 
@@ -5320,15 +5338,15 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     double? speed,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['percent'] = percent;
-    if (speed != null) params['speed'] = speed;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['percent'] = percent;
+    if (speed != null) payload['speed'] = speed;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'pinchClose',
-      params,
+      payload,
     );
     return;
   }
@@ -5339,15 +5357,15 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     double? speed,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['percent'] = percent;
-    if (speed != null) params['speed'] = speed;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['percent'] = percent;
+    if (speed != null) payload['speed'] = speed;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'pinchOpen',
-      params,
+      payload,
     );
     return;
   }
@@ -5357,11 +5375,15 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     int? mode,
     required String path,
   }) async {
-    final params = <String, dynamic>{};
-    params['file'] = file;
-    if (mode != null) params['mode'] = mode;
-    params['path'] = path;
-    final response = await connection.sendMessageToServer(guid, 'push', params);
+    final payload = <String, dynamic>{};
+    payload['file'] = file;
+    if (mode != null) payload['mode'] = mode;
+    payload['path'] = path;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'push',
+      payload,
+    );
     return;
   }
 
@@ -5384,16 +5406,16 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     double? speed,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['direction'] = direction.value;
-    params['percent'] = percent;
-    if (speed != null) params['speed'] = speed;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['direction'] = direction.value;
+    payload['percent'] = percent;
+    if (speed != null) payload['speed'] = speed;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'scroll',
-      params,
+      payload,
     );
     return;
   }
@@ -5401,12 +5423,12 @@ abstract class AndroidDeviceBase extends EventTargetBase {
   Future<AndroidDeviceShellResult> channel_shell({
     required String command,
   }) async {
-    final params = <String, dynamic>{};
-    params['command'] = command;
+    final payload = <String, dynamic>{};
+    payload['command'] = command;
     final response = await connection.sendMessageToServer(
       guid,
       'shell',
-      params,
+      payload,
     );
     return AndroidDeviceShellResult.fromJson(response, connection: connection);
   }
@@ -5418,16 +5440,16 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     double? speed,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    params['direction'] = direction.value;
-    params['percent'] = percent;
-    if (speed != null) params['speed'] = speed;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    payload['direction'] = direction.value;
+    payload['percent'] = percent;
+    if (speed != null) payload['speed'] = speed;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'swipe',
-      params,
+      payload,
     );
     return;
   }
@@ -5437,11 +5459,11 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     double? duration,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    if (duration != null) params['duration'] = duration;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'tap', params);
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    if (duration != null) payload['duration'] = duration;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(guid, 'tap', payload);
     return;
   }
 
@@ -5450,11 +5472,15 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     AndroidDeviceWaitStateEnum? state,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['androidSelector'] = androidSelector.toJson();
-    if (state != null) params['state'] = state.value;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'wait', params);
+    final payload = <String, dynamic>{};
+    payload['androidSelector'] = androidSelector.toJson();
+    if (state != null) payload['state'] = state.value;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'wait',
+      payload,
+    );
     return;
   }
 }
@@ -5474,12 +5500,12 @@ abstract class AndroidSocketBase extends ChannelOwner {
   }
 
   Future<void> channel_write({required String data}) async {
-    final params = <String, dynamic>{};
-    params['data'] = data;
+    final payload = <String, dynamic>{};
+    payload['data'] = data;
     final response = await connection.sendMessageToServer(
       guid,
       'write',
-      params,
+      payload,
     );
     return;
   }
@@ -5522,12 +5548,12 @@ abstract class ArtifactBase extends ChannelOwner {
   }
 
   Future<void> channel_saveAs({required String path}) async {
-    final params = <String, dynamic>{};
-    params['path'] = path;
+    final payload = <String, dynamic>{};
+    payload['path'] = path;
     final response = await connection.sendMessageToServer(
       guid,
       'saveAs',
-      params,
+      payload,
     );
     return;
   }
@@ -5560,23 +5586,23 @@ abstract class BindingCallBase extends ChannelOwner {
   ]);
 
   Future<void> channel_reject({required SerializedError error}) async {
-    final params = <String, dynamic>{};
-    params['error'] = error.toJson();
+    final payload = <String, dynamic>{};
+    payload['error'] = error.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'reject',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_resolve({required SerializedArgument result}) async {
-    final params = <String, dynamic>{};
-    params['result'] = result.toJson();
+    final payload = <String, dynamic>{};
+    payload['result'] = result.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'resolve',
-      params,
+      payload,
     );
     return;
   }
@@ -5592,12 +5618,12 @@ abstract class BrowserBase extends ChannelOwner {
   ]);
 
   Future<void> channel_close({String? reason}) async {
-    final params = <String, dynamic>{};
-    if (reason != null) params['reason'] = reason;
+    final payload = <String, dynamic>{};
+    if (reason != null) payload['reason'] = reason;
     final response = await connection.sendMessageToServer(
       guid,
       'close',
-      params,
+      payload,
     );
     return;
   }
@@ -5618,12 +5644,12 @@ abstract class BrowserBase extends ChannelOwner {
   Future<void> channel_disconnectFromReusedContext({
     required String reason,
   }) async {
-    final params = <String, dynamic>{};
-    params['reason'] = reason;
+    final payload = <String, dynamic>{};
+    payload['reason'] = reason;
     final response = await connection.sendMessageToServer(
       guid,
       'disconnectFromReusedContext',
-      params,
+      payload,
     );
     return;
   }
@@ -5651,35 +5677,35 @@ abstract class BrowserBase extends ChannelOwner {
   }
 
   Future<BrowserNewContextResult> channel_newContext({
-    required ContextOptions mixin,
+    required ContextOptions mixinValue,
     Map<String, dynamic>? proxy,
     Map<String, dynamic>? storageState,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
-    if (proxy != null) params['proxy'] = proxy;
-    if (storageState != null) params['storageState'] = storageState;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
+    if (proxy != null) payload['proxy'] = proxy;
+    if (storageState != null) payload['storageState'] = storageState;
     final response = await connection.sendMessageToServer(
       guid,
       'newContext',
-      params,
+      payload,
     );
     return BrowserNewContextResult.fromJson(response, connection: connection);
   }
 
   Future<BrowserNewContextForReuseResult> channel_newContextForReuse({
-    required ContextOptions mixin,
+    required ContextOptions mixinValue,
     Map<String, dynamic>? proxy,
     Map<String, dynamic>? storageState,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
-    if (proxy != null) params['proxy'] = proxy;
-    if (storageState != null) params['storageState'] = storageState;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
+    if (proxy != null) payload['proxy'] = proxy;
+    if (storageState != null) payload['storageState'] = storageState;
     final response = await connection.sendMessageToServer(
       guid,
       'newContextForReuse',
-      params,
+      payload,
     );
     return BrowserNewContextForReuseResult.fromJson(
       response,
@@ -5694,16 +5720,16 @@ abstract class BrowserBase extends ChannelOwner {
     required String title,
     String? workspaceDir,
   }) async {
-    final params = <String, dynamic>{};
-    if (host != null) params['host'] = host;
-    if (metadata != null) params['metadata'] = metadata;
-    if (port != null) params['port'] = port;
-    params['title'] = title;
-    if (workspaceDir != null) params['workspaceDir'] = workspaceDir;
+    final payload = <String, dynamic>{};
+    if (host != null) payload['host'] = host;
+    if (metadata != null) payload['metadata'] = metadata;
+    if (port != null) payload['port'] = port;
+    payload['title'] = title;
+    if (workspaceDir != null) payload['workspaceDir'] = workspaceDir;
     final response = await connection.sendMessageToServer(
       guid,
       'startServer',
-      params,
+      payload,
     );
     return BrowserStartServerResult.fromJson(response, connection: connection);
   }
@@ -5713,14 +5739,14 @@ abstract class BrowserBase extends ChannelOwner {
     PageBase? page,
     bool? screenshots,
   }) async {
-    final params = <String, dynamic>{};
-    if (categories != null) params['categories'] = categories;
-    if (page != null) params['page'] = page.guid;
-    if (screenshots != null) params['screenshots'] = screenshots;
+    final payload = <String, dynamic>{};
+    if (categories != null) payload['categories'] = categories;
+    if (page != null) payload['page'] = {'guid': page.guid};
+    if (screenshots != null) payload['screenshots'] = screenshots;
     final response = await connection.sendMessageToServer(
       guid,
       'startTracing',
-      params,
+      payload,
     );
     return;
   }
@@ -5756,12 +5782,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_addCookies({
     required List<SetNetworkCookie> cookies,
   }) async {
-    final params = <String, dynamic>{};
-    params['cookies'] = cookies;
+    final payload = <String, dynamic>{};
+    payload['cookies'] = cookies;
     final response = await connection.sendMessageToServer(
       guid,
       'addCookies',
-      params,
+      payload,
     );
     return;
   }
@@ -5769,12 +5795,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<BrowserContextAddInitScriptResult> channel_addInitScript({
     required String source,
   }) async {
-    final params = <String, dynamic>{};
-    params['source'] = source;
+    final payload = <String, dynamic>{};
+    payload['source'] = source;
     final response = await connection.sendMessageToServer(
       guid,
       'addInitScript',
-      params,
+      payload,
     );
     return BrowserContextAddInitScriptResult.fromJson(
       response,
@@ -5793,22 +5819,24 @@ abstract class BrowserContextBase extends EventTargetBase {
     String? pathRegexFlags,
     String? pathRegexSource,
   }) async {
-    final params = <String, dynamic>{};
-    if (domain != null) params['domain'] = domain;
-    if (domainRegexFlags != null) params['domainRegexFlags'] = domainRegexFlags;
-    if (domainRegexSource != null) {
-      params['domainRegexSource'] = domainRegexSource;
+    final payload = <String, dynamic>{};
+    if (domain != null) payload['domain'] = domain;
+    if (domainRegexFlags != null) {
+      payload['domainRegexFlags'] = domainRegexFlags;
     }
-    if (name != null) params['name'] = name;
-    if (nameRegexFlags != null) params['nameRegexFlags'] = nameRegexFlags;
-    if (nameRegexSource != null) params['nameRegexSource'] = nameRegexSource;
-    if (path != null) params['path'] = path;
-    if (pathRegexFlags != null) params['pathRegexFlags'] = pathRegexFlags;
-    if (pathRegexSource != null) params['pathRegexSource'] = pathRegexSource;
+    if (domainRegexSource != null) {
+      payload['domainRegexSource'] = domainRegexSource;
+    }
+    if (name != null) payload['name'] = name;
+    if (nameRegexFlags != null) payload['nameRegexFlags'] = nameRegexFlags;
+    if (nameRegexSource != null) payload['nameRegexSource'] = nameRegexSource;
+    if (path != null) payload['path'] = path;
+    if (pathRegexFlags != null) payload['pathRegexFlags'] = pathRegexFlags;
+    if (pathRegexSource != null) payload['pathRegexSource'] = pathRegexSource;
     final response = await connection.sendMessageToServer(
       guid,
       'clearCookies',
-      params,
+      payload,
     );
     return;
   }
@@ -5826,13 +5854,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     double? ticksNumber,
     String? ticksString,
   }) async {
-    final params = <String, dynamic>{};
-    if (ticksNumber != null) params['ticksNumber'] = ticksNumber;
-    if (ticksString != null) params['ticksString'] = ticksString;
+    final payload = <String, dynamic>{};
+    if (ticksNumber != null) payload['ticksNumber'] = ticksNumber;
+    if (ticksString != null) payload['ticksString'] = ticksString;
     final response = await connection.sendMessageToServer(
       guid,
       'clockFastForward',
-      params,
+      payload,
     );
     return;
   }
@@ -5841,13 +5869,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     double? timeNumber,
     String? timeString,
   }) async {
-    final params = <String, dynamic>{};
-    if (timeNumber != null) params['timeNumber'] = timeNumber;
-    if (timeString != null) params['timeString'] = timeString;
+    final payload = <String, dynamic>{};
+    if (timeNumber != null) payload['timeNumber'] = timeNumber;
+    if (timeString != null) payload['timeString'] = timeString;
     final response = await connection.sendMessageToServer(
       guid,
       'clockInstall',
-      params,
+      payload,
     );
     return;
   }
@@ -5856,13 +5884,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     double? timeNumber,
     String? timeString,
   }) async {
-    final params = <String, dynamic>{};
-    if (timeNumber != null) params['timeNumber'] = timeNumber;
-    if (timeString != null) params['timeString'] = timeString;
+    final payload = <String, dynamic>{};
+    if (timeNumber != null) payload['timeNumber'] = timeNumber;
+    if (timeString != null) payload['timeString'] = timeString;
     final response = await connection.sendMessageToServer(
       guid,
       'clockPauseAt',
-      params,
+      payload,
     );
     return;
   }
@@ -5880,13 +5908,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     double? ticksNumber,
     String? ticksString,
   }) async {
-    final params = <String, dynamic>{};
-    if (ticksNumber != null) params['ticksNumber'] = ticksNumber;
-    if (ticksString != null) params['ticksString'] = ticksString;
+    final payload = <String, dynamic>{};
+    if (ticksNumber != null) payload['ticksNumber'] = ticksNumber;
+    if (ticksString != null) payload['ticksString'] = ticksString;
     final response = await connection.sendMessageToServer(
       guid,
       'clockRunFor',
-      params,
+      payload,
     );
     return;
   }
@@ -5895,13 +5923,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     double? timeNumber,
     String? timeString,
   }) async {
-    final params = <String, dynamic>{};
-    if (timeNumber != null) params['timeNumber'] = timeNumber;
-    if (timeString != null) params['timeString'] = timeString;
+    final payload = <String, dynamic>{};
+    if (timeNumber != null) payload['timeNumber'] = timeNumber;
+    if (timeString != null) payload['timeString'] = timeString;
     final response = await connection.sendMessageToServer(
       guid,
       'clockSetFixedTime',
-      params,
+      payload,
     );
     return;
   }
@@ -5910,24 +5938,24 @@ abstract class BrowserContextBase extends EventTargetBase {
     double? timeNumber,
     String? timeString,
   }) async {
-    final params = <String, dynamic>{};
-    if (timeNumber != null) params['timeNumber'] = timeNumber;
-    if (timeString != null) params['timeString'] = timeString;
+    final payload = <String, dynamic>{};
+    if (timeNumber != null) payload['timeNumber'] = timeNumber;
+    if (timeString != null) payload['timeString'] = timeString;
     final response = await connection.sendMessageToServer(
       guid,
       'clockSetSystemTime',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_close({String? reason}) async {
-    final params = <String, dynamic>{};
-    if (reason != null) params['reason'] = reason;
+    final payload = <String, dynamic>{};
+    if (reason != null) payload['reason'] = reason;
     final response = await connection.sendMessageToServer(
       guid,
       'close',
-      params,
+      payload,
     );
     return;
   }
@@ -5935,12 +5963,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<BrowserContextCookiesResult> channel_cookies({
     required List<String> urls,
   }) async {
-    final params = <String, dynamic>{};
-    params['urls'] = urls;
+    final payload = <String, dynamic>{};
+    payload['urls'] = urls;
     final response = await connection.sendMessageToServer(
       guid,
       'cookies',
-      params,
+      payload,
     );
     return BrowserContextCookiesResult.fromJson(
       response,
@@ -5952,13 +5980,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     required List<Map<String, dynamic>> items,
     String? rootDirName,
   }) async {
-    final params = <String, dynamic>{};
-    params['items'] = items;
-    if (rootDirName != null) params['rootDirName'] = rootDirName;
+    final payload = <String, dynamic>{};
+    payload['items'] = items;
+    if (rootDirName != null) payload['rootDirName'] = rootDirName;
     final response = await connection.sendMessageToServer(
       guid,
       'createTempFiles',
-      params,
+      payload,
     );
     return BrowserContextCreateTempFilesResult.fromJson(
       response,
@@ -5989,27 +6017,29 @@ abstract class BrowserContextBase extends EventTargetBase {
     String? saveStorage,
     String? testIdAttributeName,
   }) async {
-    final params = <String, dynamic>{};
-    if (contextOptions != null) params['contextOptions'] = contextOptions;
-    if (device != null) params['device'] = device;
-    if (handleSIGINT != null) params['handleSIGINT'] = handleSIGINT;
-    if (language != null) params['language'] = language;
-    if (launchOptions != null) params['launchOptions'] = launchOptions;
-    if (mode != null) params['mode'] = mode.value;
-    if (omitCallTracking != null) params['omitCallTracking'] = omitCallTracking;
-    if (outputFile != null) params['outputFile'] = outputFile;
-    if (pauseOnNextStatement != null) {
-      params['pauseOnNextStatement'] = pauseOnNextStatement;
+    final payload = <String, dynamic>{};
+    if (contextOptions != null) payload['contextOptions'] = contextOptions;
+    if (device != null) payload['device'] = device;
+    if (handleSIGINT != null) payload['handleSIGINT'] = handleSIGINT;
+    if (language != null) payload['language'] = language;
+    if (launchOptions != null) payload['launchOptions'] = launchOptions;
+    if (mode != null) payload['mode'] = mode.value;
+    if (omitCallTracking != null) {
+      payload['omitCallTracking'] = omitCallTracking;
     }
-    if (recorderMode != null) params['recorderMode'] = recorderMode.value;
-    if (saveStorage != null) params['saveStorage'] = saveStorage;
+    if (outputFile != null) payload['outputFile'] = outputFile;
+    if (pauseOnNextStatement != null) {
+      payload['pauseOnNextStatement'] = pauseOnNextStatement;
+    }
+    if (recorderMode != null) payload['recorderMode'] = recorderMode.value;
+    if (saveStorage != null) payload['saveStorage'] = saveStorage;
     if (testIdAttributeName != null) {
-      params['testIdAttributeName'] = testIdAttributeName;
+      payload['testIdAttributeName'] = testIdAttributeName;
     }
     final response = await connection.sendMessageToServer(
       guid,
       'enableRecorder',
-      params,
+      payload,
     );
     return;
   }
@@ -6017,12 +6047,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<BrowserContextExposeBindingResult> channel_exposeBinding({
     required String name,
   }) async {
-    final params = <String, dynamic>{};
-    params['name'] = name;
+    final payload = <String, dynamic>{};
+    payload['name'] = name;
     final response = await connection.sendMessageToServer(
       guid,
       'exposeBinding',
-      params,
+      payload,
     );
     return BrowserContextExposeBindingResult.fromJson(
       response,
@@ -6043,13 +6073,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     String? origin,
     required List<String> permissions,
   }) async {
-    final params = <String, dynamic>{};
-    if (origin != null) params['origin'] = origin;
-    params['permissions'] = permissions;
+    final payload = <String, dynamic>{};
+    if (origin != null) payload['origin'] = origin;
+    payload['permissions'] = permissions;
     final response = await connection.sendMessageToServer(
       guid,
       'grantPermissions',
-      params,
+      payload,
     );
     return;
   }
@@ -6058,13 +6088,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     FrameBase? frame,
     PageBase? page,
   }) async {
-    final params = <String, dynamic>{};
-    if (frame != null) params['frame'] = frame.guid;
-    if (page != null) params['page'] = page.guid;
+    final payload = <String, dynamic>{};
+    if (frame != null) payload['frame'] = {'guid': frame.guid};
+    if (page != null) payload['page'] = {'guid': page.guid};
     final response = await connection.sendMessageToServer(
       guid,
       'newCDPSession',
-      params,
+      payload,
     );
     return BrowserContextNewCDPSessionResult.fromJson(
       response,
@@ -6088,12 +6118,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_registerSelectorEngine({
     required SelectorEngine selectorEngine,
   }) async {
-    final params = <String, dynamic>{};
-    params['selectorEngine'] = selectorEngine.toJson();
+    final payload = <String, dynamic>{};
+    payload['selectorEngine'] = selectorEngine.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'registerSelectorEngine',
-      params,
+      payload,
     );
     return;
   }
@@ -6101,12 +6131,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_setExtraHTTPHeaders({
     required List<NameValue> headers,
   }) async {
-    final params = <String, dynamic>{};
-    params['headers'] = headers;
+    final payload = <String, dynamic>{};
+    payload['headers'] = headers;
     final response = await connection.sendMessageToServer(
       guid,
       'setExtraHTTPHeaders',
-      params,
+      payload,
     );
     return;
   }
@@ -6114,12 +6144,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_setGeolocation({
     Map<String, dynamic>? geolocation,
   }) async {
-    final params = <String, dynamic>{};
-    if (geolocation != null) params['geolocation'] = geolocation;
+    final payload = <String, dynamic>{};
+    if (geolocation != null) payload['geolocation'] = geolocation;
     final response = await connection.sendMessageToServer(
       guid,
       'setGeolocation',
-      params,
+      payload,
     );
     return;
   }
@@ -6127,12 +6157,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_setHTTPCredentials({
     Map<String, dynamic>? httpCredentials,
   }) async {
-    final params = <String, dynamic>{};
-    if (httpCredentials != null) params['httpCredentials'] = httpCredentials;
+    final payload = <String, dynamic>{};
+    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
     final response = await connection.sendMessageToServer(
       guid,
       'setHTTPCredentials',
-      params,
+      payload,
     );
     return;
   }
@@ -6140,23 +6170,23 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_setNetworkInterceptionPatterns({
     required List<Map<String, dynamic>> patterns,
   }) async {
-    final params = <String, dynamic>{};
-    params['patterns'] = patterns;
+    final payload = <String, dynamic>{};
+    payload['patterns'] = patterns;
     final response = await connection.sendMessageToServer(
       guid,
       'setNetworkInterceptionPatterns',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_setOffline({required bool offline}) async {
-    final params = <String, dynamic>{};
-    params['offline'] = offline;
+    final payload = <String, dynamic>{};
+    payload['offline'] = offline;
     final response = await connection.sendMessageToServer(
       guid,
       'setOffline',
-      params,
+      payload,
     );
     return;
   }
@@ -6164,12 +6194,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_setStorageState({
     Map<String, dynamic>? storageState,
   }) async {
-    final params = <String, dynamic>{};
-    if (storageState != null) params['storageState'] = storageState;
+    final payload = <String, dynamic>{};
+    if (storageState != null) payload['storageState'] = storageState;
     final response = await connection.sendMessageToServer(
       guid,
       'setStorageState',
-      params,
+      payload,
     );
     return;
   }
@@ -6177,12 +6207,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_setTestIdAttributeName({
     required String testIdAttributeName,
   }) async {
-    final params = <String, dynamic>{};
-    params['testIdAttributeName'] = testIdAttributeName;
+    final payload = <String, dynamic>{};
+    payload['testIdAttributeName'] = testIdAttributeName;
     final response = await connection.sendMessageToServer(
       guid,
       'setTestIdAttributeName',
-      params,
+      payload,
     );
     return;
   }
@@ -6190,12 +6220,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<void> channel_setWebSocketInterceptionPatterns({
     required List<Map<String, dynamic>> patterns,
   }) async {
-    final params = <String, dynamic>{};
-    params['patterns'] = patterns;
+    final payload = <String, dynamic>{};
+    payload['patterns'] = patterns;
     final response = await connection.sendMessageToServer(
       guid,
       'setWebSocketInterceptionPatterns',
-      params,
+      payload,
     );
     return;
   }
@@ -6203,12 +6233,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   Future<BrowserContextStorageStateResult> channel_storageState({
     bool? indexedDB,
   }) async {
-    final params = <String, dynamic>{};
-    if (indexedDB != null) params['indexedDB'] = indexedDB;
+    final payload = <String, dynamic>{};
+    if (indexedDB != null) payload['indexedDB'] = indexedDB;
     final response = await connection.sendMessageToServer(
       guid,
       'storageState',
-      params,
+      payload,
     );
     return BrowserContextStorageStateResult.fromJson(
       response,
@@ -6220,13 +6250,13 @@ abstract class BrowserContextBase extends EventTargetBase {
     required bool enabled,
     required BrowserContextUpdateSubscriptionEventEnum event,
   }) async {
-    final params = <String, dynamic>{};
-    params['enabled'] = enabled;
-    params['event'] = event.value;
+    final payload = <String, dynamic>{};
+    payload['enabled'] = enabled;
+    payload['event'] = event.value;
     final response = await connection.sendMessageToServer(
       guid,
       'updateSubscription',
-      params,
+      payload,
     );
     return;
   }
@@ -6249,17 +6279,17 @@ abstract class BrowserTypeBase extends ChannelOwner {
     double? slowMo,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['endpointURL'] = endpointURL;
-    if (headers != null) params['headers'] = headers;
-    if (isLocal != null) params['isLocal'] = isLocal;
-    if (noDefaults != null) params['noDefaults'] = noDefaults;
-    if (slowMo != null) params['slowMo'] = slowMo;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['endpointURL'] = endpointURL;
+    if (headers != null) payload['headers'] = headers;
+    if (isLocal != null) payload['isLocal'] = isLocal;
+    if (noDefaults != null) payload['noDefaults'] = noDefaults;
+    if (slowMo != null) payload['slowMo'] = slowMo;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'connectOverCDP',
-      params,
+      payload,
     );
     return BrowserTypeConnectOverCDPResult.fromJson(
       response,
@@ -6271,13 +6301,13 @@ abstract class BrowserTypeBase extends ChannelOwner {
     required String endpoint,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['endpoint'] = endpoint;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['endpoint'] = endpoint;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'connectToWorker',
-      params,
+      payload,
     );
     return BrowserTypeConnectToWorkerResult.fromJson(
       response,
@@ -6286,36 +6316,36 @@ abstract class BrowserTypeBase extends ChannelOwner {
   }
 
   Future<BrowserTypeLaunchResult> channel_launch({
-    required LaunchOptions mixin,
+    required LaunchOptions mixinValue,
     double? slowMo,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
-    if (slowMo != null) params['slowMo'] = slowMo;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
+    if (slowMo != null) payload['slowMo'] = slowMo;
     final response = await connection.sendMessageToServer(
       guid,
       'launch',
-      params,
+      payload,
     );
     return BrowserTypeLaunchResult.fromJson(response, connection: connection);
   }
 
   Future<BrowserTypeLaunchPersistentContextResult>
   channel_launchPersistentContext({
-    required LaunchOptions mixin1,
-    required ContextOptions mixin2,
+    required LaunchOptions mixin1Value,
+    required ContextOptions mixin2Value,
     double? slowMo,
     required String userDataDir,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin1.toJson());
-    params.addAll(mixin2.toJson());
-    if (slowMo != null) params['slowMo'] = slowMo;
-    params['userDataDir'] = userDataDir;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixin1Value.toJson());
+    payload.addAll(mixin2Value.toJson());
+    if (slowMo != null) payload['slowMo'] = slowMo;
+    payload['userDataDir'] = userDataDir;
     final response = await connection.sendMessageToServer(
       guid,
       'launchPersistentContext',
-      params,
+      payload,
     );
     return BrowserTypeLaunchPersistentContextResult.fromJson(
       response,
@@ -6342,10 +6372,14 @@ abstract class CDPSessionBase extends ChannelOwner {
     required String method,
     Map<String, dynamic>? params,
   }) async {
-    final params = <String, dynamic>{};
-    params['method'] = method;
-    if (params != null) params['params'] = params;
-    final response = await connection.sendMessageToServer(guid, 'send', params);
+    final payload = <String, dynamic>{};
+    payload['method'] = method;
+    if (params != null) payload['params'] = params;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'send',
+      payload,
+    );
     return CDPSessionSendResult.fromJson(response, connection: connection);
   }
 }
@@ -6372,13 +6406,13 @@ abstract class DebugControllerBase extends ChannelOwner {
     String? ariaTemplate,
     String? selector,
   }) async {
-    final params = <String, dynamic>{};
-    if (ariaTemplate != null) params['ariaTemplate'] = ariaTemplate;
-    if (selector != null) params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    if (ariaTemplate != null) payload['ariaTemplate'] = ariaTemplate;
+    if (selector != null) payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'highlight',
-      params,
+      payload,
     );
     return;
   }
@@ -6387,13 +6421,13 @@ abstract class DebugControllerBase extends ChannelOwner {
     required String codegenId,
     required SDKLanguage sdkLanguage,
   }) async {
-    final params = <String, dynamic>{};
-    params['codegenId'] = codegenId;
-    params['sdkLanguage'] = sdkLanguage.value;
+    final payload = <String, dynamic>{};
+    payload['codegenId'] = codegenId;
+    payload['sdkLanguage'] = sdkLanguage.value;
     final response = await connection.sendMessageToServer(
       guid,
       'initialize',
-      params,
+      payload,
     );
     return;
   }
@@ -6413,29 +6447,29 @@ abstract class DebugControllerBase extends ChannelOwner {
     required DebugControllerSetRecorderModeModeEnum mode,
     String? testIdAttributeName,
   }) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (generateAutoExpect != null) {
-      params['generateAutoExpect'] = generateAutoExpect;
+      payload['generateAutoExpect'] = generateAutoExpect;
     }
-    params['mode'] = mode.value;
+    payload['mode'] = mode.value;
     if (testIdAttributeName != null) {
-      params['testIdAttributeName'] = testIdAttributeName;
+      payload['testIdAttributeName'] = testIdAttributeName;
     }
     final response = await connection.sendMessageToServer(
       guid,
       'setRecorderMode',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_setReportStateChanged({required bool enabled}) async {
-    final params = <String, dynamic>{};
-    params['enabled'] = enabled;
+    final payload = <String, dynamic>{};
+    payload['enabled'] = enabled;
     final response = await connection.sendMessageToServer(
       guid,
       'setReportStateChanged',
-      params,
+      payload,
     );
     return;
   }
@@ -6470,12 +6504,12 @@ abstract class DebuggerBase extends EventTargetBase {
   }
 
   Future<void> channel_runTo({required Map<String, dynamic> location}) async {
-    final params = <String, dynamic>{};
-    params['location'] = location;
+    final payload = <String, dynamic>{};
+    payload['location'] = location;
     final response = await connection.sendMessageToServer(
       guid,
       'runTo',
-      params,
+      payload,
     );
     return;
   }
@@ -6491,12 +6525,12 @@ abstract class DialogBase extends ChannelOwner {
   ]);
 
   Future<void> channel_accept({String? promptText}) async {
-    final params = <String, dynamic>{};
-    if (promptText != null) params['promptText'] = promptText;
+    final payload = <String, dynamic>{};
+    if (promptText != null) payload['promptText'] = promptText;
     final response = await connection.sendMessageToServer(
       guid,
       'accept',
-      params,
+      payload,
     );
     return;
   }
@@ -6555,39 +6589,41 @@ abstract class ElectronBase extends ChannelOwner {
     String? timezoneId,
     String? tracesDir,
   }) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (acceptDownloads != null) {
-      params['acceptDownloads'] = acceptDownloads.value;
+      payload['acceptDownloads'] = acceptDownloads.value;
     }
-    if (args != null) params['args'] = args;
-    if (artifactsDir != null) params['artifactsDir'] = artifactsDir;
-    if (bypassCSP != null) params['bypassCSP'] = bypassCSP;
-    if (chromiumSandbox != null) params['chromiumSandbox'] = chromiumSandbox;
-    if (colorScheme != null) params['colorScheme'] = colorScheme.value;
-    if (cwd != null) params['cwd'] = cwd;
-    if (env != null) params['env'] = env;
-    if (executablePath != null) params['executablePath'] = executablePath;
-    if (extraHTTPHeaders != null) params['extraHTTPHeaders'] = extraHTTPHeaders;
-    if (geolocation != null) params['geolocation'] = geolocation;
-    if (httpCredentials != null) params['httpCredentials'] = httpCredentials;
+    if (args != null) payload['args'] = args;
+    if (artifactsDir != null) payload['artifactsDir'] = artifactsDir;
+    if (bypassCSP != null) payload['bypassCSP'] = bypassCSP;
+    if (chromiumSandbox != null) payload['chromiumSandbox'] = chromiumSandbox;
+    if (colorScheme != null) payload['colorScheme'] = colorScheme.value;
+    if (cwd != null) payload['cwd'] = cwd;
+    if (env != null) payload['env'] = env;
+    if (executablePath != null) payload['executablePath'] = executablePath;
+    if (extraHTTPHeaders != null) {
+      payload['extraHTTPHeaders'] = extraHTTPHeaders;
+    }
+    if (geolocation != null) payload['geolocation'] = geolocation;
+    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
     if (ignoreHTTPSErrors != null) {
-      params['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
+      payload['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
     }
-    if (locale != null) params['locale'] = locale;
-    if (offline != null) params['offline'] = offline;
-    if (recordVideo != null) params['recordVideo'] = recordVideo;
-    if (selectorEngines != null) params['selectorEngines'] = selectorEngines;
-    if (strictSelectors != null) params['strictSelectors'] = strictSelectors;
+    if (locale != null) payload['locale'] = locale;
+    if (offline != null) payload['offline'] = offline;
+    if (recordVideo != null) payload['recordVideo'] = recordVideo;
+    if (selectorEngines != null) payload['selectorEngines'] = selectorEngines;
+    if (strictSelectors != null) payload['strictSelectors'] = strictSelectors;
     if (testIdAttributeName != null) {
-      params['testIdAttributeName'] = testIdAttributeName;
+      payload['testIdAttributeName'] = testIdAttributeName;
     }
-    params['timeout'] = timeout;
-    if (timezoneId != null) params['timezoneId'] = timezoneId;
-    if (tracesDir != null) params['tracesDir'] = tracesDir;
+    payload['timeout'] = timeout;
+    if (timezoneId != null) payload['timezoneId'] = timezoneId;
+    if (tracesDir != null) payload['tracesDir'] = tracesDir;
     final response = await connection.sendMessageToServer(
       guid,
       'launch',
-      params,
+      payload,
     );
     return ElectronLaunchResult.fromJson(response, connection: connection);
   }
@@ -6605,12 +6641,12 @@ abstract class ElectronApplicationBase extends EventTargetBase {
   Future<ElectronApplicationBrowserWindowResult> channel_browserWindow({
     required PageBase page,
   }) async {
-    final params = <String, dynamic>{};
-    params['page'] = page.guid;
+    final payload = <String, dynamic>{};
+    payload['page'] = {'guid': page.guid};
     final response = await connection.sendMessageToServer(
       guid,
       'browserWindow',
-      params,
+      payload,
     );
     return ElectronApplicationBrowserWindowResult.fromJson(
       response,
@@ -6624,14 +6660,14 @@ abstract class ElectronApplicationBase extends EventTargetBase {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpression',
-      params,
+      payload,
     );
     return ElectronApplicationEvaluateExpressionResult.fromJson(
       response,
@@ -6645,14 +6681,14 @@ abstract class ElectronApplicationBase extends EventTargetBase {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpressionHandle',
-      params,
+      payload,
     );
     return ElectronApplicationEvaluateExpressionHandleResult.fromJson(
       response,
@@ -6664,13 +6700,13 @@ abstract class ElectronApplicationBase extends EventTargetBase {
     required bool enabled,
     required ElectronApplicationUpdateSubscriptionEventEnum event,
   }) async {
-    final params = <String, dynamic>{};
-    params['enabled'] = enabled;
-    params['event'] = event.value;
+    final payload = <String, dynamic>{};
+    payload['enabled'] = enabled;
+    payload['event'] = event.value;
     final response = await connection.sendMessageToServer(
       guid,
       'updateSubscription',
-      params,
+      payload,
     );
     return;
   }
@@ -6703,15 +6739,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position.toJson();
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (position != null) payload['position'] = position.toJson();
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'check',
-      params,
+      payload,
     );
     return;
   }
@@ -6728,21 +6764,21 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (button != null) params['button'] = button.value;
-    if (clickCount != null) params['clickCount'] = clickCount;
-    if (delay != null) params['delay'] = delay;
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (noWaitAfter != null) params['noWaitAfter'] = noWaitAfter;
-    if (position != null) params['position'] = position.toJson();
-    if (steps != null) params['steps'] = steps;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (button != null) payload['button'] = button.value;
+    if (clickCount != null) payload['clickCount'] = clickCount;
+    if (delay != null) payload['delay'] = delay;
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
+    if (position != null) payload['position'] = position.toJson();
+    if (steps != null) payload['steps'] = steps;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'click',
-      params,
+      payload,
     );
     return;
   }
@@ -6769,19 +6805,19 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (button != null) params['button'] = button.value;
-    if (delay != null) params['delay'] = delay;
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position.toJson();
-    if (steps != null) params['steps'] = steps;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (button != null) payload['button'] = button.value;
+    if (delay != null) payload['delay'] = delay;
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (position != null) payload['position'] = position.toJson();
+    if (steps != null) payload['steps'] = steps;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'dblclick',
-      params,
+      payload,
     );
     return;
   }
@@ -6790,13 +6826,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     required SerializedArgument eventInit,
     required String type,
   }) async {
-    final params = <String, dynamic>{};
-    params['eventInit'] = eventInit.toJson();
-    params['type'] = type;
+    final payload = <String, dynamic>{};
+    payload['eventInit'] = eventInit.toJson();
+    payload['type'] = type;
     final response = await connection.sendMessageToServer(
       guid,
       'dispatchEvent',
-      params,
+      payload,
     );
     return;
   }
@@ -6808,16 +6844,16 @@ abstract class ElementHandleBase extends JSHandleBase {
     required String selector,
     bool? strict,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
       'evalOnSelector',
-      params,
+      payload,
     );
     return ElementHandleEvalOnSelectorResult.fromJson(
       response,
@@ -6831,15 +6867,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     bool? isFunction,
     required String selector,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'evalOnSelectorAll',
-      params,
+      payload,
     );
     return ElementHandleEvalOnSelectorAllResult.fromJson(
       response,
@@ -6852,11 +6888,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
     required String value,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    params['timeout'] = timeout;
-    params['value'] = value;
-    final response = await connection.sendMessageToServer(guid, 'fill', params);
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    payload['timeout'] = timeout;
+    payload['value'] = value;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'fill',
+      payload,
+    );
     return;
   }
 
@@ -6868,12 +6908,12 @@ abstract class ElementHandleBase extends JSHandleBase {
   Future<ElementHandleGetAttributeResult> channel_getAttribute({
     required String name,
   }) async {
-    final params = <String, dynamic>{};
-    params['name'] = name;
+    final payload = <String, dynamic>{};
+    payload['name'] = name;
     final response = await connection.sendMessageToServer(
       guid,
       'getAttribute',
-      params,
+      payload,
     );
     return ElementHandleGetAttributeResult.fromJson(
       response,
@@ -6888,16 +6928,16 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position.toJson();
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (position != null) payload['position'] = position.toJson();
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'hover',
-      params,
+      payload,
     );
     return;
   }
@@ -7024,15 +7064,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     bool? noWaitAfter,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (delay != null) params['delay'] = delay;
-    params['key'] = key;
-    if (noWaitAfter != null) params['noWaitAfter'] = noWaitAfter;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    if (delay != null) payload['delay'] = delay;
+    payload['key'] = key;
+    if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'press',
-      params,
+      payload,
     );
     return;
   }
@@ -7041,13 +7081,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     required String selector,
     bool? strict,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
       'querySelector',
-      params,
+      payload,
     );
     return ElementHandleQuerySelectorResult.fromJson(
       response,
@@ -7058,12 +7098,12 @@ abstract class ElementHandleBase extends JSHandleBase {
   Future<ElementHandleQuerySelectorAllResult> channel_querySelectorAll({
     required String selector,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'querySelectorAll',
-      params,
+      payload,
     );
     return ElementHandleQuerySelectorAllResult.fromJson(
       response,
@@ -7072,20 +7112,20 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   Future<ElementHandleScreenshotResult> channel_screenshot({
-    required CommonScreenshotOptions mixin,
+    required CommonScreenshotOptions mixinValue,
     int? quality,
     required double timeout,
     ElementHandleScreenshotTypeEnum? type,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
-    if (quality != null) params['quality'] = quality;
-    params['timeout'] = timeout;
-    if (type != null) params['type'] = type.value;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
+    if (quality != null) payload['quality'] = quality;
+    payload['timeout'] = timeout;
+    if (type != null) payload['type'] = type.value;
     final response = await connection.sendMessageToServer(
       guid,
       'screenshot',
-      params,
+      payload,
     );
     return ElementHandleScreenshotResult.fromJson(
       response,
@@ -7094,12 +7134,12 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   Future<void> channel_scrollIntoViewIfNeeded({required double timeout}) async {
-    final params = <String, dynamic>{};
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'scrollIntoViewIfNeeded',
-      params,
+      payload,
     );
     return;
   }
@@ -7110,15 +7150,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     List<Map<String, dynamic>>? options,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (elements != null) params['elements'] = elements;
-    if (force != null) params['force'] = force;
-    if (options != null) params['options'] = options;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    if (elements != null) payload['elements'] = elements;
+    if (force != null) payload['force'] = force;
+    if (options != null) payload['options'] = options;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'selectOption',
-      params,
+      payload,
     );
     return ElementHandleSelectOptionResult.fromJson(
       response,
@@ -7130,13 +7170,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     bool? force,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'selectText',
-      params,
+      payload,
     );
     return;
   }
@@ -7149,19 +7189,19 @@ abstract class ElementHandleBase extends JSHandleBase {
     List<WritableStreamBase>? streams,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (directoryStream != null) {
-      params['directoryStream'] = directoryStream.guid;
+      payload['directoryStream'] = {'guid': directoryStream.guid};
     }
-    if (localDirectory != null) params['localDirectory'] = localDirectory;
-    if (localPaths != null) params['localPaths'] = localPaths;
-    if (payloads != null) params['payloads'] = payloads;
-    if (streams != null) params['streams'] = streams;
-    params['timeout'] = timeout;
+    if (localDirectory != null) payload['localDirectory'] = localDirectory;
+    if (localPaths != null) payload['localPaths'] = localPaths;
+    if (payloads != null) payload['payloads'] = payloads;
+    if (streams != null) payload['streams'] = streams;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'setInputFiles',
-      params,
+      payload,
     );
     return;
   }
@@ -7173,13 +7213,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position.toJson();
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
-    final response = await connection.sendMessageToServer(guid, 'tap', params);
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (position != null) payload['position'] = position.toJson();
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
+    final response = await connection.sendMessageToServer(guid, 'tap', payload);
     return;
   }
 
@@ -7200,11 +7240,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     required String text,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (delay != null) params['delay'] = delay;
-    params['text'] = text;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'type', params);
+    final payload = <String, dynamic>{};
+    if (delay != null) payload['delay'] = delay;
+    payload['text'] = text;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'type',
+      payload,
+    );
     return;
   }
 
@@ -7214,15 +7258,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position.toJson();
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (position != null) payload['position'] = position.toJson();
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'uncheck',
-      params,
+      payload,
     );
     return;
   }
@@ -7231,13 +7275,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     required ElementHandleWaitForElementStateStateEnum state,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['state'] = state.value;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['state'] = state.value;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'waitForElementState',
-      params,
+      payload,
     );
     return;
   }
@@ -7248,15 +7292,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (state != null) params['state'] = state.value;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (state != null) payload['state'] = state.value;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'waitForSelector',
-      params,
+      payload,
     );
     return ElementHandleWaitForSelectorResult.fromJson(
       response,
@@ -7277,12 +7321,12 @@ abstract class EventTargetBase extends ChannelOwner {
   Future<void> channel_waitForEventInfo({
     required Map<String, dynamic> info,
   }) async {
-    final params = <String, dynamic>{};
-    params['info'] = info;
+    final payload = <String, dynamic>{};
+    payload['info'] = info;
     final response = await connection.sendMessageToServer(
       guid,
       'waitForEventInfo',
-      params,
+      payload,
     );
     return;
   }
@@ -7302,14 +7346,14 @@ abstract class FrameBase extends ChannelOwner {
     String? type,
     String? url,
   }) async {
-    final params = <String, dynamic>{};
-    if (content != null) params['content'] = content;
-    if (type != null) params['type'] = type;
-    if (url != null) params['url'] = url;
+    final payload = <String, dynamic>{};
+    if (content != null) payload['content'] = content;
+    if (type != null) payload['type'] = type;
+    if (url != null) payload['url'] = url;
     final response = await connection.sendMessageToServer(
       guid,
       'addScriptTag',
-      params,
+      payload,
     );
     return FrameAddScriptTagResult.fromJson(response, connection: connection);
   }
@@ -7318,13 +7362,13 @@ abstract class FrameBase extends ChannelOwner {
     String? content,
     String? url,
   }) async {
-    final params = <String, dynamic>{};
-    if (content != null) params['content'] = content;
-    if (url != null) params['url'] = url;
+    final payload = <String, dynamic>{};
+    if (content != null) payload['content'] = content;
+    if (url != null) payload['url'] = url;
     final response = await connection.sendMessageToServer(
       guid,
       'addStyleTag',
-      params,
+      payload,
     );
     return FrameAddStyleTagResult.fromJson(response, connection: connection);
   }
@@ -7337,17 +7381,17 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     String? track,
   }) async {
-    final params = <String, dynamic>{};
-    if (boxes != null) params['boxes'] = boxes;
-    if (depth != null) params['depth'] = depth;
-    if (mode != null) params['mode'] = mode.value;
-    if (selector != null) params['selector'] = selector;
-    params['timeout'] = timeout;
-    if (track != null) params['track'] = track;
+    final payload = <String, dynamic>{};
+    if (boxes != null) payload['boxes'] = boxes;
+    if (depth != null) payload['depth'] = depth;
+    if (mode != null) payload['mode'] = mode.value;
+    if (selector != null) payload['selector'] = selector;
+    payload['timeout'] = timeout;
+    if (track != null) payload['track'] = track;
     final response = await connection.sendMessageToServer(
       guid,
       'ariaSnapshot',
-      params,
+      payload,
     );
     return FrameAriaSnapshotResult.fromJson(response, connection: connection);
   }
@@ -7357,11 +7401,15 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'blur', params);
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'blur',
+      payload,
+    );
     return;
   }
 
@@ -7373,17 +7421,17 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position.toJson();
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (position != null) payload['position'] = position.toJson();
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'check',
-      params,
+      payload,
     );
     return;
   }
@@ -7402,23 +7450,23 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (button != null) params['button'] = button.value;
-    if (clickCount != null) params['clickCount'] = clickCount;
-    if (delay != null) params['delay'] = delay;
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (noWaitAfter != null) params['noWaitAfter'] = noWaitAfter;
-    if (position != null) params['position'] = position.toJson();
-    params['selector'] = selector;
-    if (steps != null) params['steps'] = steps;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (button != null) payload['button'] = button.value;
+    if (clickCount != null) payload['clickCount'] = clickCount;
+    if (delay != null) payload['delay'] = delay;
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
+    if (position != null) payload['position'] = position.toJson();
+    payload['selector'] = selector;
+    if (steps != null) payload['steps'] = steps;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'click',
-      params,
+      payload,
     );
     return;
   }
@@ -7440,21 +7488,21 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (button != null) params['button'] = button.value;
-    if (delay != null) params['delay'] = delay;
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position.toJson();
-    params['selector'] = selector;
-    if (steps != null) params['steps'] = steps;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (button != null) payload['button'] = button.value;
+    if (delay != null) payload['delay'] = delay;
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (position != null) payload['position'] = position.toJson();
+    payload['selector'] = selector;
+    if (steps != null) payload['steps'] = steps;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'dblclick',
-      params,
+      payload,
     );
     return;
   }
@@ -7466,16 +7514,16 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     required String type,
   }) async {
-    final params = <String, dynamic>{};
-    params['eventInit'] = eventInit.toJson();
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    params['type'] = type;
+    final payload = <String, dynamic>{};
+    payload['eventInit'] = eventInit.toJson();
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    payload['type'] = type;
     final response = await connection.sendMessageToServer(
       guid,
       'dispatchEvent',
-      params,
+      payload,
     );
     return;
   }
@@ -7491,24 +7539,24 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    params['source'] = source;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    payload['source'] = source;
     if (sourcePosition != null) {
-      params['sourcePosition'] = sourcePosition.toJson();
+      payload['sourcePosition'] = sourcePosition.toJson();
     }
-    if (steps != null) params['steps'] = steps;
-    if (strict != null) params['strict'] = strict;
-    params['target'] = target;
+    if (steps != null) payload['steps'] = steps;
+    if (strict != null) payload['strict'] = strict;
+    payload['target'] = target;
     if (targetPosition != null) {
-      params['targetPosition'] = targetPosition.toJson();
+      payload['targetPosition'] = targetPosition.toJson();
     }
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'dragAndDrop',
-      params,
+      payload,
     );
     return;
   }
@@ -7523,16 +7571,20 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (data != null) params['data'] = data;
-    if (localPaths != null) params['localPaths'] = localPaths;
-    if (payloads != null) params['payloads'] = payloads;
-    if (position != null) params['position'] = position.toJson();
-    params['selector'] = selector;
-    if (streams != null) params['streams'] = streams;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'drop', params);
+    final payload = <String, dynamic>{};
+    if (data != null) payload['data'] = data;
+    if (localPaths != null) payload['localPaths'] = localPaths;
+    if (payloads != null) payload['payloads'] = payloads;
+    if (position != null) payload['position'] = position.toJson();
+    payload['selector'] = selector;
+    if (streams != null) payload['streams'] = streams;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'drop',
+      payload,
+    );
     return;
   }
 
@@ -7543,16 +7595,16 @@ abstract class FrameBase extends ChannelOwner {
     required String selector,
     bool? strict,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
       'evalOnSelector',
-      params,
+      payload,
     );
     return FrameEvalOnSelectorResult.fromJson(response, connection: connection);
   }
@@ -7563,15 +7615,15 @@ abstract class FrameBase extends ChannelOwner {
     bool? isFunction,
     required String selector,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'evalOnSelectorAll',
-      params,
+      payload,
     );
     return FrameEvalOnSelectorAllResult.fromJson(
       response,
@@ -7584,14 +7636,14 @@ abstract class FrameBase extends ChannelOwner {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpression',
-      params,
+      payload,
     );
     return FrameEvaluateExpressionResult.fromJson(
       response,
@@ -7604,14 +7656,14 @@ abstract class FrameBase extends ChannelOwner {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpressionHandle',
-      params,
+      payload,
     );
     return FrameEvaluateExpressionHandleResult.fromJson(
       response,
@@ -7631,23 +7683,23 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? useInnerText,
   }) async {
-    final params = <String, dynamic>{};
-    if (expectedNumber != null) params['expectedNumber'] = expectedNumber;
-    if (expectedText != null) params['expectedText'] = expectedText;
+    final payload = <String, dynamic>{};
+    if (expectedNumber != null) payload['expectedNumber'] = expectedNumber;
+    if (expectedText != null) payload['expectedText'] = expectedText;
     if (expectedValue != null) {
-      params['expectedValue'] = expectedValue.toJson();
+      payload['expectedValue'] = expectedValue.toJson();
     }
-    params['expression'] = expression;
-    if (expressionArg != null) params['expressionArg'] = expressionArg;
-    params['isNot'] = isNot;
-    if (pseudo != null) params['pseudo'] = pseudo.value;
-    if (selector != null) params['selector'] = selector;
-    params['timeout'] = timeout;
-    if (useInnerText != null) params['useInnerText'] = useInnerText;
+    payload['expression'] = expression;
+    if (expressionArg != null) payload['expressionArg'] = expressionArg;
+    payload['isNot'] = isNot;
+    if (pseudo != null) payload['pseudo'] = pseudo.value;
+    if (selector != null) payload['selector'] = selector;
+    payload['timeout'] = timeout;
+    if (useInnerText != null) payload['useInnerText'] = useInnerText;
     final response = await connection.sendMessageToServer(
       guid,
       'expect',
-      params,
+      payload,
     );
     return FrameExpectResult.fromJson(response, connection: connection);
   }
@@ -7659,13 +7711,17 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     required String value,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    params['value'] = value;
-    final response = await connection.sendMessageToServer(guid, 'fill', params);
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    payload['value'] = value;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'fill',
+      payload,
+    );
     return;
   }
 
@@ -7674,14 +7730,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'focus',
-      params,
+      payload,
     );
     return;
   }
@@ -7701,15 +7757,15 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['name'] = name;
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['name'] = name;
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'getAttribute',
-      params,
+      payload,
     );
     return FrameGetAttributeResult.fromJson(response, connection: connection);
   }
@@ -7720,22 +7776,26 @@ abstract class FrameBase extends ChannelOwner {
     required String url,
     LifecycleEvent? waitUntil,
   }) async {
-    final params = <String, dynamic>{};
-    if (referer != null) params['referer'] = referer;
-    params['timeout'] = timeout;
-    params['url'] = url;
-    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
-    final response = await connection.sendMessageToServer(guid, 'goto', params);
+    final payload = <String, dynamic>{};
+    if (referer != null) payload['referer'] = referer;
+    payload['timeout'] = timeout;
+    payload['url'] = url;
+    if (waitUntil != null) payload['waitUntil'] = waitUntil.value;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'goto',
+      payload,
+    );
     return FrameGotoResult.fromJson(response, connection: connection);
   }
 
   Future<void> channel_hideHighlight({required String selector}) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'hideHighlight',
-      params,
+      payload,
     );
     return;
   }
@@ -7744,13 +7804,13 @@ abstract class FrameBase extends ChannelOwner {
     required String selector,
     String? style,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (style != null) params['style'] = style;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (style != null) payload['style'] = style;
     final response = await connection.sendMessageToServer(
       guid,
       'highlight',
-      params,
+      payload,
     );
     return;
   }
@@ -7764,18 +7824,18 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position.toJson();
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (position != null) payload['position'] = position.toJson();
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'hover',
-      params,
+      payload,
     );
     return;
   }
@@ -7785,14 +7845,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'innerHTML',
-      params,
+      payload,
     );
     return FrameInnerHTMLResult.fromJson(response, connection: connection);
   }
@@ -7802,14 +7862,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'innerText',
-      params,
+      payload,
     );
     return FrameInnerTextResult.fromJson(response, connection: connection);
   }
@@ -7819,14 +7879,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'inputValue',
-      params,
+      payload,
     );
     return FrameInputValueResult.fromJson(response, connection: connection);
   }
@@ -7836,14 +7896,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'isChecked',
-      params,
+      payload,
     );
     return FrameIsCheckedResult.fromJson(response, connection: connection);
   }
@@ -7853,14 +7913,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'isDisabled',
-      params,
+      payload,
     );
     return FrameIsDisabledResult.fromJson(response, connection: connection);
   }
@@ -7870,14 +7930,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'isEditable',
-      params,
+      payload,
     );
     return FrameIsEditableResult.fromJson(response, connection: connection);
   }
@@ -7887,14 +7947,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'isEnabled',
-      params,
+      payload,
     );
     return FrameIsEnabledResult.fromJson(response, connection: connection);
   }
@@ -7903,13 +7963,13 @@ abstract class FrameBase extends ChannelOwner {
     required String selector,
     bool? strict,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
       'isHidden',
-      params,
+      payload,
     );
     return FrameIsHiddenResult.fromJson(response, connection: connection);
   }
@@ -7918,13 +7978,13 @@ abstract class FrameBase extends ChannelOwner {
     required String selector,
     bool? strict,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
       'isVisible',
-      params,
+      payload,
     );
     return FrameIsVisibleResult.fromJson(response, connection: connection);
   }
@@ -7937,17 +7997,17 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (delay != null) params['delay'] = delay;
-    params['key'] = key;
-    if (noWaitAfter != null) params['noWaitAfter'] = noWaitAfter;
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    if (delay != null) payload['delay'] = delay;
+    payload['key'] = key;
+    if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'press',
-      params,
+      payload,
     );
     return;
   }
@@ -7955,12 +8015,12 @@ abstract class FrameBase extends ChannelOwner {
   Future<FrameQueryCountResult> channel_queryCount({
     required String selector,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'queryCount',
-      params,
+      payload,
     );
     return FrameQueryCountResult.fromJson(response, connection: connection);
   }
@@ -7969,13 +8029,13 @@ abstract class FrameBase extends ChannelOwner {
     required String selector,
     bool? strict,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
       'querySelector',
-      params,
+      payload,
     );
     return FrameQuerySelectorResult.fromJson(response, connection: connection);
   }
@@ -7983,12 +8043,12 @@ abstract class FrameBase extends ChannelOwner {
   Future<FrameQuerySelectorAllResult> channel_querySelectorAll({
     required String selector,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'querySelectorAll',
-      params,
+      payload,
     );
     return FrameQuerySelectorAllResult.fromJson(
       response,
@@ -7999,12 +8059,12 @@ abstract class FrameBase extends ChannelOwner {
   Future<FrameResolveSelectorResult> channel_resolveSelector({
     required String selector,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'resolveSelector',
-      params,
+      payload,
     );
     return FrameResolveSelectorResult.fromJson(
       response,
@@ -8020,17 +8080,17 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (elements != null) params['elements'] = elements;
-    if (force != null) params['force'] = force;
-    if (options != null) params['options'] = options;
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    if (elements != null) payload['elements'] = elements;
+    if (force != null) payload['force'] = force;
+    if (options != null) payload['options'] = options;
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'selectOption',
-      params,
+      payload,
     );
     return FrameSelectOptionResult.fromJson(response, connection: connection);
   }
@@ -8040,14 +8100,14 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     LifecycleEvent? waitUntil,
   }) async {
-    final params = <String, dynamic>{};
-    params['html'] = html;
-    params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
+    final payload = <String, dynamic>{};
+    payload['html'] = html;
+    payload['timeout'] = timeout;
+    if (waitUntil != null) payload['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'setContent',
-      params,
+      payload,
     );
     return;
   }
@@ -8062,21 +8122,21 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (directoryStream != null) {
-      params['directoryStream'] = directoryStream.guid;
+      payload['directoryStream'] = {'guid': directoryStream.guid};
     }
-    if (localDirectory != null) params['localDirectory'] = localDirectory;
-    if (localPaths != null) params['localPaths'] = localPaths;
-    if (payloads != null) params['payloads'] = payloads;
-    params['selector'] = selector;
-    if (streams != null) params['streams'] = streams;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    if (localDirectory != null) payload['localDirectory'] = localDirectory;
+    if (localPaths != null) payload['localPaths'] = localPaths;
+    if (payloads != null) payload['payloads'] = payloads;
+    payload['selector'] = selector;
+    if (streams != null) payload['streams'] = streams;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'setInputFiles',
-      params,
+      payload,
     );
     return;
   }
@@ -8090,15 +8150,15 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (modifiers != null) params['modifiers'] = modifiers;
-    if (position != null) params['position'] = position.toJson();
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
-    final response = await connection.sendMessageToServer(guid, 'tap', params);
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (modifiers != null) payload['modifiers'] = modifiers;
+    if (position != null) payload['position'] = position.toJson();
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
+    final response = await connection.sendMessageToServer(guid, 'tap', payload);
     return;
   }
 
@@ -8107,14 +8167,14 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'textContent',
-      params,
+      payload,
     );
     return FrameTextContentResult.fromJson(response, connection: connection);
   }
@@ -8131,13 +8191,17 @@ abstract class FrameBase extends ChannelOwner {
     required String text,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (delay != null) params['delay'] = delay;
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['text'] = text;
-    params['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'type', params);
+    final payload = <String, dynamic>{};
+    if (delay != null) payload['delay'] = delay;
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['text'] = text;
+    payload['timeout'] = timeout;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'type',
+      payload,
+    );
     return;
   }
 
@@ -8149,17 +8213,17 @@ abstract class FrameBase extends ChannelOwner {
     required double timeout,
     bool? trial,
   }) async {
-    final params = <String, dynamic>{};
-    if (force != null) params['force'] = force;
-    if (position != null) params['position'] = position.toJson();
-    params['selector'] = selector;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
-    if (trial != null) params['trial'] = trial;
+    final payload = <String, dynamic>{};
+    if (force != null) payload['force'] = force;
+    if (position != null) payload['position'] = position.toJson();
+    payload['selector'] = selector;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
+    if (trial != null) payload['trial'] = trial;
     final response = await connection.sendMessageToServer(
       guid,
       'uncheck',
-      params,
+      payload,
     );
     return;
   }
@@ -8171,16 +8235,16 @@ abstract class FrameBase extends ChannelOwner {
     double? pollingInterval,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
-    if (pollingInterval != null) params['pollingInterval'] = pollingInterval;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
+    if (pollingInterval != null) payload['pollingInterval'] = pollingInterval;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'waitForFunction',
-      params,
+      payload,
     );
     return FrameWaitForFunctionResult.fromJson(
       response,
@@ -8195,16 +8259,16 @@ abstract class FrameBase extends ChannelOwner {
     bool? strict,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    if (omitReturnValue != null) params['omitReturnValue'] = omitReturnValue;
-    params['selector'] = selector;
-    if (state != null) params['state'] = state.value;
-    if (strict != null) params['strict'] = strict;
-    params['timeout'] = timeout;
+    final payload = <String, dynamic>{};
+    if (omitReturnValue != null) payload['omitReturnValue'] = omitReturnValue;
+    payload['selector'] = selector;
+    if (state != null) payload['state'] = state.value;
+    if (strict != null) payload['strict'] = strict;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'waitForSelector',
-      params,
+      payload,
     );
     return FrameWaitForSelectorResult.fromJson(
       response,
@@ -8213,12 +8277,12 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   Future<void> channel_waitForTimeout({required double waitTimeout}) async {
-    final params = <String, dynamic>{};
-    params['waitTimeout'] = waitTimeout;
+    final payload = <String, dynamic>{};
+    payload['waitTimeout'] = waitTimeout;
     final response = await connection.sendMessageToServer(
       guid,
       'waitForTimeout',
-      params,
+      payload,
     );
     return;
   }
@@ -8243,14 +8307,14 @@ abstract class JSHandleBase extends ChannelOwner {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpression',
-      params,
+      payload,
     );
     return JSHandleEvaluateExpressionResult.fromJson(
       response,
@@ -8264,14 +8328,14 @@ abstract class JSHandleBase extends ChannelOwner {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpressionHandle',
-      params,
+      payload,
     );
     return JSHandleEvaluateExpressionHandleResult.fromJson(
       response,
@@ -8282,12 +8346,12 @@ abstract class JSHandleBase extends ChannelOwner {
   Future<JSHandleGetPropertyResult> channel_getProperty({
     required String name,
   }) async {
-    final params = <String, dynamic>{};
-    params['name'] = name;
+    final payload = <String, dynamic>{};
+    payload['name'] = name;
     final response = await connection.sendMessageToServer(
       guid,
       'getProperty',
-      params,
+      payload,
     );
     return JSHandleGetPropertyResult.fromJson(response, connection: connection);
   }
@@ -8329,9 +8393,13 @@ abstract class JsonPipeBase extends ChannelOwner {
   }
 
   Future<void> channel_send({required Map<String, dynamic> message}) async {
-    final params = <String, dynamic>{};
-    params['message'] = message;
-    final response = await connection.sendMessageToServer(guid, 'send', params);
+    final payload = <String, dynamic>{};
+    payload['message'] = message;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'send',
+      payload,
+    );
     return;
   }
 }
@@ -8348,12 +8416,12 @@ abstract class LocalUtilsBase extends ChannelOwner {
   Future<void> channel_addStackToTracingNoReply({
     required ClientSideCallMetadata callData,
   }) async {
-    final params = <String, dynamic>{};
-    params['callData'] = callData.toJson();
+    final payload = <String, dynamic>{};
+    payload['callData'] = callData.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'addStackToTracingNoReply',
-      params,
+      payload,
     );
     return;
   }
@@ -8366,19 +8434,19 @@ abstract class LocalUtilsBase extends ChannelOwner {
     int? socksProxyRedirectPortForTest,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params['endpoint'] = endpoint;
-    if (exposeNetwork != null) params['exposeNetwork'] = exposeNetwork;
-    if (headers != null) params['headers'] = headers;
-    if (slowMo != null) params['slowMo'] = slowMo;
+    final payload = <String, dynamic>{};
+    payload['endpoint'] = endpoint;
+    if (exposeNetwork != null) payload['exposeNetwork'] = exposeNetwork;
+    if (headers != null) payload['headers'] = headers;
+    if (slowMo != null) payload['slowMo'] = slowMo;
     if (socksProxyRedirectPortForTest != null) {
-      params['socksProxyRedirectPortForTest'] = socksProxyRedirectPortForTest;
+      payload['socksProxyRedirectPortForTest'] = socksProxyRedirectPortForTest;
     }
-    params['timeout'] = timeout;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'connect',
-      params,
+      payload,
     );
     return LocalUtilsConnectResult.fromJson(response, connection: connection);
   }
@@ -8388,14 +8456,14 @@ abstract class LocalUtilsBase extends ChannelOwner {
     required String glob,
     bool? webSocketUrl,
   }) async {
-    final params = <String, dynamic>{};
-    if (baseURL != null) params['baseURL'] = baseURL;
-    params['glob'] = glob;
-    if (webSocketUrl != null) params['webSocketUrl'] = webSocketUrl;
+    final payload = <String, dynamic>{};
+    if (baseURL != null) payload['baseURL'] = baseURL;
+    payload['glob'] = glob;
+    if (webSocketUrl != null) payload['webSocketUrl'] = webSocketUrl;
     final response = await connection.sendMessageToServer(
       guid,
       'globToRegex',
-      params,
+      payload,
     );
     return LocalUtilsGlobToRegexResult.fromJson(
       response,
@@ -8404,12 +8472,12 @@ abstract class LocalUtilsBase extends ChannelOwner {
   }
 
   Future<void> channel_harClose({required String harId}) async {
-    final params = <String, dynamic>{};
-    params['harId'] = harId;
+    final payload = <String, dynamic>{};
+    payload['harId'] = harId;
     final response = await connection.sendMessageToServer(
       guid,
       'harClose',
-      params,
+      payload,
     );
     return;
   }
@@ -8422,17 +8490,17 @@ abstract class LocalUtilsBase extends ChannelOwner {
     String? postData,
     required String url,
   }) async {
-    final params = <String, dynamic>{};
-    params['harId'] = harId;
-    params['headers'] = headers;
-    params['isNavigationRequest'] = isNavigationRequest;
-    params['method'] = method;
-    if (postData != null) params['postData'] = postData;
-    params['url'] = url;
+    final payload = <String, dynamic>{};
+    payload['harId'] = harId;
+    payload['headers'] = headers;
+    payload['isNavigationRequest'] = isNavigationRequest;
+    payload['method'] = method;
+    if (postData != null) payload['postData'] = postData;
+    payload['url'] = url;
     final response = await connection.sendMessageToServer(
       guid,
       'harLookup',
-      params,
+      payload,
     );
     return LocalUtilsHarLookupResult.fromJson(response, connection: connection);
   }
@@ -8440,12 +8508,12 @@ abstract class LocalUtilsBase extends ChannelOwner {
   Future<LocalUtilsHarOpenResult> channel_harOpen({
     required String file,
   }) async {
-    final params = <String, dynamic>{};
-    params['file'] = file;
+    final payload = <String, dynamic>{};
+    payload['file'] = file;
     final response = await connection.sendMessageToServer(
       guid,
       'harOpen',
-      params,
+      payload,
     );
     return LocalUtilsHarOpenResult.fromJson(response, connection: connection);
   }
@@ -8455,25 +8523,25 @@ abstract class LocalUtilsBase extends ChannelOwner {
     String? resourcesDir,
     required String zipFile,
   }) async {
-    final params = <String, dynamic>{};
-    params['harFile'] = harFile;
-    if (resourcesDir != null) params['resourcesDir'] = resourcesDir;
-    params['zipFile'] = zipFile;
+    final payload = <String, dynamic>{};
+    payload['harFile'] = harFile;
+    if (resourcesDir != null) payload['resourcesDir'] = resourcesDir;
+    payload['zipFile'] = zipFile;
     final response = await connection.sendMessageToServer(
       guid,
       'harUnzip',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_traceDiscarded({required String stacksId}) async {
-    final params = <String, dynamic>{};
-    params['stacksId'] = stacksId;
+    final payload = <String, dynamic>{};
+    payload['stacksId'] = stacksId;
     final response = await connection.sendMessageToServer(
       guid,
       'traceDiscarded',
-      params,
+      payload,
     );
     return;
   }
@@ -8483,14 +8551,14 @@ abstract class LocalUtilsBase extends ChannelOwner {
     required String traceName,
     String? tracesDir,
   }) async {
-    final params = <String, dynamic>{};
-    if (live != null) params['live'] = live;
-    params['traceName'] = traceName;
-    if (tracesDir != null) params['tracesDir'] = tracesDir;
+    final payload = <String, dynamic>{};
+    if (live != null) payload['live'] = live;
+    payload['traceName'] = traceName;
+    if (tracesDir != null) payload['tracesDir'] = tracesDir;
     final response = await connection.sendMessageToServer(
       guid,
       'tracingStarted',
-      params,
+      payload,
     );
     return LocalUtilsTracingStartedResult.fromJson(
       response,
@@ -8506,16 +8574,16 @@ abstract class LocalUtilsBase extends ChannelOwner {
     String? stacksId,
     required String zipFile,
   }) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (additionalSources != null) {
-      params['additionalSources'] = additionalSources;
+      payload['additionalSources'] = additionalSources;
     }
-    params['entries'] = entries;
-    params['includeSources'] = includeSources;
-    params['mode'] = mode.value;
-    if (stacksId != null) params['stacksId'] = stacksId;
-    params['zipFile'] = zipFile;
-    final response = await connection.sendMessageToServer(guid, 'zip', params);
+    payload['entries'] = entries;
+    payload['includeSources'] = includeSources;
+    payload['mode'] = mode.value;
+    if (stacksId != null) payload['stacksId'] = stacksId;
+    payload['zipFile'] = zipFile;
+    final response = await connection.sendMessageToServer(guid, 'zip', payload);
     return;
   }
 }
@@ -8532,12 +8600,12 @@ abstract class PageBase extends EventTargetBase {
   Future<PageAddInitScriptResult> channel_addInitScript({
     required String source,
   }) async {
-    final params = <String, dynamic>{};
-    params['source'] = source;
+    final payload = <String, dynamic>{};
+    payload['source'] = source;
     final response = await connection.sendMessageToServer(
       guid,
       'addInitScript',
-      params,
+      payload,
     );
     return PageAddInitScriptResult.fromJson(response, connection: connection);
   }
@@ -8579,13 +8647,13 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<void> channel_close({String? reason, bool? runBeforeUnload}) async {
-    final params = <String, dynamic>{};
-    if (reason != null) params['reason'] = reason;
-    if (runBeforeUnload != null) params['runBeforeUnload'] = runBeforeUnload;
+    final payload = <String, dynamic>{};
+    if (reason != null) payload['reason'] = reason;
+    if (runBeforeUnload != null) payload['runBeforeUnload'] = runBeforeUnload;
     final response = await connection.sendMessageToServer(
       guid,
       'close',
-      params,
+      payload,
     );
     return;
   }
@@ -8593,12 +8661,12 @@ abstract class PageBase extends EventTargetBase {
   Future<PageConsoleMessagesResult> channel_consoleMessages({
     ConsoleMessagesFilter? filter,
   }) async {
-    final params = <String, dynamic>{};
-    if (filter != null) params['filter'] = filter.value;
+    final payload = <String, dynamic>{};
+    if (filter != null) payload['filter'] = filter.value;
     final response = await connection.sendMessageToServer(
       guid,
       'consoleMessages',
-      params,
+      payload,
     );
     return PageConsoleMessagesResult.fromJson(response, connection: connection);
   }
@@ -8610,22 +8678,22 @@ abstract class PageBase extends EventTargetBase {
     PageEmulateMediaMediaEnum? media,
     PageEmulateMediaReducedMotionEnum? reducedMotion,
   }) async {
-    final params = <String, dynamic>{};
-    if (colorScheme != null) params['colorScheme'] = colorScheme.value;
-    if (contrast != null) params['contrast'] = contrast.value;
-    if (forcedColors != null) params['forcedColors'] = forcedColors.value;
-    if (media != null) params['media'] = media.value;
-    if (reducedMotion != null) params['reducedMotion'] = reducedMotion.value;
+    final payload = <String, dynamic>{};
+    if (colorScheme != null) payload['colorScheme'] = colorScheme.value;
+    if (contrast != null) payload['contrast'] = contrast.value;
+    if (forcedColors != null) payload['forcedColors'] = forcedColors.value;
+    if (media != null) payload['media'] = media.value;
+    if (reducedMotion != null) payload['reducedMotion'] = reducedMotion.value;
     final response = await connection.sendMessageToServer(
       guid,
       'emulateMedia',
-      params,
+      payload,
     );
     return;
   }
 
   Future<PageExpectScreenshotResult> channel_expectScreenshot({
-    required CommonScreenshotOptions mixin,
+    required CommonScreenshotOptions mixinValue,
     Rect? clip,
     String? comparator,
     String? expected,
@@ -8637,24 +8705,24 @@ abstract class PageBase extends EventTargetBase {
     double? threshold,
     required double timeout,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
-    if (clip != null) params['clip'] = clip.toJson();
-    if (comparator != null) params['comparator'] = comparator;
-    if (expected != null) params['expected'] = expected;
-    if (fullPage != null) params['fullPage'] = fullPage;
-    params['isNot'] = isNot;
-    if (locator != null) params['locator'] = locator;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
+    if (clip != null) payload['clip'] = clip.toJson();
+    if (comparator != null) payload['comparator'] = comparator;
+    if (expected != null) payload['expected'] = expected;
+    if (fullPage != null) payload['fullPage'] = fullPage;
+    payload['isNot'] = isNot;
+    if (locator != null) payload['locator'] = locator;
     if (maxDiffPixelRatio != null) {
-      params['maxDiffPixelRatio'] = maxDiffPixelRatio;
+      payload['maxDiffPixelRatio'] = maxDiffPixelRatio;
     }
-    if (maxDiffPixels != null) params['maxDiffPixels'] = maxDiffPixels;
-    if (threshold != null) params['threshold'] = threshold;
-    params['timeout'] = timeout;
+    if (maxDiffPixels != null) payload['maxDiffPixels'] = maxDiffPixels;
+    if (threshold != null) payload['threshold'] = threshold;
+    payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
       guid,
       'expectScreenshot',
-      params,
+      payload,
     );
     return PageExpectScreenshotResult.fromJson(
       response,
@@ -8665,12 +8733,12 @@ abstract class PageBase extends EventTargetBase {
   Future<PageExposeBindingResult> channel_exposeBinding({
     required String name,
   }) async {
-    final params = <String, dynamic>{};
-    params['name'] = name;
+    final payload = <String, dynamic>{};
+    payload['name'] = name;
     final response = await connection.sendMessageToServer(
       guid,
       'exposeBinding',
-      params,
+      payload,
     );
     return PageExposeBindingResult.fromJson(response, connection: connection);
   }
@@ -8679,13 +8747,13 @@ abstract class PageBase extends EventTargetBase {
     required double timeout,
     LifecycleEvent? waitUntil,
   }) async {
-    final params = <String, dynamic>{};
-    params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
+    final payload = <String, dynamic>{};
+    payload['timeout'] = timeout;
+    if (waitUntil != null) payload['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'goBack',
-      params,
+      payload,
     );
     return PageGoBackResult.fromJson(response, connection: connection);
   }
@@ -8694,13 +8762,13 @@ abstract class PageBase extends EventTargetBase {
     required double timeout,
     LifecycleEvent? waitUntil,
   }) async {
-    final params = <String, dynamic>{};
-    params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
+    final payload = <String, dynamic>{};
+    payload['timeout'] = timeout;
+    if (waitUntil != null) payload['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'goForward',
-      params,
+      payload,
     );
     return PageGoForwardResult.fromJson(response, connection: connection);
   }
@@ -8715,23 +8783,23 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<void> channel_keyboardDown({required String key}) async {
-    final params = <String, dynamic>{};
-    params['key'] = key;
+    final payload = <String, dynamic>{};
+    payload['key'] = key;
     final response = await connection.sendMessageToServer(
       guid,
       'keyboardDown',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_keyboardInsertText({required String text}) async {
-    final params = <String, dynamic>{};
-    params['text'] = text;
+    final payload = <String, dynamic>{};
+    payload['text'] = text;
     final response = await connection.sendMessageToServer(
       guid,
       'keyboardInsertText',
-      params,
+      payload,
     );
     return;
   }
@@ -8740,13 +8808,13 @@ abstract class PageBase extends EventTargetBase {
     double? delay,
     required String key,
   }) async {
-    final params = <String, dynamic>{};
-    if (delay != null) params['delay'] = delay;
-    params['key'] = key;
+    final payload = <String, dynamic>{};
+    if (delay != null) payload['delay'] = delay;
+    payload['key'] = key;
     final response = await connection.sendMessageToServer(
       guid,
       'keyboardPress',
-      params,
+      payload,
     );
     return;
   }
@@ -8755,24 +8823,24 @@ abstract class PageBase extends EventTargetBase {
     double? delay,
     required String text,
   }) async {
-    final params = <String, dynamic>{};
-    if (delay != null) params['delay'] = delay;
-    params['text'] = text;
+    final payload = <String, dynamic>{};
+    if (delay != null) payload['delay'] = delay;
+    payload['text'] = text;
     final response = await connection.sendMessageToServer(
       guid,
       'keyboardType',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_keyboardUp({required String key}) async {
-    final params = <String, dynamic>{};
-    params['key'] = key;
+    final payload = <String, dynamic>{};
+    payload['key'] = key;
     final response = await connection.sendMessageToServer(
       guid,
       'keyboardUp',
-      params,
+      payload,
     );
     return;
   }
@@ -8784,16 +8852,16 @@ abstract class PageBase extends EventTargetBase {
     required double x,
     required double y,
   }) async {
-    final params = <String, dynamic>{};
-    if (button != null) params['button'] = button.value;
-    if (clickCount != null) params['clickCount'] = clickCount;
-    if (delay != null) params['delay'] = delay;
-    params['x'] = x;
-    params['y'] = y;
+    final payload = <String, dynamic>{};
+    if (button != null) payload['button'] = button.value;
+    if (clickCount != null) payload['clickCount'] = clickCount;
+    if (delay != null) payload['delay'] = delay;
+    payload['x'] = x;
+    payload['y'] = y;
     final response = await connection.sendMessageToServer(
       guid,
       'mouseClick',
-      params,
+      payload,
     );
     return;
   }
@@ -8802,13 +8870,13 @@ abstract class PageBase extends EventTargetBase {
     PageMouseDownButtonEnum? button,
     int? clickCount,
   }) async {
-    final params = <String, dynamic>{};
-    if (button != null) params['button'] = button.value;
-    if (clickCount != null) params['clickCount'] = clickCount;
+    final payload = <String, dynamic>{};
+    if (button != null) payload['button'] = button.value;
+    if (clickCount != null) payload['clickCount'] = clickCount;
     final response = await connection.sendMessageToServer(
       guid,
       'mouseDown',
-      params,
+      payload,
     );
     return;
   }
@@ -8818,14 +8886,14 @@ abstract class PageBase extends EventTargetBase {
     required double x,
     required double y,
   }) async {
-    final params = <String, dynamic>{};
-    if (steps != null) params['steps'] = steps;
-    params['x'] = x;
-    params['y'] = y;
+    final payload = <String, dynamic>{};
+    if (steps != null) payload['steps'] = steps;
+    payload['x'] = x;
+    payload['y'] = y;
     final response = await connection.sendMessageToServer(
       guid,
       'mouseMove',
-      params,
+      payload,
     );
     return;
   }
@@ -8834,13 +8902,13 @@ abstract class PageBase extends EventTargetBase {
     PageMouseUpButtonEnum? button,
     int? clickCount,
   }) async {
-    final params = <String, dynamic>{};
-    if (button != null) params['button'] = button.value;
-    if (clickCount != null) params['clickCount'] = clickCount;
+    final payload = <String, dynamic>{};
+    if (button != null) payload['button'] = button.value;
+    if (clickCount != null) payload['clickCount'] = clickCount;
     final response = await connection.sendMessageToServer(
       guid,
       'mouseUp',
-      params,
+      payload,
     );
     return;
   }
@@ -8849,13 +8917,13 @@ abstract class PageBase extends EventTargetBase {
     required double deltaX,
     required double deltaY,
   }) async {
-    final params = <String, dynamic>{};
-    params['deltaX'] = deltaX;
-    params['deltaY'] = deltaY;
+    final payload = <String, dynamic>{};
+    payload['deltaX'] = deltaX;
+    payload['deltaY'] = deltaY;
     final response = await connection.sendMessageToServer(
       guid,
       'mouseWheel',
-      params,
+      payload,
     );
     return;
   }
@@ -8863,12 +8931,12 @@ abstract class PageBase extends EventTargetBase {
   Future<PagePageErrorsResult> channel_pageErrors({
     ConsoleMessagesFilter? filter,
   }) async {
-    final params = <String, dynamic>{};
-    if (filter != null) params['filter'] = filter.value;
+    final payload = <String, dynamic>{};
+    if (filter != null) payload['filter'] = filter.value;
     final response = await connection.sendMessageToServer(
       guid,
       'pageErrors',
-      params,
+      payload,
     );
     return PagePageErrorsResult.fromJson(response, connection: connection);
   }
@@ -8889,26 +8957,26 @@ abstract class PageBase extends EventTargetBase {
     bool? tagged,
     String? width,
   }) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (displayHeaderFooter != null) {
-      params['displayHeaderFooter'] = displayHeaderFooter;
+      payload['displayHeaderFooter'] = displayHeaderFooter;
     }
-    if (footerTemplate != null) params['footerTemplate'] = footerTemplate;
-    if (format != null) params['format'] = format;
-    if (headerTemplate != null) params['headerTemplate'] = headerTemplate;
-    if (height != null) params['height'] = height;
-    if (landscape != null) params['landscape'] = landscape;
-    if (margin != null) params['margin'] = margin;
-    if (outline != null) params['outline'] = outline;
-    if (pageRanges != null) params['pageRanges'] = pageRanges;
+    if (footerTemplate != null) payload['footerTemplate'] = footerTemplate;
+    if (format != null) payload['format'] = format;
+    if (headerTemplate != null) payload['headerTemplate'] = headerTemplate;
+    if (height != null) payload['height'] = height;
+    if (landscape != null) payload['landscape'] = landscape;
+    if (margin != null) payload['margin'] = margin;
+    if (outline != null) payload['outline'] = outline;
+    if (pageRanges != null) payload['pageRanges'] = pageRanges;
     if (preferCSSPageSize != null) {
-      params['preferCSSPageSize'] = preferCSSPageSize;
+      payload['preferCSSPageSize'] = preferCSSPageSize;
     }
-    if (printBackground != null) params['printBackground'] = printBackground;
-    if (scale != null) params['scale'] = scale;
-    if (tagged != null) params['tagged'] = tagged;
-    if (width != null) params['width'] = width;
-    final response = await connection.sendMessageToServer(guid, 'pdf', params);
+    if (printBackground != null) payload['printBackground'] = printBackground;
+    if (scale != null) payload['scale'] = scale;
+    if (tagged != null) payload['tagged'] = tagged;
+    if (width != null) payload['width'] = width;
+    final response = await connection.sendMessageToServer(guid, 'pdf', payload);
     return PagePdfResult.fromJson(response, connection: connection);
   }
 
@@ -8925,13 +8993,13 @@ abstract class PageBase extends EventTargetBase {
     bool? noWaitAfter,
     required String selector,
   }) async {
-    final params = <String, dynamic>{};
-    if (noWaitAfter != null) params['noWaitAfter'] = noWaitAfter;
-    params['selector'] = selector;
+    final payload = <String, dynamic>{};
+    if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
+    payload['selector'] = selector;
     final response = await connection.sendMessageToServer(
       guid,
       'registerLocatorHandler',
-      params,
+      payload,
     );
     return PageRegisterLocatorHandlerResult.fromJson(
       response,
@@ -8943,13 +9011,13 @@ abstract class PageBase extends EventTargetBase {
     required double timeout,
     LifecycleEvent? waitUntil,
   }) async {
-    final params = <String, dynamic>{};
-    params['timeout'] = timeout;
-    if (waitUntil != null) params['waitUntil'] = waitUntil.value;
+    final payload = <String, dynamic>{};
+    payload['timeout'] = timeout;
+    if (waitUntil != null) payload['waitUntil'] = waitUntil.value;
     final response = await connection.sendMessageToServer(
       guid,
       'reload',
-      params,
+      payload,
     );
     return PageReloadResult.fromJson(response, connection: connection);
   }
@@ -8972,13 +9040,13 @@ abstract class PageBase extends EventTargetBase {
     bool? remove,
     required int uid,
   }) async {
-    final params = <String, dynamic>{};
-    if (remove != null) params['remove'] = remove;
-    params['uid'] = uid;
+    final payload = <String, dynamic>{};
+    if (remove != null) payload['remove'] = remove;
+    payload['uid'] = uid;
     final response = await connection.sendMessageToServer(
       guid,
       'resolveLocatorHandlerNoReply',
-      params,
+      payload,
     );
     return;
   }
@@ -8988,14 +9056,14 @@ abstract class PageBase extends EventTargetBase {
     double? duration,
     required String title,
   }) async {
-    final params = <String, dynamic>{};
-    if (description != null) params['description'] = description;
-    if (duration != null) params['duration'] = duration;
-    params['title'] = title;
+    final payload = <String, dynamic>{};
+    if (description != null) payload['description'] = description;
+    if (duration != null) payload['duration'] = duration;
+    payload['title'] = title;
     final response = await connection.sendMessageToServer(
       guid,
       'screencastChapter',
-      params,
+      payload,
     );
     return;
   }
@@ -9010,12 +9078,12 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<void> channel_screencastRemoveOverlay({required String id}) async {
-    final params = <String, dynamic>{};
-    params['id'] = id;
+    final payload = <String, dynamic>{};
+    payload['id'] = id;
     final response = await connection.sendMessageToServer(
       guid,
       'screencastRemoveOverlay',
-      params,
+      payload,
     );
     return;
   }
@@ -9023,25 +9091,25 @@ abstract class PageBase extends EventTargetBase {
   Future<void> channel_screencastSetOverlayVisible({
     required bool visible,
   }) async {
-    final params = <String, dynamic>{};
-    params['visible'] = visible;
+    final payload = <String, dynamic>{};
+    payload['visible'] = visible;
     final response = await connection.sendMessageToServer(
       guid,
       'screencastSetOverlayVisible',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_screencastShowActions({
-    required ShowActionsOptions mixin,
+    required ShowActionsOptions mixinValue,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
     final response = await connection.sendMessageToServer(
       guid,
       'screencastShowActions',
-      params,
+      payload,
     );
     return;
   }
@@ -9050,13 +9118,13 @@ abstract class PageBase extends EventTargetBase {
     double? duration,
     required String html,
   }) async {
-    final params = <String, dynamic>{};
-    if (duration != null) params['duration'] = duration;
-    params['html'] = html;
+    final payload = <String, dynamic>{};
+    if (duration != null) payload['duration'] = duration;
+    payload['html'] = html;
     final response = await connection.sendMessageToServer(
       guid,
       'screencastShowOverlay',
-      params,
+      payload,
     );
     return PageScreencastShowOverlayResult.fromJson(
       response,
@@ -9070,15 +9138,15 @@ abstract class PageBase extends EventTargetBase {
     bool? sendFrames,
     Map<String, dynamic>? size,
   }) async {
-    final params = <String, dynamic>{};
-    if (quality != null) params['quality'] = quality;
-    if (record != null) params['record'] = record;
-    if (sendFrames != null) params['sendFrames'] = sendFrames;
-    if (size != null) params['size'] = size;
+    final payload = <String, dynamic>{};
+    if (quality != null) payload['quality'] = quality;
+    if (record != null) payload['record'] = record;
+    if (sendFrames != null) payload['sendFrames'] = sendFrames;
+    if (size != null) payload['size'] = size;
     final response = await connection.sendMessageToServer(
       guid,
       'screencastStart',
-      params,
+      payload,
     );
     return PageScreencastStartResult.fromJson(response, connection: connection);
   }
@@ -9093,35 +9161,35 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<PageScreenshotResult> channel_screenshot({
-    required CommonScreenshotOptions mixin,
+    required CommonScreenshotOptions mixinValue,
     Rect? clip,
     bool? fullPage,
     int? quality,
     required double timeout,
     PageScreenshotTypeEnum? type,
   }) async {
-    final params = <String, dynamic>{};
-    params.addAll(mixin.toJson());
-    if (clip != null) params['clip'] = clip.toJson();
-    if (fullPage != null) params['fullPage'] = fullPage;
-    if (quality != null) params['quality'] = quality;
-    params['timeout'] = timeout;
-    if (type != null) params['type'] = type.value;
+    final payload = <String, dynamic>{};
+    payload.addAll(mixinValue.toJson());
+    if (clip != null) payload['clip'] = clip.toJson();
+    if (fullPage != null) payload['fullPage'] = fullPage;
+    if (quality != null) payload['quality'] = quality;
+    payload['timeout'] = timeout;
+    if (type != null) payload['type'] = type.value;
     final response = await connection.sendMessageToServer(
       guid,
       'screenshot',
-      params,
+      payload,
     );
     return PageScreenshotResult.fromJson(response, connection: connection);
   }
 
   Future<void> channel_setDockTile({required String image}) async {
-    final params = <String, dynamic>{};
-    params['image'] = image;
+    final payload = <String, dynamic>{};
+    payload['image'] = image;
     final response = await connection.sendMessageToServer(
       guid,
       'setDockTile',
-      params,
+      payload,
     );
     return;
   }
@@ -9129,12 +9197,12 @@ abstract class PageBase extends EventTargetBase {
   Future<void> channel_setExtraHTTPHeaders({
     required List<NameValue> headers,
   }) async {
-    final params = <String, dynamic>{};
-    params['headers'] = headers;
+    final payload = <String, dynamic>{};
+    payload['headers'] = headers;
     final response = await connection.sendMessageToServer(
       guid,
       'setExtraHTTPHeaders',
-      params,
+      payload,
     );
     return;
   }
@@ -9142,12 +9210,12 @@ abstract class PageBase extends EventTargetBase {
   Future<void> channel_setNetworkInterceptionPatterns({
     required List<Map<String, dynamic>> patterns,
   }) async {
-    final params = <String, dynamic>{};
-    params['patterns'] = patterns;
+    final payload = <String, dynamic>{};
+    payload['patterns'] = patterns;
     final response = await connection.sendMessageToServer(
       guid,
       'setNetworkInterceptionPatterns',
-      params,
+      payload,
     );
     return;
   }
@@ -9155,12 +9223,12 @@ abstract class PageBase extends EventTargetBase {
   Future<void> channel_setViewportSize({
     required Map<String, dynamic> viewportSize,
   }) async {
-    final params = <String, dynamic>{};
-    params['viewportSize'] = viewportSize;
+    final payload = <String, dynamic>{};
+    payload['viewportSize'] = viewportSize;
     final response = await connection.sendMessageToServer(
       guid,
       'setViewportSize',
-      params,
+      payload,
     );
     return;
   }
@@ -9168,25 +9236,25 @@ abstract class PageBase extends EventTargetBase {
   Future<void> channel_setWebSocketInterceptionPatterns({
     required List<Map<String, dynamic>> patterns,
   }) async {
-    final params = <String, dynamic>{};
-    params['patterns'] = patterns;
+    final payload = <String, dynamic>{};
+    payload['patterns'] = patterns;
     final response = await connection.sendMessageToServer(
       guid,
       'setWebSocketInterceptionPatterns',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_startCSSCoverage({bool? resetOnNavigation}) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (resetOnNavigation != null) {
-      params['resetOnNavigation'] = resetOnNavigation;
+      payload['resetOnNavigation'] = resetOnNavigation;
     }
     final response = await connection.sendMessageToServer(
       guid,
       'startCSSCoverage',
-      params,
+      payload,
     );
     return;
   }
@@ -9195,17 +9263,17 @@ abstract class PageBase extends EventTargetBase {
     bool? reportAnonymousScripts,
     bool? resetOnNavigation,
   }) async {
-    final params = <String, dynamic>{};
+    final payload = <String, dynamic>{};
     if (reportAnonymousScripts != null) {
-      params['reportAnonymousScripts'] = reportAnonymousScripts;
+      payload['reportAnonymousScripts'] = reportAnonymousScripts;
     }
     if (resetOnNavigation != null) {
-      params['resetOnNavigation'] = resetOnNavigation;
+      payload['resetOnNavigation'] = resetOnNavigation;
     }
     final response = await connection.sendMessageToServer(
       guid,
       'startJSCoverage',
-      params,
+      payload,
     );
     return;
   }
@@ -9232,24 +9300,24 @@ abstract class PageBase extends EventTargetBase {
     required double x,
     required double y,
   }) async {
-    final params = <String, dynamic>{};
-    params['x'] = x;
-    params['y'] = y;
+    final payload = <String, dynamic>{};
+    payload['x'] = x;
+    payload['y'] = y;
     final response = await connection.sendMessageToServer(
       guid,
       'touchscreenTap',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_unregisterLocatorHandler({required int uid}) async {
-    final params = <String, dynamic>{};
-    params['uid'] = uid;
+    final payload = <String, dynamic>{};
+    payload['uid'] = uid;
     final response = await connection.sendMessageToServer(
       guid,
       'unregisterLocatorHandler',
-      params,
+      payload,
     );
     return;
   }
@@ -9258,13 +9326,13 @@ abstract class PageBase extends EventTargetBase {
     required bool enabled,
     required PageUpdateSubscriptionEventEnum event,
   }) async {
-    final params = <String, dynamic>{};
-    params['enabled'] = enabled;
-    params['event'] = event.value;
+    final payload = <String, dynamic>{};
+    payload['enabled'] = enabled;
+    payload['event'] = event.value;
     final response = await connection.sendMessageToServer(
       guid,
       'updateSubscription',
-      params,
+      payload,
     );
     return;
   }
@@ -9292,26 +9360,30 @@ abstract class PlaywrightBase extends ChannelOwner {
     String? tracesDir,
     String? userAgent,
   }) async {
-    final params = <String, dynamic>{};
-    if (baseURL != null) params['baseURL'] = baseURL;
+    final payload = <String, dynamic>{};
+    if (baseURL != null) payload['baseURL'] = baseURL;
     if (clientCertificates != null) {
-      params['clientCertificates'] = clientCertificates;
+      payload['clientCertificates'] = clientCertificates;
     }
-    if (extraHTTPHeaders != null) params['extraHTTPHeaders'] = extraHTTPHeaders;
-    if (failOnStatusCode != null) params['failOnStatusCode'] = failOnStatusCode;
-    if (httpCredentials != null) params['httpCredentials'] = httpCredentials;
+    if (extraHTTPHeaders != null) {
+      payload['extraHTTPHeaders'] = extraHTTPHeaders;
+    }
+    if (failOnStatusCode != null) {
+      payload['failOnStatusCode'] = failOnStatusCode;
+    }
+    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
     if (ignoreHTTPSErrors != null) {
-      params['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
+      payload['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
     }
-    if (maxRedirects != null) params['maxRedirects'] = maxRedirects;
-    if (proxy != null) params['proxy'] = proxy;
-    if (storageState != null) params['storageState'] = storageState;
-    if (tracesDir != null) params['tracesDir'] = tracesDir;
-    if (userAgent != null) params['userAgent'] = userAgent;
+    if (maxRedirects != null) payload['maxRedirects'] = maxRedirects;
+    if (proxy != null) payload['proxy'] = proxy;
+    if (storageState != null) payload['storageState'] = storageState;
+    if (tracesDir != null) payload['tracesDir'] = tracesDir;
+    if (userAgent != null) payload['userAgent'] = userAgent;
     final response = await connection.sendMessageToServer(
       guid,
       'newRequest',
-      params,
+      payload,
     );
     return PlaywrightNewRequestResult.fromJson(
       response,
@@ -9421,12 +9493,12 @@ abstract class RootBase extends ChannelOwner {
   Future<RootInitializeResult> channel_initialize({
     required SDKLanguage sdkLanguage,
   }) async {
-    final params = <String, dynamic>{};
-    params['sdkLanguage'] = sdkLanguage.value;
+    final payload = <String, dynamic>{};
+    payload['sdkLanguage'] = sdkLanguage.value;
     final response = await connection.sendMessageToServer(
       guid,
       'initialize',
-      params,
+      payload,
     );
     return RootInitializeResult.fromJson(response, connection: connection);
   }
@@ -9442,12 +9514,12 @@ abstract class RouteBase extends ChannelOwner {
   ]);
 
   Future<void> channel_abort({String? errorCode}) async {
-    final params = <String, dynamic>{};
-    if (errorCode != null) params['errorCode'] = errorCode;
+    final payload = <String, dynamic>{};
+    if (errorCode != null) payload['errorCode'] = errorCode;
     final response = await connection.sendMessageToServer(
       guid,
       'abort',
-      params,
+      payload,
     );
     return;
   }
@@ -9459,16 +9531,16 @@ abstract class RouteBase extends ChannelOwner {
     String? postData,
     String? url,
   }) async {
-    final params = <String, dynamic>{};
-    if (headers != null) params['headers'] = headers;
-    params['isFallback'] = isFallback;
-    if (method != null) params['method'] = method;
-    if (postData != null) params['postData'] = postData;
-    if (url != null) params['url'] = url;
+    final payload = <String, dynamic>{};
+    if (headers != null) payload['headers'] = headers;
+    payload['isFallback'] = isFallback;
+    if (method != null) payload['method'] = method;
+    if (postData != null) payload['postData'] = postData;
+    if (url != null) payload['url'] = url;
     final response = await connection.sendMessageToServer(
       guid,
       'continue',
-      params,
+      payload,
     );
     return;
   }
@@ -9480,27 +9552,29 @@ abstract class RouteBase extends ChannelOwner {
     bool? isBase64,
     int? status,
   }) async {
-    final params = <String, dynamic>{};
-    if (body != null) params['body'] = body;
-    if (fetchResponseUid != null) params['fetchResponseUid'] = fetchResponseUid;
-    if (headers != null) params['headers'] = headers;
-    if (isBase64 != null) params['isBase64'] = isBase64;
-    if (status != null) params['status'] = status;
+    final payload = <String, dynamic>{};
+    if (body != null) payload['body'] = body;
+    if (fetchResponseUid != null) {
+      payload['fetchResponseUid'] = fetchResponseUid;
+    }
+    if (headers != null) payload['headers'] = headers;
+    if (isBase64 != null) payload['isBase64'] = isBase64;
+    if (status != null) payload['status'] = status;
     final response = await connection.sendMessageToServer(
       guid,
       'fulfill',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_redirectNavigationRequest({required String url}) async {
-    final params = <String, dynamic>{};
-    params['url'] = url;
+    final payload = <String, dynamic>{};
+    payload['url'] = url;
     final response = await connection.sendMessageToServer(
       guid,
       'redirectNavigationRequest',
-      params,
+      payload,
     );
     return;
   }
@@ -9520,14 +9594,14 @@ abstract class SocksSupportBase extends ChannelOwner {
     required int port,
     required String uid,
   }) async {
-    final params = <String, dynamic>{};
-    params['host'] = host;
-    params['port'] = port;
-    params['uid'] = uid;
+    final payload = <String, dynamic>{};
+    payload['host'] = host;
+    payload['port'] = port;
+    payload['uid'] = uid;
     final response = await connection.sendMessageToServer(
       guid,
       'socksConnected',
-      params,
+      payload,
     );
     return;
   }
@@ -9536,24 +9610,24 @@ abstract class SocksSupportBase extends ChannelOwner {
     required String data,
     required String uid,
   }) async {
-    final params = <String, dynamic>{};
-    params['data'] = data;
-    params['uid'] = uid;
+    final payload = <String, dynamic>{};
+    payload['data'] = data;
+    payload['uid'] = uid;
     final response = await connection.sendMessageToServer(
       guid,
       'socksData',
-      params,
+      payload,
     );
     return;
   }
 
   Future<void> channel_socksEnd({required String uid}) async {
-    final params = <String, dynamic>{};
-    params['uid'] = uid;
+    final payload = <String, dynamic>{};
+    payload['uid'] = uid;
     final response = await connection.sendMessageToServer(
       guid,
       'socksEnd',
-      params,
+      payload,
     );
     return;
   }
@@ -9562,13 +9636,13 @@ abstract class SocksSupportBase extends ChannelOwner {
     required String error,
     required String uid,
   }) async {
-    final params = <String, dynamic>{};
-    params['error'] = error;
-    params['uid'] = uid;
+    final payload = <String, dynamic>{};
+    payload['error'] = error;
+    payload['uid'] = uid;
     final response = await connection.sendMessageToServer(
       guid,
       'socksError',
-      params,
+      payload,
     );
     return;
   }
@@ -9577,13 +9651,13 @@ abstract class SocksSupportBase extends ChannelOwner {
     required String errorCode,
     required String uid,
   }) async {
-    final params = <String, dynamic>{};
-    params['errorCode'] = errorCode;
-    params['uid'] = uid;
+    final payload = <String, dynamic>{};
+    payload['errorCode'] = errorCode;
+    payload['uid'] = uid;
     final response = await connection.sendMessageToServer(
       guid,
       'socksFailed',
-      params,
+      payload,
     );
     return;
   }
@@ -9604,9 +9678,13 @@ abstract class StreamBase extends ChannelOwner {
   }
 
   Future<StreamReadResult> channel_read({int? size}) async {
-    final params = <String, dynamic>{};
-    if (size != null) params['size'] = size;
-    final response = await connection.sendMessageToServer(guid, 'read', params);
+    final payload = <String, dynamic>{};
+    if (size != null) payload['size'] = size;
+    final response = await connection.sendMessageToServer(
+      guid,
+      'read',
+      payload,
+    );
     return StreamReadResult.fromJson(response, connection: connection);
   }
 }
@@ -9624,13 +9702,13 @@ abstract class TracingBase extends ChannelOwner {
     String? harId,
     required TracingHarExportModeEnum mode,
   }) async {
-    final params = <String, dynamic>{};
-    if (harId != null) params['harId'] = harId;
-    params['mode'] = mode.value;
+    final payload = <String, dynamic>{};
+    if (harId != null) payload['harId'] = harId;
+    payload['mode'] = mode.value;
     final response = await connection.sendMessageToServer(
       guid,
       'harExport',
-      params,
+      payload,
     );
     return TracingHarExportResult.fromJson(response, connection: connection);
   }
@@ -9639,13 +9717,13 @@ abstract class TracingBase extends ChannelOwner {
     required RecordHarOptions options,
     PageBase? page,
   }) async {
-    final params = <String, dynamic>{};
-    params['options'] = options.toJson();
-    if (page != null) params['page'] = page.guid;
+    final payload = <String, dynamic>{};
+    payload['options'] = options.toJson();
+    if (page != null) payload['page'] = {'guid': page.guid};
     final response = await connection.sendMessageToServer(
       guid,
       'harStart',
-      params,
+      payload,
     );
     return TracingHarStartResult.fromJson(response, connection: connection);
   }
@@ -9654,13 +9732,13 @@ abstract class TracingBase extends ChannelOwner {
     Map<String, dynamic>? location,
     required String name,
   }) async {
-    final params = <String, dynamic>{};
-    if (location != null) params['location'] = location;
-    params['name'] = name;
+    final payload = <String, dynamic>{};
+    if (location != null) payload['location'] = location;
+    payload['name'] = name;
     final response = await connection.sendMessageToServer(
       guid,
       'tracingGroup',
-      params,
+      payload,
     );
     return;
   }
@@ -9680,15 +9758,15 @@ abstract class TracingBase extends ChannelOwner {
     bool? screenshots,
     bool? snapshots,
   }) async {
-    final params = <String, dynamic>{};
-    if (live != null) params['live'] = live;
-    if (name != null) params['name'] = name;
-    if (screenshots != null) params['screenshots'] = screenshots;
-    if (snapshots != null) params['snapshots'] = snapshots;
+    final payload = <String, dynamic>{};
+    if (live != null) payload['live'] = live;
+    if (name != null) payload['name'] = name;
+    if (screenshots != null) payload['screenshots'] = screenshots;
+    if (snapshots != null) payload['snapshots'] = snapshots;
     final response = await connection.sendMessageToServer(
       guid,
       'tracingStart',
-      params,
+      payload,
     );
     return;
   }
@@ -9697,13 +9775,13 @@ abstract class TracingBase extends ChannelOwner {
     String? name,
     String? title,
   }) async {
-    final params = <String, dynamic>{};
-    if (name != null) params['name'] = name;
-    if (title != null) params['title'] = title;
+    final payload = <String, dynamic>{};
+    if (name != null) payload['name'] = name;
+    if (title != null) payload['title'] = title;
     final response = await connection.sendMessageToServer(
       guid,
       'tracingStartChunk',
-      params,
+      payload,
     );
     return TracingTracingStartChunkResult.fromJson(
       response,
@@ -9723,12 +9801,12 @@ abstract class TracingBase extends ChannelOwner {
   Future<TracingTracingStopChunkResult> channel_tracingStopChunk({
     required TracingTracingStopChunkModeEnum mode,
   }) async {
-    final params = <String, dynamic>{};
-    params['mode'] = mode.value;
+    final payload = <String, dynamic>{};
+    payload['mode'] = mode.value;
     final response = await connection.sendMessageToServer(
       guid,
       'tracingStopChunk',
-      params,
+      payload,
     );
     return TracingTracingStopChunkResult.fromJson(
       response,
@@ -9761,14 +9839,14 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     String? reason,
     required bool wasClean,
   }) async {
-    final params = <String, dynamic>{};
-    if (code != null) params['code'] = code;
-    if (reason != null) params['reason'] = reason;
-    params['wasClean'] = wasClean;
+    final payload = <String, dynamic>{};
+    if (code != null) payload['code'] = code;
+    if (reason != null) payload['reason'] = reason;
+    payload['wasClean'] = wasClean;
     final response = await connection.sendMessageToServer(
       guid,
       'closePage',
-      params,
+      payload,
     );
     return;
   }
@@ -9778,14 +9856,14 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     String? reason,
     required bool wasClean,
   }) async {
-    final params = <String, dynamic>{};
-    if (code != null) params['code'] = code;
-    if (reason != null) params['reason'] = reason;
-    params['wasClean'] = wasClean;
+    final payload = <String, dynamic>{};
+    if (code != null) payload['code'] = code;
+    if (reason != null) payload['reason'] = reason;
+    payload['wasClean'] = wasClean;
     final response = await connection.sendMessageToServer(
       guid,
       'closeServer',
-      params,
+      payload,
     );
     return;
   }
@@ -9808,13 +9886,13 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     required bool isBase64,
     required String message,
   }) async {
-    final params = <String, dynamic>{};
-    params['isBase64'] = isBase64;
-    params['message'] = message;
+    final payload = <String, dynamic>{};
+    payload['isBase64'] = isBase64;
+    payload['message'] = message;
     final response = await connection.sendMessageToServer(
       guid,
       'sendToPage',
-      params,
+      payload,
     );
     return;
   }
@@ -9823,13 +9901,13 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     required bool isBase64,
     required String message,
   }) async {
-    final params = <String, dynamic>{};
-    params['isBase64'] = isBase64;
-    params['message'] = message;
+    final payload = <String, dynamic>{};
+    payload['isBase64'] = isBase64;
+    payload['message'] = message;
     final response = await connection.sendMessageToServer(
       guid,
       'sendToServer',
-      params,
+      payload,
     );
     return;
   }
@@ -9845,12 +9923,12 @@ abstract class WorkerBase extends EventTargetBase {
   ]);
 
   Future<void> channel_disconnect({String? reason}) async {
-    final params = <String, dynamic>{};
-    if (reason != null) params['reason'] = reason;
+    final payload = <String, dynamic>{};
+    if (reason != null) payload['reason'] = reason;
     final response = await connection.sendMessageToServer(
       guid,
       'disconnect',
-      params,
+      payload,
     );
     return;
   }
@@ -9860,14 +9938,14 @@ abstract class WorkerBase extends EventTargetBase {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpression',
-      params,
+      payload,
     );
     return WorkerEvaluateExpressionResult.fromJson(
       response,
@@ -9881,14 +9959,14 @@ abstract class WorkerBase extends EventTargetBase {
     required String expression,
     bool? isFunction,
   }) async {
-    final params = <String, dynamic>{};
-    params['arg'] = arg.toJson();
-    params['expression'] = expression;
-    if (isFunction != null) params['isFunction'] = isFunction;
+    final payload = <String, dynamic>{};
+    payload['arg'] = arg.toJson();
+    payload['expression'] = expression;
+    if (isFunction != null) payload['isFunction'] = isFunction;
     final response = await connection.sendMessageToServer(
       guid,
       'evaluateExpressionHandle',
-      params,
+      payload,
     );
     return WorkerEvaluateExpressionHandleResult.fromJson(
       response,
@@ -9900,13 +9978,13 @@ abstract class WorkerBase extends EventTargetBase {
     required bool enabled,
     required WorkerUpdateSubscriptionEventEnum event,
   }) async {
-    final params = <String, dynamic>{};
-    params['enabled'] = enabled;
-    params['event'] = event.value;
+    final payload = <String, dynamic>{};
+    payload['enabled'] = enabled;
+    payload['event'] = event.value;
     final response = await connection.sendMessageToServer(
       guid,
       'updateSubscription',
-      params,
+      payload,
     );
     return;
   }
@@ -9927,12 +10005,12 @@ abstract class WritableStreamBase extends ChannelOwner {
   }
 
   Future<void> channel_write({required String binary}) async {
-    final params = <String, dynamic>{};
-    params['binary'] = binary;
+    final payload = <String, dynamic>{};
+    payload['binary'] = binary;
     final response = await connection.sendMessageToServer(
       guid,
       'write',
-      params,
+      payload,
     );
     return;
   }

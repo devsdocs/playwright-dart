@@ -1,5 +1,5 @@
-import 'channel_owner.dart';
 import 'browser_context.dart';
+import 'cdp_session.dart';
 import 'page.dart';
 import 'generated/channels.dart';
 import 'artifact.dart';
@@ -25,17 +25,17 @@ class Browser extends BrowserBase {
   ]);
 
   /// Creates a new browser context.
-  /// 
+  ///
   /// It won't share cookies/cache with other browser contexts.
   Future<BrowserContext> newContext({ContextOptions? options}) async {
     final result = await super.channel_newContext(
-      mixin: options ?? ContextOptions(),
+      mixinValue: options ?? ContextOptions(),
     );
     return result.context as BrowserContext;
   }
 
   /// Closes the browser and all of its pages.
-  /// 
+  ///
   /// If [autoClose] was true when initializing Playwright, closing the last
   /// active browser will automatically shut down the underlying driver process.
   Future<void> close({String? reason}) async {
@@ -45,11 +45,13 @@ class Browser extends BrowserBase {
     // This emulates Node.js unref() behavior where `browser.close()` gracefully exits the application.
     if (connection.isAutoCloseEnabled) {
       try {
-        final activeBrowsers =
-            connection.objects.values.whereType<Browser>().length;
+        final activeBrowsers = connection.objects.values
+            .whereType<Browser>()
+            .length;
         if (activeBrowsers <= 1) {
-          final playwright =
-              connection.objects.values.whereType<Playwright>().firstOrNull;
+          final playwright = connection.objects.values
+              .whereType<Playwright>()
+              .firstOrNull;
           if (playwright != null) {
             await playwright.stop();
           }
@@ -62,10 +64,7 @@ class Browser extends BrowserBase {
 
   Future<dynamic> newBrowserCDPSession() async {
     final result = await channel_newBrowserCDPSession();
-    return ChannelOwner.from(
-      connection,
-      result.session as Map<String, dynamic>,
-    );
+    return result.session as CDPSession;
   }
 
   Future<void> startTracing({
@@ -130,7 +129,7 @@ class Browser extends BrowserBase {
     Map<String, dynamic>? storageState,
   }) async {
     final result = await channel_newContextForReuse(
-      mixin: ContextOptions(),
+      mixinValue: ContextOptions(),
       proxy: proxy,
       storageState: storageState,
     );
@@ -142,7 +141,7 @@ class Browser extends BrowserBase {
   }
 
   /// Creates a new page in a new browser context.
-  /// 
+  ///
   /// Closing this page will close the context as well.
   Future<Page> newPage() async {
     final context = await newContext();

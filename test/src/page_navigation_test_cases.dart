@@ -44,6 +44,20 @@ void main() {
       final result = await page.evaluate('() => window.__injected');
       expect(result, equals(42));
     });
+
+    test('should bring to front', (page) async {
+      final context = await browser.newContext();
+      final page1 = await context.newPage();
+
+      // page2 is currently focused
+      await page1.bringToFront();
+
+      // Verify page1 is front (document.visibilityState == 'visible' usually)
+      final state = await page1.evaluate('document.visibilityState');
+      expect(state, equals('visible'));
+
+      await context.close();
+    });
   });
 
   group('Page Emulate Media API', () {
@@ -69,6 +83,14 @@ void main() {
         '() => window.matchMedia("(prefers-reduced-motion: reduce)").matches',
       );
       expect(isReduced, isTrue);
+    });
+
+    test('should emulate print media', (page) async {
+      await page.emulateMedia(media: 'print');
+      final isPrint = await page.evaluate(
+        '() => window.matchMedia("print").matches',
+      );
+      expect(isPrint, isTrue);
     });
   });
 

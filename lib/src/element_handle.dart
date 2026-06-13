@@ -265,7 +265,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       timeout: timeout ?? 30000.0,
       type: type,
       quality: quality,
-      mixin: mixin ?? CommonScreenshotOptions(),
+      mixinValue: mixin ?? CommonScreenshotOptions(),
     );
     return base64Decode(result.binary);
   }
