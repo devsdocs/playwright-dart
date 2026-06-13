@@ -5,8 +5,283 @@ import 'locator.dart';
 import 'serialization.dart';
 import 'page.dart';
 
-class Frame extends FrameBase {
-  Frame(
+/// Interface for Frame
+abstract interface class Frame {
+  Stream<Map<String, dynamic>> get onNavigated;
+  Stream<Map<String, dynamic>> get onLoadstate;
+  String url();
+  Page get page;
+  Locator locator(String selector);
+  Locator getByText(String text, {bool exact});
+  Locator getByRole(String role, {String? name});
+  Locator getByLabel(String text, {bool exact});
+  Locator getByPlaceholder(String text, {bool exact});
+  Locator getByAltText(String text, {bool exact});
+  Locator getByTitle(String text, {bool exact});
+  Locator getByTestId(String testId);
+  Future<void> goto(
+    String url, {
+    double? timeout,
+    LifecycleEvent? waitUntil,
+    String? referer,
+  });
+  Future<String> textContent({
+    required String selector,
+    double? timeout,
+    bool? strict,
+  });
+  Future<dynamic> evaluate(String expression, [dynamic arg]);
+  Future<FrameWaitForSelectorResult> waitForSelector(
+    String selector, {
+    FrameWaitForSelectorStateEnum? state,
+    double? timeout,
+    bool? strict,
+    bool? omitReturnValue,
+  });
+  Future<void> waitForLoadState({LifecycleEvent? state, double? timeout});
+  Future<void> waitForURL(
+    dynamic urlOrPredicate, {
+    double? timeout,
+    LifecycleEvent? waitUntil,
+  });
+  Future<void> waitForNavigation({
+    String? url,
+    LifecycleEvent? waitUntil,
+    double? timeout,
+  });
+  Future<void> dragAndDrop(
+    String source,
+    String target, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    bool? trial,
+    Point? sourcePosition,
+    Point? targetPosition,
+    int? steps,
+  });
+  Future<void> click(
+    String selector, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    bool? trial,
+    bool? noWaitAfter,
+    List<FrameClickModifiersEnum>? modifiers,
+    Point? position,
+    double? delay,
+    FrameClickButtonEnum? button,
+    int? clickCount,
+    int? steps,
+  });
+  Future<void> fill(
+    String selector,
+    String value, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+  });
+  Future<void> check(
+    String selector, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    bool? trial,
+    Point? position,
+  });
+  Future<void> uncheck(
+    String selector, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    bool? trial,
+    Point? position,
+  });
+  Future<void> hover(
+    String selector, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    bool? trial,
+    List<FrameHoverModifiersEnum>? modifiers,
+    Point? position,
+  });
+  Future<void> focus(String selector, {double? timeout, bool? strict});
+  Future<void> blur(String selector, {double? timeout, bool? strict});
+  Future<void> dblclick(
+    String selector, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    bool? trial,
+    List<FrameDblclickModifiersEnum>? modifiers,
+    Point? position,
+    double? delay,
+    FrameDblclickButtonEnum? button,
+    int? steps,
+  });
+  Future<void> type(
+    String selector,
+    String text, {
+    double? delay,
+    double? timeout,
+    bool? strict,
+  });
+  Future<void> press(
+    String selector,
+    String key, {
+    double? delay,
+    double? timeout,
+    bool? strict,
+    bool? noWaitAfter,
+  });
+  Future<void> tap(
+    String selector, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    bool? trial,
+    List<FrameTapModifiersEnum>? modifiers,
+    Point? position,
+  });
+  Future<String> content();
+  Future<void> setContent(
+    String html, {
+    double? timeout,
+    LifecycleEvent? waitUntil,
+  });
+  Future<dynamic> evalOnSelector(
+    String selector,
+    String expression, [
+    dynamic arg,
+    bool? strict,
+    bool? isFunction,
+  ]);
+  Future<dynamic> evalOnSelectorAll(
+    String selector,
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]);
+  Future<String?> getAttribute(
+    String selector,
+    String name, {
+    double? timeout,
+    bool? strict,
+  });
+  Future<String> innerHTML(String selector, {double? timeout, bool? strict});
+  Future<String> innerText(String selector, {double? timeout, bool? strict});
+  Future<String> inputValue(String selector, {double? timeout, bool? strict});
+  Future<String> title();
+  Future<bool> isChecked(String selector, {double? timeout, bool? strict});
+  Future<bool> isDisabled(String selector, {double? timeout, bool? strict});
+  Future<bool> isEnabled(String selector, {double? timeout, bool? strict});
+  Future<bool> isHidden(String selector, {bool? strict});
+  Future<bool> isVisible(String selector, {bool? strict});
+  Future<bool> isEditable(String selector, {double? timeout, bool? strict});
+  Future<void> addScriptTag({String? url, String? content, String? type});
+  Future<void> addStyleTag({String? url, String? content});
+  Future<void> waitForTimeout(double waitTimeout);
+  Future<dynamic> waitForFunction(
+    String expression, {
+    dynamic arg,
+    double? timeout,
+    double? pollingInterval,
+    bool? isFunction,
+  });
+  Future<void> dispatchEvent(
+    String selector,
+    String type, {
+    dynamic eventInit,
+    double? timeout,
+    bool? strict,
+  });
+  Future<void> highlight(String selector, {String? style});
+  Future<void> hideHighlight(String selector);
+  Future<void> drop(
+    String selector, {
+    List<FrameDropPayloadsItems>? payloads,
+    List<String>? localPaths,
+    List<FrameDropDataItems>? data,
+    bool? strict,
+    double? timeout,
+    Point? position,
+    List<WritableStreamBase>? streams,
+  });
+  Future<FrameResolveSelectorResult> resolveSelector(String selector);
+  Future<FrameAriaSnapshotResult> ariaSnapshot(
+    String selector, {
+    FrameAriaSnapshotModeEnum? mode,
+    String? track,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  });
+  Future<dynamic> evaluateExpression(
+    String expression, {
+    bool? isFunction,
+    dynamic arg,
+  });
+  Future<dynamic> evaluateExpressionHandle(
+    String expression, {
+    bool? isFunction,
+    dynamic arg,
+  });
+  Future<dynamic> frameElement();
+  Future<FrameExpectResult> expect(
+    String selector,
+    String expression, {
+    SerializedArgument? expectedValue,
+    List<ExpectedTextValue>? expectedText,
+    double? expectedNumber,
+    bool? useInnerText,
+    required bool isNot,
+    double? timeout,
+    dynamic expressionArg,
+    FrameExpectPseudoEnum? pseudo,
+  });
+  Locator querySelector(String selector, {bool? strict});
+  Future<List<Locator>> querySelectorAll(String selector);
+  Future<int> queryCount(String selector);
+  Future<List<String>> selectOption(
+    String selector,
+    dynamic values, {
+    bool? force,
+    double? timeout,
+    bool? strict,
+    List<ElementHandleBase>? elements,
+    List<ElementHandleSelectOptionOptionsItems>? options,
+  });
+  Future<void> setInputFiles(
+    String selector,
+    dynamic files, {
+    bool? noWaitAfter,
+    double? timeout,
+    bool? strict,
+    List<FrameDropPayloadsItems>? payloads,
+    String? localDirectory,
+    ChannelOwner? directoryStream,
+    List<String>? localPaths,
+    List<ChannelOwner>? streams,
+  });
+}
+
+class FrameImpl extends FrameBase implements Frame {
+  @override
+  Stream<Map<String, dynamic>> get onNavigated {
+    return onEvent
+        .where((e) => e['event'] == 'navigated')
+        .map((e) => e['params']);
+  }
+
+  @override
+  Stream<Map<String, dynamic>> get onLoadstate {
+    return onEvent
+        .where((e) => e['event'] == 'loadstate')
+        .map((e) => e['params']);
+  }
+
+  FrameImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -15,57 +290,68 @@ class Frame extends FrameBase {
   ]);
 
   /// Returns the frame's URL.
+  @override
   String url() => initializer['url'] as String;
 
   /// Returns the page containing this frame.
+  @override
   Page get page => parent as Page;
 
   /// Returns a locator for the given selector.
+  @override
   Locator locator(String selector) {
     return Locator(this, selector);
   }
 
+  @override
   Locator getByText(String text, {bool exact = false}) {
     return exact
         ? locator('internal:text="$text"')
         : locator('internal:text=$text');
   }
 
+  @override
   Locator getByRole(String role, {String? name}) {
     var sel = 'internal:role=$role';
     if (name != null) sel += '[name="$name"i]';
     return locator(sel);
   }
 
+  @override
   Locator getByLabel(String text, {bool exact = false}) {
     return exact
         ? locator('internal:label="$text"')
         : locator('internal:label=$text');
   }
 
+  @override
   Locator getByPlaceholder(String text, {bool exact = false}) {
     return exact
         ? locator('internal:attr=[placeholder="$text"]')
         : locator('internal:attr=[placeholder="$text"i]');
   }
 
+  @override
   Locator getByAltText(String text, {bool exact = false}) {
     return exact
         ? locator('internal:attr=[alt="$text"]')
         : locator('internal:attr=[alt="$text"i]');
   }
 
+  @override
   Locator getByTitle(String text, {bool exact = false}) {
     return exact
         ? locator('internal:attr=[title="$text"]')
         : locator('internal:attr=[title="$text"i]');
   }
 
+  @override
   Locator getByTestId(String testId) {
     return locator('internal:testid=[data-testid="$testId"]');
   }
 
   /// Goto URL
+  @override
   Future<void> goto(
     String url, {
     double? timeout,
@@ -80,6 +366,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<String> textContent({
     required String selector,
     double? timeout,
@@ -93,6 +380,7 @@ class Frame extends FrameBase {
     return result.value as String;
   }
 
+  @override
   Future<dynamic> evaluate(String expression, [dynamic arg]) async {
     final result = await channel_evaluateExpression(
       expression: expression,
@@ -101,6 +389,7 @@ class Frame extends FrameBase {
     return parseSerializedValue(result.value);
   }
 
+  @override
   Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
     FrameWaitForSelectorStateEnum? state,
@@ -118,6 +407,7 @@ class Frame extends FrameBase {
   }
 
   /// Waits for the required load state to be reached.
+  @override
   Future<void> waitForLoadState({
     LifecycleEvent? state = LifecycleEvent.load,
     double? timeout,
@@ -140,6 +430,7 @@ class Frame extends FrameBase {
   }
 
   /// Waits for the main frame to navigate to the given URL.
+  @override
   Future<void> waitForURL(
     dynamic urlOrPredicate, {
     double? timeout,
@@ -185,6 +476,7 @@ class Frame extends FrameBase {
   }
 
   /// Waits for navigation to complete.
+  @override
   Future<void> waitForNavigation({
     String? url,
     LifecycleEvent? waitUntil,
@@ -206,6 +498,7 @@ class Frame extends FrameBase {
     }
   }
 
+  @override
   Future<void> dragAndDrop(
     String source,
     String target, {
@@ -230,6 +523,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> click(
     String selector, {
     bool? force,
@@ -259,6 +553,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> fill(
     String selector,
     String value, {
@@ -275,6 +570,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> check(
     String selector, {
     bool? force,
@@ -293,6 +589,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> uncheck(
     String selector, {
     bool? force,
@@ -311,6 +608,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> hover(
     String selector, {
     bool? force,
@@ -331,6 +629,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> focus(String selector, {double? timeout, bool? strict}) async {
     await channel_focus(
       selector: selector,
@@ -339,6 +638,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> blur(String selector, {double? timeout, bool? strict}) async {
     await channel_blur(
       selector: selector,
@@ -347,6 +647,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> dblclick(
     String selector, {
     bool? force,
@@ -373,6 +674,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> type(
     String selector,
     String text, {
@@ -389,6 +691,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> press(
     String selector,
     String key, {
@@ -406,6 +709,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> tap(
     String selector, {
     bool? force,
@@ -426,11 +730,13 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<String> content() async {
     final result = await channel_content();
     return result.value;
   }
 
+  @override
   Future<void> setContent(
     String html, {
     double? timeout,
@@ -443,6 +749,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<dynamic> evalOnSelector(
     String selector,
     String expression, [
@@ -460,6 +767,7 @@ class Frame extends FrameBase {
     return parseSerializedValue(result.value);
   }
 
+  @override
   Future<dynamic> evalOnSelectorAll(
     String selector,
     String expression, [
@@ -475,6 +783,7 @@ class Frame extends FrameBase {
     return parseSerializedValue(result.value);
   }
 
+  @override
   Future<String?> getAttribute(
     String selector,
     String name, {
@@ -490,6 +799,7 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<String> innerHTML(
     String selector, {
     double? timeout,
@@ -503,6 +813,7 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<String> innerText(
     String selector, {
     double? timeout,
@@ -516,6 +827,7 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<String> inputValue(
     String selector, {
     double? timeout,
@@ -529,11 +841,13 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<String> title() async {
     final result = await channel_title();
     return result.value;
   }
 
+  @override
   Future<bool> isChecked(
     String selector, {
     double? timeout,
@@ -547,6 +861,7 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<bool> isDisabled(
     String selector, {
     double? timeout,
@@ -560,6 +875,7 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<bool> isEnabled(
     String selector, {
     double? timeout,
@@ -573,16 +889,19 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<bool> isHidden(String selector, {bool? strict}) async {
     final result = await channel_isHidden(selector: selector, strict: strict);
     return result.value;
   }
 
+  @override
   Future<bool> isVisible(String selector, {bool? strict}) async {
     final result = await channel_isVisible(selector: selector, strict: strict);
     return result.value;
   }
 
+  @override
   Future<bool> isEditable(
     String selector, {
     double? timeout,
@@ -596,6 +915,7 @@ class Frame extends FrameBase {
     return result.value;
   }
 
+  @override
   Future<void> addScriptTag({
     String? url,
     String? content,
@@ -604,14 +924,17 @@ class Frame extends FrameBase {
     await channel_addScriptTag(url: url, content: content, type: type);
   }
 
+  @override
   Future<void> addStyleTag({String? url, String? content}) async {
     await channel_addStyleTag(url: url, content: content);
   }
 
+  @override
   Future<void> waitForTimeout(double waitTimeout) async {
     await channel_waitForTimeout(waitTimeout: waitTimeout);
   }
 
+  @override
   Future<dynamic> waitForFunction(
     String expression, {
     dynamic arg,
@@ -629,6 +952,7 @@ class Frame extends FrameBase {
     return result.handle as JSHandle;
   }
 
+  @override
   Future<void> dispatchEvent(
     String selector,
     String type, {
@@ -645,14 +969,17 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<void> highlight(String selector, {String? style}) async {
     await channel_highlight(selector: selector, style: style);
   }
 
+  @override
   Future<void> hideHighlight(String selector) async {
     await channel_hideHighlight(selector: selector);
   }
 
+  @override
   Future<void> drop(
     String selector, {
     List<FrameDropPayloadsItems>? payloads,
@@ -675,10 +1002,12 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<FrameResolveSelectorResult> resolveSelector(String selector) async {
     return await channel_resolveSelector(selector: selector);
   }
 
+  @override
   Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
     FrameAriaSnapshotModeEnum? mode,
@@ -697,6 +1026,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<dynamic> evaluateExpression(
     String expression, {
     bool? isFunction,
@@ -710,6 +1040,7 @@ class Frame extends FrameBase {
     return parseSerializedValue(result.value);
   }
 
+  @override
   Future<dynamic> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
@@ -723,6 +1054,7 @@ class Frame extends FrameBase {
     return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
   }
 
+  @override
   Future<dynamic> frameElement() async {
     final result = await channel_frameElement();
     return ChannelOwner.from(
@@ -731,6 +1063,7 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Future<FrameExpectResult> expect(
     String selector,
     String expression, {
@@ -757,22 +1090,26 @@ class Frame extends FrameBase {
     );
   }
 
+  @override
   Locator querySelector(String selector, {bool? strict}) {
     // strict parameter is accepted to satisfy types but locator handles strictness internally
     return locator(selector);
   }
 
+  @override
   Future<List<Locator>> querySelectorAll(String selector) async {
     final result = await channel_querySelectorAll(selector: selector);
     final elements = result.elements as List? ?? [];
     return elements.map((_) => locator(selector)).toList();
   }
 
+  @override
   Future<int> queryCount(String selector) async {
     final result = await channel_queryCount(selector: selector);
     return result.value;
   }
 
+  @override
   Future<List<String>> selectOption(
     String selector,
     dynamic values, {
@@ -811,6 +1148,7 @@ class Frame extends FrameBase {
     return (result.values as List).cast<String>();
   }
 
+  @override
   Future<void> setInputFiles(
     String selector,
     dynamic files, {

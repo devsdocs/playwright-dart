@@ -1,8 +1,14 @@
 import 'generated/channels.dart';
 import 'serialization.dart';
 
-class BindingCall extends BindingCallBase {
-  BindingCall(
+/// Interface for BindingCall
+abstract interface class BindingCall {
+  Future<void> resolve(dynamic result);
+  Future<void> reject(dynamic error);
+}
+
+class BindingCallImpl extends BindingCallBase implements BindingCall {
+  BindingCallImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -10,10 +16,12 @@ class BindingCall extends BindingCallBase {
     super.parent,
   ]);
 
+  @override
   Future<void> resolve(dynamic result) async {
     await channel_resolve(result: serializeArgument(result));
   }
 
+  @override
   Future<void> reject(dynamic error) async {
     // Basic error serialization mapping for now
     await channel_reject(

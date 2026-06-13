@@ -17,7 +17,7 @@ void main() {
 
     test('should emulate geolocation', (page) async {
       // Since we use a shared context in tests, it's better to test via page or context directly
-      final context = page.parent as BrowserContext;
+      final context = (page as PageImpl).parent as BrowserContext;
       await context.setGeolocation(
         BrowserContextSetGeolocationGeolocation(
           latitude: 59.3293,

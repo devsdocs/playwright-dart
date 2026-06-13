@@ -1,7 +1,35 @@
 import 'generated/channels.dart';
 
-class Electron extends ElectronBase {
-  Electron(
+/// Interface for Electron
+abstract interface class Electron {
+  Future<ElectronLaunchResult> launch({
+    String? executablePath,
+    List<String>? args,
+    bool? chromiumSandbox,
+    String? cwd,
+    List<NameValue>? env,
+    required double timeout,
+    ElectronLaunchAcceptDownloadsEnum? acceptDownloads,
+    bool? bypassCSP,
+    ElectronLaunchColorSchemeEnum? colorScheme,
+    List<NameValue>? extraHTTPHeaders,
+    Map<String, dynamic>? geolocation,
+    Map<String, dynamic>? httpCredentials,
+    bool? ignoreHTTPSErrors,
+    String? locale,
+    bool? offline,
+    Map<String, dynamic>? recordVideo,
+    bool? strictSelectors,
+    String? timezoneId,
+    String? tracesDir,
+    String? artifactsDir,
+    List<SelectorEngine>? selectorEngines,
+    String? testIdAttributeName,
+  });
+}
+
+class ElectronImpl extends ElectronBase implements Electron {
+  ElectronImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -9,6 +37,7 @@ class Electron extends ElectronBase {
     super.parent,
   ]);
 
+  @override
   Future<ElectronLaunchResult> launch({
     String? executablePath,
     List<String>? args,

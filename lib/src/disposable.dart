@@ -1,7 +1,12 @@
 import 'generated/channels.dart';
 
-class Disposable extends DisposableBase {
-  Disposable(
+/// Interface for Disposable
+abstract interface class Disposable {
+  Future<void> dispose();
+}
+
+class DisposableImpl extends DisposableBase implements Disposable {
+  DisposableImpl(
     super.connection,
     super.channelType,
     super.guid,

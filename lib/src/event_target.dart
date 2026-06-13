@@ -1,7 +1,12 @@
 import 'generated/channels.dart';
 
-class EventTarget extends EventTargetBase {
-  EventTarget(
+/// Interface for EventTarget
+abstract interface class EventTarget {
+  Future<void> waitForEventInfo(EventTargetWaitForEventInfoInfo info);
+}
+
+class EventTargetImpl extends EventTargetBase implements EventTarget {
+  EventTargetImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -9,6 +14,7 @@ class EventTarget extends EventTargetBase {
     super.parent,
   ]);
 
+  @override
   Future<void> waitForEventInfo(EventTargetWaitForEventInfoInfo info) async {
     await channel_waitForEventInfo(info: info);
   }

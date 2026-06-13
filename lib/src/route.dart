@@ -2,8 +2,37 @@ import 'generated/channels.dart';
 import 'request.dart';
 
 /// Whenever a network route is set up with `page.route()` or `browserContext.route()`, the `Route` object allows to handle the route.
-class Route extends RouteBase {
-  Route(
+/// Interface for Route
+abstract interface class Route {
+  Request get request;
+  Future<void> abort({String? errorCode});
+  Future<void> fulfill({
+    int? status,
+    List<NameValue>? headers,
+    String? body,
+    bool? isBase64,
+    String? contentType,
+    String? fetchResponseUid,
+  });
+  Future<void> continueRoute({
+    String? url,
+    String? method,
+    List<NameValue>? headers,
+    String? postData,
+    bool isFallback,
+  });
+  Future<void> redirectNavigationRequest(String url);
+  Future<void> continueValue({
+    String? url,
+    String? method,
+    List<NameValue>? headers,
+    String? postData,
+    bool isFallback,
+  });
+}
+
+class RouteImpl extends RouteBase implements Route {
+  RouteImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -12,15 +41,18 @@ class Route extends RouteBase {
   ]);
 
   /// A request to be routed.
+  @override
   Request get request =>
       connection.objects[initializer['request']['guid']] as Request;
 
   /// Aborts the route's request.
+  @override
   Future<void> abort({String? errorCode}) async {
     await channel_abort(errorCode: errorCode);
   }
 
   /// Fulfills route's request with given response.
+  @override
   Future<void> fulfill({
     int? status,
     List<NameValue>? headers,
@@ -43,6 +75,7 @@ class Route extends RouteBase {
   }
 
   /// Continues route's request with optional overrides.
+  @override
   Future<void> continueRoute({
     String? url,
     String? method,
@@ -59,10 +92,12 @@ class Route extends RouteBase {
     );
   }
 
+  @override
   Future<void> redirectNavigationRequest(String url) async {
     await channel_redirectNavigationRequest(url: url);
   }
 
+  @override
   Future<void> continueValue({
     String? url,
     String? method,

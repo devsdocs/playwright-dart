@@ -5,8 +5,141 @@ import 'serialization.dart';
 import 'frame.dart';
 import 'dart:convert';
 
-class ElementHandle extends ElementHandleBase implements JSHandle {
-  ElementHandle(
+/// Interface for ElementHandle
+abstract interface class ElementHandle {
+  Future<dynamic> evalOnSelector(
+    String selector,
+    String expression, [
+    dynamic arg,
+    bool? strict,
+    bool? isFunction,
+  ]);
+  Future<dynamic> evalOnSelectorAll(
+    String selector,
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]);
+  Future<void> click({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    bool? noWaitAfter,
+    List<ElementHandleClickModifiersEnum>? modifiers,
+    Point? position,
+    double? delay,
+    ElementHandleClickButtonEnum? button,
+    int? clickCount,
+    int? steps,
+  });
+  Future<void> dblclick({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    List<ElementHandleDblclickModifiersEnum>? modifiers,
+    Point? position,
+    double? delay,
+    ElementHandleDblclickButtonEnum? button,
+    int? steps,
+  });
+  Future<void> fill(String value, {bool? force, double? timeout});
+  Future<void> hover({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    List<ElementHandleHoverModifiersEnum>? modifiers,
+    Point? position,
+  });
+  Future<void> focus();
+  Future<void> type(String text, {double? delay, double? timeout});
+  Future<void> press(
+    String key, {
+    double? delay,
+    double? timeout,
+    bool? noWaitAfter,
+  });
+  Future<void> tap({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    List<ElementHandleTapModifiersEnum>? modifiers,
+    Point? position,
+  });
+  Future<void> check({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    Point? position,
+  });
+  Future<void> uncheck({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    Point? position,
+  });
+  Future<void> scrollIntoViewIfNeeded({double? timeout});
+  Future<String?> getAttribute(String name);
+  Future<String> innerHTML();
+  Future<String> innerText();
+  Future<String> inputValue();
+  Future<String> textContent();
+  Future<bool> isChecked();
+  Future<bool> isDisabled();
+  Future<bool> isEditable();
+  Future<bool> isEnabled();
+  Future<bool> isHidden();
+  Future<bool> isVisible();
+  Future<Rect?> boundingBox();
+  Future<Frame?> contentFrame();
+  Future<Frame?> ownerFrame();
+  Future<ElementHandle?> querySelector(String selector, {bool? strict});
+  Future<List<ElementHandle>> querySelectorAll(String selector);
+  Future<void> dispatchEvent(String type, {dynamic eventInit});
+  Future<List<int>> screenshot({
+    CommonScreenshotOptions? options,
+    required double timeout,
+    String? type,
+    int? quality,
+  });
+  Future<List<String>> selectOption({
+    dynamic values,
+    bool? force,
+    double? timeout,
+    List<ElementHandle>? elements,
+    List<ElementHandleSelectOptionOptionsItems>? options,
+  });
+  Future<void> selectText({bool? force, double? timeout});
+  Future<void> setInputFiles(
+    List<String> files, {
+    double? timeout,
+    List<ElementHandleSetInputFilesPayloadsItems>? payloads,
+    String? localDirectory,
+    ChannelOwner? directoryStream,
+    List<String>? localPaths,
+    List<ChannelOwner>? streams,
+  });
+  Future<void> waitForElementState(
+    ElementHandleWaitForElementStateStateEnum state, {
+    double? timeout,
+  });
+  Future<ElementHandle?> waitForSelector(
+    String selector, {
+    bool? strict,
+    ElementHandleWaitForSelectorStateEnum? state,
+    double? timeout,
+  });
+}
+
+class ElementHandleImpl extends ElementHandleBase
+    implements ElementHandle, JSHandle {
+  @override
+  Stream<dynamic> get onPreviewUpdated {
+    return onEvent
+        .where((e) => e['event'] == 'previewUpdated')
+        .map((e) => e['params']['preview']);
+  }
+
+  ElementHandleImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -59,7 +192,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   @override
   Future<JSHandle> getProperty(String name) async {
     final result = await channel_getProperty(name: name);
-    return ChannelOwner.from<JSHandle>(
+    return ChannelOwner.from<JSHandleImpl>(
       connection,
       result.handle as Map<String, dynamic>,
     );
@@ -70,7 +203,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     final result = await channel_getPropertyList();
     final map = <String, JSHandle>{};
     for (final property in result.properties as List) {
-      map[property['name'] as String] = ChannelOwner.from<JSHandle>(
+      map[property['name'] as String] = ChannelOwner.from<JSHandleImpl>(
         connection,
         property['value'] as Map<String, dynamic>,
       );
@@ -92,6 +225,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     await channel_dispose();
   }
 
+  @override
   Future<dynamic> evalOnSelector(
     String selector,
     String expression, [
@@ -109,6 +243,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     return parseSerializedValue(result.value);
   }
 
+  @override
   Future<dynamic> evalOnSelectorAll(
     String selector,
     String expression, [
@@ -125,6 +260,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   }
 
   // Element actions
+  @override
   Future<void> click({
     bool? force,
     double? timeout,
@@ -151,6 +287,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> dblclick({
     bool? force,
     double? timeout,
@@ -173,10 +310,12 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> fill(String value, {bool? force, double? timeout}) async {
     await channel_fill(value: value, force: force, timeout: timeout ?? 30000.0);
   }
 
+  @override
   Future<void> hover({
     bool? force,
     double? timeout,
@@ -193,14 +332,17 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> focus() async {
     await channel_focus();
   }
 
+  @override
   Future<void> type(String text, {double? delay, double? timeout}) async {
     await channel_type(text: text, delay: delay, timeout: timeout ?? 30000.0);
   }
 
+  @override
   Future<void> press(
     String key, {
     double? delay,
@@ -215,6 +357,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> tap({
     bool? force,
     double? timeout,
@@ -231,6 +374,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> check({
     bool? force,
     double? timeout,
@@ -245,6 +389,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> uncheck({
     bool? force,
     double? timeout,
@@ -259,85 +404,107 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> scrollIntoViewIfNeeded({double? timeout}) async {
     await channel_scrollIntoViewIfNeeded(timeout: timeout ?? 30000.0);
   }
 
   // State
+  @override
   Future<String?> getAttribute(String name) async {
     final result = await channel_getAttribute(name: name);
     return result.value;
   }
 
+  @override
   Future<String> innerHTML() async {
     final result = await channel_innerHTML();
     return result.value;
   }
 
+  @override
   Future<String> innerText() async {
     final result = await channel_innerText();
     return result.value;
   }
 
+  @override
   Future<String> inputValue() async {
     final result = await channel_inputValue();
     return result.value;
   }
 
+  @override
   Future<String> textContent() async {
     final result = await channel_textContent();
     return result.value as String;
   }
 
+  @override
   Future<bool> isChecked() async {
     final result = await channel_isChecked();
     return result.value;
   }
 
+  @override
   Future<bool> isDisabled() async {
     final result = await channel_isDisabled();
     return result.value;
   }
 
+  @override
   Future<bool> isEditable() async {
     final result = await channel_isEditable();
     return result.value;
   }
 
+  @override
   Future<bool> isEnabled() async {
     final result = await channel_isEnabled();
     return result.value;
   }
 
+  @override
   Future<bool> isHidden() async {
     final result = await channel_isHidden();
     return result.value;
   }
 
+  @override
   Future<bool> isVisible() async {
     final result = await channel_isVisible();
     return result.value;
   }
 
+  @override
   Future<Rect?> boundingBox() async {
     final result = await channel_boundingBox();
     return result.value;
   }
 
+  @override
   Future<Frame?> contentFrame() async {
     final result = await channel_contentFrame();
     final frame = result.frame;
     if (frame == null) return null;
-    return ChannelOwner.from<Frame>(connection, frame as Map<String, dynamic>);
+    return ChannelOwner.from<FrameImpl>(
+      connection,
+      frame as Map<String, dynamic>,
+    );
   }
 
+  @override
   Future<Frame?> ownerFrame() async {
     final result = await channel_ownerFrame();
     final frame = result.frame;
     if (frame == null) return null;
-    return ChannelOwner.from<Frame>(connection, frame as Map<String, dynamic>);
+    return ChannelOwner.from<FrameImpl>(
+      connection,
+      frame as Map<String, dynamic>,
+    );
   }
 
+  @override
   Future<ElementHandle?> querySelector(String selector, {bool? strict}) async {
     final result = await channel_querySelector(
       selector: selector,
@@ -345,18 +512,19 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
     final element = result.element;
     if (element == null) return null;
-    return ChannelOwner.from<ElementHandle>(
+    return ChannelOwner.from<ElementHandleImpl>(
       connection,
       element as Map<String, dynamic>,
     );
   }
 
+  @override
   Future<List<ElementHandle>> querySelectorAll(String selector) async {
     final result = await channel_querySelectorAll(selector: selector);
     final elements = result.elements as List;
     return elements
         .map(
-          (e) => ChannelOwner.from<ElementHandle>(
+          (e) => ChannelOwner.from<ElementHandleImpl>(
             connection,
             e as Map<String, dynamic>,
           ),
@@ -364,6 +532,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
         .toList();
   }
 
+  @override
   Future<void> dispatchEvent(String type, {dynamic eventInit}) async {
     await channel_dispatchEvent(
       type: type,
@@ -371,6 +540,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<List<int>> screenshot({
     CommonScreenshotOptions? options,
     required double timeout,
@@ -390,6 +560,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     return base64Decode(result.binary);
   }
 
+  @override
   Future<List<String>> selectOption({
     dynamic values,
     bool? force,
@@ -416,7 +587,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     }
 
     final result = await channel_selectOption(
-      elements: elements,
+      elements: elements?.cast<ElementHandleImpl>(),
       options: finalOptions?.isNotEmpty == true ? finalOptions : null,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -424,10 +595,12 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     return (result.values as List).cast<String>();
   }
 
+  @override
   Future<void> selectText({bool? force, double? timeout}) async {
     await channel_selectText(force: force, timeout: timeout ?? 30000.0);
   }
 
+  @override
   Future<void> setInputFiles(
     List<String> files, {
     double? timeout,
@@ -447,6 +620,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<void> waitForElementState(
     ElementHandleWaitForElementStateStateEnum state, {
     double? timeout,
@@ -457,6 +631,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
   }
 
+  @override
   Future<ElementHandle?> waitForSelector(
     String selector, {
     bool? strict,
@@ -471,7 +646,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
     final element = result.element;
     if (element == null) return null;
-    return ChannelOwner.from<ElementHandle>(
+    return ChannelOwner.from<ElementHandleImpl>(
       connection,
       element as Map<String, dynamic>,
     );

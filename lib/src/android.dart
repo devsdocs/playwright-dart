@@ -1,8 +1,17 @@
 import 'generated/channels.dart';
 import 'android_device.dart';
 
-class Android extends AndroidBase {
-  Android(
+/// Interface for Android
+abstract interface class Android {
+  Future<List<AndroidDevice>> devices({
+    String? host,
+    int? port,
+    bool? omitDriverInstall,
+  });
+}
+
+class AndroidImpl extends AndroidBase implements Android {
+  AndroidImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -10,6 +19,7 @@ class Android extends AndroidBase {
     super.parent,
   ]);
 
+  @override
   Future<List<AndroidDevice>> devices({
     String? host,
     int? port,

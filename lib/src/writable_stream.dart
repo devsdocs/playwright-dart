@@ -1,7 +1,13 @@
 import 'generated/channels.dart';
 
-class WritableStream extends WritableStreamBase {
-  WritableStream(
+/// Interface for WritableStream
+abstract interface class WritableStream {
+  Future<void> write(String binary);
+  Future<void> close();
+}
+
+class WritableStreamImpl extends WritableStreamBase implements WritableStream {
+  WritableStreamImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -9,10 +15,12 @@ class WritableStream extends WritableStreamBase {
     super.parent,
   ]);
 
+  @override
   Future<void> write(String binary) async {
     await channel_write(binary: binary);
   }
 
+  @override
   Future<void> close() async {
     await channel_close();
   }

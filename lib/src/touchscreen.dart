@@ -6,6 +6,6 @@ class Touchscreen {
   Touchscreen(this.page);
 
   Future<void> tap(double x, double y) async {
-    await page.channel_touchscreenTap(x: x, y: y);
+    await (page as PageImpl).channel_touchscreenTap(x: x, y: y);
   }
 }

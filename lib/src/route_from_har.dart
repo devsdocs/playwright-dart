@@ -12,7 +12,7 @@ Future<void> sharedRouteFromHAR(
       connection.objects.values.firstWhere((e) => e is PlaywrightBase)
           as Playwright;
 
-  final harId = await playwright.utils.harOpen(harPath);
+  final harId = await (playwright as PlaywrightImpl).utils.harOpen(harPath);
 
   print('HAR opened with id: $harId');
 
@@ -24,7 +24,7 @@ Future<void> sharedRouteFromHAR(
 
       print('Handling request: ${request.method} ${request.url}');
 
-      final result = await playwright.utils.harLookup(
+      final result = await (playwright).utils.harLookup(
         harId,
         request.url,
         request.method,

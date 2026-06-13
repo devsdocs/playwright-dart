@@ -1,7 +1,71 @@
 import 'generated/channels.dart';
 
-class APIRequestContext extends APIRequestContextBase {
-  APIRequestContext(
+/// Interface for APIRequestContext
+abstract interface class APIRequestContext {
+  Future<APIResponse> fetch(
+    String url, {
+    String? method,
+    List<NameValue>? headers,
+    String? postData,
+    String? jsonData,
+    List<NameValue>? formData,
+    List<FormField>? multipartData,
+    double? timeout,
+    bool? failOnStatusCode,
+    bool? ignoreHTTPSErrors,
+    int? maxRedirects,
+    int? maxRetries,
+    String? encodedParams,
+    List<NameValue>? params,
+  });
+  Future<APIResponse> get(
+    String url, {
+    List<NameValue>? headers,
+    double? timeout,
+  });
+  Future<APIResponse> post(
+    String url, {
+    List<NameValue>? headers,
+    String? postData,
+    String? jsonData,
+    double? timeout,
+  });
+  Future<APIResponse> put(
+    String url, {
+    List<NameValue>? headers,
+    String? postData,
+    String? jsonData,
+    double? timeout,
+  });
+  Future<APIResponse> delete(
+    String url, {
+    List<NameValue>? headers,
+    double? timeout,
+  });
+  Future<APIResponse> patch(
+    String url, {
+    List<NameValue>? headers,
+    String? postData,
+    String? jsonData,
+    double? timeout,
+  });
+  Future<APIResponse> head(
+    String url, {
+    List<NameValue>? headers,
+    double? timeout,
+  });
+  Future<APIRequestContextStorageStateResult> storageState({bool? indexedDB});
+  Future<APIRequestContextFetchResponseBodyResult> fetchResponseBody({
+    required String fetchUid,
+  });
+  Future<APIRequestContextFetchLogResult> fetchLog({required String fetchUid});
+  Future<void> disposeAPIResponse({required String fetchUid});
+  Future<void> dispose({String? reason});
+}
+
+class APIRequestContextImpl extends APIRequestContextBase
+    implements APIRequestContext {
+  APIRequestContextImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -9,6 +73,7 @@ class APIRequestContext extends APIRequestContextBase {
     super.parent,
   ]);
 
+  @override
   Future<APIResponse> fetch(
     String url, {
     String? method,
@@ -44,12 +109,14 @@ class APIRequestContext extends APIRequestContextBase {
     return result.response;
   }
 
+  @override
   Future<APIResponse> get(
     String url, {
     List<NameValue>? headers,
     double? timeout,
   }) => fetch(url, method: 'GET', headers: headers, timeout: timeout);
 
+  @override
   Future<APIResponse> post(
     String url, {
     List<NameValue>? headers,
@@ -65,6 +132,7 @@ class APIRequestContext extends APIRequestContextBase {
     timeout: timeout,
   );
 
+  @override
   Future<APIResponse> put(
     String url, {
     List<NameValue>? headers,
@@ -80,12 +148,14 @@ class APIRequestContext extends APIRequestContextBase {
     timeout: timeout,
   );
 
+  @override
   Future<APIResponse> delete(
     String url, {
     List<NameValue>? headers,
     double? timeout,
   }) => fetch(url, method: 'DELETE', headers: headers, timeout: timeout);
 
+  @override
   Future<APIResponse> patch(
     String url, {
     List<NameValue>? headers,
@@ -101,12 +171,14 @@ class APIRequestContext extends APIRequestContextBase {
     timeout: timeout,
   );
 
+  @override
   Future<APIResponse> head(
     String url, {
     List<NameValue>? headers,
     double? timeout,
   }) => fetch(url, method: 'HEAD', headers: headers, timeout: timeout);
 
+  @override
   Future<APIRequestContextStorageStateResult> storageState({
     bool? indexedDB,
   }) async {
@@ -120,12 +192,15 @@ class APIRequestContext extends APIRequestContextBase {
   }
 
   // Aliases for missing script check
+  @override
   Future<APIRequestContextFetchResponseBodyResult> fetchResponseBody({
     required String fetchUid,
   }) => channel_fetchResponseBody(fetchUid: fetchUid);
+  @override
   Future<APIRequestContextFetchLogResult> fetchLog({
     required String fetchUid,
   }) => channel_fetchLog(fetchUid: fetchUid);
+  @override
   Future<void> disposeAPIResponse({required String fetchUid}) =>
       channel_disposeAPIResponse(fetchUid: fetchUid);
 }

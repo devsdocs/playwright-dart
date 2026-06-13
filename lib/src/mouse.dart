@@ -7,15 +7,21 @@ class Mouse {
   Mouse(this.page);
 
   Future<void> move(double x, double y, {int? steps}) async {
-    await page.channel_mouseMove(x: x, y: y, steps: steps);
+    await (page as PageImpl).channel_mouseMove(x: x, y: y, steps: steps);
   }
 
   Future<void> down({PageMouseDownButtonEnum? button, int? clickCount}) async {
-    await page.channel_mouseDown(button: button, clickCount: clickCount);
+    await (page as PageImpl).channel_mouseDown(
+      button: button,
+      clickCount: clickCount,
+    );
   }
 
   Future<void> up({PageMouseUpButtonEnum? button, int? clickCount}) async {
-    await page.channel_mouseUp(button: button, clickCount: clickCount);
+    await (page as PageImpl).channel_mouseUp(
+      button: button,
+      clickCount: clickCount,
+    );
   }
 
   Future<void> click(
@@ -25,7 +31,7 @@ class Mouse {
     PageMouseClickButtonEnum? button,
     int? clickCount,
   }) async {
-    await page.channel_mouseClick(
+    await (page as PageImpl).channel_mouseClick(
       x: x,
       y: y,
       delay: delay,
@@ -44,6 +50,6 @@ class Mouse {
   }
 
   Future<void> wheel(double deltaX, double deltaY) async {
-    await page.channel_mouseWheel(deltaX: deltaX, deltaY: deltaY);
+    await (page as PageImpl).channel_mouseWheel(deltaX: deltaX, deltaY: deltaY);
   }
 }

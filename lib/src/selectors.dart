@@ -23,8 +23,11 @@ class Selectors {
     );
     _registrations.add(engine);
     for (final context
-        in _playwright.connection.objects.values.whereType<BrowserContext>()) {
-      await context.channel_registerSelectorEngine(selectorEngine: engine);
+        in (_playwright as PlaywrightImpl).connection.objects.values
+            .whereType<BrowserContext>()) {
+      await (context as BrowserContextImpl).channel_registerSelectorEngine(
+        selectorEngine: engine,
+      );
     }
   }
 
@@ -32,20 +35,25 @@ class Selectors {
   void setTestIdAttribute(String name) {
     _testIdAttributeName = name;
     for (final context
-        in _playwright.connection.objects.values.whereType<BrowserContext>()) {
-      context.channel_setTestIdAttributeName(testIdAttributeName: name);
+        in (_playwright as PlaywrightImpl).connection.objects.values
+            .whereType<BrowserContext>()) {
+      (context as BrowserContextImpl).channel_setTestIdAttributeName(
+        testIdAttributeName: name,
+      );
     }
   }
 
   /// Internal method called when a new BrowserContext is created.
   Future<void> addContext(BrowserContext context) async {
     if (_testIdAttributeName != 'data-testid') {
-      context.channel_setTestIdAttributeName(
+      (context as BrowserContextImpl).channel_setTestIdAttributeName(
         testIdAttributeName: _testIdAttributeName,
       );
     }
     for (final engine in _registrations) {
-      await context.channel_registerSelectorEngine(selectorEngine: engine);
+      await (context as BrowserContextImpl).channel_registerSelectorEngine(
+        selectorEngine: engine,
+      );
     }
   }
 }

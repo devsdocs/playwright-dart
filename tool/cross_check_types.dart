@@ -89,6 +89,7 @@ void main() async {
   int missingCommands = 0;
   int missingWrapperClasses = 0;
   int missingWrapperCommands = 0;
+  int missingWrapperEvents = 0;
   int missingWrapperParameters = 0;
   int typeMismatches = 0;
 
@@ -258,6 +259,27 @@ void main() async {
           }
         }
       }
+
+      if (def.containsKey('events')) {
+        final events = def['events'] as Map;
+        for (final eventKey in events.keys) {
+          final eventName = _sanitizeName(eventKey.toString());
+          String expectedGetterName =
+              'on${eventName[0].toUpperCase()}${eventName.substring(1)}';
+
+          if (!wrapperClassBody.contains(
+                RegExp('get\\s+$expectedGetterName\\b'),
+              ) &&
+              !wrapperClassBody.contains(
+                RegExp('Stream<.*>\\s+$expectedGetterName\\b'),
+              )) {
+            print(
+              'MISSING IN WRAPPER: Event $eventName (expected getter $expectedGetterName in $wrapperClassName)',
+            );
+            missingWrapperEvents++;
+          }
+        }
+      }
     } else if (def['type'] == 'object') {
       if (!dartContent.contains('class $name {')) {
         print('MISSING IN CHANNELS: Struct $name');
@@ -276,13 +298,14 @@ void main() async {
       missingCommands > 0 ||
       missingWrapperClasses > 0 ||
       missingWrapperCommands > 0 ||
+      missingWrapperEvents > 0 ||
       missingWrapperParameters > 0 ||
       typeMismatches > 0) {
     print(
       'Found $missingClasses missing classes/structs and $missingCommands missing commands in generated channels.',
     );
     print(
-      'Found $missingWrapperClasses missing interface wrappers, $missingWrapperCommands missing wrapper commands, $missingWrapperParameters missing wrapper parameters, and $typeMismatches parameter type mismatches in lib/src.',
+      'Found $missingWrapperClasses missing interface wrappers, $missingWrapperCommands missing wrapper commands, $missingWrapperEvents missing wrapper events, $missingWrapperParameters missing wrapper parameters, and $typeMismatches parameter type mismatches in lib/src.',
     );
     exit(1);
   } else {

@@ -1,3 +1,4 @@
+import 'frame.dart';
 import 'locator.dart';
 import 'generated/channels.dart';
 
@@ -11,7 +12,7 @@ class LocatorAssertions {
   LocatorAssertions get not => LocatorAssertions(_locator, !_isNot, _timeout);
 
   Future<void> toBeVisible({double? timeout}) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.be.visible',
       isNot: _isNot,
@@ -20,7 +21,7 @@ class LocatorAssertions {
   }
 
   Future<void> toBeHidden({double? timeout}) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.be.hidden',
       isNot: _isNot,
@@ -33,7 +34,7 @@ class LocatorAssertions {
     double? timeout,
     bool useInnerText = false,
   }) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.have.text',
       expectedText: [
@@ -50,7 +51,7 @@ class LocatorAssertions {
     double? timeout,
     bool useInnerText = false,
   }) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.have.text',
       expectedText: [ExpectedTextValue(string: expected, matchSubstring: true)],
@@ -61,7 +62,7 @@ class LocatorAssertions {
   }
 
   Future<void> toBeEnabled({double? timeout}) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.be.enabled',
       isNot: _isNot,
@@ -70,7 +71,7 @@ class LocatorAssertions {
   }
 
   Future<void> toBeDisabled({double? timeout}) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.be.disabled',
       isNot: _isNot,
@@ -83,7 +84,7 @@ class LocatorAssertions {
     String value, {
     double? timeout,
   }) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.have.attribute',
       expressionArg: name,
@@ -94,7 +95,7 @@ class LocatorAssertions {
   }
 
   Future<void> toHaveClass(String expected, {double? timeout}) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.have.class',
       expectedText: [
@@ -106,7 +107,7 @@ class LocatorAssertions {
   }
 
   Future<void> toHaveId(String expected, {double? timeout}) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.have.id',
       expectedText: [
@@ -118,7 +119,7 @@ class LocatorAssertions {
   }
 
   Future<void> toHaveValue(String expected, {double? timeout}) async {
-    await _locator.frame.channel_expect(
+    await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
       expression: 'to.have.value',
       expectedText: [

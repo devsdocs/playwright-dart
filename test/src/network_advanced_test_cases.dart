@@ -5,10 +5,7 @@ import '../test_helper.dart';
 void main() {
   group('Response API', () {
     test('should get response status and headers', (page) async {
-      await page.mainFrame.channel_goto(
-        url: 'https://example.com',
-        timeout: 30000.0,
-      );
+      await page.mainFrame.goto('https://example.com', timeout: 30000.0);
 
       // Navigate and capture response through route
       // Instead, let's use evaluate to check response properties

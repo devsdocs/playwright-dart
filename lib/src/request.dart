@@ -4,8 +4,22 @@ import 'frame.dart';
 
 /// Whenever the page sends a request for a network resource the following sequence of events are emitted by Page:
 /// - `page.on('request')` emitted when the request is issued by the page.
-class Request extends RequestBase {
-  Request(
+/// Interface for Request
+abstract interface class Request {
+  String get url;
+  Frame get frame;
+  String get resourceType;
+  String get method;
+  String? get postData;
+  Map<String, dynamic> get headers;
+  bool get isNavigationRequest;
+  Future<dynamic> response();
+  Future<Map<String, String>> allHeaders();
+  Future<Map<String, String>> rawRequestHeaders();
+}
+
+class RequestImpl extends RequestBase implements Request {
+  RequestImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -14,19 +28,25 @@ class Request extends RequestBase {
   ]);
 
   /// URL of the request.
+  @override
   String get url => initializer['url'] as String;
 
   /// Frame that initiated this request.
+  @override
   Frame get frame => connection.objects[initializer['frame']['guid']] as Frame;
 
   /// Resource type of the request.
+  @override
   String get resourceType => initializer['resourceType'] as String;
 
   /// HTTP method of the request (e.g. GET, POST).
+  @override
   String get method => initializer['method'] as String;
 
   /// Request's post body, if any.
+  @override
   String? get postData => initializer['postData'] as String?;
+  @override
   Map<String, dynamic> get headers =>
       (initializer['headers'] as List?)?.fold<Map<String, dynamic>>({}, (
         map,
@@ -37,10 +57,12 @@ class Request extends RequestBase {
         return map;
       }) ??
       {};
+  @override
   bool get isNavigationRequest =>
       initializer['isNavigationRequest'] as bool? ?? false;
 
   /// Returns the matching Response object, or null if the response was not received due to error.
+  @override
   Future<dynamic> response() async {
     final result = await channel_response();
     final resp = result.response;
@@ -48,6 +70,7 @@ class Request extends RequestBase {
     return ChannelOwner.from(connection, resp as Map<String, dynamic>);
   }
 
+  @override
   Future<Map<String, String>> allHeaders() async {
     final result = await channel_rawRequestHeaders();
     final headers = result.headers as List;
@@ -57,5 +80,6 @@ class Request extends RequestBase {
     };
   }
 
+  @override
   Future<Map<String, String>> rawRequestHeaders() => allHeaders();
 }

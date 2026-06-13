@@ -1,7 +1,12 @@
 import 'generated/channels.dart';
 
-class Root extends RootBase {
-  Root(
+/// Interface for Root
+abstract interface class Root {
+  Future<RootInitializeResult> initialize({required SDKLanguage sdkLanguage});
+}
+
+class RootImpl extends RootBase implements Root {
+  RootImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -9,6 +14,7 @@ class Root extends RootBase {
     super.parent,
   ]);
 
+  @override
   Future<RootInitializeResult> initialize({
     required SDKLanguage sdkLanguage,
   }) async {

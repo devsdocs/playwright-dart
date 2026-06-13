@@ -9,44 +9,74 @@ import 'api_request_context.dart';
 import 'selectors.dart';
 
 /// The main Playwright module. Provides access to browser types (Chromium, Firefox, WebKit).
-class Playwright extends PlaywrightBase {
+/// Interface for Playwright
+abstract interface class Playwright {
+  BrowserType get chromium;
+  BrowserType get firefox;
+  BrowserType get webkit;
+  Selectors get selectors;
+  Future<APIRequestContext> newRequest({
+    String? baseURL,
+    String? userAgent,
+    bool? ignoreHTTPSErrors,
+    List<NameValue>? extraHTTPHeaders,
+    bool? failOnStatusCode,
+    List<PlaywrightNewRequestClientCertificatesItems>? clientCertificates,
+    int? maxRedirects,
+    PlaywrightNewRequestHttpCredentials? httpCredentials,
+    PlaywrightNewRequestProxy? proxy,
+    PlaywrightNewRequestStorageState? storageState,
+    String? tracesDir,
+  });
+  Future<void> stop();
+}
+
+class PlaywrightImpl extends PlaywrightBase implements Playwright {
   /// Provides access to the Chromium browser type.
+  @override
   late final BrowserType chromium;
 
   /// Provides access to the Firefox browser type.
+  @override
   late final BrowserType firefox;
 
   /// Provides access to the WebKit browser type.
+  @override
   late final BrowserType webkit;
 
   /// Utilities related to local file paths and connections.
   late final LocalUtils utils;
 
   /// Custom selectors API.
+  @override
   late final Selectors selectors;
 
-  Playwright(
+  PlaywrightImpl(
     super.connection,
     super.channelType,
     super.guid,
     super.initializer, [
     super.parent,
   ]) {
-    chromium = ChannelOwner.from<BrowserType>(
+    chromium = ChannelOwner.from<BrowserTypeImpl>(
       connection,
       initializer['chromium'],
     );
-    firefox = ChannelOwner.from<BrowserType>(
+    firefox = ChannelOwner.from<BrowserTypeImpl>(
       connection,
       initializer['firefox'],
     );
-    webkit = ChannelOwner.from<BrowserType>(connection, initializer['webkit']);
-    utils = ChannelOwner.from<LocalUtils>(connection, initializer['utils']);
+    webkit = ChannelOwner.from<BrowserTypeImpl>(
+      connection,
+      initializer['webkit'],
+    );
+    utils = ChannelOwner.from<LocalUtilsImpl>(connection, initializer['utils']);
     selectors = Selectors(this);
   }
 
   /// Creates an APIRequestContext to send network requests directly from the
   /// Playwright runner without requiring a browser instance.
+  @override
   Future<APIRequestContext> newRequest({
     String? baseURL,
     String? userAgent,
@@ -77,6 +107,7 @@ class Playwright extends PlaywrightBase {
   }
 
   /// Closes the playwright connection and terminates the driver.
+  @override
   Future<void> stop() async {
     connection.close();
   }
@@ -101,7 +132,7 @@ class PlaywrightDart {
       'sdkLanguage': 'javascript',
     });
 
-    return ChannelOwner.from<Playwright>(
+    return ChannelOwner.from<PlaywrightImpl>(
       connection,
       result['playwright'] as Map<String, dynamic>,
     );

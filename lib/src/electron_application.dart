@@ -1,8 +1,46 @@
 import 'generated/channels.dart';
 import 'serialization.dart';
 
-class ElectronApplication extends ElectronApplicationBase {
-  ElectronApplication(
+/// Interface for ElectronApplication
+abstract interface class ElectronApplication {
+  Stream<ConsoleMessage> get onConsole;
+  Stream<ElectronApplication> get onClose;
+  Future<ElectronApplicationBrowserWindowResult> browserWindow(PageBase page);
+  Future<dynamic> evaluateExpression(
+    String expression, {
+    bool? isFunction,
+    dynamic arg,
+  });
+  Future<dynamic> evaluateExpressionHandle(
+    String expression, {
+    bool? isFunction,
+    dynamic arg,
+  });
+  Future<void> updateSubscription(
+    ElectronApplicationUpdateSubscriptionEventEnum event,
+    bool enabled,
+  );
+}
+
+class ElectronApplicationImpl extends ElectronApplicationBase
+    implements ElectronApplication {
+  @override
+  Stream<ConsoleMessage> get onConsole {
+    return onEvent
+        .where((e) => e['event'] == 'console')
+        .map(
+          (e) =>
+              connection.objects[e['params'][r'$mixin']['guid']]
+                  as ConsoleMessage,
+        );
+  }
+
+  @override
+  Stream<ElectronApplication> get onClose {
+    return onEvent.where((e) => e['event'] == 'close').map((e) => this);
+  }
+
+  ElectronApplicationImpl(
     super.connection,
     super.channelType,
     super.guid,
@@ -10,12 +48,14 @@ class ElectronApplication extends ElectronApplicationBase {
     super.parent,
   ]);
 
+  @override
   Future<ElectronApplicationBrowserWindowResult> browserWindow(
     PageBase page,
   ) async {
     return await channel_browserWindow(page: page);
   }
 
+  @override
   Future<dynamic> evaluateExpression(
     String expression, {
     bool? isFunction,
@@ -29,6 +69,7 @@ class ElectronApplication extends ElectronApplicationBase {
     return parseSerializedValue(result.value);
   }
 
+  @override
   Future<dynamic> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
@@ -42,6 +83,7 @@ class ElectronApplication extends ElectronApplicationBase {
     return result.handle;
   }
 
+  @override
   Future<void> updateSubscription(
     ElectronApplicationUpdateSubscriptionEventEnum event,
     bool enabled,

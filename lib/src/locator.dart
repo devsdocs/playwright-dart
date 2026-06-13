@@ -66,7 +66,7 @@ class Locator {
   ///
   /// It will wait for the element to be visible, enabled and stable.
   Future<void> click({bool? force, double? timeout}) async {
-    await frame.channel_click(
+    await (frame as FrameImpl).channel_click(
       selector: selector,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -75,7 +75,7 @@ class Locator {
 
   /// Fills an `<input>`, `<textarea>` or `[contenteditable]` element with the provided value.
   Future<void> fill(String value, {bool? force, double? timeout}) async {
-    await frame.channel_fill(
+    await (frame as FrameImpl).channel_fill(
       selector: selector,
       value: value,
       force: force,
@@ -84,7 +84,7 @@ class Locator {
   }
 
   Future<void> check({bool? force, double? timeout}) async {
-    await frame.channel_check(
+    await (frame as FrameImpl).channel_check(
       selector: selector,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -92,7 +92,7 @@ class Locator {
   }
 
   Future<void> uncheck({bool? force, double? timeout}) async {
-    await frame.channel_uncheck(
+    await (frame as FrameImpl).channel_uncheck(
       selector: selector,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -100,7 +100,7 @@ class Locator {
   }
 
   Future<String> innerText({double? timeout}) async {
-    final result = await frame.channel_innerText(
+    final result = await (frame as FrameImpl).channel_innerText(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -108,7 +108,7 @@ class Locator {
   }
 
   Future<String> textContent({double? timeout}) async {
-    final result = await frame.channel_textContent(
+    final result = await (frame as FrameImpl).channel_textContent(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -117,7 +117,7 @@ class Locator {
 
   /// Hovers over the element.
   Future<void> hover({bool? force, double? timeout}) async {
-    await frame.channel_hover(
+    await (frame as FrameImpl).channel_hover(
       selector: selector,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -125,15 +125,21 @@ class Locator {
   }
 
   Future<void> focus({double? timeout}) async {
-    await frame.channel_focus(selector: selector, timeout: timeout ?? 30000.0);
+    await (frame as FrameImpl).channel_focus(
+      selector: selector,
+      timeout: timeout ?? 30000.0,
+    );
   }
 
   Future<void> blur({double? timeout}) async {
-    await frame.channel_blur(selector: selector, timeout: timeout ?? 30000.0);
+    await (frame as FrameImpl).channel_blur(
+      selector: selector,
+      timeout: timeout ?? 30000.0,
+    );
   }
 
   Future<void> dblclick({bool? force, double? timeout}) async {
-    await frame.channel_dblclick(
+    await (frame as FrameImpl).channel_dblclick(
       selector: selector,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -141,7 +147,7 @@ class Locator {
   }
 
   Future<String?> getAttribute(String name, {double? timeout}) async {
-    final result = await frame.channel_getAttribute(
+    final result = await (frame as FrameImpl).channel_getAttribute(
       selector: selector,
       name: name,
       timeout: timeout ?? 30000.0,
@@ -150,7 +156,7 @@ class Locator {
   }
 
   Future<String> inputValue({double? timeout}) async {
-    final result = await frame.channel_inputValue(
+    final result = await (frame as FrameImpl).channel_inputValue(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -159,12 +165,14 @@ class Locator {
 
   /// Returns whether the element is visible.
   Future<bool> isVisible() async {
-    final result = await frame.channel_isVisible(selector: selector);
+    final result = await (frame as FrameImpl).channel_isVisible(
+      selector: selector,
+    );
     return result.value;
   }
 
   Future<String> innerHTML({double? timeout}) async {
-    final result = await frame.channel_innerHTML(
+    final result = await (frame as FrameImpl).channel_innerHTML(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -172,7 +180,7 @@ class Locator {
   }
 
   Future<bool> isEditable({double? timeout}) async {
-    final result = await frame.channel_isEditable(
+    final result = await (frame as FrameImpl).channel_isEditable(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -180,13 +188,15 @@ class Locator {
   }
 
   Future<bool> isHidden() async {
-    final result = await frame.channel_isHidden(selector: selector);
+    final result = await (frame as FrameImpl).channel_isHidden(
+      selector: selector,
+    );
     return result.value;
   }
 
   /// Returns whether the element is enabled.
   Future<bool> isEnabled({double? timeout}) async {
-    final result = await frame.channel_isEnabled(
+    final result = await (frame as FrameImpl).channel_isEnabled(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -194,7 +204,7 @@ class Locator {
   }
 
   Future<bool> isDisabled({double? timeout}) async {
-    final result = await frame.channel_isDisabled(
+    final result = await (frame as FrameImpl).channel_isDisabled(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -202,7 +212,7 @@ class Locator {
   }
 
   Future<bool> isChecked({double? timeout}) async {
-    final result = await frame.channel_isChecked(
+    final result = await (frame as FrameImpl).channel_isChecked(
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
@@ -214,7 +224,7 @@ class Locator {
   }
 
   Future<void> type(String text, {double? delay, double? timeout}) async {
-    await frame.channel_type(
+    await (frame as FrameImpl).channel_type(
       selector: selector,
       text: text,
       delay: delay,
@@ -224,7 +234,7 @@ class Locator {
 
   /// Focuses the element, and then uses keyboard to press the given key.
   Future<void> press(String key, {double? delay, double? timeout}) async {
-    await frame.channel_press(
+    await (frame as FrameImpl).channel_press(
       selector: selector,
       key: key,
       delay: delay,
@@ -233,7 +243,7 @@ class Locator {
   }
 
   Future<void> tap({bool? force, double? timeout}) async {
-    await frame.channel_tap(
+    await (frame as FrameImpl).channel_tap(
       selector: selector,
       force: force,
       timeout: timeout ?? 30000.0,
@@ -267,7 +277,7 @@ class Locator {
     dynamic eventInit,
     double? timeout,
   }) async {
-    await frame.channel_dispatchEvent(
+    await (frame as FrameImpl).channel_dispatchEvent(
       selector: selector,
       type: type,
       eventInit: serializeArgument(eventInit),
@@ -276,11 +286,11 @@ class Locator {
   }
 
   Future<void> highlight() async {
-    await frame.channel_highlight(selector: selector);
+    await (frame as FrameImpl).channel_highlight(selector: selector);
   }
 
   Future<void> hideHighlight() async {
-    await frame.channel_hideHighlight(selector: selector);
+    await (frame as FrameImpl).channel_hideHighlight(selector: selector);
   }
 
   Future<void> drop({
@@ -336,7 +346,7 @@ class Locator {
     // Locator evaluation in Playwright takes the element as the first arg.
     // For simplicity, we just use the frame evaluate and pass the selector,
     // or rely on evalOnSelector which evaluates in the context of the element.
-    final result = await frame.channel_evalOnSelector(
+    final result = await (frame as FrameImpl).channel_evalOnSelector(
       selector: selector,
       expression: expression,
       arg: serializeArgument(arg),

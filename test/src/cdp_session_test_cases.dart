@@ -3,7 +3,7 @@ import '../test_helper.dart';
 void main() {
   group('CDPSession API', () {
     test('should create and communicate with CDP session', (page) async {
-      final context = page.parent as BrowserContext;
+      final context = (page as PageImpl).parent as BrowserContext;
       final client = await context.newCDPSession(page: page);
 
       // Test sending a simple CDP command

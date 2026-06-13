@@ -64,113 +64,131 @@ class Connection {
 
     registerObjectFactory(
       'Playwright',
-      (c, t, g, i, p) => Playwright(c, t, g, i, p),
+      (c, t, g, i, p) => PlaywrightImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'BrowserType',
-      (c, t, g, i, p) => BrowserType(c, t, g, i, p),
+      (c, t, g, i, p) => BrowserTypeImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'LocalUtils',
-      (c, t, g, i, p) => LocalUtils(c, t, g, i, p),
+      (c, t, g, i, p) => LocalUtilsImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Browser', (c, t, g, i, p) => Browser(c, t, g, i, p));
+    registerObjectFactory(
+      'Browser',
+      (c, t, g, i, p) => BrowserImpl(c, t, g, i, p),
+    );
     registerObjectFactory(
       'BrowserContext',
-      (c, t, g, i, p) => BrowserContext(c, t, g, i, p),
+      (c, t, g, i, p) => BrowserContextImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Page', (c, t, g, i, p) => Page(c, t, g, i, p));
-    registerObjectFactory('Frame', (c, t, g, i, p) => Frame(c, t, g, i, p));
+    registerObjectFactory('Page', (c, t, g, i, p) => PageImpl(c, t, g, i, p));
+    registerObjectFactory('Frame', (c, t, g, i, p) => FrameImpl(c, t, g, i, p));
     registerObjectFactory(
       'JSHandle',
-      (c, t, g, i, p) => JSHandle(c, t, g, i, p),
+      (c, t, g, i, p) => JSHandleImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'ElementHandle',
-      (c, t, g, i, p) => ElementHandle(c, t, g, i, p),
+      (c, t, g, i, p) => ElementHandleImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Request', (c, t, g, i, p) => Request(c, t, g, i, p));
+    registerObjectFactory(
+      'Request',
+      (c, t, g, i, p) => RequestImpl(c, t, g, i, p),
+    );
     registerObjectFactory(
       'Response',
-      (c, t, g, i, p) => Response(c, t, g, i, p),
+      (c, t, g, i, p) => ResponseImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Route', (c, t, g, i, p) => Route(c, t, g, i, p));
+    registerObjectFactory('Route', (c, t, g, i, p) => RouteImpl(c, t, g, i, p));
     registerObjectFactory(
       'WebSocketRoute',
-      (c, t, g, i, p) => WebSocketRoute(c, t, g, i, p),
+      (c, t, g, i, p) => WebSocketRouteImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'WebSocket',
-      (c, t, g, i, p) => PlaywrightWebSocket(c, t, g, i, p),
+      (c, t, g, i, p) => PlaywrightWebSocketImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'APIRequestContext',
-      (c, t, g, i, p) => APIRequestContext(c, t, g, i, p),
+      (c, t, g, i, p) => APIRequestContextImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Tracing', (c, t, g, i, p) => Tracing(c, t, g, i, p));
+    registerObjectFactory(
+      'Tracing',
+      (c, t, g, i, p) => TracingImpl(c, t, g, i, p),
+    );
     registerObjectFactory(
       'CDPSession',
-      (c, t, g, i, p) => CDPSession(c, t, g, i, p),
+      (c, t, g, i, p) => CDPSessionImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'Debugger',
-      (c, t, g, i, p) => Debugger(c, t, g, i, p),
+      (c, t, g, i, p) => DebuggerImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'DebugController',
-      (c, t, g, i, p) => DebugController(c, t, g, i, p),
+      (c, t, g, i, p) => DebugControllerImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'Artifact',
-      (c, t, g, i, p) => Artifact(c, t, g, i, p),
+      (c, t, g, i, p) => ArtifactImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'Stream',
-      (c, t, g, i, p) => PlaywrightStream(c, t, g, i, p),
+      (c, t, g, i, p) => PlaywrightStreamImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'WritableStream',
-      (c, t, g, i, p) => WritableStream(c, t, g, i, p),
+      (c, t, g, i, p) => WritableStreamImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'Disposable',
-      (c, t, g, i, p) => Disposable(c, t, g, i, p),
+      (c, t, g, i, p) => DisposableImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Dialog', (c, t, g, i, p) => Dialog(c, t, g, i, p));
-    registerObjectFactory('Worker', (c, t, g, i, p) => Worker(c, t, g, i, p));
+    registerObjectFactory(
+      'Dialog',
+      (c, t, g, i, p) => DialogImpl(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'Worker',
+      (c, t, g, i, p) => WorkerImpl(c, t, g, i, p),
+    );
     registerObjectFactory(
       'BindingCall',
-      (c, t, g, i, p) => BindingCall(c, t, g, i, p),
+      (c, t, g, i, p) => BindingCallImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'EventTarget',
-      (c, t, g, i, p) => EventTarget(c, t, g, i, p),
+      (c, t, g, i, p) => EventTargetImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Android', (c, t, g, i, p) => Android(c, t, g, i, p));
+    registerObjectFactory(
+      'Android',
+      (c, t, g, i, p) => AndroidImpl(c, t, g, i, p),
+    );
     registerObjectFactory(
       'AndroidDevice',
-      (c, t, g, i, p) => AndroidDevice(c, t, g, i, p),
+      (c, t, g, i, p) => AndroidDeviceImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'AndroidSocket',
-      (c, t, g, i, p) => AndroidSocket(c, t, g, i, p),
+      (c, t, g, i, p) => AndroidSocketImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'Electron',
-      (c, t, g, i, p) => Electron(c, t, g, i, p),
+      (c, t, g, i, p) => ElectronImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'ElectronApplication',
-      (c, t, g, i, p) => ElectronApplication(c, t, g, i, p),
+      (c, t, g, i, p) => ElectronApplicationImpl(c, t, g, i, p),
     );
-    registerObjectFactory('Root', (c, t, g, i, p) => Root(c, t, g, i, p));
+    registerObjectFactory('Root', (c, t, g, i, p) => RootImpl(c, t, g, i, p));
     registerObjectFactory(
       'SocksSupport',
-      (c, t, g, i, p) => SocksSupport(c, t, g, i, p),
+      (c, t, g, i, p) => SocksSupportImpl(c, t, g, i, p),
     );
     registerObjectFactory(
       'JsonPipe',
-      (c, t, g, i, p) => JsonPipe(c, t, g, i, p),
+      (c, t, g, i, p) => JsonPipeImpl(c, t, g, i, p),
     );
   }
 
