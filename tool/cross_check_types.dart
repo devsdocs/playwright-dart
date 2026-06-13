@@ -95,7 +95,6 @@ void main() async {
             missingCommands++;
           }
 
-
           String targetClassName = wrapperClassName;
           String targetCmdName = cmdName;
 

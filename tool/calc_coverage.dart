@@ -20,7 +20,9 @@ void main() {
     }
   }
   if (total > 0) {
-    print('Coverage: ${((hit * 100) / total).toStringAsFixed(2)}% ($hit/$total)');
+    print(
+      'Coverage: ${((hit * 100) / total).toStringAsFixed(2)}% ($hit/$total)',
+    );
   } else {
     print('No coverage data found.');
   }

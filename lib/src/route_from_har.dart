@@ -29,13 +29,17 @@ Future<void> sharedRouteFromHAR(
         request.url,
         request.method,
         request.headers.entries
-            .map<NameValue>((e) => NameValue(name: e.key, value: e.value.toString()))
+            .map<NameValue>(
+              (e) => NameValue(name: e.key, value: e.value.toString()),
+            )
             .toList(),
         request.isNavigationRequest,
         postData: postData,
       );
 
-      print('HAR lookup result: action=${result.action}, status=${result.status}');
+      print(
+        'HAR lookup result: action=${result.action}, status=${result.status}',
+      );
 
       if (result.action == LocalUtilsHarLookupResultActionEnum.redirect) {
         await route.continueRoute(url: result.redirectURL, isFallback: true);

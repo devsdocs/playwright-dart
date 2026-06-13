@@ -33,7 +33,8 @@ import 'src/worker_test_cases.dart' as worker_test_cases;
 import 'src/download_test_cases.dart' as download_test_cases;
 import 'src/api_request_context_test_cases.dart'
     as api_request_context_test_cases;
-import 'src/locator_assertions_test_cases.dart' as locator_assertions_test_cases;
+import 'src/locator_assertions_test_cases.dart'
+    as locator_assertions_test_cases;
 import 'src/route_from_har_test_cases.dart' as route_from_har_test_cases;
 import 'src/selectors_test_cases.dart' as selectors_test_cases;
 

@@ -28,9 +28,7 @@ void main() {
       final newPage = await newContext.newPage();
 
       try {
-        await newPage.setContent(
-          '<div data-my-custom-id="target">baz</div>',
-        );
+        await newPage.setContent('<div data-my-custom-id="target">baz</div>');
         await newPage.getByTestId('target').expect().toHaveText('baz');
       } finally {
         await newContext.close();
