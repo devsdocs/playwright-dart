@@ -1,3 +1,12 @@
+## 3.1.0
+
+- **Feature**: Completed full isolation of internal implementation classes (e.g. `ElementHandleImpl`, `PageImpl`), exclusively exposing pure interface types across the entire public API boundary. This vastly improves the developer experience by preventing unintentional access to underlying channel mechanisms.
+- **Feature**: Added advanced `Locator` query combinators including `.and()`, `.or()`, and `.filter()`, empowering complex semantic queries.
+- **Feature**: Enhanced `Locator` with utility selection methods `.first()`, `.last()`, and `.nth()`.
+- **Feature**: Exposed complete `timing` properties (e.g., `startTime`, `responseEnd`) and `failure` message text mapping on intercepted network `Request` objects, exactly matching the Playwright spec.
+- **Bug Fix**: Fixed unclosed `Connection` leaks in skipped WebSocket and CDP connection environments which previously orphaned Node.js background driver processes.
+- **Bug Fix**: Addressed null timing object assignments in advanced network events during `fetch` and isolated `BrowserContext` dispatches.
+
 ## 3.0.0
 
 - **Breaking**: Fully migrated the entire public API to use strongly-typed data structures and Enums for method parameters rather than untyped `Map<String, dynamic>` and `String` inputs. This enforces 100% compile-time parameter parity with the underlying Playwright channel protocol and unlocks full IDE type-checking for users.
