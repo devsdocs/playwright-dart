@@ -50,22 +50,30 @@ class Page extends PageBase {
     return mainFrame.evaluate(expression, arg);
   }
 
-  Future<void> waitForSelector(String selector, {String? state, double? timeout}) async {
+  Future<void> waitForSelector(
+    String selector, {
+    String? state,
+    double? timeout,
+  }) async {
     return mainFrame.waitForSelector(selector, state: state, timeout: timeout);
   }
 
   Future<void> route(String url, Future<void> Function(Route) handler) async {
     await channel_setNetworkInterceptionPatterns(
-      patterns: [{'glob': url}],
+      patterns: [
+        {'glob': url},
+      ],
     );
-    
+
     onEvent.listen((event) async {
       if (event['event'] == 'route') {
         final params = event['params'] as Map<String, dynamic>;
         final routeObj = connection.objects[params['route']['guid']] as Route;
         final requestObj = routeObj.request;
-        
-        final matches = url == '**/*' || url == '*' || url.contains('*') ? true : requestObj.url == url;
+
+        final matches = url == '**/*' || url == '*' || url.contains('*')
+            ? true
+            : requestObj.url == url;
         if (matches) {
           try {
             await handler(routeObj);

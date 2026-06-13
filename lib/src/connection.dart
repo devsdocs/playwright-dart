@@ -206,7 +206,8 @@ class Connection {
       if (callback != null) {
         if (message.containsKey('error')) {
           final errorStr = _parseError(message['error']);
-          if (errorStr.contains('TargetClosedError') || errorStr.contains('Browser has been closed')) {
+          if (errorStr.contains('TargetClosedError') ||
+              errorStr.contains('Browser has been closed')) {
             callback.complete(<String, dynamic>{});
           } else {
             callback.completeError(Exception(errorStr));

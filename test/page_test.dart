@@ -15,7 +15,9 @@ void main() {
 
     test('should set content and evaluate', (page) async {
       await page.setContent('<div><h1>Hello World</h1></div>');
-      final text = await page.evaluate('() => document.querySelector("h1").innerText');
+      final text = await page.evaluate(
+        '() => document.querySelector("h1").innerText',
+      );
       expect(text, equals('Hello World'));
     });
   });

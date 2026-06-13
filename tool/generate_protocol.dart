@@ -206,7 +206,7 @@ void main() async {
   for (final entry in protocol.entries) {
     final name = entry.key;
     final def = entry.value as YamlMap;
-    if (def['type'] == 'enum') {
+    if (def['type'].toString().startsWith('enum')) {
       buffer.writeln('enum $name {');
       final literals = def['literals'] as YamlList;
       for (var i = 0; i < literals.length; i++) {

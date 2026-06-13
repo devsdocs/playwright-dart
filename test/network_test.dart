@@ -7,7 +7,9 @@ void main() {
         await route.abort();
       });
 
-      await page.setContent('<img src="https://playwright.dev/img/playwright-logo.png" />');
+      await page.setContent(
+        '<img src="https://playwright.dev/img/playwright-logo.png" />',
+      );
       // Wait for network idle or error
       // In this case, we just check if it fails to load
       final result = await page.evaluate('''() => {
@@ -21,7 +23,7 @@ void main() {
           }
         });
       }''');
-      
+
       expect(result, equals('error'));
     });
 
@@ -48,7 +50,7 @@ void main() {
       // Wait a moment for fetch to complete
       await page.waitForSelector('#output:has-text("mocked")');
       final text = await page.locator('#output').textContent();
-      
+
       expect(text, equals('mocked'));
     });
   });

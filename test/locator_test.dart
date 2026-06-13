@@ -19,7 +19,7 @@ void main() {
 
       await page.locator('#name').fill('Playwright Dart');
       await page.locator('#submit').click();
-      
+
       final resultText = await page.locator('#result').textContent();
       expect(resultText, equals('Playwright Dart'));
     });
@@ -34,19 +34,19 @@ void main() {
 
       final container = page.locator('.container');
       final secondButton = container.getByText('Second');
-      
+
       expect(await secondButton.textContent(), equals('Second'));
     });
 
     test('should check and uncheck', (page) async {
       await page.setContent('<input type="checkbox" id="chk" />');
-      
+
       final chk = page.locator('#chk');
       expect(await chk.isChecked(), isFalse);
-      
+
       await chk.check();
       expect(await chk.isChecked(), isTrue);
-      
+
       await chk.uncheck();
       expect(await chk.isChecked(), isFalse);
     });
