@@ -35,9 +35,7 @@ void main() {
       await page.focus('#area');
       await page.keyboard.type('Hello World');
       expect(
-        await page.evaluate(
-          '() => document.getElementById("area").value',
-        ),
+        await page.evaluate('() => document.getElementById("area").value'),
         equals('Hello World'),
       );
     });
