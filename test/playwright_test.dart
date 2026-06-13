@@ -11,6 +11,9 @@ import 'src/real_world_test_cases.dart' as real_world_test_cases;
 import 'src/screenshot_test_cases.dart' as screenshot_test_cases;
 import 'src/console_test_cases.dart' as console_test_cases;
 import 'src/emulation_test_cases.dart' as emulation_test_cases;
+import 'src/touchscreen_test_cases.dart' as touchscreen_test_cases;
+import 'src/waiting_test_cases.dart' as waiting_test_cases;
+import 'src/file_upload_test_cases.dart' as file_upload_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -31,5 +34,8 @@ void main() {
   screenshot_test_cases.main();
   console_test_cases.main();
   emulation_test_cases.main();
+  touchscreen_test_cases.main();
+  waiting_test_cases.main();
+  file_upload_test_cases.main();
   real_world_test_cases.main();
 }

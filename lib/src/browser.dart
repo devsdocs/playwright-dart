@@ -14,8 +14,8 @@ class Browser extends BrowserBase {
     super.parent,
   ]);
 
-  Future<BrowserContext> newContext() async {
-    final result = await super.channel_newContext(mixin: ContextOptions());
+  Future<BrowserContext> newContext({ContextOptions? options}) async {
+    final result = await super.channel_newContext(mixin: options ?? ContextOptions());
     return result.context as BrowserContext;
   }
 

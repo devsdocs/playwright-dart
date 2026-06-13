@@ -311,14 +311,17 @@ void main() async {
         String parser = 'json[\'$wireName\']';
         if (type == 'dynamic' || type == 'dynamic?') {
           // just map directly
+        } else if (type == 'double' || type == 'double?') {
+          parser = '(json[\'$wireName\'] as num?)?.toDouble()';
         } else if (type.startsWith('List<')) {
           final innerType = type.substring(
             5,
             type.length - (type.endsWith('?') ? 2 : 1),
           );
-          if (innerType == 'String' ||
+          if (innerType == 'double') {
+            parser = '(json[\'$wireName\'] as List?)?.map((e) => (e as num).toDouble()).toList()';
+          } else if (innerType == 'String' ||
               innerType == 'int' ||
-              innerType == 'double' ||
               innerType == 'bool' ||
               innerType == 'dynamic' ||
               innerType == 'Map<String, dynamic>') {

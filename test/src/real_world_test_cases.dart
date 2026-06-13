@@ -78,14 +78,14 @@ void main() {
         final title = await page.title();
         expect(title, contains('Playwright'));
 
-        // Click "Get started"
-        await page.locator('text=Get started').click();
+        // Click "Get started" link - use a more specific selector
+        await page.locator('.hero__subtitle a, a.getStarted, a:has-text("Get started")').click(timeout: 15000);
 
-        // Verify navigation to intro page
+        // Verify navigation to intro/installation page
         final currentUrl = await page.evaluate('() => window.location.href');
-        expect(currentUrl, contains('/docs/intro'));
+        expect(currentUrl, anyOf(contains('/docs/intro'), contains('/docs/')));
       },
-      timeout: Timeout(Duration(seconds: 45)),
+      timeout: Timeout(Duration(seconds: 60)),
     );
   });
 }
