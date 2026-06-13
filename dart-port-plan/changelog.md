@@ -43,7 +43,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
-- `lib/src/playwright.dart` — `Playwright` class with `chromium`/`firefox`/`webkit` accessors, `newRequest()`, `Playwright.create()`
+- `lib/src/playwright.dart` — `Playwright` class with `chromium`/`firefox`/`webkit` accessors and `newRequest()`
 - `lib/src/browser_type.dart` — `BrowserType` with `launch()`, `launchPersistentContext()`, `connect()`, `connectOverCDP()`, `connectToWorker()`
 - `lib/src/browser.dart` — `Browser` with `newContext()`, `newPage()`, `close()`, tracing, CDP session
 - `lib/src/browser_context.dart` — `BrowserContext` with cookies, permissions, geolocation, routing, storage state, HAR, CDP
@@ -121,7 +121,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- `playwright.dart` — Added static `Playwright.create()` factory method
+- `playwright.dart` — Entry factory exposed as `PlaywrightDart.create()`
 - `playwright_dart.dart` — Cleaned up as a unified export barrel file
 - `browser_type.dart` — `connectToWorker()` now returns typed `Worker` instead of raw map
 - `connection.dart` — Event dispatch now calls `object.emitEvent()` instead of printing debug logs

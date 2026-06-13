@@ -29,13 +29,49 @@ dependencies:
 import 'package:playwright_dart/playwright_dart.dart';
 
 void main() async {
-  final playwright = await Playwright.create();
+  final playwright = await PlaywrightDart.create();
   final browser = await playwright.chromium.launch();
   final page = await browser.newPage();
 
   await page.goto('https://playwright.dev');
   await page.getByRole('link', name: 'Get started').click();
   await page.screenshot(path: 'screenshot.png');
+
+  await browser.close();
+}
+```
+
+## Remote Browser Connection (Skip Browser Download)
+
+For Playwright WebSocket endpoints, use `PlaywrightDart.connect()` to connect
+directly without local setup or browser installation:
+
+```dart
+import 'package:playwright_dart/playwright_dart.dart';
+
+void main() async {
+  final browser = await PlaywrightDart.connect('ws://127.0.0.1:3000/ws');
+  final context = await browser.newContext();
+  final page = await context.newPage();
+  print(await page.title());
+  await browser.close();
+}
+```
+
+For CDP endpoints, use Chromium `connectOverCDP`:
+
+```dart
+import 'package:playwright_dart/playwright_dart.dart';
+
+void main() async {
+  final playwright = await PlaywrightDart.create();
+  final browser = await playwright.chromium.connectOverCDP(
+    endpointURL: 'http://127.0.0.1:9222',
+  );
+
+  final context = browser.contexts.first;
+  final page = context.pages.first;
+  print(await page.title());
 
   await browser.close();
 }

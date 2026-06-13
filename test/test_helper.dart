@@ -13,7 +13,7 @@ Browser get browser => _browser!;
 
 Future<void> setupBrowser() async {
   if (_playwright == null) {
-    _playwright = await Playwright.create();
+    _playwright = await PlaywrightDart.create();
     _browser = await _playwright!.chromium.launch();
   }
 }

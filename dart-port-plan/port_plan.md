@@ -62,7 +62,7 @@ Dart Code ──▶ Wrapper Method ──▶ channel_*() ──▶ Connection.se
 
 ### Phase 4: Core Automation ✅
 
-- [x] `Playwright` — `chromium`, `firefox`, `webkit` browser type accessors, `newRequest()`, static `Playwright.create()` entry point
+- [x] `Playwright` — `chromium`, `firefox`, `webkit` browser type accessors, `newRequest()`, entry via `PlaywrightDart.create()`
 - [x] `BrowserType` — `launch()`, `launchPersistentContext()`, `connect()`, `connectOverCDP()`, `connectToWorker()`
 - [x] `Browser` — `newContext()`, `newPage()`, `close()`, `startTracing()`, `stopTracing()`, `newBrowserCDPSession()`, `contexts`
 - [x] `BrowserContext` — `newPage()`, `cookies()`, `addCookies()`, `clearCookies()`, `grantPermissions()`, `setGeolocation()`, `setHTTPCredentials()`, `setExtraHTTPHeaders()`, `route()`, `unroute()`, `storageState()`, `newCDPSession()`, `harStart()`, `harExport()`, `close()`
@@ -115,7 +115,7 @@ Dart Code ──▶ Wrapper Method ──▶ channel_*() ──▶ Connection.se
 
 ### Phase 9: Convenience & Documentation ✅
 
-- [x] Migrate `PlaywrightDart.create()` to `Playwright.create()` as idiomatic static factory
+- [x] Keep `PlaywrightDart.create()` as the package entry point
 - [x] Clean up `lib/playwright_dart.dart` as a unified export barrel
 - [x] `README.md` with usage examples for browser launch, locators, routing, tracing, CDP
 - [x] This implementation plan document

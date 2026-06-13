@@ -1,8 +1,7 @@
 import 'channel_owner.dart';
 import 'browser.dart';
 import 'browser_context.dart';
-import 'connection.dart';
-import 'websocket_transport.dart';
+import 'driver_downloader.dart';
 import 'generated/channels.dart';
 import 'worker.dart';
 
@@ -16,6 +15,7 @@ class BrowserType extends BrowserTypeBase {
   ]);
 
   Future<Browser> launch() async {
+    await ensureBrowsersInstalled();
     final result = await super.channel_launch(
       mixin: LaunchOptions(timeout: 30000.0),
     );
@@ -28,6 +28,7 @@ class BrowserType extends BrowserTypeBase {
     ContextOptions? contextOptions,
     double? slowMo,
   }) async {
+    await ensureBrowsersInstalled();
     final result = await super.channel_launchPersistentContext(
       mixin1: launchOptions ?? LaunchOptions(timeout: 30000.0),
       mixin2: contextOptions ?? ContextOptions(),
@@ -57,31 +58,5 @@ class BrowserType extends BrowserTypeBase {
       timeout: 30000.0,
     );
     return result.browser as Browser;
-  }
-
-  Future<Browser> connect(
-    String wsEndpoint, {
-    Map<String, dynamic>? headers,
-    double? timeout,
-  }) async {
-    final wsTransport = await WebSocketTransport.connect(
-      wsEndpoint,
-      headers: headers,
-    );
-    final newConnection = Connection(wsTransport);
-
-    final result = await newConnection.sendMessageToServer('', 'initialize', {
-      'sdkLanguage': 'javascript',
-    });
-
-    // The server returns a playwright object, which contains a preconnected browser
-    final preconnectedBrowser = result['preconnectedBrowser'];
-    if (preconnectedBrowser != null) {
-      return ChannelOwner.from<Browser>(newConnection, preconnectedBrowser);
-    }
-
-    throw Exception(
-      'No preconnected browser found on the remote Playwright server.',
-    );
   }
 }

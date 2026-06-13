@@ -9,7 +9,7 @@ Quick reference mapping between the Playwright Node.js API and the Dart port. Al
 ```dart
 import 'package:playwright_dart/playwright_dart.dart';
 
-final playwright = await Playwright.create();
+final playwright = await PlaywrightDart.create();
 ```
 
 | Node.js | Dart |

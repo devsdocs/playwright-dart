@@ -1,10 +1,12 @@
 import 'channel_owner.dart';
 import 'browser_type.dart';
+import 'browser.dart';
 import 'local_utils.dart';
 import 'generated/channels.dart';
 import 'driver.dart';
 import 'transport.dart';
 import 'connection.dart';
+import 'remote_connect.dart';
 
 class Playwright extends PlaywrightBase {
   late final BrowserType chromium;
@@ -60,8 +62,10 @@ class Playwright extends PlaywrightBase {
     );
     return result.request;
   }
+}
 
-  /// Launches the Playwright driver and connects to it, returning the [Playwright] instance.
+class PlaywrightDart {
+  /// Launches the Playwright driver and connects to it, returning [Playwright].
   static Future<Playwright> create() async {
     final process = await Driver.run();
     final transport = StdioTransport(process);
@@ -75,6 +79,21 @@ class Playwright extends PlaywrightBase {
     return ChannelOwner.from<Playwright>(
       connection,
       result['playwright'] as Map<String, dynamic>,
+    );
+  }
+
+  /// Connects directly to a remote Playwright server over WebSocket.
+  ///
+  /// This method does not require local browser installation.
+  static Future<Browser> connect(
+    String wsEndpoint, {
+    Map<String, dynamic>? headers,
+    double? timeout,
+  }) async {
+    return connectRemotePlaywright(
+      wsEndpoint,
+      headers: headers,
+      timeout: timeout,
     );
   }
 }

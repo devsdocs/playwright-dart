@@ -37,7 +37,6 @@ Future<String> downloadDriver() async {
   );
   final cliPath = p.join(driverDir.path, 'package', 'cli.js');
   final markerPath = p.join(driverDir.path, '.installed');
-
   if (File(cliPath).existsSync() && File(markerPath).existsSync()) {
     return driverDir.path;
   }
@@ -89,9 +88,23 @@ Future<String> downloadDriver() async {
     Process.runSync('chmod', ['+x', p.join(driverDir.path, 'node')]);
   }
 
+  File(markerPath).writeAsStringSync('done');
+  print('Driver downloaded successfully.');
+  return driverDir.path;
+}
+
+Future<void> ensureBrowsersInstalled() async {
+  final driverDirPath = await downloadDriver();
+  final cliPath = p.join(driverDirPath, 'package', 'cli.js');
+  final browserMarkerPath = p.join(driverDirPath, '.browsers-installed');
+
+  if (File(browserMarkerPath).existsSync()) {
+    return;
+  }
+
   print('Installing browsers (this may take a few minutes)...');
   final nodePath = p.join(
-    driverDir.path,
+    driverDirPath,
     Platform.isWindows ? 'node.exe' : 'node',
   );
   final installProcess = Process.runSync(nodePath, [cliPath, 'install']);
@@ -101,7 +114,6 @@ Future<String> downloadDriver() async {
     throw StateError('Failed to install browsers: ${installProcess.exitCode}');
   }
 
-  File(markerPath).writeAsStringSync('done');
-  print('Driver and browsers downloaded successfully.');
-  return driverDir.path;
+  File(browserMarkerPath).writeAsStringSync('done');
+  print('Browsers installed successfully.');
 }

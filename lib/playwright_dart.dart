@@ -8,7 +8,7 @@
 /// import 'package:playwright_dart/playwright_dart.dart';
 ///
 /// void main() async {
-///   final playwright = await Playwright.create();
+///   final playwright = await PlaywrightDart.create();
 ///   final browser = await playwright.chromium.launch();
 ///   final page = await browser.newPage();
 ///   await page.goto('https://example.com');

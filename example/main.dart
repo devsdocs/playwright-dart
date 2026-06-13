@@ -5,11 +5,9 @@
 import 'package:playwright_dart/playwright_dart.dart';
 
 void main() async {
-  // Create a Playwright instance (auto-downloads driver if needed)
-  final playwright = await Playwright.create();
-
-  // Launch a Chromium browser
-  final browser = await playwright.chromium.launch();
+  // Connect directly to a remote Playwright endpoint.
+  // This avoids local browser installation/download.
+  final browser = await PlaywrightDart.connect('ws://127.0.0.1:3000/ws');
 
   // Create a new page
   final page = await browser.newPage();
