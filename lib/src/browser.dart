@@ -27,9 +27,15 @@ class Browser extends BrowserBase {
   /// Creates a new browser context.
   ///
   /// It won't share cookies/cache with other browser contexts.
-  Future<BrowserContext> newContext({ContextOptions? options}) async {
+  Future<BrowserContext> newContext({
+    ContextOptions? options,
+    Map<String, dynamic>? proxy,
+    Map<String, dynamic>? storageState,
+  }) async {
     final result = await super.channel_newContext(
       contextOptions: options ?? ContextOptions(),
+      proxy: proxy,
+      storageState: storageState,
     );
     final context = result.context as BrowserContext;
     final playwright =

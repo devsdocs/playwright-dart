@@ -34,8 +34,24 @@ class BrowserContext extends BrowserContextBase {
     String? name,
     String? domain,
     String? path,
+    String? nameRegexSource,
+    String? nameRegexFlags,
+    String? domainRegexSource,
+    String? domainRegexFlags,
+    String? pathRegexSource,
+    String? pathRegexFlags,
   }) async {
-    await super.channel_clearCookies(name: name, domain: domain, path: path);
+    await super.channel_clearCookies(
+      name: name,
+      domain: domain,
+      path: path,
+      nameRegexSource: nameRegexSource,
+      nameRegexFlags: nameRegexFlags,
+      domainRegexSource: domainRegexSource,
+      domainRegexFlags: domainRegexFlags,
+      pathRegexSource: pathRegexSource,
+      pathRegexFlags: pathRegexFlags,
+    );
   }
 
   /// Returns the browser context cookies.
@@ -72,8 +88,8 @@ class BrowserContext extends BrowserContextBase {
     await channel_setGeolocation(geolocation: geolocation);
   }
 
-  Future<void> setHTTPCredentials(Map<String, dynamic>? credentials) async {
-    await channel_setHTTPCredentials(httpCredentials: credentials);
+  Future<void> setHTTPCredentials(Map<String, dynamic>? httpCredentials) async {
+    await channel_setHTTPCredentials(httpCredentials: httpCredentials);
   }
 
   /// Emulates network being offline or online.
@@ -89,8 +105,8 @@ class BrowserContext extends BrowserContextBase {
     return result;
   }
 
-  Future<void> setStorageState(Map<String, dynamic> state) async {
-    await channel_setStorageState(storageState: state);
+  Future<void> setStorageState(Map<String, dynamic> storageState) async {
+    await channel_setStorageState(storageState: storageState);
   }
 
   /// Adds a script which would be evaluated in one of the following scenarios:
@@ -171,13 +187,16 @@ class BrowserContext extends BrowserContextBase {
     String name,
     String source, {
     bool? contentScript,
+    SelectorEngine? selectorEngine,
   }) async {
     await channel_registerSelectorEngine(
-      selectorEngine: SelectorEngine(
-        name: name,
-        source: source,
-        contentScript: contentScript,
-      ),
+      selectorEngine:
+          selectorEngine ??
+          SelectorEngine(
+            name: name,
+            source: source,
+            contentScript: contentScript,
+          ),
     );
   }
 
@@ -199,6 +218,13 @@ class BrowserContext extends BrowserContextBase {
     BrowserContextEnableRecorderRecorderModeEnum? recorderMode,
     bool? pauseOnNextStatement,
     String? testIdAttributeName,
+    Map<String, dynamic>? launchOptions,
+    Map<String, dynamic>? contextOptions,
+    String? device,
+    String? saveStorage,
+    String? outputFile,
+    bool? handleSIGINT,
+    bool? omitCallTracking,
   }) async {
     await channel_enableRecorder(
       language: language,
@@ -206,6 +232,13 @@ class BrowserContext extends BrowserContextBase {
       recorderMode: recorderMode,
       pauseOnNextStatement: pauseOnNextStatement,
       testIdAttributeName: testIdAttributeName,
+      launchOptions: launchOptions,
+      contextOptions: contextOptions,
+      device: device,
+      saveStorage: saveStorage,
+      outputFile: outputFile,
+      handleSIGINT: handleSIGINT,
+      omitCallTracking: omitCallTracking,
     );
   }
 

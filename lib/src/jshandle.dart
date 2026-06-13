@@ -11,18 +11,28 @@ class JSHandle extends JSHandleBase {
     super.parent,
   ]);
 
-  Future<dynamic> evaluate(String expression, [dynamic arg]) async {
+  Future<dynamic> evaluate(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) async {
     final result = await channel_evaluateExpression(
       expression: expression,
       arg: serializeArgument(arg),
+      isFunction: isFunction,
     );
     return parseSerializedValue(result.value);
   }
 
-  Future<JSHandle> evaluateHandle(String expression, [dynamic arg]) async {
+  Future<JSHandle> evaluateHandle(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) async {
     final result = await channel_evaluateExpressionHandle(
       expression: expression,
       arg: serializeArgument(arg),
+      isFunction: isFunction,
     );
     return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
   }
@@ -32,13 +42,19 @@ class JSHandle extends JSHandleBase {
     await channel_dispose();
   }
 
-  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) =>
-      evaluate(expression, arg);
-  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) =>
-      evaluateHandle(expression, arg);
+  Future<dynamic> evaluateExpression(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) => evaluate(expression, arg, isFunction);
+  Future<JSHandle> evaluateExpressionHandle(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) => evaluateHandle(expression, arg, isFunction);
 
-  Future<JSHandle> getProperty(String propertyName) async {
-    final result = await super.channel_getProperty(name: propertyName);
+  Future<JSHandle> getProperty(String name) async {
+    final result = await super.channel_getProperty(name: name);
     return ChannelOwner.from<JSHandle>(
       connection,
       result.handle as Map<String, dynamic>,

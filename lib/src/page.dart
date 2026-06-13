@@ -446,10 +446,8 @@ class Page extends PageBase {
     return locator('internal:testid=[data-testid="$testId"]');
   }
 
-  Future<void> setViewportSize(int width, int height) async {
-    await channel_setViewportSize(
-      viewportSize: {'width': width, 'height': height},
-    );
+  Future<void> setViewportSize(Map<String, dynamic> viewportSize) async {
+    await channel_setViewportSize(viewportSize: viewportSize);
   }
 
   /// Returns the buffer with the captured screenshot.
@@ -459,6 +457,7 @@ class Page extends PageBase {
     String? type,
     int? quality,
     double? timeout,
+    Map<String, dynamic>? clip,
   }) async {
     final result = await channel_screenshot(
       timeout: timeout ?? 30000.0,
@@ -467,6 +466,7 @@ class Page extends PageBase {
           : null,
       quality: quality,
       fullPage: fullPage,
+      clip: clip != null ? Rect.fromJson(clip) : null,
       commonScreenshotOptions: CommonScreenshotOptions(),
     );
     final buffer = base64Decode(result.binary);
@@ -479,8 +479,39 @@ class Page extends PageBase {
   /// Returns the PDF buffer.
   ///
   /// `path` - The file path to save the PDF to. If `path` is a relative path, then it is resolved relative to the current working directory.
-  Future<Uint8List> pdf({String? path, String? format, bool? landscape}) async {
-    final result = await channel_pdf(format: format, landscape: landscape);
+  Future<Uint8List> pdf({
+    String? path,
+    String? format,
+    bool? landscape,
+    double? scale,
+    bool? displayHeaderFooter,
+    String? headerTemplate,
+    String? footerTemplate,
+    bool? printBackground,
+    String? pageRanges,
+    dynamic width,
+    dynamic height,
+    bool? preferCSSPageSize,
+    Map<String, dynamic>? margin,
+    bool? tagged,
+    bool? outline,
+  }) async {
+    final result = await channel_pdf(
+      format: format,
+      landscape: landscape,
+      scale: scale,
+      displayHeaderFooter: displayHeaderFooter,
+      headerTemplate: headerTemplate,
+      footerTemplate: footerTemplate,
+      printBackground: printBackground,
+      pageRanges: pageRanges,
+      width: width,
+      height: height,
+      preferCSSPageSize: preferCSSPageSize,
+      margin: margin,
+      tagged: tagged,
+      outline: outline,
+    );
     final buffer = base64Decode(result.pdf);
     if (path != null) {
       await File(path).writeAsBytes(buffer);
@@ -488,16 +519,34 @@ class Page extends PageBase {
     return buffer;
   }
 
-  Future<void> reload({double? timeout}) async {
-    await channel_reload(timeout: timeout ?? 30000.0);
+  Future<void> reload({double? timeout, String waitUntil = 'load'}) async {
+    await channel_reload(
+      timeout: timeout ?? 30000.0,
+      waitUntil: LifecycleEvent.values.firstWhere(
+        (e) => e.value == waitUntil,
+        orElse: () => LifecycleEvent.load,
+      ),
+    );
   }
 
-  Future<void> goBack({double? timeout}) async {
-    await channel_goBack(timeout: timeout ?? 30000.0);
+  Future<void> goBack({double? timeout, String waitUntil = 'load'}) async {
+    await channel_goBack(
+      timeout: timeout ?? 30000.0,
+      waitUntil: LifecycleEvent.values.firstWhere(
+        (e) => e.value == waitUntil,
+        orElse: () => LifecycleEvent.load,
+      ),
+    );
   }
 
-  Future<void> goForward({double? timeout}) async {
-    await channel_goForward(timeout: timeout ?? 30000.0);
+  Future<void> goForward({double? timeout, String waitUntil = 'load'}) async {
+    await channel_goForward(
+      timeout: timeout ?? 30000.0,
+      waitUntil: LifecycleEvent.values.firstWhere(
+        (e) => e.value == waitUntil,
+        orElse: () => LifecycleEvent.load,
+      ),
+    );
   }
 
   Future<void> addInitScript(String source) async {
@@ -692,7 +741,12 @@ class Page extends PageBase {
     double? timeout,
     double? pollingInterval,
   ]) {
-    return mainFrame.waitForFunction(expression, arg, timeout, pollingInterval);
+    return mainFrame.waitForFunction(
+      expression,
+      arg: arg,
+      timeout: timeout,
+      pollingInterval: pollingInterval,
+    );
   }
 
   Future<void> dispatchEvent(
@@ -826,11 +880,11 @@ class Page extends PageBase {
   }
 
   Future<PageRegisterLocatorHandlerResult> registerLocatorHandler(
-    Locator locator, {
+    Locator selector, {
     bool? noWaitAfter,
   }) async {
     return await channel_registerLocatorHandler(
-      selector: locator.selector,
+      selector: selector.selector,
       noWaitAfter: noWaitAfter,
     );
   }

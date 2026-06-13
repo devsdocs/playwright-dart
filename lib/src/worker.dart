@@ -18,18 +18,28 @@ class Worker extends WorkerBase {
     await channel_disconnect(reason: reason);
   }
 
-  Future<dynamic> evaluate(String expression, [dynamic arg]) async {
+  Future<dynamic> evaluate(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) async {
     final result = await channel_evaluateExpression(
       expression: expression,
       arg: serializeArgument(arg),
+      isFunction: isFunction,
     );
     return parseSerializedValue(result.value);
   }
 
-  Future<JSHandle> evaluateHandle(String expression, [dynamic arg]) async {
+  Future<JSHandle> evaluateHandle(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) async {
     final result = await channel_evaluateExpressionHandle(
       expression: expression,
       arg: serializeArgument(arg),
+      isFunction: isFunction,
     );
     return ChannelOwner.from<JSHandle>(
       connection,
@@ -38,10 +48,21 @@ class Worker extends WorkerBase {
   }
 
   // Aliases for missing script check
-  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) =>
-      evaluate(expression, arg);
-  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) =>
-      evaluateHandle(expression, arg);
-  // Unused right now, just for completeness:
-  // Future<dynamic> updateSubscription() => channel_updateSubscription();
+  Future<dynamic> evaluateExpression(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) => evaluate(expression, arg, isFunction);
+  Future<JSHandle> evaluateExpressionHandle(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) => evaluateHandle(expression, arg, isFunction);
+
+  Future<void> updateSubscription({
+    required WorkerUpdateSubscriptionEventEnum event,
+    required bool enabled,
+  }) async {
+    await channel_updateSubscription(event: event, enabled: enabled);
+  }
 }

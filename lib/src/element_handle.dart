@@ -15,34 +15,50 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   ]);
 
   @override
-  Future<dynamic> evaluate(String expression, [dynamic arg]) async {
+  Future<dynamic> evaluate(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) async {
     final result = await channel_evaluateExpression(
       expression: expression,
       arg: serializeArgument(arg),
+      isFunction: isFunction,
     );
     return parseSerializedValue(result.value);
   }
 
   @override
-  Future<JSHandle> evaluateHandle(String expression, [dynamic arg]) async {
+  Future<JSHandle> evaluateHandle(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) async {
     final result = await channel_evaluateExpressionHandle(
       expression: expression,
       arg: serializeArgument(arg),
+      isFunction: isFunction,
     );
     return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
   }
 
   @override
-  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) =>
-      evaluate(expression, arg);
+  Future<dynamic> evaluateExpression(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) => evaluate(expression, arg, isFunction);
 
   @override
-  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) =>
-      evaluateHandle(expression, arg);
+  Future<JSHandle> evaluateExpressionHandle(
+    String expression, [
+    dynamic arg,
+    bool? isFunction,
+  ]) => evaluateHandle(expression, arg, isFunction);
 
   @override
-  Future<JSHandle> getProperty(String propertyName) async {
-    final result = await channel_getProperty(name: propertyName);
+  Future<JSHandle> getProperty(String name) async {
+    final result = await channel_getProperty(name: name);
     return ChannelOwner.from<JSHandle>(
       connection,
       result.handle as Map<String, dynamic>,
@@ -80,11 +96,15 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     String selector,
     String expression, [
     dynamic arg,
+    bool? strict,
+    bool? isFunction,
   ]) async {
     final result = await channel_evalOnSelector(
       selector: selector,
       expression: expression,
       arg: serializeArgument(arg),
+      strict: strict,
+      isFunction: isFunction,
     );
     return parseSerializedValue(result.value);
   }
@@ -93,30 +113,116 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     String selector,
     String expression, [
     dynamic arg,
+    bool? isFunction,
   ]) async {
     final result = await channel_evalOnSelectorAll(
       selector: selector,
       expression: expression,
       arg: serializeArgument(arg),
+      isFunction: isFunction,
     );
     return parseSerializedValue(result.value);
   }
 
   // Element actions
-  Future<void> click({bool? force, double? timeout}) async {
-    await channel_click(force: force, timeout: timeout ?? 30000.0);
+  Future<void> click({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    bool? noWaitAfter,
+    List<String>? modifiers,
+    Map<String, dynamic>? position,
+    double? delay,
+    String? button,
+    int? clickCount,
+    int? steps,
+  }) async {
+    await channel_click(
+      force: force,
+      timeout: timeout ?? 30000.0,
+      trial: trial,
+      noWaitAfter: noWaitAfter,
+      modifiers: modifiers
+          ?.map(
+            (e) => ElementHandleClickModifiersEnum.values.firstWhere(
+              (m) => m.value == e,
+            ),
+          )
+          .toList(),
+      position: position != null
+          ? Point(x: position['x'] as double, y: position['y'] as double)
+          : null,
+      delay: delay,
+      button: button != null
+          ? ElementHandleClickButtonEnum.values.firstWhere(
+              (e) => e.value == button,
+            )
+          : null,
+      clickCount: clickCount,
+      steps: steps,
+    );
   }
 
-  Future<void> dblclick({bool? force, double? timeout}) async {
-    await channel_dblclick(force: force, timeout: timeout ?? 30000.0);
+  Future<void> dblclick({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    List<String>? modifiers,
+    Map<String, dynamic>? position,
+    double? delay,
+    String? button,
+    int? steps,
+  }) async {
+    await channel_dblclick(
+      force: force,
+      timeout: timeout ?? 30000.0,
+      trial: trial,
+      modifiers: modifiers
+          ?.map(
+            (e) => ElementHandleDblclickModifiersEnum.values.firstWhere(
+              (m) => m.value == e,
+            ),
+          )
+          .toList(),
+      position: position != null
+          ? Point(x: position['x'] as double, y: position['y'] as double)
+          : null,
+      delay: delay,
+      button: button != null
+          ? ElementHandleDblclickButtonEnum.values.firstWhere(
+              (e) => e.value == button,
+            )
+          : null,
+      steps: steps,
+    );
   }
 
   Future<void> fill(String value, {bool? force, double? timeout}) async {
     await channel_fill(value: value, force: force, timeout: timeout ?? 30000.0);
   }
 
-  Future<void> hover({bool? force, double? timeout}) async {
-    await channel_hover(force: force, timeout: timeout ?? 30000.0);
+  Future<void> hover({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    List<String>? modifiers,
+    Map<String, dynamic>? position,
+  }) async {
+    await channel_hover(
+      force: force,
+      timeout: timeout ?? 30000.0,
+      trial: trial,
+      modifiers: modifiers
+          ?.map(
+            (e) => ElementHandleHoverModifiersEnum.values.firstWhere(
+              (m) => m.value == e,
+            ),
+          )
+          .toList(),
+      position: position != null
+          ? Point(x: position['x'] as double, y: position['y'] as double)
+          : null,
+    );
   }
 
   Future<void> focus() async {
@@ -127,20 +233,74 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     await channel_type(text: text, delay: delay, timeout: timeout ?? 30000.0);
   }
 
-  Future<void> press(String key, {double? delay, double? timeout}) async {
-    await channel_press(key: key, delay: delay, timeout: timeout ?? 30000.0);
+  Future<void> press(
+    String key, {
+    double? delay,
+    double? timeout,
+    bool? noWaitAfter,
+  }) async {
+    await channel_press(
+      key: key,
+      delay: delay,
+      timeout: timeout ?? 30000.0,
+      noWaitAfter: noWaitAfter,
+    );
   }
 
-  Future<void> tap({bool? force, double? timeout}) async {
-    await channel_tap(force: force, timeout: timeout ?? 30000.0);
+  Future<void> tap({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    List<String>? modifiers,
+    Map<String, dynamic>? position,
+  }) async {
+    await channel_tap(
+      force: force,
+      timeout: timeout ?? 30000.0,
+      trial: trial,
+      modifiers: modifiers
+          ?.map(
+            (e) => ElementHandleTapModifiersEnum.values.firstWhere(
+              (m) => m.value == e,
+            ),
+          )
+          .toList(),
+      position: position != null
+          ? Point(x: position['x'] as double, y: position['y'] as double)
+          : null,
+    );
   }
 
-  Future<void> check({bool? force, double? timeout}) async {
-    await channel_check(force: force, timeout: timeout ?? 30000.0);
+  Future<void> check({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    Map<String, dynamic>? position,
+  }) async {
+    await channel_check(
+      force: force,
+      timeout: timeout ?? 30000.0,
+      trial: trial,
+      position: position != null
+          ? Point(x: position['x'] as double, y: position['y'] as double)
+          : null,
+    );
   }
 
-  Future<void> uncheck({bool? force, double? timeout}) async {
-    await channel_uncheck(force: force, timeout: timeout ?? 30000.0);
+  Future<void> uncheck({
+    bool? force,
+    double? timeout,
+    bool? trial,
+    Map<String, dynamic>? position,
+  }) async {
+    await channel_uncheck(
+      force: force,
+      timeout: timeout ?? 30000.0,
+      trial: trial,
+      position: position != null
+          ? Point(x: position['x'] as double, y: position['y'] as double)
+          : null,
+    );
   }
 
   Future<void> scrollIntoViewIfNeeded({double? timeout}) async {
@@ -258,10 +418,18 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   Future<List<int>> screenshot({
     CommonScreenshotOptions? options,
     required double timeout,
+    String? type,
+    int? quality,
   }) async {
     final result = await channel_screenshot(
       commonScreenshotOptions: options ?? CommonScreenshotOptions(),
       timeout: timeout,
+      type: type != null
+          ? ElementHandleScreenshotTypeEnum.values.firstWhere(
+              (e) => e.value == type,
+            )
+          : null,
+      quality: quality,
     );
     return base64Decode(result.binary);
   }
@@ -270,17 +438,23 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     dynamic values,
     bool? force,
     double? timeout,
+    List<ElementHandle>? elements,
+    List<Map<String, dynamic>>? options,
   }) async {
-    // For now we map string values to options
-    List<Map<String, dynamic>> options = [];
-    if (values is String) {
-      options.add({'valueOrLabel': values});
-    } else if (values is List) {
-      options.addAll(values.map((v) => {'valueOrLabel': v.toString()}));
+    // For now we map string values to options if provided
+    List<Map<String, dynamic>>? finalOptions = options;
+    if (finalOptions == null && values != null) {
+      finalOptions = [];
+      if (values is String) {
+        finalOptions.add({'valueOrLabel': values});
+      } else if (values is List) {
+        finalOptions.addAll(values.map((v) => {'valueOrLabel': v.toString()}));
+      }
     }
 
     final result = await channel_selectOption(
-      options: options.isNotEmpty ? options : null,
+      elements: elements,
+      options: finalOptions?.isNotEmpty == true ? finalOptions : null,
       force: force,
       timeout: timeout ?? 30000.0,
     );
@@ -291,8 +465,23 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     await channel_selectText(force: force, timeout: timeout ?? 30000.0);
   }
 
-  Future<void> setInputFiles(List<String> files, {double? timeout}) async {
-    await channel_setInputFiles(localPaths: files, timeout: timeout ?? 30000.0);
+  Future<void> setInputFiles(
+    List<String> files, {
+    double? timeout,
+    List<Map<String, dynamic>>? payloads,
+    String? localDirectory,
+    ChannelOwner? directoryStream,
+    List<String>? localPaths,
+    List<ChannelOwner>? streams,
+  }) async {
+    await channel_setInputFiles(
+      localPaths: localPaths ?? files,
+      timeout: timeout ?? 30000.0,
+      payloads: payloads,
+      localDirectory: localDirectory,
+      directoryStream: directoryStream as WritableStreamBase?,
+      streams: streams?.map((s) => s as WritableStreamBase).toList(),
+    );
   }
 
   Future<void> waitForElementState(

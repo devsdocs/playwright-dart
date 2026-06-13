@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'generated/channels.dart';
 
 class WritableStream extends WritableStreamBase {
@@ -10,8 +9,8 @@ class WritableStream extends WritableStreamBase {
     super.parent,
   ]);
 
-  Future<void> write(List<int> data) async {
-    await channel_write(binary: base64Encode(data));
+  Future<void> write(String binary) async {
+    await channel_write(binary: binary);
   }
 
   Future<void> close() async {

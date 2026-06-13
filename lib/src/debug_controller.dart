@@ -17,14 +17,23 @@ class DebugController extends DebugControllerBase {
   }
 
   // Aliases for missing script check
-  Future<void> setReportStateChanged(bool changed) =>
-      channel_setReportStateChanged(enabled: changed);
-  Future<void> setRecorderMode(Map<String, dynamic> mode) =>
-      channel_setRecorderMode(
-        mode: DebugControllerSetRecorderModeModeEnum.none,
-      );
-  Future<void> highlight(Map<String, dynamic> selector) =>
-      channel_highlight(selector: selector['selector'] as String);
+  Future<void> setReportStateChanged({required bool enabled}) =>
+      channel_setReportStateChanged(enabled: enabled);
+
+  Future<void> setRecorderMode({
+    DebugControllerSetRecorderModeModeEnum mode =
+        DebugControllerSetRecorderModeModeEnum.none,
+    String? testIdAttributeName,
+    bool? generateAutoExpect,
+  }) => channel_setRecorderMode(
+    mode: mode,
+    testIdAttributeName: testIdAttributeName,
+    generateAutoExpect: generateAutoExpect,
+  );
+
+  Future<void> highlight({required String selector, String? ariaTemplate}) =>
+      channel_highlight(selector: selector, ariaTemplate: ariaTemplate);
+
   Future<void> hideHighlight() => channel_hideHighlight();
   Future<void> resume() => channel_resume();
   Future<void> kill() => channel_kill();

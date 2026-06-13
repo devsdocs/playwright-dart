@@ -22,6 +22,8 @@ class APIRequestContext extends APIRequestContextBase {
     bool? ignoreHTTPSErrors,
     int? maxRedirects,
     int? maxRetries,
+    String? encodedParams,
+    List<NameValue>? params,
   }) async {
     final result = await channel_fetch(
       url: url,
@@ -36,6 +38,8 @@ class APIRequestContext extends APIRequestContextBase {
       ignoreHTTPSErrors: ignoreHTTPSErrors,
       maxRedirects: maxRedirects,
       maxRetries: maxRetries,
+      encodedParams: encodedParams,
+      params: params,
     );
     return result.response;
   }
@@ -111,8 +115,8 @@ class APIRequestContext extends APIRequestContextBase {
   }
 
   @override
-  Future<void> dispose() async {
-    await channel_dispose();
+  Future<void> dispose({String? reason}) async {
+    await channel_dispose(reason: reason);
   }
 
   // Aliases for missing script check

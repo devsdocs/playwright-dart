@@ -21,6 +21,17 @@ class Electron extends ElectronBase {
     ElectronLaunchColorSchemeEnum? colorScheme,
     List<NameValue>? extraHTTPHeaders,
     Map<String, dynamic>? geolocation,
+    Map<String, dynamic>? httpCredentials,
+    bool? ignoreHTTPSErrors,
+    String? locale,
+    bool? offline,
+    Map<String, dynamic>? recordVideo,
+    bool? strictSelectors,
+    String? timezoneId,
+    String? tracesDir,
+    String? artifactsDir,
+    List<SelectorEngine>? selectorEngines,
+    String? testIdAttributeName,
   }) async {
     return await channel_launch(
       executablePath: executablePath,
@@ -34,6 +45,17 @@ class Electron extends ElectronBase {
       colorScheme: colorScheme,
       extraHTTPHeaders: extraHTTPHeaders,
       geolocation: geolocation,
+      httpCredentials: httpCredentials,
+      ignoreHTTPSErrors: ignoreHTTPSErrors,
+      locale: locale,
+      offline: offline,
+      recordVideo: recordVideo,
+      strictSelectors: strictSelectors,
+      timezoneId: timezoneId,
+      tracesDir: tracesDir,
+      artifactsDir: artifactsDir,
+      selectorEngines: selectorEngines,
+      testIdAttributeName: testIdAttributeName,
     );
   }
 }

@@ -60,6 +60,7 @@ void main() async {
   int missingCommands = 0;
   int missingWrapperClasses = 0;
   int missingWrapperCommands = 0;
+  int missingWrapperParameters = 0;
 
   for (final entry in protocol.entries) {
     final name = entry.key;
@@ -137,6 +138,29 @@ void main() async {
               'MISSING IN WRAPPER: Command $name.$cmdName (expected in $targetClassName as $targetCmdName)',
             );
             missingWrapperCommands++;
+          } else {
+            final cmdDef = commands[cmdKey];
+            if (cmdDef != null && cmdDef['parameters'] != null) {
+              final params = cmdDef['parameters'] as Map;
+              final sigMatch = RegExp(
+                '\\b$targetCmdName\\s*\\(([^)]*)\\)',
+              ).firstMatch(targetClassBody);
+              if (sigMatch != null) {
+                final sig = sigMatch.group(1)!;
+                for (final paramKey in params.keys) {
+                  final keyStr = paramKey.toString();
+                  if (keyStr.startsWith(r'$'))
+                    continue; // Ignore mixins and refs
+                  final paramName = _sanitizeName(keyStr);
+                  if (!sig.contains(RegExp('\\b$paramName\\b'))) {
+                    print(
+                      'MISSING IN WRAPPER: Parameter $paramName in command $name.$cmdName ($targetClassName.$targetCmdName)',
+                    );
+                    missingWrapperParameters++;
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -157,12 +181,13 @@ void main() async {
   if (missingClasses > 0 ||
       missingCommands > 0 ||
       missingWrapperClasses > 0 ||
-      missingWrapperCommands > 0) {
+      missingWrapperCommands > 0 ||
+      missingWrapperParameters > 0) {
     print(
       'Found $missingClasses missing classes/structs and $missingCommands missing commands in generated channels.',
     );
     print(
-      'Found $missingWrapperClasses missing interface wrappers and $missingWrapperCommands missing wrapper commands in lib/src.',
+      'Found $missingWrapperClasses missing interface wrappers, $missingWrapperCommands missing wrapper commands, and $missingWrapperParameters missing wrapper parameters in lib/src.',
     );
     exit(1);
   } else {

@@ -23,33 +23,37 @@ class AndroidDevice extends AndroidDeviceBase {
   }
 
   Future<void> fill(
-    AndroidSelector selector,
+    AndroidSelector androidSelector,
     String text, {
     double timeout = 30000.0,
   }) async {
-    await channel_fill(androidSelector: selector, text: text, timeout: timeout);
+    await channel_fill(
+      androidSelector: androidSelector,
+      text: text,
+      timeout: timeout,
+    );
   }
 
   Future<void> tap(
-    AndroidSelector selector, {
+    AndroidSelector androidSelector, {
     double? duration,
     double timeout = 30000.0,
   }) async {
     await channel_tap(
-      androidSelector: selector,
+      androidSelector: androidSelector,
       duration: duration,
       timeout: timeout,
     );
   }
 
   Future<void> drag(
-    AndroidSelector selector,
+    AndroidSelector androidSelector,
     Point dest, {
     double? speed,
     double timeout = 30000.0,
   }) async {
     await channel_drag(
-      androidSelector: selector,
+      androidSelector: androidSelector,
       dest: dest,
       speed: speed,
       timeout: timeout,
@@ -57,13 +61,13 @@ class AndroidDevice extends AndroidDeviceBase {
   }
 
   Future<void> fling(
-    AndroidSelector selector,
+    AndroidSelector androidSelector,
     AndroidDeviceFlingDirectionEnum direction, {
     double? speed,
     double timeout = 30000.0,
   }) async {
     await channel_fling(
-      androidSelector: selector,
+      androidSelector: androidSelector,
       direction: direction,
       speed: speed,
       timeout: timeout,
@@ -71,20 +75,20 @@ class AndroidDevice extends AndroidDeviceBase {
   }
 
   Future<void> longTap(
-    AndroidSelector selector, {
+    AndroidSelector androidSelector, {
     double timeout = 30000.0,
   }) async {
-    await channel_longTap(androidSelector: selector, timeout: timeout);
+    await channel_longTap(androidSelector: androidSelector, timeout: timeout);
   }
 
   Future<void> pinchClose(
-    AndroidSelector selector,
+    AndroidSelector androidSelector,
     double percent, {
     double? speed,
     double timeout = 30000.0,
   }) async {
     await channel_pinchClose(
-      androidSelector: selector,
+      androidSelector: androidSelector,
       percent: percent,
       speed: speed,
       timeout: timeout,
@@ -92,13 +96,13 @@ class AndroidDevice extends AndroidDeviceBase {
   }
 
   Future<void> pinchOpen(
-    AndroidSelector selector,
+    AndroidSelector androidSelector,
     double percent, {
     double? speed,
     double timeout = 30000.0,
   }) async {
     await channel_pinchOpen(
-      androidSelector: selector,
+      androidSelector: androidSelector,
       percent: percent,
       speed: speed,
       timeout: timeout,
@@ -106,14 +110,14 @@ class AndroidDevice extends AndroidDeviceBase {
   }
 
   Future<void> scroll(
-    AndroidSelector selector,
+    AndroidSelector androidSelector,
     AndroidDeviceScrollDirectionEnum direction,
     double percent, {
     double? speed,
     double timeout = 30000.0,
   }) async {
     await channel_scroll(
-      androidSelector: selector,
+      androidSelector: androidSelector,
       direction: direction,
       percent: percent,
       speed: speed,
@@ -122,14 +126,14 @@ class AndroidDevice extends AndroidDeviceBase {
   }
 
   Future<void> swipe(
-    AndroidSelector selector,
+    AndroidSelector androidSelector,
     AndroidDeviceSwipeDirectionEnum direction,
     double percent, {
     double? speed,
     double timeout = 30000.0,
   }) async {
     await channel_swipe(
-      androidSelector: selector,
+      androidSelector: androidSelector,
       direction: direction,
       percent: percent,
       speed: speed,
@@ -137,8 +141,8 @@ class AndroidDevice extends AndroidDeviceBase {
     );
   }
 
-  Future<AndroidDeviceInfoResult> info(AndroidSelector selector) async {
-    return await channel_info(androidSelector: selector);
+  Future<AndroidDeviceInfoResult> info(AndroidSelector androidSelector) async {
+    return await channel_info(androidSelector: androidSelector);
   }
 
   Future<AndroidDeviceScreenshotResult> screenshot() async {

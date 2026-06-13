@@ -1,3 +1,9 @@
+## 2.3.0
+
+- **Feature**: Achieved 100% parameter parity with Playwright Node.js `v1.60.0`. Added over 200 missing parameters across core classes (`Page`, `Frame`, `ElementHandle`, `BrowserContext`, `APIRequestContext`, `Electron`, `Worker`, `DebugController`, `Tracing`, and `AndroidDevice`) to fully align with the underlying protocol.
+- **Tooling**: Added `tool/cross_check_types.dart` to automatically verify API parameter and method parity between Dart wrapper classes and generated protocol channels.
+- **Bug Fix**: Addressed various missing enum mappings and type mappings in method signatures.
+
 ## 2.2.0
 
 - **Feature**: Implemented missing page events: `onConsole`, `onRequest`, `onResponse`, `onRequestFinished`, `onRequestFailed`, `onFileChooser`, `onWebSocket`, `onCrash`, `onClose`, `onPageError`, and `onPopup`.

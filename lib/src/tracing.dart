@@ -1,4 +1,5 @@
 import 'generated/channels.dart';
+import 'page.dart';
 
 class Tracing extends TracingBase {
   Tracing(
@@ -73,7 +74,11 @@ class Tracing extends TracingBase {
         TracingTracingStopChunkModeEnum.discard,
   }) => stopChunk(mode: mode);
   Future<void> tracingStop() => stop();
-  Future<dynamic> harStart() => channel_harStart(options: RecordHarOptions());
-  Future<dynamic> harExport() =>
-      channel_harExport(mode: TracingHarExportModeEnum.archive);
+  Future<dynamic> harStart({Page? page, RecordHarOptions? options}) =>
+      channel_harStart(page: page, options: options ?? RecordHarOptions());
+  Future<dynamic> harExport({String? harId, TracingHarExportModeEnum? mode}) =>
+      channel_harExport(
+        harId: harId,
+        mode: mode ?? TracingHarExportModeEnum.archive,
+      );
 }

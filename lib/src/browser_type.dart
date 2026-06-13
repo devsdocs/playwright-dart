@@ -24,10 +24,11 @@ class BrowserType extends BrowserTypeBase {
   /// Launches a new local browser instance.
   ///
   /// Automatically downloads the browser binary if it is not already installed.
-  Future<Browser> launch({LaunchOptions? options}) async {
+  Future<Browser> launch({LaunchOptions? options, double? slowMo}) async {
     await ensureBrowsersInstalled();
     final result = await super.channel_launch(
       launchOptions: options ?? LaunchOptions(timeout: 30000.0),
+      slowMo: slowMo,
     );
     return result.browser as Browser;
   }
