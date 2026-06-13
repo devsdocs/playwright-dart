@@ -1,3 +1,4 @@
+import 'element_handle.dart';
 import 'channel_owner.dart';
 import 'generated/channels.dart';
 import 'jshandle.dart';
@@ -185,7 +186,7 @@ abstract interface class Frame {
   Future<void> addScriptTag({String? url, String? content, String? type});
   Future<void> addStyleTag({String? url, String? content});
   Future<void> waitForTimeout(double waitTimeout);
-  Future<dynamic> waitForFunction(
+  Future<JSHandle> waitForFunction(
     String expression, {
     dynamic arg,
     double? timeout,
@@ -225,12 +226,12 @@ abstract interface class Frame {
     bool? isFunction,
     dynamic arg,
   });
-  Future<dynamic> evaluateExpressionHandle(
+  Future<JSHandle> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
     dynamic arg,
   });
-  Future<dynamic> frameElement();
+  Future<ElementHandle> frameElement();
   Future<FrameExpectResult> expect(
     String selector,
     String expression, {
@@ -946,7 +947,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<dynamic> waitForFunction(
+  Future<JSHandle> waitForFunction(
     String expression, {
     dynamic arg,
     double? timeout,
@@ -1052,7 +1053,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<dynamic> evaluateExpressionHandle(
+  Future<JSHandle> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
     dynamic arg,
@@ -1066,7 +1067,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<dynamic> frameElement() async {
+  Future<ElementHandle> frameElement() async {
     final result = await channel_frameElement();
     return ChannelOwner.from(
       connection,

@@ -20,14 +20,14 @@ abstract interface class Browser {
   List<BrowserContext> get contexts;
   String get version;
   Stream<Browser> get onClose;
-  Stream<dynamic> get onContext;
+  Stream<BrowserContext> get onContext;
   Future<BrowserContext> newContext({
     ContextOptions? options,
     BrowserNewContextProxy? proxy,
     BrowserNewContextStorageState? storageState,
   });
   Future<void> close({String? reason});
-  Future<dynamic> newBrowserCDPSession();
+  Future<CDPSession> newBrowserCDPSession();
   Future<void> startTracing({
     Page? page,
     bool? screenshots,
@@ -64,7 +64,7 @@ class BrowserImpl extends BrowserBase implements Browser {
   }
 
   @override
-  Stream<dynamic> get onContext {
+  Stream<BrowserContext> get onContext {
     return onEvent
         .where((e) => e['event'] == 'context')
         .map((e) => e['params']['context']);
@@ -133,7 +133,7 @@ class BrowserImpl extends BrowserBase implements Browser {
   }
 
   @override
-  Future<dynamic> newBrowserCDPSession() async {
+  Future<CDPSession> newBrowserCDPSession() async {
     final result = await channel_newBrowserCDPSession();
     return result.session as CDPSession;
   }

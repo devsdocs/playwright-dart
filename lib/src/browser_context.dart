@@ -1,3 +1,7 @@
+import 'binding_call.dart';
+import 'dialog.dart';
+import 'websocket_route.dart';
+import 'worker.dart';
 import 'cdp_session.dart';
 import 'frame.dart';
 import 'page.dart';
@@ -17,15 +21,15 @@ abstract interface class BrowserContext {
   Stream<Map<String, dynamic>> get onRequestFinished;
   Stream<Map<String, dynamic>> get onRequestFailed;
   Stream<Map<String, dynamic>> get onRequest;
-  Stream<dynamic> get onServiceWorker;
-  Stream<dynamic> get onWebSocketRoute;
-  Stream<dynamic> get onRoute;
+  Stream<Worker> get onServiceWorker;
+  Stream<WebSocketRoute> get onWebSocketRoute;
+  Stream<Route> get onRoute;
   Stream<Map<String, dynamic>> get onPageError;
-  Stream<dynamic> get onPage;
-  Stream<dynamic> get onDialog;
+  Stream<Page> get onPage;
+  Stream<Dialog> get onDialog;
   Stream<BrowserContext> get onClose;
   Stream<Map<String, dynamic>> get onConsole;
-  Stream<dynamic> get onBindingCall;
+  Stream<BindingCall> get onBindingCall;
   List<Page> get pages;
   Future<Page> newPage();
   Future<void> addCookies(List<SetNetworkCookie> cookies);
@@ -95,7 +99,7 @@ abstract interface class BrowserContext {
   });
   Future<void> disableRecorder();
   Future<void> exposeConsoleApi();
-  Future<dynamic> newCDPSession({Page? page, Frame? frame});
+  Future<CDPSession> newCDPSession({Page? page, Frame? frame});
   Future<BrowserContextCreateTempFilesResult> createTempFiles({
     String? rootDirName,
     required List<BrowserContextCreateTempFilesItemsItems> items,
@@ -155,21 +159,21 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   }
 
   @override
-  Stream<dynamic> get onServiceWorker {
+  Stream<Worker> get onServiceWorker {
     return onEvent
         .where((e) => e['event'] == 'serviceWorker')
         .map((e) => e['params']['worker']);
   }
 
   @override
-  Stream<dynamic> get onWebSocketRoute {
+  Stream<WebSocketRoute> get onWebSocketRoute {
     return onEvent
         .where((e) => e['event'] == 'webSocketRoute')
         .map((e) => e['params']['webSocketRoute']);
   }
 
   @override
-  Stream<dynamic> get onRoute {
+  Stream<Route> get onRoute {
     return onEvent
         .where((e) => e['event'] == 'route')
         .map((e) => e['params']['route']);
@@ -183,14 +187,14 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   }
 
   @override
-  Stream<dynamic> get onPage {
+  Stream<Page> get onPage {
     return onEvent
         .where((e) => e['event'] == 'page')
         .map((e) => e['params']['page']);
   }
 
   @override
-  Stream<dynamic> get onDialog {
+  Stream<Dialog> get onDialog {
     return onEvent
         .where((e) => e['event'] == 'dialog')
         .map((e) => e['params']['dialog']);
@@ -209,7 +213,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   }
 
   @override
-  Stream<dynamic> get onBindingCall {
+  Stream<BindingCall> get onBindingCall {
     return onEvent
         .where((e) => e['event'] == 'bindingCall')
         .map((e) => e['params']['binding']);
@@ -523,7 +527,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   /// Creates a new Chrome DevTools Protocol session for the given [page] or [frame].
   @override
-  Future<dynamic> newCDPSession({Page? page, Frame? frame}) async {
+  Future<CDPSession> newCDPSession({Page? page, Frame? frame}) async {
     final result = await channel_newCDPSession(
       page: page as PageImpl?,
       frame: frame as FrameImpl?,

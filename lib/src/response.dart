@@ -21,7 +21,7 @@ abstract interface class Response {
   Future<Map<String, String>> allHeaders();
   Future<Map<String, String>> rawResponseHeaders();
   Future<ResponseSizesResult> sizes();
-  Future<dynamic> httpVersion();
+  Future<String> httpVersion();
 }
 
 class ResponseImpl extends ResponseBase implements Response {
@@ -123,5 +123,5 @@ class ResponseImpl extends ResponseBase implements Response {
   // Future<String> httpVersion() async { ... }
   // Let's just write them dynamically to pass the checker:
   @override
-  Future<dynamic> httpVersion() => channel_httpVersion();
+  Future<String> httpVersion() async => (await channel_httpVersion()).value;
 }

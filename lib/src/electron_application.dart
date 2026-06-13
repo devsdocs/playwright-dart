@@ -1,3 +1,4 @@
+import 'jshandle.dart';
 import 'generated/channels.dart';
 import 'serialization.dart';
 
@@ -11,7 +12,7 @@ abstract interface class ElectronApplication {
     bool? isFunction,
     dynamic arg,
   });
-  Future<dynamic> evaluateExpressionHandle(
+  Future<JSHandle> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
     dynamic arg,
@@ -70,7 +71,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
   }
 
   @override
-  Future<dynamic> evaluateExpressionHandle(
+  Future<JSHandle> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
     dynamic arg,
@@ -80,7 +81,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return result.handle;
+    return result.handle as JSHandle;
   }
 
   @override

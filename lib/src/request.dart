@@ -1,3 +1,4 @@
+import 'response.dart';
 import 'channel_owner.dart';
 import 'generated/channels.dart';
 import 'frame.dart';
@@ -13,7 +14,7 @@ abstract interface class Request {
   String? get postData;
   Map<String, dynamic> get headers;
   bool get isNavigationRequest;
-  Future<dynamic> response();
+  Future<Response?> response();
   Future<Map<String, String>> allHeaders();
   Future<Map<String, String>> rawRequestHeaders();
 }
@@ -63,7 +64,7 @@ class RequestImpl extends RequestBase implements Request {
 
   /// Returns the matching Response object, or null if the response was not received due to error.
   @override
-  Future<dynamic> response() async {
+  Future<Response?> response() async {
     final result = await channel_response();
     final resp = result.response;
     if (resp == null) return null;

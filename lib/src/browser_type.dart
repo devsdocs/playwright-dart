@@ -22,7 +22,7 @@ abstract interface class BrowserType {
     ContextOptions? contextOptions,
     double? slowMo,
   });
-  Future<dynamic> connectToWorker(String endpoint, {double? timeout});
+  Future<Worker> connectToWorker(String endpoint, {double? timeout});
   Future<Browser> connectOverCDP({
     required String endpointURL,
     List<NameValue>? headers,
@@ -87,7 +87,7 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
   // and type it dynamically for now, or just leave it returning the map.
   // wait, Phase 8 will create the Worker wrapper. Let's assume Worker is created and import it.
   @override
-  Future<dynamic> connectToWorker(String endpoint, {double? timeout}) async {
+  Future<Worker> connectToWorker(String endpoint, {double? timeout}) async {
     final result = await super.channel_connectToWorker(
       endpoint: endpoint,
       timeout: timeout ?? 30000.0,

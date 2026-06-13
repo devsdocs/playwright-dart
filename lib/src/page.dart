@@ -1,3 +1,6 @@
+import 'jshandle.dart';
+import 'binding_call.dart';
+import 'websocket_route.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -30,14 +33,14 @@ import 'element_handle.dart';
 abstract interface class Page {
   List<Frame> get frames;
   List<Worker> get workers;
-  Stream<dynamic> get onWebSocketRoute;
+  Stream<WebSocketRoute> get onWebSocketRoute;
   Stream<Map<String, dynamic>> get onScreencastFrame;
-  Stream<dynamic> get onRoute;
+  Stream<Route> get onRoute;
   Stream<dynamic> get onLocatorHandlerTriggered;
-  Stream<dynamic> get onFrameDetached;
-  Stream<dynamic> get onFrameAttached;
+  Stream<Frame> get onFrameDetached;
+  Stream<Frame> get onFrameAttached;
   Stream<Map<String, dynamic>> get onViewportSizeChanged;
-  Stream<dynamic> get onBindingCall;
+  Stream<BindingCall> get onBindingCall;
   Keyboard get keyboard;
   Mouse get mouse;
   Touchscreen get touchscreen;
@@ -188,7 +191,7 @@ abstract interface class Page {
   Future<void> addScriptTag({String? url, String? content, String? type});
   Future<void> addStyleTag({String? url, String? content});
   Future<void> waitForTimeout(double timeout);
-  Future<dynamic> waitForFunction(
+  Future<JSHandle> waitForFunction(
     String expression, [
     dynamic arg,
     double? timeout,
@@ -322,7 +325,7 @@ class PageImpl extends PageBase implements Page {
   @override
   List<Worker> get workers => objects.values.whereType<Worker>().toList();
   @override
-  Stream<dynamic> get onWebSocketRoute {
+  Stream<WebSocketRoute> get onWebSocketRoute {
     return onEvent
         .where((e) => e['event'] == 'webSocketRoute')
         .map((e) => e['params']['webSocketRoute']);
@@ -336,7 +339,7 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
-  Stream<dynamic> get onRoute {
+  Stream<Route> get onRoute {
     return onEvent
         .where((e) => e['event'] == 'route')
         .map((e) => e['params']['route']);
@@ -350,14 +353,14 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
-  Stream<dynamic> get onFrameDetached {
+  Stream<Frame> get onFrameDetached {
     return onEvent
         .where((e) => e['event'] == 'frameDetached')
         .map((e) => e['params']['frame']);
   }
 
   @override
-  Stream<dynamic> get onFrameAttached {
+  Stream<Frame> get onFrameAttached {
     return onEvent
         .where((e) => e['event'] == 'frameAttached')
         .map((e) => e['params']['frame']);
@@ -371,7 +374,7 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
-  Stream<dynamic> get onBindingCall {
+  Stream<BindingCall> get onBindingCall {
     return onEvent
         .where((e) => e['event'] == 'bindingCall')
         .map((e) => e['params']['binding']);
@@ -1225,7 +1228,7 @@ class PageImpl extends PageBase implements Page {
 
   /// Returns when the [expression] returns a truthy value, polling at regular intervals.
   @override
-  Future<dynamic> waitForFunction(
+  Future<JSHandle> waitForFunction(
     String expression, [
     dynamic arg,
     double? timeout,
