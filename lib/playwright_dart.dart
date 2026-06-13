@@ -18,69 +18,69 @@
 library;
 
 // Core
-export 'src/playwright.dart';
-export 'src/browser_type.dart';
-export 'src/browser.dart';
-export 'src/browser_context.dart';
-export 'src/page.dart';
-export 'src/frame.dart';
-export 'src/locator.dart';
-export 'src/selectors.dart';
+export 'src/core/playwright.dart';
+export 'src/core/browser_type.dart';
+export 'src/core/browser.dart';
+export 'src/core/browser_context.dart';
+export 'src/core/page.dart';
+export 'src/core/frame.dart';
+export 'src/core/locator.dart';
+export 'src/core/selectors.dart';
 export 'src/generated/channels.dart' hide Channel, ConsoleMessage;
 
 // Interaction
-export 'src/element_handle.dart';
-export 'src/jshandle.dart';
-export 'src/locator_assertions.dart';
-export 'src/keyboard.dart';
-export 'src/mouse.dart';
-export 'src/file_chooser.dart';
+export 'src/interaction/element_handle.dart';
+export 'src/interaction/jshandle.dart';
+export 'src/interaction/locator_assertions.dart';
+export 'src/interaction/keyboard.dart';
+export 'src/interaction/mouse.dart';
+export 'src/interaction/file_chooser.dart';
 
 // Network
-export 'src/request.dart';
-export 'src/response.dart';
-export 'src/route.dart';
-export 'src/api_request_context.dart';
-export 'src/websocket.dart';
-export 'src/websocket_route.dart';
+export 'src/network/request.dart';
+export 'src/network/response.dart';
+export 'src/network/route.dart';
+export 'src/network/api_request_context.dart';
+export 'src/network/websocket.dart';
+export 'src/network/websocket_route.dart';
 
 // Utilities
-export 'src/tracing.dart';
-export 'src/cdp_session.dart';
-export 'src/dialog.dart';
-export 'src/console_message.dart';
-export 'src/video.dart';
-export 'src/worker.dart';
-export 'src/artifact.dart';
-export 'src/stream.dart';
-export 'src/writable_stream.dart';
+export 'src/utils/tracing.dart';
+export 'src/utils/cdp_session.dart';
+export 'src/interaction/dialog.dart';
+export 'src/utils/console_message.dart';
+export 'src/utils/video.dart';
+export 'src/utils/worker.dart';
+export 'src/utils/artifact.dart';
+export 'src/infrastructure/stream.dart';
+export 'src/infrastructure/writable_stream.dart';
 
 // Debugging
-export 'src/debugger.dart';
-export 'src/debug_controller.dart';
-export 'src/binding_call.dart';
-export 'src/event_target.dart';
-export 'src/disposable.dart';
+export 'src/debugging/debugger.dart';
+export 'src/debugging/debug_controller.dart';
+export 'src/debugging/binding_call.dart';
+export 'src/debugging/event_target.dart';
+export 'src/debugging/disposable.dart';
 
 // Platform
-export 'src/android.dart';
-export 'src/android_device.dart';
-export 'src/android_socket.dart';
-export 'src/electron.dart';
-export 'src/electron_application.dart';
+export 'src/platform/android.dart';
+export 'src/platform/android_device.dart';
+export 'src/platform/android_socket.dart';
+export 'src/platform/electron.dart';
+export 'src/platform/electron_application.dart';
 
 // Infrastructure
-export 'src/connection.dart';
-export 'src/channel_owner.dart';
-export 'src/driver.dart';
-export 'src/transport.dart';
-export 'src/file_payload.dart';
-export 'src/serialization.dart';
+export 'src/infrastructure/connection.dart';
+export 'src/infrastructure/channel_owner.dart';
+export 'src/infrastructure/driver.dart';
+export 'src/infrastructure/transport.dart';
+export 'src/infrastructure/file_payload.dart';
+export 'src/infrastructure/serialization.dart';
 
 // Internal (needed for advanced usage)
-export 'src/root.dart';
-export 'src/socks_support.dart';
-export 'src/json_pipe.dart';
-export 'src/local_utils.dart';
+export 'src/infrastructure/root.dart';
+export 'src/network/socks_support.dart';
+export 'src/infrastructure/json_pipe.dart';
+export 'src/infrastructure/local_utils.dart';
 
-export 'src/download.dart';
+export 'src/utils/download.dart';

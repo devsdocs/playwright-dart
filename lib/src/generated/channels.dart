@@ -2,8 +2,8 @@
 // AUTO-GENERATED FILE. DO NOT MODIFY.
 // Generated from Playwright protocol.
 
-import '../channel_owner.dart';
-import '../connection.dart';
+import '../infrastructure/channel_owner.dart';
+import '../infrastructure/connection.dart';
 
 abstract class Channel {}
 

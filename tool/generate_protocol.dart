@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:yaml/yaml.dart';
-import 'package:playwright_dart/src/version.dart';
+import 'package:playwright_dart/src/utils/version.dart';
 
 void main() async {
   final Map<String, dynamic> protocol = {};

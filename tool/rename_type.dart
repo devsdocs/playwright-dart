@@ -2,13 +2,13 @@ import 'dart:io';
 
 void main() {
   final files = [
-    'lib/src/playwright.dart',
-    'lib/src/page.dart',
-    'lib/src/browser.dart',
-    'lib/src/browser_type.dart',
-    'lib/src/frame.dart',
-    'lib/src/browser_context.dart',
-    'lib/src/connection.dart',
+    'lib/src/core/playwright.dart',
+    'lib/src/core/page.dart',
+    'lib/src/core/browser.dart',
+    'lib/src/core/browser_type.dart',
+    'lib/src/core/frame.dart',
+    'lib/src/core/browser_context.dart',
+    'lib/src/infrastructure/connection.dart',
     'tool/generate_protocol.dart',
   ];
 

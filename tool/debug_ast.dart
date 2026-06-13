@@ -19,7 +19,7 @@ String getLexeme(dynamic node) {
 }
 
 void main() {
-  final file = File('lib/src/page.dart');
+  final file = File('lib/src/core/page.dart');
   final content = file.readAsStringSync();
   final result = parseString(
     content: content,
