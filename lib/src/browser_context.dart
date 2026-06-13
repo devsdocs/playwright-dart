@@ -9,6 +9,7 @@ import 'browser.dart';
 import 'generated/channels.dart';
 import 'route.dart';
 import 'route_from_har.dart';
+import 'request.dart';
 
 /// BrowserContexts provide a way to operate multiple independent browser sessions.
 ///
@@ -60,6 +61,13 @@ abstract interface class BrowserContext {
     BrowserContextSetStorageStateStorageState storageState,
   );
   Future<void> addInitScript(String source);
+
+  bool get isClosed;
+  List<Page> get backgroundPages;
+  List<Worker> get serviceWorkers;
+  void setDefaultTimeout(double timeout);
+  void setDefaultNavigationTimeout(double timeout);
+
   Future<void> close({String? reason});
   Future<void> setNetworkInterceptionPatterns(
     List<BrowserContextSetNetworkInterceptionPatternsPatternsItems> patterns,
@@ -121,6 +129,47 @@ abstract interface class BrowserContext {
 }
 
 class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
+  bool _isClosed = false;
+
+  @override
+  bool get isClosed => _isClosed;
+
+  @override
+  List<Page> get backgroundPages => objects.values
+      .whereType<PageImpl>()
+      .where((p) => p.initializer['isBackgroundPage'] == true)
+      .toList();
+
+  @override
+  List<Worker> get serviceWorkers =>
+      objects.values.whereType<Worker>().toList();
+
+  double? _timeout;
+  double? _navigationTimeout;
+
+  double? get defaultTimeout => _timeout;
+  double? get defaultNavigationTimeout => _navigationTimeout;
+
+  @override
+  void setDefaultTimeout(double timeout) {
+    _timeout = timeout;
+    connection
+        .sendMessageToServer(guid, 'setDefaultTimeoutNoReply', {
+          'timeout': timeout,
+        })
+        .catchError((_) => <String, dynamic>{});
+  }
+
+  @override
+  void setDefaultNavigationTimeout(double timeout) {
+    _navigationTimeout = timeout;
+    connection
+        .sendMessageToServer(guid, 'setDefaultNavigationTimeoutNoReply', {
+          'timeout': timeout,
+        })
+        .catchError((_) => <String, dynamic>{});
+  }
+
   @override
   Browser? get browser => parent is Browser ? parent as Browser : null;
   @override
@@ -228,7 +277,30 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     super.guid,
     super.initializer, [
     super.parent,
-  ]);
+  ]) {
+    onEvent.where((e) => e['event'] == 'close').listen((_) => _isClosed = true);
+    onEvent.where((e) => e['event'] == 'requestFailed').listen((e) {
+      final requestGuid = e['params']['request']['guid'];
+      final request = connection.objects[requestGuid] as RequestImpl?;
+      if (request != null) {
+        request.failureText = e['params']['failureText'];
+        if (e['params']['responseEndTiming'] != null) {
+          final t = request.timing;
+          t['responseEnd'] = e['params']['responseEndTiming'];
+          request.timing = t;
+        }
+      }
+    });
+    onEvent.where((e) => e['event'] == 'requestFinished').listen((e) {
+      final requestGuid = e['params']['request']['guid'];
+      final request = connection.objects[requestGuid] as RequestImpl?;
+      if (request != null && e['params']['responseEndTiming'] != null) {
+        final t = request.timing;
+        t['responseEnd'] = e['params']['responseEndTiming'];
+        request.timing = t;
+      }
+    });
+  }
 
   /// Creates a new page in the browser context.
   @override

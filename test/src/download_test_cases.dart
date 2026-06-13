@@ -35,20 +35,20 @@ void main() {
 
       await page.locator('#download-link').click();
 
-      final artifact = await downloadFuture;
+      final download = await downloadFuture;
 
       // Wait for it to finish and get path
-      final path = await artifact.pathAfterFinished();
+      final path = await download.path();
       expect(path, isNotNull);
 
       // Save it locally
       final tempFile = 'test_download.txt';
-      await artifact.saveAs(tempFile);
+      await download.saveAs(tempFile);
 
-      final error = await artifact.failureError();
+      final error = await download.failure();
       expect(error, isEmpty);
 
-      await artifact.delete();
+      await download.delete();
       await page.close();
     });
   });

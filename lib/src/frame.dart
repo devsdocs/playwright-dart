@@ -1,5 +1,6 @@
 import 'element_handle.dart';
 import 'channel_owner.dart';
+import 'frame_locator.dart';
 import 'generated/channels.dart';
 import 'jshandle.dart';
 import 'locator.dart';
@@ -15,6 +16,7 @@ abstract interface class Frame {
   Stream<Map<String, dynamic>> get onLoadstate;
   String url();
   Page get page;
+  FrameLocator frameLocator(String selector);
   Locator locator(String selector);
   Locator getByText(String text, {bool exact});
   Locator getByRole(String role, {String? name});
@@ -305,15 +307,31 @@ class FrameImpl extends FrameBase implements Frame {
   @override
   String url() => initializer['url'] as String;
 
+  PageImpl? _page;
+  void internalSetPage(PageImpl p) => _page = p;
+
   /// Returns the page containing this frame.
   @override
-  Page get page => parent as Page;
+  Page get page {
+    if (_page != null) return _page!;
+    // Fallback in case _page wasn't set (though it should be)
+    var p = parent;
+    while (p != null) {
+      if (p is PageImpl) return p;
+      p = p.parent;
+    }
+    throw StateError('Frame does not have a Page ancestor');
+  }
 
   /// Returns a locator for the given selector.
+
   @override
   Locator locator(String selector) {
     return Locator(this, selector);
   }
+
+  @override
+  FrameLocator frameLocator(String selector) => FrameLocator(this, selector);
 
   @override
   Locator getByText(String text, {bool exact = false}) {
@@ -372,7 +390,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     await channel_goto(
       url: url,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultNavigationTimeout,
       waitUntil: waitUntil ?? LifecycleEvent.load,
       referer: referer,
     );
@@ -412,7 +430,7 @@ class FrameImpl extends FrameBase implements Frame {
     return await channel_waitForSelector(
       selector: selector,
       state: state,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       omitReturnValue: omitReturnValue,
     );
@@ -424,7 +442,9 @@ class FrameImpl extends FrameBase implements Frame {
     LifecycleEvent? state = LifecycleEvent.load,
     double? timeout,
   }) async {
-    final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
+    final timeoutDuration = Duration(
+      milliseconds: (timeout ?? (page as PageImpl).defaultTimeout).toInt(),
+    );
 
     // Some events might have already occurred if we check the current state, but for simplicity
     // we wait for the next loadstate event matching our state. Playwright JS has a more complex Waiter.
@@ -448,7 +468,9 @@ class FrameImpl extends FrameBase implements Frame {
     double? timeout,
     LifecycleEvent? waitUntil,
   }) async {
-    final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
+    final timeoutDuration = Duration(
+      milliseconds: (timeout ?? (page as PageImpl).defaultTimeout).toInt(),
+    );
 
     bool matches(String currentUrl) {
       if (urlOrPredicate is String) {
@@ -497,7 +519,9 @@ class FrameImpl extends FrameBase implements Frame {
     if (url != null) {
       await waitForURL(url, timeout: timeout, waitUntil: waitUntil);
     } else {
-      final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
+      final timeoutDuration = Duration(
+        milliseconds: (timeout ?? (page as PageImpl).defaultTimeout).toInt(),
+      );
       await onEvent
           .firstWhere((e) => e['event'] == 'navigated')
           .timeout(
@@ -526,7 +550,7 @@ class FrameImpl extends FrameBase implements Frame {
       source: source,
       target: target,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       trial: trial,
       sourcePosition: sourcePosition,
@@ -553,7 +577,7 @@ class FrameImpl extends FrameBase implements Frame {
     await channel_click(
       selector: selector,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       trial: trial,
       modifiers: modifiers,
@@ -577,7 +601,7 @@ class FrameImpl extends FrameBase implements Frame {
       selector: selector,
       value: value,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
   }
@@ -594,7 +618,7 @@ class FrameImpl extends FrameBase implements Frame {
     await channel_check(
       selector: selector,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       trial: trial,
       position: position,
@@ -613,7 +637,7 @@ class FrameImpl extends FrameBase implements Frame {
     await channel_uncheck(
       selector: selector,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       trial: trial,
       position: position,
@@ -633,7 +657,7 @@ class FrameImpl extends FrameBase implements Frame {
     await channel_hover(
       selector: selector,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       trial: trial,
       modifiers: modifiers,
@@ -645,7 +669,7 @@ class FrameImpl extends FrameBase implements Frame {
   Future<void> focus(String selector, {double? timeout, bool? strict}) async {
     await channel_focus(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
   }
@@ -654,7 +678,7 @@ class FrameImpl extends FrameBase implements Frame {
   Future<void> blur(String selector, {double? timeout, bool? strict}) async {
     await channel_blur(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
   }
@@ -675,7 +699,7 @@ class FrameImpl extends FrameBase implements Frame {
     await channel_dblclick(
       selector: selector,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       trial: trial,
       modifiers: modifiers,
@@ -698,7 +722,7 @@ class FrameImpl extends FrameBase implements Frame {
       selector: selector,
       text: text,
       delay: delay,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
   }
@@ -716,7 +740,7 @@ class FrameImpl extends FrameBase implements Frame {
       selector: selector,
       key: key,
       delay: delay,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
   }
@@ -734,7 +758,7 @@ class FrameImpl extends FrameBase implements Frame {
     await channel_tap(
       selector: selector,
       force: force,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
       trial: trial,
       modifiers: modifiers,
@@ -756,7 +780,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     await channel_setContent(
       html: html,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       waitUntil: waitUntil ?? LifecycleEvent.load,
     );
   }
@@ -805,7 +829,7 @@ class FrameImpl extends FrameBase implements Frame {
     final result = await channel_getAttribute(
       selector: selector,
       name: name,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -819,7 +843,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     final result = await channel_innerHTML(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -833,7 +857,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     final result = await channel_innerText(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -847,7 +871,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     final result = await channel_inputValue(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -867,7 +891,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     final result = await channel_isChecked(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -881,7 +905,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     final result = await channel_isDisabled(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -895,7 +919,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     final result = await channel_isEnabled(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -921,7 +945,7 @@ class FrameImpl extends FrameBase implements Frame {
   }) async {
     final result = await channel_isEditable(
       selector: selector,
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       strict: strict,
     );
     return result.value;
@@ -957,7 +981,7 @@ class FrameImpl extends FrameBase implements Frame {
     final result = await channel_waitForFunction(
       expression: expression,
       arg: serializeArgument(arg),
-      timeout: timeout ?? 30000.0,
+      timeout: timeout ?? (page as PageImpl).defaultTimeout,
       pollingInterval: pollingInterval,
       isFunction: isFunction,
     );

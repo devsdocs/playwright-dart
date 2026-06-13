@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../test_helper.dart';
 
 void main() {
@@ -72,8 +70,7 @@ void main() {
       await page.waitForTimeout(1000);
 
       expect(method, equals('POST'));
-      final decodedPostData = utf8.decode(base64Decode(postData!));
-      expect(decodedPostData, contains('"key":"value"'));
+      expect(postData, contains('"key":"value"'));
     });
   });
 
@@ -127,6 +124,55 @@ void main() {
       }''');
 
       expect(failed, isTrue);
+    });
+  });
+
+  group('Network Advanced API', () {
+    test('should expose postDataJSON', (page) async {
+      String? jsonMethod;
+      dynamic postDataJson;
+
+      await page.route('**/submit-json', (route) async {
+        postDataJson = route.request.postDataJSON;
+        jsonMethod = route.request.method;
+        await route.fulfill(status: 200, body: 'OK');
+      });
+
+      await page.evaluate('''() => {
+        fetch("https://example.com/submit-json", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ "foo": "bar" })
+        });
+      }''');
+
+      await page.waitForTimeout(1000);
+      expect(jsonMethod, equals('POST'));
+      expect(postDataJson, isNotNull);
+      expect(postDataJson['foo'], equals('bar'));
+    });
+
+    test('should expose timing and failure properties', (page) async {
+      await page.route('**/timeout', (route) async {
+        await route.abort(errorCode: 'failed');
+      });
+
+      final requestFuture = page.onRequestFailed.first;
+
+      await page.evaluate('''async () => {
+        try {
+          await fetch("https://example.com/timeout");
+        } catch (e) {}
+      }''');
+
+      final failedRequest = await requestFuture;
+
+      print('FAILED REQUEST URL: ${failedRequest.url}');
+      print('FAILED REQUEST TIMING: ${failedRequest.timing}');
+
+      expect(failedRequest.failure, isNotNull);
+      expect(failedRequest.timing, isNotNull);
+      expect(failedRequest.timing['startTime'], isNotNull);
     });
   });
 }

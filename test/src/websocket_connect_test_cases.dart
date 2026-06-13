@@ -13,6 +13,7 @@ void main() {
         print(
           'Skipping WebSocket connect test since PLAYWRIGHT_WS_ENDPOINT is not set',
         );
+        await playwright.stop();
         return;
       }
 

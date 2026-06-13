@@ -1,4 +1,5 @@
 import 'response.dart';
+import 'dart:convert';
 import 'channel_owner.dart';
 import 'generated/channels.dart';
 import 'frame.dart';
@@ -14,12 +15,87 @@ abstract interface class Request {
   String? get postData;
   Map<String, dynamic> get headers;
   bool get isNavigationRequest;
+
+  Map<String, dynamic> get timing;
+  Request? get redirectedFrom;
+  Request? get redirectedTo;
+  String? get failure;
+  dynamic get postDataJSON;
+  List<int>? get postDataBuffer;
+
   Future<Response?> response();
   Future<Map<String, String>> allHeaders();
   Future<Map<String, String>> rawRequestHeaders();
 }
 
 class RequestImpl extends RequestBase implements Request {
+  Map<String, dynamic>? _timing;
+
+  @override
+  Map<String, dynamic> get timing {
+    if (_timing != null) return _timing!;
+    _timing = Map<String, dynamic>.from(
+      initializer['timing'] ??
+          {
+            'startTime': 0,
+            'domainLookupStart': -1,
+            'domainLookupEnd': -1,
+            'connectStart': -1,
+            'secureConnectionStart': -1,
+            'connectEnd': -1,
+            'requestStart': -1,
+            'responseStart': -1,
+            'responseEnd': -1,
+          },
+    );
+    return _timing!;
+  }
+
+  set timing(Map<String, dynamic> value) {
+    _timing = value;
+  }
+
+  @override
+  Request? get redirectedFrom {
+    final ref = initializer['redirectedFrom'];
+    if (ref == null) return null;
+    return connection.objects[ref['guid']] as Request?;
+  }
+
+  @override
+  Request? get redirectedTo {
+    final ref = initializer['redirectedTo'];
+    if (ref == null) return null;
+    return connection.objects[ref['guid']] as Request?;
+  }
+
+  String? _failureText;
+
+  @override
+  String? get failure => _failureText ?? initializer['failureText'] as String?;
+
+  set failureText(String? value) {
+    _failureText = value;
+  }
+
+  @override
+  dynamic get postDataJSON {
+    final data = postData;
+    if (data == null) return null;
+    try {
+      return jsonDecode(data);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  List<int>? get postDataBuffer {
+    final b64 = initializer['postData'] as String?;
+    if (b64 == null) return null;
+    return base64Decode(b64);
+  }
+
   RequestImpl(
     super.connection,
     super.channelType,
@@ -46,7 +122,12 @@ class RequestImpl extends RequestBase implements Request {
 
   /// Request's post body, if any.
   @override
-  String? get postData => initializer['postData'] as String?;
+  String? get postData {
+    final b64 = initializer['postData'] as String?;
+    if (b64 == null) return null;
+    return utf8.decode(base64Decode(b64));
+  }
+
   @override
   Map<String, dynamic> get headers =>
       (initializer['headers'] as List?)?.fold<Map<String, dynamic>>({}, (

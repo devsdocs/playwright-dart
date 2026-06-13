@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'frame_locator.dart';
 import 'frame.dart';
+import 'page.dart';
 import 'generated/channels.dart';
 import 'serialization.dart';
 import 'locator_assertions.dart';
@@ -18,6 +21,57 @@ class Locator {
       LocatorAssertions(this, false, timeout);
 
   /// Creates a locator that matches both this locator and the given selector.
+
+  Locator first() => locator('nth=0');
+  Locator last() => locator('nth=-1');
+  Locator nth(int index) => locator('nth=$index');
+
+  Locator and(Locator other) {
+    if (other.frame != frame) {
+      throw Exception('Locators must belong to the same frame.');
+    }
+    return Locator(
+      frame,
+      '$selector >> internal:and=${jsonEncode(other.selector)}',
+    );
+  }
+
+  Locator or(Locator other) {
+    if (other.frame != frame) {
+      throw Exception('Locators must belong to the same frame.');
+    }
+    return Locator(
+      frame,
+      '$selector >> internal:or=${jsonEncode(other.selector)}',
+    );
+  }
+
+  Locator filter({
+    String? hasText,
+    Locator? has,
+    String? hasNotText,
+    Locator? hasNot,
+  }) {
+    var sel = selector;
+    if (hasText != null) {
+      sel += ' >> internal:has-text=${jsonEncode(hasText)}';
+    }
+    if (has != null) {
+      sel += ' >> internal:has=${jsonEncode(has.selector)}';
+    }
+    if (hasNotText != null) {
+      sel += ' >> internal:has-not-text=${jsonEncode(hasNotText)}';
+    }
+    if (hasNot != null) {
+      sel += ' >> internal:has-not=${jsonEncode(hasNot.selector)}';
+    }
+    return Locator(frame, sel);
+  }
+
+  FrameLocator get contentFrame => FrameLocator(frame, selector);
+
+  Page get page => frame.page;
+
   Locator locator(String selectorOrLocator) {
     return Locator(frame, '$selector >> $selectorOrLocator');
   }

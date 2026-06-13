@@ -1,3 +1,4 @@
+import 'worker.dart';
 import 'dart:convert';
 import 'generated/channels.dart';
 import 'request.dart';
@@ -14,6 +15,9 @@ abstract interface class Response {
   Request get request;
   Frame get frame;
   Future<List<int>> body();
+
+  Worker? get fromServiceWorker;
+
   Future<String> text();
   Future<dynamic> json();
   Future<Map<String, dynamic>?> securityDetails();
@@ -26,6 +30,13 @@ abstract interface class Response {
 
 class ResponseImpl extends ResponseBase implements Response {
   @override
+  Worker? get fromServiceWorker {
+    final ref = initializer['fromServiceWorker'];
+    if (ref == null) return null;
+    return connection.objects[ref['guid']] as Worker?;
+  }
+
+  @override
   Request get request =>
       connection.objects[initializer['request']['guid']] as Request;
   @override
@@ -36,7 +47,13 @@ class ResponseImpl extends ResponseBase implements Response {
     super.guid,
     super.initializer, [
     super.parent,
-  ]);
+  ]) {
+    if (initializer['timing'] != null) {
+      (request as RequestImpl).timing = Map<String, dynamic>.from(
+        initializer['timing'],
+      );
+    }
+  }
 
   /// Contains the status code of the response (e.g., 200 for a success).
   @override

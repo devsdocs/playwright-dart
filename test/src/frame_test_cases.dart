@@ -34,4 +34,43 @@ void main() {
       expect(buttonCount, equals(1));
     });
   });
+
+  group('FrameLocator API', () {
+    test('should locate elements inside frame using frameLocator', (
+      page,
+    ) async {
+      await page.setContent('''
+        <iframe srcdoc="<button id='btn'>Click Me</button>"></iframe>
+      ''');
+
+      final frameLoc = page.frameLocator('iframe');
+      final btn = frameLoc.locator('#btn');
+      expect(await btn.textContent(), equals('Click Me'));
+    });
+
+    test('should use getByRole inside frame', (page) async {
+      await page.setContent('''
+        <iframe srcdoc="<button>Submit</button>"></iframe>
+      ''');
+
+      final submitBtn = page
+          .frameLocator('iframe')
+          .getByRole('button', name: 'Submit');
+      expect(await submitBtn.textContent(), equals('Submit'));
+    });
+
+    test('should support nested frameLocators', (page) async {
+      await page.setContent('''
+        <iframe id="outer" srcdoc="
+          <iframe id='inner' srcdoc='<h1>Nested</h1>'></iframe>
+        "></iframe>
+      ''');
+
+      final innerH1 = page
+          .frameLocator('#outer')
+          .frameLocator('#inner')
+          .locator('h1');
+      expect(await innerH1.textContent(), equals('Nested'));
+    });
+  });
 }

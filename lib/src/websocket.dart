@@ -9,10 +9,16 @@ abstract interface class PlaywrightWebSocket {
   Stream<Map<String, dynamic>> get onFrameSent;
   Stream<PlaywrightWebSocket> get onOpen;
   String get url;
+  bool get isClosed;
 }
 
 class PlaywrightWebSocketImpl extends WebSocketBase
     implements PlaywrightWebSocket {
+  bool _isClosed = false;
+
+  @override
+  bool get isClosed => _isClosed;
+
   @override
   Stream<PlaywrightWebSocket> get onClose {
     return onEvent.where((e) => e['event'] == 'close').map((e) => this);
@@ -50,7 +56,9 @@ class PlaywrightWebSocketImpl extends WebSocketBase
     super.guid,
     super.initializer, [
     super.parent,
-  ]);
+  ]) {
+    onEvent.where((e) => e['event'] == 'close').listen((_) => _isClosed = true);
+  }
 
   @override
   String get url => initializer['url'] as String;

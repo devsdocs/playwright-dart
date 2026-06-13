@@ -82,3 +82,5 @@ export 'src/root.dart';
 export 'src/socks_support.dart';
 export 'src/json_pipe.dart';
 export 'src/local_utils.dart';
+
+export 'src/download.dart';

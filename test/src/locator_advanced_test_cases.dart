@@ -263,4 +263,66 @@ void main() {
       );
     });
   });
+
+  group('Locator Chaining API', () {
+    test('should use and() and or()', (page) async {
+      await page.setContent('''
+        <div class="box red">Red Box</div>
+        <div class="box blue">Blue Box</div>
+      ''');
+
+      final redBox = page.locator('.box').and(page.locator('.red'));
+      expect(await redBox.textContent(), equals('Red Box'));
+
+      final anyBox = page.locator('.red').or(page.locator('.blue'));
+      expect(await anyBox.evaluateAll('els => els.length'), equals(2));
+    });
+
+    test('should use filter()', (page) async {
+      await page.setContent('''
+        <ul>
+          <li>Item 1 <button>Delete</button></li>
+          <li>Item 2</li>
+          <li>Item 3 <button>Delete</button></li>
+        </ul>
+      ''');
+
+      final itemsWithButton = page
+          .locator('li')
+          .filter(has: page.locator('button'));
+      expect(await itemsWithButton.evaluateAll('els => els.length'), equals(2));
+
+      final item2 = page.locator('li').filter(hasText: 'Item 2');
+      expect(await item2.textContent(), equals('Item 2'));
+    });
+
+    test('should use first(), last(), and nth()', (page) async {
+      await page.setContent('''
+        <div class="item">A</div>
+        <div class="item">B</div>
+        <div class="item">C</div>
+      ''');
+
+      final items = page.locator('.item');
+      expect(await items.first().textContent(), equals('A'));
+      expect(await items.last().textContent(), equals('C'));
+      expect(await items.nth(1).textContent(), equals('B'));
+    });
+
+    test('should find by alt text and title', (page) async {
+      await page.setContent('''
+        <img alt="Logo" src="logo.png" />
+        <span title="Tooltip">Hover me</span>
+      ''');
+
+      expect(
+        await page.getByAltText('Logo').getAttribute('src'),
+        equals('logo.png'),
+      );
+      expect(
+        await page.getByTitle('Tooltip').textContent(),
+        equals('Hover me'),
+      );
+    });
+  });
 }

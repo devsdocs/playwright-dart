@@ -1,4 +1,5 @@
 import 'channel_owner.dart';
+import 'element_handle.dart';
 import 'generated/channels.dart';
 import 'serialization.dart';
 
@@ -25,6 +26,7 @@ abstract interface class JSHandle {
   Future<Map<String, JSHandle>> getProperties();
   Future<Map<String, JSHandle>> getPropertyList();
   Future<dynamic> jsonValue();
+  ElementHandle? asElement();
   Future<void> dispose();
 }
 
@@ -33,6 +35,10 @@ class JSHandleImpl extends JSHandleBase implements JSHandle {
   Future<void> dispose() async {
     await channel_dispose();
   }
+
+  @override
+  ElementHandle? asElement() =>
+      this is ElementHandle ? this as ElementHandle : null;
 
   @override
   Stream<dynamic> get onPreviewUpdated {

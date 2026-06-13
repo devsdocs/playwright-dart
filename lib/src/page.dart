@@ -1,3 +1,4 @@
+import 'download.dart';
 import 'jshandle.dart';
 import 'binding_call.dart';
 import 'websocket_route.dart';
@@ -10,6 +11,7 @@ import 'browser_context.dart';
 import 'generated/channels.dart' as channels;
 import 'generated/channels.dart' hide ConsoleMessage;
 import 'frame.dart';
+import 'frame_locator.dart';
 import 'locator.dart';
 import 'keyboard.dart';
 import 'mouse.dart';
@@ -63,7 +65,13 @@ abstract interface class Page {
   Future<Request> waitForRequest(dynamic urlOrPredicate, {double? timeout});
   Future<Response> waitForResponse(dynamic urlOrPredicate, {double? timeout});
 
-  Stream<Artifact> get onDownload;
+  bool get isClosed;
+  String url();
+  PageSetViewportSizeViewportSize? get viewportSize;
+  void setDefaultTimeout(double timeout);
+  void setDefaultNavigationTimeout(double timeout);
+
+  Stream<Download> get onDownload;
   Future<void> goto(
     String url, {
     double? timeout,
@@ -83,6 +91,7 @@ abstract interface class Page {
   });
   Future<String> title();
   Locator locator(String selector);
+  FrameLocator frameLocator(String selector);
   Future<dynamic> evaluate(String expression, [dynamic arg]);
   Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
@@ -320,6 +329,53 @@ abstract interface class Page {
 }
 
 class PageImpl extends PageBase implements Page {
+  bool _isClosed = false;
+  double? _timeout;
+  double? _navigationTimeout;
+
+  double get defaultNavigationTimeout =>
+      _navigationTimeout ??
+      _timeout ??
+      (context as BrowserContextImpl).defaultNavigationTimeout ??
+      (context as BrowserContextImpl).defaultTimeout ??
+      30000.0;
+
+  double get defaultTimeout =>
+      _timeout ?? (context as BrowserContextImpl).defaultTimeout ?? 30000.0;
+
+  @override
+  bool get isClosed => _isClosed;
+
+  @override
+  String url() => mainFrame.url();
+
+  @override
+  PageSetViewportSizeViewportSize? get viewportSize {
+    final size = initializer['viewportSize'];
+    if (size == null) return null;
+    return PageSetViewportSizeViewportSize.fromJson(size);
+  }
+
+  @override
+  void setDefaultTimeout(double timeout) {
+    _timeout = timeout;
+    connection
+        .sendMessageToServer(guid, 'setDefaultTimeoutNoReply', {
+          'timeout': timeout,
+        })
+        .catchError((_) => <String, dynamic>{});
+  }
+
+  @override
+  void setDefaultNavigationTimeout(double timeout) {
+    _navigationTimeout = timeout;
+    connection
+        .sendMessageToServer(guid, 'setDefaultNavigationTimeoutNoReply', {
+          'timeout': timeout,
+        })
+        .catchError((_) => <String, dynamic>{});
+  }
+
   @override
   List<Frame> get frames => objects.values.whereType<Frame>().toList();
   @override
@@ -397,6 +453,17 @@ class PageImpl extends PageBase implements Page {
     keyboard = Keyboard(this);
     mouse = Mouse(this);
     touchscreen = Touchscreen(this);
+    onEvent.where((e) => e['event'] == 'close').listen((_) => _isClosed = true);
+
+    (mainFrame as FrameImpl).internalSetPage(this);
+    for (final f in mainFrame.childFrames) {
+      (f as FrameImpl).internalSetPage(this);
+    }
+    onEvent.where((e) => e['event'] == 'frameAttached').listen((e) {
+      final frame =
+          connection.objects[e['params']['frame']['guid']] as FrameImpl?;
+      if (frame != null) frame.internalSetPage(this);
+    });
   }
 
   /// The browser context that the page belongs to.
@@ -535,7 +602,16 @@ class PageImpl extends PageBase implements Page {
         )
         .map((e) {
           final requestGuid = e['params']['request']['guid'];
-          return connection.objects[requestGuid] as Request;
+          final req = connection.objects[requestGuid] as RequestImpl;
+          if (e['params']['failureText'] != null) {
+            req.failureText = e['params']['failureText'];
+          }
+          if (e['params']['responseEndTiming'] != null) {
+            final t = req.timing;
+            t['responseEnd'] = e['params']['responseEndTiming'];
+            req.timing = t;
+          }
+          return req;
         });
   }
 
@@ -663,10 +739,13 @@ class PageImpl extends PageBase implements Page {
   /// Emitted when an attachment download is triggered, returning the [Artifact]
   /// representing the downloaded file.
   @override
-  Stream<Artifact> get onDownload {
+  Stream<Download> get onDownload {
     return onEvent.where((e) => e['event'] == 'download').map((e) {
       final artifactGuid = e['params']['artifact']['guid'];
-      return connection.objects[artifactGuid] as Artifact;
+      final artifact = connection.objects[artifactGuid] as Artifact;
+      final url = e['params']['url'] as String;
+      final suggestedFilename = e['params']['suggestedFilename'] as String;
+      return Download(this, url, suggestedFilename, artifact);
     });
   }
 
@@ -743,6 +822,10 @@ class PageImpl extends PageBase implements Page {
   Locator locator(String selector) {
     return mainFrame.locator(selector);
   }
+
+  @override
+  FrameLocator frameLocator(String selector) =>
+      mainFrame.frameLocator(selector);
 
   /// Returns the value of the `expression` invocation.
   ///

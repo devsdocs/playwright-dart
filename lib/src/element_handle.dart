@@ -133,6 +133,9 @@ abstract interface class ElementHandle {
 class ElementHandleImpl extends ElementHandleBase
     implements ElementHandle, JSHandle {
   @override
+  ElementHandle? asElement() => this;
+
+  @override
   Stream<dynamic> get onPreviewUpdated {
     return onEvent
         .where((e) => e['event'] == 'previewUpdated')
