@@ -10,7 +10,9 @@ class ElectronApplication extends ElectronApplicationBase {
     super.parent,
   ]);
 
-  Future<Map<String, dynamic>> browserWindow(PageBase page) async {
+  Future<ElectronApplicationBrowserWindowResult> browserWindow(
+    PageBase page,
+  ) async {
     return await channel_browserWindow(page: page);
   }
 
@@ -24,7 +26,7 @@ class ElectronApplication extends ElectronApplicationBase {
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<dynamic> evaluateExpressionHandle(
@@ -37,10 +39,13 @@ class ElectronApplication extends ElectronApplicationBase {
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return result['handle'];
+    return result.handle;
   }
 
-  Future<void> updateSubscription(String event, bool enabled) async {
+  Future<void> updateSubscription(
+    ElectronApplicationUpdateSubscriptionEventEnum event,
+    bool enabled,
+  ) async {
     await channel_updateSubscription(event: event, enabled: enabled);
   }
 }

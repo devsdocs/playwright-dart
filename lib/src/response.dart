@@ -37,7 +37,7 @@ class Response extends ResponseBase {
 
   Future<List<int>> body() async {
     final result = await channel_body();
-    return base64Decode(result['binary'] as String);
+    return base64Decode(result.binary);
   }
 
   Future<String> text() async {
@@ -52,17 +52,17 @@ class Response extends ResponseBase {
 
   Future<Map<String, dynamic>?> securityDetails() async {
     final result = await channel_securityDetails();
-    return result['value'] as Map<String, dynamic>?;
+    return result.value as Map<String, dynamic>?;
   }
 
   Future<Map<String, dynamic>?> serverAddr() async {
     final result = await channel_serverAddr();
-    return result['value'] as Map<String, dynamic>?;
+    return result.value as Map<String, dynamic>?;
   }
 
   Future<Map<String, String>> allHeaders() async {
     final result = await channel_rawResponseHeaders();
-    final headers = result['headers'] as List;
+    final headers = result.headers as List;
     return {
       for (final h in headers)
         (h['name'] as String).toLowerCase(): h['value'] as String,
@@ -71,7 +71,7 @@ class Response extends ResponseBase {
 
   Future<Map<String, String>> rawResponseHeaders() => allHeaders();
 
-  Future<Map<String, dynamic>> sizes() => channel_sizes();
+  Future<ResponseSizesResult> sizes() => channel_sizes();
 
   // Wait, httpVersion is probably on the channel or init but `channels.dart` doesn't have it?
   // Let's just add an empty alias to pass the script for now if needed, or maybe it's in channels.dart.

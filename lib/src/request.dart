@@ -29,14 +29,14 @@ class Request extends RequestBase {
 
   Future<dynamic> response() async {
     final result = await channel_response();
-    final resp = result['response'];
+    final resp = result.response;
     if (resp == null) return null;
     return ChannelOwner.from(connection, resp as Map<String, dynamic>);
   }
 
   Future<Map<String, String>> allHeaders() async {
     final result = await channel_rawRequestHeaders();
-    final headers = result['headers'] as List;
+    final headers = result.headers as List;
     return {
       for (final h in headers)
         (h['name'] as String).toLowerCase(): h['value'] as String,

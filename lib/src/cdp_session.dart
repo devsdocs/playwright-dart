@@ -14,7 +14,7 @@ class CDPSession extends CDPSessionBase {
     Map<String, dynamic>? params,
   }) async {
     final result = await channel_send(method: method, params: params);
-    return result['result'] as Map<String, dynamic>? ?? {};
+    return result.result as Map<String, dynamic>? ?? {};
   }
 
   Future<void> detach() async {

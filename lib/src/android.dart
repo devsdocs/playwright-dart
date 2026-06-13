@@ -1,4 +1,5 @@
 import 'generated/channels.dart';
+import 'android_device.dart';
 
 class Android extends AndroidBase {
   Android(
@@ -9,15 +10,16 @@ class Android extends AndroidBase {
     super.parent,
   ]);
 
-  Future<Map<String, dynamic>> devices({
+  Future<List<AndroidDevice>> devices({
     String? host,
     int? port,
     bool? omitDriverInstall,
   }) async {
-    return await channel_devices(
+    final result = await channel_devices(
       host: host,
       port: port,
       omitDriverInstall: omitDriverInstall,
     );
+    return (result.devices as List).cast<AndroidDevice>();
   }
 }

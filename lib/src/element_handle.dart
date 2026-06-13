@@ -20,7 +20,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   @override
@@ -29,10 +29,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return ChannelOwner.from(
-      connection,
-      result['handle'] as Map<String, dynamic>,
-    );
+    return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
   }
 
   @override
@@ -48,7 +45,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     final result = await channel_getProperty(name: propertyName);
     return ChannelOwner.from<JSHandle>(
       connection,
-      result['handle'] as Map<String, dynamic>,
+      result.handle as Map<String, dynamic>,
     );
   }
 
@@ -56,7 +53,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   Future<Map<String, JSHandle>> getProperties() async {
     final result = await channel_getPropertyList();
     final map = <String, JSHandle>{};
-    for (final property in result['properties'] as List) {
+    for (final property in result.properties as List) {
       map[property['name'] as String] = ChannelOwner.from<JSHandle>(
         connection,
         property['value'] as Map<String, dynamic>,
@@ -71,7 +68,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   @override
   Future<dynamic> jsonValue() async {
     final result = await channel_jsonValue();
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   @override
@@ -89,7 +86,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<dynamic> evalOnSelectorAll(
@@ -102,7 +99,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   // Element actions
@@ -153,74 +150,74 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   // State
   Future<String?> getAttribute(String name) async {
     final result = await channel_getAttribute(name: name);
-    return result['value'] as String?;
+    return result.value;
   }
 
   Future<String> innerHTML() async {
     final result = await channel_innerHTML();
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<String> innerText() async {
     final result = await channel_innerText();
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<String> inputValue() async {
     final result = await channel_inputValue();
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<String> textContent() async {
     final result = await channel_textContent();
-    return result['value'] as String;
+    return result.value as String;
   }
 
   Future<bool> isChecked() async {
     final result = await channel_isChecked();
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isDisabled() async {
     final result = await channel_isDisabled();
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isEditable() async {
     final result = await channel_isEditable();
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isEnabled() async {
     final result = await channel_isEnabled();
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isHidden() async {
     final result = await channel_isHidden();
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isVisible() async {
     final result = await channel_isVisible();
-    return result['value'] as bool;
+    return result.value;
   }
 
-  Future<Map<String, dynamic>?> boundingBox() async {
+  Future<Rect?> boundingBox() async {
     final result = await channel_boundingBox();
-    return result['boundingBox'] as Map<String, dynamic>?;
+    return result.value;
   }
 
   Future<Frame?> contentFrame() async {
     final result = await channel_contentFrame();
-    final frame = result['frame'];
+    final frame = result.frame;
     if (frame == null) return null;
     return ChannelOwner.from<Frame>(connection, frame as Map<String, dynamic>);
   }
 
   Future<Frame?> ownerFrame() async {
     final result = await channel_ownerFrame();
-    final frame = result['frame'];
+    final frame = result.frame;
     if (frame == null) return null;
     return ChannelOwner.from<Frame>(connection, frame as Map<String, dynamic>);
   }
@@ -230,7 +227,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       selector: selector,
       strict: strict,
     );
-    final element = result['element'];
+    final element = result.element;
     if (element == null) return null;
     return ChannelOwner.from<ElementHandle>(
       connection,
@@ -240,7 +237,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
 
   Future<List<ElementHandle>> querySelectorAll(String selector) async {
     final result = await channel_querySelectorAll(selector: selector);
-    final elements = result['elements'] as List;
+    final elements = result.elements as List;
     return elements
         .map(
           (e) => ChannelOwner.from<ElementHandle>(
@@ -260,7 +257,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
 
   Future<List<int>> screenshot({
     double? timeout,
-    String? type,
+    ElementHandleScreenshotTypeEnum? type,
     int? quality,
     CommonScreenshotOptions? mixin,
   }) async {
@@ -270,7 +267,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       quality: quality,
       mixin: mixin ?? CommonScreenshotOptions(),
     );
-    return base64Decode(result['binary'] as String);
+    return base64Decode(result.binary);
   }
 
   Future<List<String>> selectOption({
@@ -291,7 +288,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       force: force,
       timeout: timeout ?? 30000.0,
     );
-    return (result['values'] as List).cast<String>();
+    return (result.values as List).cast<String>();
   }
 
   Future<void> selectText({bool? force, double? timeout}) async {
@@ -302,7 +299,10 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     await channel_setInputFiles(localPaths: files, timeout: timeout ?? 30000.0);
   }
 
-  Future<void> waitForElementState(String state, {double? timeout}) async {
+  Future<void> waitForElementState(
+    ElementHandleWaitForElementStateStateEnum state, {
+    double? timeout,
+  }) async {
     await channel_waitForElementState(
       state: state,
       timeout: timeout ?? 30000.0,
@@ -312,7 +312,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   Future<ElementHandle?> waitForSelector(
     String selector, {
     bool? strict,
-    String? state,
+    ElementHandleWaitForSelectorStateEnum? state,
     double? timeout,
   }) async {
     final result = await channel_waitForSelector(
@@ -321,7 +321,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       state: state,
       timeout: timeout ?? 30000.0,
     );
-    final element = result['element'];
+    final element = result.element;
     if (element == null) return null;
     return ChannelOwner.from<ElementHandle>(
       connection,

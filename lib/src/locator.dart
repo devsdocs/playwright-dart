@@ -1,4 +1,5 @@
 import 'frame.dart';
+import 'generated/channels.dart';
 import 'serialization.dart';
 
 class Locator {
@@ -89,7 +90,7 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<String> textContent({double? timeout}) async {
@@ -97,7 +98,7 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value as String;
   }
 
   Future<void> hover({bool? force, double? timeout}) async {
@@ -130,7 +131,7 @@ class Locator {
       name: name,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String?;
+    return result.value;
   }
 
   Future<String> inputValue({double? timeout}) async {
@@ -138,12 +139,12 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<bool> isVisible() async {
     final result = await frame.channel_isVisible(selector: selector);
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<String> innerHTML({double? timeout}) async {
@@ -151,7 +152,7 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<bool> isEditable({double? timeout}) async {
@@ -159,12 +160,12 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isHidden() async {
     final result = await frame.channel_isHidden(selector: selector);
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isEnabled({double? timeout}) async {
@@ -172,7 +173,7 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isDisabled({double? timeout}) async {
@@ -180,7 +181,7 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isChecked({double? timeout}) async {
@@ -188,7 +189,7 @@ class Locator {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<dynamic> evaluateAll(String expression, [dynamic arg]) async {
@@ -278,12 +279,12 @@ class Locator {
     );
   }
 
-  Future<Map<String, dynamic>> resolveSelector() async {
+  Future<FrameResolveSelectorResult> resolveSelector() async {
     return await frame.resolveSelector(selector);
   }
 
-  Future<Map<String, dynamic>> ariaSnapshot({
-    String? mode,
+  Future<FrameAriaSnapshotResult> ariaSnapshot({
+    FrameAriaSnapshotModeEnum? mode,
     String? track,
     int? depth,
     bool? boxes,
@@ -321,10 +322,13 @@ class Locator {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
-  Future<void> waitFor({String? state, double? timeout}) async {
+  Future<void> waitFor({
+    FrameWaitForSelectorStateEnum? state,
+    double? timeout,
+  }) async {
     await frame.waitForSelector(selector, state: state, timeout: timeout);
   }
 

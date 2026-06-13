@@ -23,7 +23,7 @@ class Worker extends WorkerBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<JSHandle> evaluateHandle(String expression, [dynamic arg]) async {
@@ -33,7 +33,7 @@ class Worker extends WorkerBase {
     );
     return ChannelOwner.from<JSHandle>(
       connection,
-      result['handle'] as Map<String, dynamic>,
+      result.handle as Map<String, dynamic>,
     );
   }
 

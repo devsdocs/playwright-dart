@@ -9,7 +9,7 @@ class Root extends RootBase {
     super.parent,
   ]);
 
-  Future<Map<String, dynamic>> initialize({
+  Future<RootInitializeResult> initialize({
     required SDKLanguage sdkLanguage,
   }) async {
     return await channel_initialize(sdkLanguage: sdkLanguage);

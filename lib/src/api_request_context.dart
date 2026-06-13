@@ -40,7 +40,7 @@ class APIRequestContext extends APIRequestContextBase {
     );
     return ChannelOwner.from(
       connection,
-      result['response'] as Map<String, dynamic>,
+      result.response as Map<String, dynamic>,
     );
   }
 
@@ -107,7 +107,9 @@ class APIRequestContext extends APIRequestContextBase {
     double? timeout,
   }) => fetch(url, method: 'HEAD', headers: headers, timeout: timeout);
 
-  Future<Map<String, dynamic>> storageState({bool? indexedDB}) async {
+  Future<APIRequestContextStorageStateResult> storageState({
+    bool? indexedDB,
+  }) async {
     final result = await channel_storageState(indexedDB: indexedDB);
     return result;
   }
@@ -118,10 +120,12 @@ class APIRequestContext extends APIRequestContextBase {
   }
 
   // Aliases for missing script check
-  Future<Map<String, dynamic>> fetchResponseBody({required String fetchUid}) =>
-      channel_fetchResponseBody(fetchUid: fetchUid);
-  Future<Map<String, dynamic>> fetchLog({required String fetchUid}) =>
-      channel_fetchLog(fetchUid: fetchUid);
+  Future<APIRequestContextFetchResponseBodyResult> fetchResponseBody({
+    required String fetchUid,
+  }) => channel_fetchResponseBody(fetchUid: fetchUid);
+  Future<APIRequestContextFetchLogResult> fetchLog({
+    required String fetchUid,
+  }) => channel_fetchLog(fetchUid: fetchUid);
   Future<void> disposeAPIResponse({required String fetchUid}) =>
       channel_disposeAPIResponse(fetchUid: fetchUid);
 }

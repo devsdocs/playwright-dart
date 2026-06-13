@@ -1,5 +1,6 @@
 import 'channel_owner.dart';
 import 'generated/channels.dart';
+import 'jshandle.dart';
 import 'locator.dart';
 import 'serialization.dart';
 
@@ -70,7 +71,7 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value as String;
   }
 
   Future<dynamic> evaluate(String expression, [dynamic arg]) async {
@@ -78,12 +79,12 @@ class Frame extends FrameBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<void> waitForSelector(
     String selector, {
-    String? state,
+    FrameWaitForSelectorStateEnum? state,
     double? timeout,
   }) async {
     await channel_waitForSelector(
@@ -207,7 +208,7 @@ class Frame extends FrameBase {
 
   Future<String> content() async {
     final result = await channel_content();
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<void> setContent(String html, {double? timeout}) async {
@@ -224,7 +225,7 @@ class Frame extends FrameBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<dynamic> evalOnSelectorAll(
@@ -237,7 +238,7 @@ class Frame extends FrameBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<String?> getAttribute(
@@ -250,7 +251,7 @@ class Frame extends FrameBase {
       name: name,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String?;
+    return result.value;
   }
 
   Future<String> innerHTML(String selector, {double? timeout}) async {
@@ -258,7 +259,7 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<String> innerText(String selector, {double? timeout}) async {
@@ -266,7 +267,7 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<String> inputValue(String selector, {double? timeout}) async {
@@ -274,12 +275,12 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<String> title() async {
     final result = await channel_title();
-    return result['value'] as String;
+    return result.value;
   }
 
   Future<bool> isChecked(String selector, {double? timeout}) async {
@@ -287,7 +288,7 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isDisabled(String selector, {double? timeout}) async {
@@ -295,7 +296,7 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isEnabled(String selector, {double? timeout}) async {
@@ -303,17 +304,17 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isHidden(String selector) async {
     final result = await channel_isHidden(selector: selector);
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isVisible(String selector) async {
     final result = await channel_isVisible(selector: selector);
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<bool> isEditable(String selector, {double? timeout}) async {
@@ -321,7 +322,7 @@ class Frame extends FrameBase {
       selector: selector,
       timeout: timeout ?? 30000.0,
     );
-    return result['value'] as bool;
+    return result.value;
   }
 
   Future<void> addScriptTag({
@@ -352,7 +353,7 @@ class Frame extends FrameBase {
       timeout: timeout ?? 30000.0,
       pollingInterval: pollingInterval,
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return result.handle as JSHandle;
   }
 
   Future<void> dispatchEvent(
@@ -395,13 +396,13 @@ class Frame extends FrameBase {
     );
   }
 
-  Future<Map<String, dynamic>> resolveSelector(String selector) async {
+  Future<FrameResolveSelectorResult> resolveSelector(String selector) async {
     return await channel_resolveSelector(selector: selector);
   }
 
-  Future<Map<String, dynamic>> ariaSnapshot(
+  Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
-    String? mode,
+    FrameAriaSnapshotModeEnum? mode,
     String? track,
     int? depth,
     bool? boxes,
@@ -427,7 +428,7 @@ class Frame extends FrameBase {
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<dynamic> evaluateExpressionHandle(
@@ -440,21 +441,18 @@ class Frame extends FrameBase {
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return ChannelOwner.from(
-      connection,
-      result['handle'] as Map<String, dynamic>,
-    );
+    return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
   }
 
   Future<dynamic> frameElement() async {
     final result = await channel_frameElement();
     return ChannelOwner.from(
       connection,
-      result['element'] as Map<String, dynamic>,
+      result.element as Map<String, dynamic>,
     );
   }
 
-  Future<Map<String, dynamic>> expect(
+  Future<FrameExpectResult> expect(
     String selector,
     String expression, {
     SerializedArgument? expectedValue,
@@ -482,13 +480,13 @@ class Frame extends FrameBase {
 
   Future<List<Locator>> querySelectorAll(String selector) async {
     final result = await channel_querySelectorAll(selector: selector);
-    final elements = result['elements'] as List? ?? [];
+    final elements = result.elements as List? ?? [];
     return elements.map((_) => locator(selector)).toList();
   }
 
   Future<int> queryCount(String selector) async {
     final result = await channel_queryCount(selector: selector);
-    return result['value'] as int;
+    return result.value;
   }
 
   Future<List<String>> selectOption(
@@ -505,7 +503,7 @@ class Frame extends FrameBase {
       force: force,
       timeout: timeout ?? 30000.0,
     );
-    return (result['values'] as List).cast<String>();
+    return (result.values as List).cast<String>();
   }
 
   Future<void> setInputFiles(

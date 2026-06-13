@@ -1,3 +1,4 @@
+import 'generated/channels.dart';
 import 'page.dart';
 
 class Mouse {
@@ -9,11 +10,11 @@ class Mouse {
     await page.channel_mouseMove(x: x, y: y, steps: steps);
   }
 
-  Future<void> down({String? button, int? clickCount}) async {
+  Future<void> down({PageMouseDownButtonEnum? button, int? clickCount}) async {
     await page.channel_mouseDown(button: button, clickCount: clickCount);
   }
 
-  Future<void> up({String? button, int? clickCount}) async {
+  Future<void> up({PageMouseUpButtonEnum? button, int? clickCount}) async {
     await page.channel_mouseUp(button: button, clickCount: clickCount);
   }
 
@@ -21,7 +22,7 @@ class Mouse {
     double x,
     double y, {
     double? delay,
-    String? button,
+    PageMouseClickButtonEnum? button,
     int? clickCount,
   }) async {
     await page.channel_mouseClick(

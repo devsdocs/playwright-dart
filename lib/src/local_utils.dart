@@ -12,7 +12,7 @@ class LocalUtils extends LocalUtilsBase {
     String zipFile,
     List<NameValue> entries, {
     String? stacksId,
-    required String mode,
+    required LocalUtilsZipModeEnum mode,
     required bool includeSources,
     List<String>? additionalSources,
   }) async {
@@ -28,10 +28,10 @@ class LocalUtils extends LocalUtilsBase {
 
   Future<String> harOpen(String file) async {
     final result = await channel_harOpen(file: file);
-    return result['harId'] as String;
+    return result.harId as String;
   }
 
-  Future<Map<String, dynamic>> harLookup(
+  Future<LocalUtilsHarLookupResult> harLookup(
     String harId,
     String url,
     String method,
@@ -83,7 +83,7 @@ class LocalUtils extends LocalUtilsBase {
       timeout: timeout ?? 30000.0,
       socksProxyRedirectPortForTest: socksProxyRedirectPortForTest,
     );
-    return result['pipe'];
+    return result.pipe;
   }
 
   Future<String> tracingStarted(
@@ -96,7 +96,7 @@ class LocalUtils extends LocalUtilsBase {
       tracesDir: tracesDir,
       live: live,
     );
-    return result['traceId'] as String? ?? '';
+    return result.stacksId;
   }
 
   Future<void> addStackToTracingNoReply(ClientSideCallMetadata callData) async {
@@ -117,6 +117,6 @@ class LocalUtils extends LocalUtilsBase {
       baseURL: baseURL,
       webSocketUrl: webSocketUrl,
     );
-    return result['source'] as String;
+    return result.regex;
   }
 }

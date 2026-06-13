@@ -52,7 +52,7 @@ class Page extends PageBase {
 
   Future<void> waitForSelector(
     String selector, {
-    String? state,
+    FrameWaitForSelectorStateEnum? state,
     double? timeout,
   }) async {
     return mainFrame.waitForSelector(selector, state: state, timeout: timeout);
@@ -153,12 +153,14 @@ class Page extends PageBase {
   }) async {
     final result = await channel_screenshot(
       timeout: timeout ?? 30000.0,
-      type: type,
+      type: type != null
+          ? PageScreenshotTypeEnum.values.firstWhere((e) => e.value == type)
+          : null,
       quality: quality,
       fullPage: fullPage,
       mixin: CommonScreenshotOptions(),
     );
-    final buffer = base64Decode(result['binary']);
+    final buffer = base64Decode(result.binary);
     if (path != null) {
       await File(path).writeAsBytes(buffer);
     }
@@ -167,7 +169,7 @@ class Page extends PageBase {
 
   Future<Uint8List> pdf({String? path, String? format, bool? landscape}) async {
     final result = await channel_pdf(format: format, landscape: landscape);
-    final buffer = base64Decode(result['pdf']);
+    final buffer = base64Decode(result.pdf);
     if (path != null) {
       await File(path).writeAsBytes(buffer);
     }
@@ -202,11 +204,29 @@ class Page extends PageBase {
     String? contrast,
   }) async {
     await channel_emulateMedia(
-      media: media,
-      colorScheme: colorScheme,
-      reducedMotion: reducedMotion,
-      forcedColors: forcedColors,
-      contrast: contrast,
+      media: media != null
+          ? PageEmulateMediaMediaEnum.values.firstWhere((e) => e.value == media)
+          : null,
+      colorScheme: colorScheme != null
+          ? PageEmulateMediaColorSchemeEnum.values.firstWhere(
+              (e) => e.value == colorScheme,
+            )
+          : null,
+      reducedMotion: reducedMotion != null
+          ? PageEmulateMediaReducedMotionEnum.values.firstWhere(
+              (e) => e.value == reducedMotion,
+            )
+          : null,
+      forcedColors: forcedColors != null
+          ? PageEmulateMediaForcedColorsEnum.values.firstWhere(
+              (e) => e.value == forcedColors,
+            )
+          : null,
+      contrast: contrast != null
+          ? PageEmulateMediaContrastEnum.values.firstWhere(
+              (e) => e.value == contrast,
+            )
+          : null,
     );
   }
 
@@ -440,7 +460,7 @@ class Page extends PageBase {
     );
   }
 
-  Future<Map<String, dynamic>> ariaSnapshot(
+  Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
     String? mode,
     String? track,
@@ -450,7 +470,9 @@ class Page extends PageBase {
   }) {
     return mainFrame.ariaSnapshot(
       selector,
-      mode: mode,
+      mode: mode != null
+          ? FrameAriaSnapshotModeEnum.values.firstWhere((e) => e.value == mode)
+          : null,
       track: track,
       depth: depth,
       boxes: boxes,
@@ -458,7 +480,7 @@ class Page extends PageBase {
     );
   }
 
-  Future<Map<String, dynamic>> expect(
+  Future<FrameExpectResult> expect(
     String selector,
     String expression, {
     SerializedArgument? expectedValue,
@@ -488,7 +510,7 @@ class Page extends PageBase {
     await channel_requestGC();
   }
 
-  Future<Map<String, dynamic>> registerLocatorHandler(
+  Future<PageRegisterLocatorHandlerResult> registerLocatorHandler(
     Locator locator, {
     bool? noWaitAfter,
   }) async {
@@ -523,7 +545,7 @@ class Page extends PageBase {
     await channel_bringToFront();
   }
 
-  Future<Map<String, dynamic>> pickLocator() async {
+  Future<PagePickLocatorResult> pickLocator() async {
     return await channel_pickLocator();
   }
 
@@ -559,7 +581,7 @@ class Page extends PageBase {
     await channel_clearConsoleMessages();
   }
 
-  Future<Map<String, dynamic>> consoleMessages({
+  Future<PageConsoleMessagesResult> consoleMessages({
     ConsoleMessagesFilter? filter,
   }) async {
     return await channel_consoleMessages(filter: filter);
@@ -571,7 +593,7 @@ class Page extends PageBase {
     await channel_clearPageErrors();
   }
 
-  Future<Map<String, dynamic>> pageErrors({
+  Future<PagePageErrorsResult> pageErrors({
     ConsoleMessagesFilter? filter,
   }) async {
     return await channel_pageErrors(filter: filter);
@@ -579,7 +601,7 @@ class Page extends PageBase {
 
   // --- Requests ---
 
-  Future<Map<String, dynamic>> requests() async {
+  Future<PageRequestsResult> requests() async {
     return await channel_requests();
   }
 
@@ -591,7 +613,7 @@ class Page extends PageBase {
 
   // --- Screenshot Expect ---
 
-  Future<Map<String, dynamic>> expectScreenshot({
+  Future<PageExpectScreenshotResult> expectScreenshot({
     String? expected,
     required double timeout,
     required bool isNot,
@@ -639,7 +661,7 @@ class Page extends PageBase {
     );
   }
 
-  Future<Map<String, dynamic>> stopJSCoverage() async {
+  Future<PageStopJSCoverageResult> stopJSCoverage() async {
     return await channel_stopJSCoverage();
   }
 
@@ -647,13 +669,13 @@ class Page extends PageBase {
     await channel_startCSSCoverage(resetOnNavigation: resetOnNavigation);
   }
 
-  Future<Map<String, dynamic>> stopCSSCoverage() async {
+  Future<PageStopCSSCoverageResult> stopCSSCoverage() async {
     return await channel_stopCSSCoverage();
   }
 
   // --- Screencast ---
 
-  Future<Map<String, dynamic>> screencastShowOverlay(
+  Future<PageScreencastShowOverlayResult> screencastShowOverlay(
     String html, {
     double? duration,
   }) async {
@@ -694,6 +716,11 @@ class Page extends PageBase {
     required String event,
     required bool enabled,
   }) async {
-    await channel_updateSubscription(event: event, enabled: enabled);
+    await channel_updateSubscription(
+      event: PageUpdateSubscriptionEventEnum.values.firstWhere(
+        (e) => e.value == event,
+      ),
+      enabled: enabled,
+    );
   }
 }

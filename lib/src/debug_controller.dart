@@ -20,7 +20,9 @@ class DebugController extends DebugControllerBase {
   Future<void> setReportStateChanged(bool changed) =>
       channel_setReportStateChanged(enabled: changed);
   Future<void> setRecorderMode(Map<String, dynamic> mode) =>
-      channel_setRecorderMode(mode: 'none');
+      channel_setRecorderMode(
+        mode: DebugControllerSetRecorderModeModeEnum.none,
+      );
   Future<void> highlight(Map<String, dynamic> selector) =>
       channel_highlight(selector: selector['selector'] as String);
   Future<void> hideHighlight() => channel_hideHighlight();

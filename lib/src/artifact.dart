@@ -11,7 +11,7 @@ class Artifact extends ArtifactBase {
 
   Future<String?> pathAfterFinished() async {
     final result = await channel_pathAfterFinished();
-    return result['value'] as String?;
+    return result.value as String?;
   }
 
   Future<void> saveAs(String path) async {
@@ -24,13 +24,13 @@ class Artifact extends ArtifactBase {
 
   Future<String> failureError() async {
     final result = await channel_failure();
-    return result['error'] as String? ?? '';
+    return result.error ?? '';
   }
 
   // Aliases for missing script check
   Future<String> failure() => failureError();
-  Future<Map<String, dynamic>> saveAsStream() => channel_saveAsStream();
-  Future<Map<String, dynamic>> stream() => channel_stream();
+  Future<ArtifactSaveAsStreamResult> saveAsStream() => channel_saveAsStream();
+  Future<ArtifactStreamResult> stream() => channel_stream();
 
   Future<void> cancel() async {
     await channel_cancel();

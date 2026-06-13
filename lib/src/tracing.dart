@@ -23,7 +23,10 @@ class Tracing extends TracingBase {
     );
   }
 
-  Future<Map<String, dynamic>> startChunk({String? name, String? title}) async {
+  Future<TracingTracingStartChunkResult> startChunk({
+    String? name,
+    String? title,
+  }) async {
     return await channel_tracingStartChunk(name: name, title: title);
   }
 
@@ -35,7 +38,10 @@ class Tracing extends TracingBase {
     await channel_tracingGroupEnd();
   }
 
-  Future<Map<String, dynamic>> stopChunk({String mode = 'doNotSave'}) async {
+  Future<TracingTracingStopChunkResult> stopChunk({
+    TracingTracingStopChunkModeEnum mode =
+        TracingTracingStopChunkModeEnum.discard,
+  }) async {
     return await channel_tracingStopChunk(mode: mode);
   }
 
@@ -55,16 +61,19 @@ class Tracing extends TracingBase {
     screenshots: screenshots,
     live: live,
   );
-  Future<Map<String, dynamic>> tracingStartChunk({
+  Future<TracingTracingStartChunkResult> tracingStartChunk({
     String? name,
     String? title,
   }) => startChunk(name: name, title: title);
   Future<void> tracingGroup(String name, {Map<String, dynamic>? location}) =>
       group(name, location: location);
   Future<void> tracingGroupEnd() => groupEnd();
-  Future<Map<String, dynamic>> tracingStopChunk({String mode = 'doNotSave'}) =>
-      stopChunk(mode: mode);
+  Future<TracingTracingStopChunkResult> tracingStopChunk({
+    TracingTracingStopChunkModeEnum mode =
+        TracingTracingStopChunkModeEnum.discard,
+  }) => stopChunk(mode: mode);
   Future<void> tracingStop() => stop();
   Future<dynamic> harStart() => channel_harStart(options: RecordHarOptions());
-  Future<dynamic> harExport() => channel_harExport(mode: 'zip');
+  Future<dynamic> harExport() =>
+      channel_harExport(mode: TracingHarExportModeEnum.archive);
 }

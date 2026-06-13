@@ -9,16 +9,16 @@ class Electron extends ElectronBase {
     super.parent,
   ]);
 
-  Future<Map<String, dynamic>> launch({
+  Future<ElectronLaunchResult> launch({
     String? executablePath,
     List<String>? args,
     bool? chromiumSandbox,
     String? cwd,
     List<NameValue>? env,
     required double timeout,
-    String? acceptDownloads,
+    ElectronLaunchAcceptDownloadsEnum? acceptDownloads,
     bool? bypassCSP,
-    String? colorScheme,
+    ElectronLaunchColorSchemeEnum? colorScheme,
     List<NameValue>? extraHTTPHeaders,
     Map<String, dynamic>? geolocation,
   }) async {

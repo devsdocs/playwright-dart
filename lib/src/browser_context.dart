@@ -14,7 +14,7 @@ class BrowserContext extends BrowserContextBase {
 
   Future<Page> newPage() async {
     final result = await super.channel_newPage();
-    return ChannelOwner.from<Page>(connection, result['page']);
+    return result.page as Page;
   }
 
   Future<void> addCookies(List<SetNetworkCookie> cookies) async {
@@ -31,7 +31,7 @@ class BrowserContext extends BrowserContextBase {
 
   Future<List<dynamic>> cookies({List<String>? urls}) async {
     final result = await super.channel_cookies(urls: urls ?? []);
-    return result['cookies'] as List<dynamic>;
+    return result.cookies as List<dynamic>;
   }
 
   Future<void> grantPermissions(
@@ -67,7 +67,9 @@ class BrowserContext extends BrowserContextBase {
     await channel_setOffline(offline: offline);
   }
 
-  Future<Map<String, dynamic>> storageState({bool? indexedDB}) async {
+  Future<BrowserContextStorageStateResult> storageState({
+    bool? indexedDB,
+  }) async {
     final result = await channel_storageState(indexedDB: indexedDB);
     return result;
   }
@@ -175,8 +177,8 @@ class BrowserContext extends BrowserContextBase {
 
   Future<void> enableRecorder({
     String? language,
-    String? mode,
-    String? recorderMode,
+    BrowserContextEnableRecorderModeEnum? mode,
+    BrowserContextEnableRecorderRecorderModeEnum? recorderMode,
     bool? pauseOnNextStatement,
     String? testIdAttributeName,
   }) async {
@@ -201,11 +203,11 @@ class BrowserContext extends BrowserContextBase {
     final result = await channel_newCDPSession(page: page, frame: frame);
     return ChannelOwner.from(
       connection,
-      result['session'] as Map<String, dynamic>,
+      result.session as Map<String, dynamic>,
     );
   }
 
-  Future<Map<String, dynamic>> createTempFiles({
+  Future<BrowserContextCreateTempFilesResult> createTempFiles({
     String? rootDirName,
     required List<Map<String, dynamic>> items,
   }) async {
@@ -216,7 +218,7 @@ class BrowserContext extends BrowserContextBase {
   }
 
   Future<void> updateSubscription({
-    required String event,
+    required BrowserContextUpdateSubscriptionEventEnum event,
     required bool enabled,
   }) async {
     await channel_updateSubscription(event: event, enabled: enabled);

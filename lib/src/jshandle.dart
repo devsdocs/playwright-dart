@@ -16,7 +16,7 @@ class JSHandle extends JSHandleBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 
   Future<JSHandle> evaluateHandle(String expression, [dynamic arg]) async {
@@ -24,10 +24,7 @@ class JSHandle extends JSHandleBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return ChannelOwner.from(
-      connection,
-      result['handle'] as Map<String, dynamic>,
-    );
+    return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
   }
 
   @override
@@ -44,14 +41,14 @@ class JSHandle extends JSHandleBase {
     final result = await super.channel_getProperty(name: propertyName);
     return ChannelOwner.from<JSHandle>(
       connection,
-      result['handle'] as Map<String, dynamic>,
+      result.handle as Map<String, dynamic>,
     );
   }
 
   Future<Map<String, JSHandle>> getProperties() async {
     final result = await super.channel_getPropertyList();
     final map = <String, JSHandle>{};
-    for (final property in result['properties'] as List) {
+    for (final property in result.properties as List) {
       map[property['name'] as String] = ChannelOwner.from<JSHandle>(
         connection,
         property['value'] as Map<String, dynamic>,
@@ -64,6 +61,6 @@ class JSHandle extends JSHandleBase {
 
   Future<dynamic> jsonValue() async {
     final result = await super.channel_jsonValue();
-    return parseSerializedValue(result['value'] as Map<String, dynamic>);
+    return parseSerializedValue(result.value as Map<String, dynamic>);
   }
 }

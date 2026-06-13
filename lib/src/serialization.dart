@@ -36,7 +36,7 @@ SerializedArgument serializeArgument(dynamic value) {
 }
 
 SerializedValue serializeValue(dynamic value) {
-  if (value == null) return SerializedValue(v: 'undefined');
+  if (value == null) return SerializedValue(v: SerializedValueVEnum.undefined);
   if (value is int) return SerializedValue(n: value.toDouble());
   if (value is double) return SerializedValue(n: value);
   if (value is bool) return SerializedValue(b: value);
@@ -50,7 +50,7 @@ SerializedValue serializeValue(dynamic value) {
         .toList();
     return SerializedValue(o: o);
   }
-  return SerializedValue(v: 'undefined');
+  return SerializedValue(v: SerializedValueVEnum.undefined);
 }
 
 class SelectOptionParams {

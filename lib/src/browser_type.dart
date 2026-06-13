@@ -19,7 +19,7 @@ class BrowserType extends BrowserTypeBase {
     final result = await super.channel_launch(
       mixin: LaunchOptions(timeout: 30000.0),
     );
-    return ChannelOwner.from<Browser>(connection, result['browser']);
+    return result.browser as Browser;
   }
 
   Future<BrowserContext> launchPersistentContext(
@@ -34,7 +34,7 @@ class BrowserType extends BrowserTypeBase {
       userDataDir: userDataDir,
       slowMo: slowMo,
     );
-    return ChannelOwner.from<BrowserContext>(connection, result['context']);
+    return result.context as BrowserContext;
   }
 
   // We are missing the Worker wrapper for now, but we can implement the method returning ChannelOwner
@@ -47,7 +47,7 @@ class BrowserType extends BrowserTypeBase {
     );
     return ChannelOwner.from<Worker>(
       connection,
-      result['worker'] as Map<String, dynamic>,
+      result.worker as Map<String, dynamic>,
     );
   }
 
@@ -56,7 +56,7 @@ class BrowserType extends BrowserTypeBase {
       endpointURL: endpointURL,
       timeout: 30000.0,
     );
-    return ChannelOwner.from<Browser>(connection, result['browser']);
+    return result.browser as Browser;
   }
 
   Future<Browser> connect(

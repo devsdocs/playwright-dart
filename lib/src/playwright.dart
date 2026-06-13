@@ -58,7 +58,7 @@ class Playwright extends PlaywrightBase {
       storageState: storageState,
       tracesDir: tracesDir,
     );
-    return result['request'];
+    return result.request;
   }
 
   /// Launches the Playwright driver and connects to it, returning the [Playwright] instance.
@@ -72,9 +72,6 @@ class Playwright extends PlaywrightBase {
       'sdkLanguage': 'javascript',
     });
 
-    return ChannelOwner.from<Playwright>(
-      connection,
-      result['playwright'] as Map<String, dynamic>,
-    );
+    return result['playwright'] as Playwright;
   }
 }

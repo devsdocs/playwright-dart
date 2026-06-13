@@ -1,4 +1,5 @@
 import 'generated/channels.dart';
+import 'browser_context.dart';
 
 class AndroidDevice extends AndroidDeviceBase {
   AndroidDevice(
@@ -11,7 +12,7 @@ class AndroidDevice extends AndroidDeviceBase {
 
   Future<void> wait(
     AndroidSelector androidSelector, {
-    String? state,
+    AndroidDeviceWaitStateEnum? state,
     required double timeout,
   }) async {
     await channel_wait(
@@ -57,7 +58,7 @@ class AndroidDevice extends AndroidDeviceBase {
 
   Future<void> fling(
     AndroidSelector selector,
-    String direction, {
+    AndroidDeviceFlingDirectionEnum direction, {
     double? speed,
     double timeout = 30000.0,
   }) async {
@@ -106,7 +107,7 @@ class AndroidDevice extends AndroidDeviceBase {
 
   Future<void> scroll(
     AndroidSelector selector,
-    String direction,
+    AndroidDeviceScrollDirectionEnum direction,
     double percent, {
     double? speed,
     double timeout = 30000.0,
@@ -122,7 +123,7 @@ class AndroidDevice extends AndroidDeviceBase {
 
   Future<void> swipe(
     AndroidSelector selector,
-    String direction,
+    AndroidDeviceSwipeDirectionEnum direction,
     double percent, {
     double? speed,
     double timeout = 30000.0,
@@ -136,11 +137,11 @@ class AndroidDevice extends AndroidDeviceBase {
     );
   }
 
-  Future<Map<String, dynamic>> info(AndroidSelector selector) async {
+  Future<AndroidDeviceInfoResult> info(AndroidSelector selector) async {
     return await channel_info(androidSelector: selector);
   }
 
-  Future<Map<String, dynamic>> screenshot() async {
+  Future<AndroidDeviceScreenshotResult> screenshot() async {
     return await channel_screenshot();
   }
 
@@ -164,25 +165,26 @@ class AndroidDevice extends AndroidDeviceBase {
     await channel_inputDrag(from: from, to: to, steps: steps);
   }
 
-  Future<Map<String, dynamic>> launchBrowser({
+  Future<BrowserContext> launchBrowser({
     required ContextOptions mixin,
     String? pkg,
     List<String>? args,
     Map<String, dynamic>? proxy,
   }) async {
-    return await channel_launchBrowser(
+    final result = await channel_launchBrowser(
       mixin: mixin,
       pkg: pkg,
       args: args,
       proxy: proxy,
     );
+    return result.context as BrowserContext;
   }
 
-  Future<Map<String, dynamic>> open(String command) async {
+  Future<AndroidDeviceOpenResult> open(String command) async {
     return await channel_open(command: command);
   }
 
-  Future<Map<String, dynamic>> shell(String command) async {
+  Future<AndroidDeviceShellResult> shell(String command) async {
     return await channel_shell(command: command);
   }
 
@@ -194,7 +196,9 @@ class AndroidDevice extends AndroidDeviceBase {
     await channel_push(file: file, path: path, mode: mode);
   }
 
-  Future<Map<String, dynamic>> connectToWebView(String socketName) async {
+  Future<AndroidDeviceConnectToWebViewResult> connectToWebView(
+    String socketName,
+  ) async {
     return await channel_connectToWebView(socketName: socketName);
   }
 

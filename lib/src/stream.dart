@@ -12,7 +12,7 @@ class PlaywrightStream extends StreamBase {
 
   Future<List<int>> read({int? size}) async {
     final result = await channel_read(size: size);
-    return base64Decode(result['binary'] as String);
+    return base64Decode(result.binary);
   }
 
   Future<void> close() async {
