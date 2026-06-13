@@ -1,8 +1,6 @@
-import 'package:playwright_dart/src/websocket_transport.dart';
 
 import 'channel_owner.dart';
 import 'browser_type.dart';
-import 'browser.dart';
 import 'local_utils.dart';
 import 'generated/channels.dart';
 import 'driver.dart';
