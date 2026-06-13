@@ -58,9 +58,7 @@ void main() async {
       if (name == 'Stream') wrapperClassName = 'PlaywrightStream';
       if (name == 'WebSocket') wrapperClassName = 'PlaywrightWebSocket';
 
-      if (!allSrcContent.contains('class $wrapperClassName ') &&
-          !allSrcContent.contains('class $wrapperClassName{') &&
-          !allSrcContent.contains('class $wrapperClassName\n')) {
+      if (!allSrcContent.contains(RegExp('class\\s+$wrapperClassName\\b'))) {
         print('MISSING IN WRAPPER: Class $wrapperClassName (YAML: $name)');
         missingWrapperClasses++;
       }
@@ -98,8 +96,8 @@ void main() async {
             }
           }
 
-          if (!allSrcContent.contains(' $wrapperCmdName(') &&
-              !allSrcContent.contains('get $wrapperCmdName')) {
+          if (!allSrcContent.contains(RegExp('\\b$wrapperCmdName\\(')) &&
+              !allSrcContent.contains(RegExp('get\\s+$wrapperCmdName\\b'))) {
             print(
               'MISSING IN WRAPPER: Command $name.$cmdName (mapped to $wrapperCmdName)',
             );
