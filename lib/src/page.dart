@@ -7,12 +7,14 @@ import 'frame.dart';
 import 'locator.dart';
 import 'keyboard.dart';
 import 'mouse.dart';
+import 'touchscreen.dart';
 import 'route.dart';
 import 'dialog.dart';
 
 class Page extends PageBase {
   late final Keyboard keyboard;
   late final Mouse mouse;
+  late final Touchscreen touchscreen;
 
   Page(
     super.connection,
@@ -23,6 +25,7 @@ class Page extends PageBase {
   ]) {
     keyboard = Keyboard(this);
     mouse = Mouse(this);
+    touchscreen = Touchscreen(this);
   }
 
   String get _mainFrameGuid => initializer['mainFrame']['guid'];
@@ -549,9 +552,7 @@ class Page extends PageBase {
     await channel_setNetworkInterceptionPatterns(patterns: patterns);
   }
 
-  Future<void> touchscreenTap(double x, double y) async {
-    await channel_touchscreenTap(x: x, y: y);
-  }
+  // Touchscreen API is now exposed via the `touchscreen` getter.
 
   Future<void> bringToFront() async {
     await channel_bringToFront();

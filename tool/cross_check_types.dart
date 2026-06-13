@@ -25,10 +25,7 @@ void main() async {
     print('Generated file not found.');
     exit(1);
   }
-
   final dartContent = dartFile.readAsStringSync();
-  int missingClasses = 0;
-  int missingCommands = 0;
 
   String allSrcContent = '';
   final srcDir = Directory('lib/src');
@@ -40,6 +37,27 @@ void main() async {
     }
   }
 
+  String? extractClassBody(String content, String className) {
+    final regex = RegExp('class\\s+$className\\b');
+    final match = regex.firstMatch(content);
+    if (match == null) return null;
+
+    int braceStartIndex = content.indexOf('{', match.start);
+    if (braceStartIndex == -1) return null;
+
+    int braceCount = 1;
+    int endIndex = braceStartIndex + 1;
+    while (braceCount > 0 && endIndex < content.length) {
+      if (content[endIndex] == '{') braceCount++;
+      if (content[endIndex] == '}') braceCount--;
+      endIndex++;
+    }
+
+    return content.substring(braceStartIndex, endIndex);
+  }
+
+  int missingClasses = 0;
+  int missingCommands = 0;
   int missingWrapperClasses = 0;
   int missingWrapperCommands = 0;
 
@@ -58,9 +76,14 @@ void main() async {
       if (name == 'Stream') wrapperClassName = 'PlaywrightStream';
       if (name == 'WebSocket') wrapperClassName = 'PlaywrightWebSocket';
 
-      if (!allSrcContent.contains(RegExp('class\\s+$wrapperClassName\\b'))) {
+      final wrapperClassBody = extractClassBody(
+        allSrcContent,
+        wrapperClassName,
+      );
+      if (wrapperClassBody == null) {
         print('MISSING IN WRAPPER: Class $wrapperClassName (YAML: $name)');
         missingWrapperClasses++;
+        continue;
       }
 
       if (def.containsKey('commands')) {
@@ -72,34 +95,46 @@ void main() async {
             missingCommands++;
           }
 
-          // Very loose check for wrapper command
-          String wrapperCmdName = cmdName;
+          String targetClassName = wrapperClassName;
+          String targetCmdName = cmdName;
+
           if (name == 'Page') {
             if (cmdName.startsWith('keyboard')) {
-              wrapperCmdName = cmdName.replaceFirst('keyboard', '');
-              wrapperCmdName = wrapperCmdName.isEmpty
-                  ? cmdName
-                  : wrapperCmdName[0].toLowerCase() +
-                        wrapperCmdName.substring(1);
+              targetClassName = 'Keyboard';
+              targetCmdName = cmdName.replaceFirst('keyboard', '');
             } else if (cmdName.startsWith('mouse')) {
-              wrapperCmdName = cmdName.replaceFirst('mouse', '');
-              wrapperCmdName = wrapperCmdName.isEmpty
-                  ? cmdName
-                  : wrapperCmdName[0].toLowerCase() +
-                        wrapperCmdName.substring(1);
+              targetClassName = 'Mouse';
+              targetCmdName = cmdName.replaceFirst('mouse', '');
             } else if (cmdName.startsWith('touchscreen')) {
-              wrapperCmdName = cmdName.replaceFirst('touchscreen', '');
-              wrapperCmdName = wrapperCmdName.isEmpty
-                  ? cmdName
-                  : wrapperCmdName[0].toLowerCase() +
-                        wrapperCmdName.substring(1);
+              targetClassName = 'Touchscreen';
+              targetCmdName = cmdName.replaceFirst('touchscreen', '');
             }
+          } else if (name == 'BrowserContext' &&
+              cmdName.startsWith('tracing')) {
+            targetClassName = 'Tracing';
+            targetCmdName = cmdName.replaceFirst('tracing', '');
           }
 
-          if (!allSrcContent.contains(RegExp('\\b$wrapperCmdName\\(')) &&
-              !allSrcContent.contains(RegExp('get\\s+$wrapperCmdName\\b'))) {
+          if (targetCmdName.isNotEmpty && targetCmdName != cmdName) {
+            targetCmdName =
+                targetCmdName[0].toLowerCase() + targetCmdName.substring(1);
+          }
+
+          final targetClassBody = targetClassName == wrapperClassName
+              ? wrapperClassBody
+              : extractClassBody(allSrcContent, targetClassName);
+          if (targetClassBody == null) {
             print(
-              'MISSING IN WRAPPER: Command $name.$cmdName (mapped to $wrapperCmdName)',
+              'MISSING IN WRAPPER: Target Class $targetClassName for mapped command $name.$cmdName',
+            );
+            missingWrapperClasses++;
+            continue;
+          }
+
+          if (!targetClassBody.contains(RegExp('\\b$targetCmdName\\(')) &&
+              !targetClassBody.contains(RegExp('get\\s+$targetCmdName\\b'))) {
+            print(
+              'MISSING IN WRAPPER: Command $name.$cmdName (expected in $targetClassName as $targetCmdName)',
             );
             missingWrapperCommands++;
           }
