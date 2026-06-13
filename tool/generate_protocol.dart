@@ -5,6 +5,7 @@ import 'package:playwright_dart/src/version.dart';
 
 void main() async {
   final Map<String, dynamic> protocol = {};
+  final Map<String, List<String>> protocolGroups = {};
 
   List<dynamic> files = await getAllProtocolYml();
 
@@ -16,14 +17,14 @@ void main() async {
   print('Fetching ${files.length} spec files...');
   for (final file in files) {
     if (file['name'].toString().endsWith('.yml')) {
-      final name = file['name'];
+      final name = file['name'].toString();
       final cachedYml = File('.protocol_cache/$name');
       String content;
 
       if (cachedYml.existsSync()) {
         content = cachedYml.readAsStringSync();
       } else {
-        final downloadUrl = file['download_url'];
+        final downloadUrl = file['download_url'].toString();
         final fileReq = await HttpClient().getUrl(Uri.parse(downloadUrl));
         final fileRes = await fileReq.close();
         content = await fileRes.transform(const Utf8Decoder()).join();
@@ -34,6 +35,11 @@ void main() async {
       for (final key in yaml.keys) {
         protocol[key.toString()] = yaml[key];
       }
+
+      final groupName = name.split('.').first;
+      final groupFiles = protocolGroups[groupName] ?? [];
+      groupFiles.add(name);
+      protocolGroups[groupName] = groupFiles;
     }
   }
 
