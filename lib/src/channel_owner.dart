@@ -8,6 +8,16 @@ abstract class ChannelOwner {
   final ChannelOwner? parent;
   final Map<String, ChannelOwner> objects = {};
 
+  final StreamController<Map<String, dynamic>> _eventController =
+      StreamController.broadcast();
+  Stream<Map<String, dynamic>> get onEvent => _eventController.stream;
+
+  void emitEvent(String event, dynamic params) {
+    if (!_eventController.isClosed) {
+      _eventController.add({'event': event, 'params': params});
+    }
+  }
+
   Map<String, dynamic> initializer;
 
   ChannelOwner(
@@ -30,6 +40,10 @@ abstract class ChannelOwner {
     }
     // Clean up from connection
     connection.objects.remove(guid);
+
+    if (!_eventController.isClosed) {
+      _eventController.close();
+    }
 
     // Dispose children
     for (final child in objects.values.toList()) {

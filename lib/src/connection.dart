@@ -253,9 +253,7 @@ class Connection {
     // Normal event
     final object = objects[guid];
     if (object != null) {
-      // TODO: Dispatch event to the object's channel
-      // object.channel.emit(method, params);
-      print('Event received: \$method on \$guid');
+      object.emitEvent(method, params);
     }
   }
 

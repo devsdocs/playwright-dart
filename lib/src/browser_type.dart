@@ -4,6 +4,7 @@ import 'browser_context.dart';
 import 'connection.dart';
 import 'websocket_transport.dart';
 import 'generated/channels.dart';
+import 'worker.dart';
 
 class BrowserType extends BrowserTypeBase {
   BrowserType(
@@ -44,8 +45,10 @@ class BrowserType extends BrowserTypeBase {
       endpoint: endpoint,
       timeout: timeout ?? 30000.0,
     );
-    // TODO: return Worker once it's implemented
-    return result['worker'];
+    return ChannelOwner.from<Worker>(
+      connection,
+      result['worker'] as Map<String, dynamic>,
+    );
   }
 
   Future<Browser> connectOverCDP({required String endpointURL}) async {
