@@ -322,7 +322,7 @@ class Locator {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<void> waitFor({

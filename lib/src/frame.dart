@@ -79,7 +79,7 @@ class Frame extends FrameBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<void> waitForSelector(
@@ -225,7 +225,7 @@ class Frame extends FrameBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<dynamic> evalOnSelectorAll(
@@ -238,7 +238,7 @@ class Frame extends FrameBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<String?> getAttribute(
@@ -428,7 +428,7 @@ class Frame extends FrameBase {
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<dynamic> evaluateExpressionHandle(

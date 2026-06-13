@@ -3479,7 +3479,7 @@ class NetworkCookie {
     return NetworkCookie(
       crHasCrossSiteAncestor: json['_crHasCrossSiteAncestor'],
       domain: (json['domain'])!,
-      expires: (json['expires'])!,
+      expires: (json['expires'] as num).toDouble(),
       httpOnly: (json['httpOnly'])!,
       name: (json['name'])!,
       partitionKey: json['partitionKey'],
@@ -4540,7 +4540,7 @@ class SerializedValue {
       e: json['e'],
       h: json['h'],
       id: json['id'],
-      n: json['n'],
+      n: (json['n'] as num?)?.toDouble(),
       o: (json['o'] as List?)?.cast<Map<String, dynamic>>(),
       r: json['r'],
       ref: json['ref'],
@@ -4608,7 +4608,7 @@ class SetNetworkCookie {
     return SetNetworkCookie(
       crHasCrossSiteAncestor: json['_crHasCrossSiteAncestor'],
       domain: json['domain'],
-      expires: json['expires'],
+      expires: json['expires'] == null ? null : (json['expires'] as num).toDouble(),
       httpOnly: json['httpOnly'],
       name: (json['name'])!,
       partitionKey: json['partitionKey'],

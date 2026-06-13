@@ -59,6 +59,9 @@ class StdioTransport implements Transport {
       _expectedLength = null;
 
       final messageStr = utf8.decode(messageBytes);
+      if (messageStr.contains('dialog')) {
+        print('RCV: $messageStr');
+      }
       final message = jsonDecode(messageStr) as Map<String, dynamic>;
       _onMessage?.call(message);
     }
@@ -66,7 +69,15 @@ class StdioTransport implements Transport {
 
   @override
   void send(Map<String, dynamic> message) {
-    final messageStr = jsonEncode(message);
+    final messageStr = jsonEncode(message, toEncodable: (dynamic item) {
+      if (item == null) return null;
+      try {
+        if (item is Enum) return (item as dynamic).value;
+        return item.toJson();
+      } catch (_) {
+        return item.toString();
+      }
+    });
     final messageBytes = utf8.encode(messageStr);
 
     final lengthBytes = ByteData(4);

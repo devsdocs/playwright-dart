@@ -72,6 +72,6 @@ class Playwright extends PlaywrightBase {
       'sdkLanguage': 'javascript',
     });
 
-    return result['playwright'] as Playwright;
+    return ChannelOwner.from<Playwright>(connection, result['playwright'] as Map<String, dynamic>);
   }
 }

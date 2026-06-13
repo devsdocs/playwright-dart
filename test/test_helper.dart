@@ -7,33 +7,32 @@ export 'package:playwright_dart/playwright_dart.dart';
 
 Playwright? _playwright;
 Browser? _browser;
-bool _tearDownRegistered = false;
 
-Future<void> _ensureSetup() async {
+Playwright get playwright => _playwright!;
+Browser get browser => _browser!;
+
+Future<void> setupBrowser() async {
   if (_playwright == null) {
     _playwright = await Playwright.create();
     _browser = await _playwright!.chromium.launch();
   }
 }
 
-void test(String description, FutureOr<void> Function(Page page) body) {
-  if (!_tearDownRegistered) {
-    dart_test.setUpAll(() async {
-      await _ensureSetup();
-    });
-    dart_test.tearDownAll(() async {
-      try {
-        await _browser?.close();
-      } catch (e) {
-        // Ignore TargetClosedError
-      }
-      _browser = null;
-      _playwright = null;
-    });
-    _tearDownRegistered = true;
+Future<void> teardownBrowser() async {
+  try {
+    await _browser?.close();
+  } catch (e) {
+    // Ignore
   }
+  _browser = null;
+  _playwright = null;
+}
 
+void test(String description, FutureOr<void> Function(Page page) body) {
   dart_test.test(description, () async {
+    if (_browser == null) {
+      throw StateError('Browser is not initialized. Did you call setupBrowser()?');
+    }
     final context = await _browser!.newContext();
     final page = await context.newPage();
     try {

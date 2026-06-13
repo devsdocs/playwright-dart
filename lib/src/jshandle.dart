@@ -16,7 +16,7 @@ class JSHandle extends JSHandleBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<JSHandle> evaluateHandle(String expression, [dynamic arg]) async {
@@ -61,6 +61,6 @@ class JSHandle extends JSHandleBase {
 
   Future<dynamic> jsonValue() async {
     final result = await super.channel_jsonValue();
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 }

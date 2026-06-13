@@ -1,4 +1,4 @@
-import 'test_helper.dart';
+import '../test_helper.dart';
 
 void main() {
   group('Page API', () {

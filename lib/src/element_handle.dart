@@ -20,7 +20,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   @override
@@ -68,7 +68,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   @override
   Future<dynamic> jsonValue() async {
     final result = await channel_jsonValue();
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   @override
@@ -86,7 +86,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<dynamic> evalOnSelectorAll(
@@ -99,7 +99,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   // Element actions

@@ -23,7 +23,7 @@ class Worker extends WorkerBase {
       expression: expression,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<JSHandle> evaluateHandle(String expression, [dynamic arg]) async {

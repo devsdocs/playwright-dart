@@ -25,6 +25,7 @@ export 'src/browser_context.dart';
 export 'src/page.dart';
 export 'src/frame.dart';
 export 'src/locator.dart';
+export 'src/generated/channels.dart' hide Channel;
 
 // Interaction
 export 'src/element_handle.dart';

@@ -26,7 +26,7 @@ class ElectronApplication extends ElectronApplicationBase {
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value as Map<String, dynamic>);
+    return parseSerializedValue(result.value);
   }
 
   Future<dynamic> evaluateExpressionHandle(

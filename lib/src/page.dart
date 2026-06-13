@@ -8,6 +8,7 @@ import 'locator.dart';
 import 'keyboard.dart';
 import 'mouse.dart';
 import 'route.dart';
+import 'dialog.dart';
 
 class Page extends PageBase {
   late final Keyboard keyboard;
@@ -27,6 +28,17 @@ class Page extends PageBase {
   String get _mainFrameGuid => initializer['mainFrame']['guid'];
 
   Frame get mainFrame => connection.objects[_mainFrameGuid] as Frame;
+
+  Stream<Dialog> get onDialog {
+    channel_updateSubscription(
+      enabled: true,
+      event: PageUpdateSubscriptionEventEnum.dialog,
+    );
+    return onEvent.where((e) => e['event'] == 'dialog').map((e) {
+      final dialogGuid = e['params']['dialog']['guid'];
+      return connection.objects[dialogGuid] as Dialog;
+    });
+  }
 
   Future<void> goto(String url) async {
     await mainFrame.goto(url);

@@ -29,9 +29,9 @@ class BrowserContext extends BrowserContextBase {
     await super.channel_clearCookies(name: name, domain: domain, path: path);
   }
 
-  Future<List<dynamic>> cookies({List<String>? urls}) async {
+  Future<List<NetworkCookie>> cookies({List<String>? urls}) async {
     final result = await super.channel_cookies(urls: urls ?? []);
-    return result.cookies as List<dynamic>;
+    return result.cookies;
   }
 
   Future<void> grantPermissions(
