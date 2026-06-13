@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD024 -->
 # Playwright Dart — Changelog
 
 All notable changes to this project are documented in this file.
