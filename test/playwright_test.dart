@@ -31,7 +31,9 @@ import 'src/init_script_test_cases.dart' as init_script_test_cases;
 import 'src/cdp_session_test_cases.dart' as cdp_session_test_cases;
 import 'src/worker_test_cases.dart' as worker_test_cases;
 import 'src/download_test_cases.dart' as download_test_cases;
-import 'src/api_request_context_test_cases.dart' as api_request_context_test_cases;
+import 'src/api_request_context_test_cases.dart'
+    as api_request_context_test_cases;
+
 void main() {
   setUpAll(() async {
     await setupBrowser();

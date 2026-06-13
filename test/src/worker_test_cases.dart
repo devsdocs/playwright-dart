@@ -20,16 +20,18 @@ void main() {
   group('Worker API', () {
     test('should capture worker and evaluate', () async {
       final page = await context.newPage();
-      
+
       final workerFuture = page.onWorker.first;
-      
-      await page.goto('data:text/html,<script>window.worker = new Worker(URL.createObjectURL(new Blob(["console.log(\\"worker created\\");"], {type: "application/javascript"})));</script>');
-      
+
+      await page.goto(
+        'data:text/html,<script>window.worker = new Worker(URL.createObjectURL(new Blob(["console.log(\\"worker created\\");"], {type: "application/javascript"})));</script>',
+      );
+
       final worker = await workerFuture;
-      
+
       final result = await worker.evaluate('1 + 1');
       expect(result, equals(2));
-      
+
       await page.close();
     });
   });
