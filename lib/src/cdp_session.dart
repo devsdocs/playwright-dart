@@ -9,7 +9,10 @@ class CDPSession extends CDPSessionBase {
     super.parent,
   ]);
 
-  Future<Map<String, dynamic>> send(String method, {Map<String, dynamic>? params}) async {
+  Future<Map<String, dynamic>> send(
+    String method, {
+    Map<String, dynamic>? params,
+  }) async {
     final result = await channel_send(method: method, params: params);
     return result['result'] as Map<String, dynamic>? ?? {};
   }

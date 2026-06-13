@@ -38,26 +38,74 @@ class APIRequestContext extends APIRequestContextBase {
       maxRedirects: maxRedirects,
       maxRetries: maxRetries,
     );
-    return ChannelOwner.from(connection, result['response'] as Map<String, dynamic>);
+    return ChannelOwner.from(
+      connection,
+      result['response'] as Map<String, dynamic>,
+    );
   }
 
-  Future<dynamic> get(String url, {List<NameValue>? headers, double? timeout}) =>
-      fetch(url, method: 'GET', headers: headers, timeout: timeout);
+  Future<dynamic> get(
+    String url, {
+    List<NameValue>? headers,
+    double? timeout,
+  }) => fetch(url, method: 'GET', headers: headers, timeout: timeout);
 
-  Future<dynamic> post(String url, {List<NameValue>? headers, String? postData, String? jsonData, double? timeout}) =>
-      fetch(url, method: 'POST', headers: headers, postData: postData, jsonData: jsonData, timeout: timeout);
+  Future<dynamic> post(
+    String url, {
+    List<NameValue>? headers,
+    String? postData,
+    String? jsonData,
+    double? timeout,
+  }) => fetch(
+    url,
+    method: 'POST',
+    headers: headers,
+    postData: postData,
+    jsonData: jsonData,
+    timeout: timeout,
+  );
 
-  Future<dynamic> put(String url, {List<NameValue>? headers, String? postData, String? jsonData, double? timeout}) =>
-      fetch(url, method: 'PUT', headers: headers, postData: postData, jsonData: jsonData, timeout: timeout);
+  Future<dynamic> put(
+    String url, {
+    List<NameValue>? headers,
+    String? postData,
+    String? jsonData,
+    double? timeout,
+  }) => fetch(
+    url,
+    method: 'PUT',
+    headers: headers,
+    postData: postData,
+    jsonData: jsonData,
+    timeout: timeout,
+  );
 
-  Future<dynamic> delete(String url, {List<NameValue>? headers, double? timeout}) =>
-      fetch(url, method: 'DELETE', headers: headers, timeout: timeout);
+  Future<dynamic> delete(
+    String url, {
+    List<NameValue>? headers,
+    double? timeout,
+  }) => fetch(url, method: 'DELETE', headers: headers, timeout: timeout);
 
-  Future<dynamic> patch(String url, {List<NameValue>? headers, String? postData, String? jsonData, double? timeout}) =>
-      fetch(url, method: 'PATCH', headers: headers, postData: postData, jsonData: jsonData, timeout: timeout);
+  Future<dynamic> patch(
+    String url, {
+    List<NameValue>? headers,
+    String? postData,
+    String? jsonData,
+    double? timeout,
+  }) => fetch(
+    url,
+    method: 'PATCH',
+    headers: headers,
+    postData: postData,
+    jsonData: jsonData,
+    timeout: timeout,
+  );
 
-  Future<dynamic> head(String url, {List<NameValue>? headers, double? timeout}) =>
-      fetch(url, method: 'HEAD', headers: headers, timeout: timeout);
+  Future<dynamic> head(
+    String url, {
+    List<NameValue>? headers,
+    double? timeout,
+  }) => fetch(url, method: 'HEAD', headers: headers, timeout: timeout);
 
   Future<Map<String, dynamic>> storageState({bool? indexedDB}) async {
     final result = await channel_storageState(indexedDB: indexedDB);
@@ -70,7 +118,10 @@ class APIRequestContext extends APIRequestContextBase {
   }
 
   // Aliases for missing script check
-  Future<Map<String, dynamic>> fetchResponseBody({required String fetchUid}) => channel_fetchResponseBody(fetchUid: fetchUid);
-  Future<Map<String, dynamic>> fetchLog({required String fetchUid}) => channel_fetchLog(fetchUid: fetchUid);
-  Future<void> disposeAPIResponse({required String fetchUid}) => channel_disposeAPIResponse(fetchUid: fetchUid);
+  Future<Map<String, dynamic>> fetchResponseBody({required String fetchUid}) =>
+      channel_fetchResponseBody(fetchUid: fetchUid);
+  Future<Map<String, dynamic>> fetchLog({required String fetchUid}) =>
+      channel_fetchLog(fetchUid: fetchUid);
+  Future<void> disposeAPIResponse({required String fetchUid}) =>
+      channel_disposeAPIResponse(fetchUid: fetchUid);
 }

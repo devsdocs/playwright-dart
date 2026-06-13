@@ -21,40 +21,119 @@ class AndroidDevice extends AndroidDeviceBase {
     );
   }
 
-  Future<void> fill(AndroidSelector selector, String text, {double timeout = 30000.0}) async {
+  Future<void> fill(
+    AndroidSelector selector,
+    String text, {
+    double timeout = 30000.0,
+  }) async {
     await channel_fill(androidSelector: selector, text: text, timeout: timeout);
   }
 
-  Future<void> tap(AndroidSelector selector, {double? duration, double timeout = 30000.0}) async {
-    await channel_tap(androidSelector: selector, duration: duration, timeout: timeout);
+  Future<void> tap(
+    AndroidSelector selector, {
+    double? duration,
+    double timeout = 30000.0,
+  }) async {
+    await channel_tap(
+      androidSelector: selector,
+      duration: duration,
+      timeout: timeout,
+    );
   }
 
-  Future<void> drag(AndroidSelector selector, Point dest, {double? speed, double timeout = 30000.0}) async {
-    await channel_drag(androidSelector: selector, dest: dest, speed: speed, timeout: timeout);
+  Future<void> drag(
+    AndroidSelector selector,
+    Point dest, {
+    double? speed,
+    double timeout = 30000.0,
+  }) async {
+    await channel_drag(
+      androidSelector: selector,
+      dest: dest,
+      speed: speed,
+      timeout: timeout,
+    );
   }
 
-  Future<void> fling(AndroidSelector selector, String direction, {double? speed, double timeout = 30000.0}) async {
-    await channel_fling(androidSelector: selector, direction: direction, speed: speed, timeout: timeout);
+  Future<void> fling(
+    AndroidSelector selector,
+    String direction, {
+    double? speed,
+    double timeout = 30000.0,
+  }) async {
+    await channel_fling(
+      androidSelector: selector,
+      direction: direction,
+      speed: speed,
+      timeout: timeout,
+    );
   }
 
-  Future<void> longTap(AndroidSelector selector, {double timeout = 30000.0}) async {
+  Future<void> longTap(
+    AndroidSelector selector, {
+    double timeout = 30000.0,
+  }) async {
     await channel_longTap(androidSelector: selector, timeout: timeout);
   }
 
-  Future<void> pinchClose(AndroidSelector selector, double percent, {double? speed, double timeout = 30000.0}) async {
-    await channel_pinchClose(androidSelector: selector, percent: percent, speed: speed, timeout: timeout);
+  Future<void> pinchClose(
+    AndroidSelector selector,
+    double percent, {
+    double? speed,
+    double timeout = 30000.0,
+  }) async {
+    await channel_pinchClose(
+      androidSelector: selector,
+      percent: percent,
+      speed: speed,
+      timeout: timeout,
+    );
   }
 
-  Future<void> pinchOpen(AndroidSelector selector, double percent, {double? speed, double timeout = 30000.0}) async {
-    await channel_pinchOpen(androidSelector: selector, percent: percent, speed: speed, timeout: timeout);
+  Future<void> pinchOpen(
+    AndroidSelector selector,
+    double percent, {
+    double? speed,
+    double timeout = 30000.0,
+  }) async {
+    await channel_pinchOpen(
+      androidSelector: selector,
+      percent: percent,
+      speed: speed,
+      timeout: timeout,
+    );
   }
 
-  Future<void> scroll(AndroidSelector selector, String direction, double percent, {double? speed, double timeout = 30000.0}) async {
-    await channel_scroll(androidSelector: selector, direction: direction, percent: percent, speed: speed, timeout: timeout);
+  Future<void> scroll(
+    AndroidSelector selector,
+    String direction,
+    double percent, {
+    double? speed,
+    double timeout = 30000.0,
+  }) async {
+    await channel_scroll(
+      androidSelector: selector,
+      direction: direction,
+      percent: percent,
+      speed: speed,
+      timeout: timeout,
+    );
   }
 
-  Future<void> swipe(AndroidSelector selector, String direction, double percent, {double? speed, double timeout = 30000.0}) async {
-    await channel_swipe(androidSelector: selector, direction: direction, percent: percent, speed: speed, timeout: timeout);
+  Future<void> swipe(
+    AndroidSelector selector,
+    String direction,
+    double percent, {
+    double? speed,
+    double timeout = 30000.0,
+  }) async {
+    await channel_swipe(
+      androidSelector: selector,
+      direction: direction,
+      percent: percent,
+      speed: speed,
+      timeout: timeout,
+    );
   }
 
   Future<Map<String, dynamic>> info(AndroidSelector selector) async {
@@ -85,8 +164,18 @@ class AndroidDevice extends AndroidDeviceBase {
     await channel_inputDrag(from: from, to: to, steps: steps);
   }
 
-  Future<Map<String, dynamic>> launchBrowser({required ContextOptions mixin, String? pkg, List<String>? args, Map<String, dynamic>? proxy}) async {
-    return await channel_launchBrowser(mixin: mixin, pkg: pkg, args: args, proxy: proxy);
+  Future<Map<String, dynamic>> launchBrowser({
+    required ContextOptions mixin,
+    String? pkg,
+    List<String>? args,
+    Map<String, dynamic>? proxy,
+  }) async {
+    return await channel_launchBrowser(
+      mixin: mixin,
+      pkg: pkg,
+      args: args,
+      proxy: proxy,
+    );
   }
 
   Future<Map<String, dynamic>> open(String command) async {

@@ -88,31 +88,88 @@ class Connection {
       (c, t, g, i, p) => ElementHandle(c, t, g, i, p),
     );
     registerObjectFactory('Request', (c, t, g, i, p) => Request(c, t, g, i, p));
-    registerObjectFactory('Response', (c, t, g, i, p) => Response(c, t, g, i, p));
+    registerObjectFactory(
+      'Response',
+      (c, t, g, i, p) => Response(c, t, g, i, p),
+    );
     registerObjectFactory('Route', (c, t, g, i, p) => Route(c, t, g, i, p));
-    registerObjectFactory('WebSocketRoute', (c, t, g, i, p) => WebSocketRoute(c, t, g, i, p));
-    registerObjectFactory('WebSocket', (c, t, g, i, p) => PlaywrightWebSocket(c, t, g, i, p));
-    registerObjectFactory('APIRequestContext', (c, t, g, i, p) => APIRequestContext(c, t, g, i, p));
+    registerObjectFactory(
+      'WebSocketRoute',
+      (c, t, g, i, p) => WebSocketRoute(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'WebSocket',
+      (c, t, g, i, p) => PlaywrightWebSocket(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'APIRequestContext',
+      (c, t, g, i, p) => APIRequestContext(c, t, g, i, p),
+    );
     registerObjectFactory('Tracing', (c, t, g, i, p) => Tracing(c, t, g, i, p));
-    registerObjectFactory('CDPSession', (c, t, g, i, p) => CDPSession(c, t, g, i, p));
-    registerObjectFactory('Debugger', (c, t, g, i, p) => Debugger(c, t, g, i, p));
-    registerObjectFactory('DebugController', (c, t, g, i, p) => DebugController(c, t, g, i, p));
-    registerObjectFactory('Artifact', (c, t, g, i, p) => Artifact(c, t, g, i, p));
-    registerObjectFactory('Stream', (c, t, g, i, p) => PlaywrightStream(c, t, g, i, p));
-    registerObjectFactory('WritableStream', (c, t, g, i, p) => WritableStream(c, t, g, i, p));
-    registerObjectFactory('Disposable', (c, t, g, i, p) => Disposable(c, t, g, i, p));
+    registerObjectFactory(
+      'CDPSession',
+      (c, t, g, i, p) => CDPSession(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'Debugger',
+      (c, t, g, i, p) => Debugger(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'DebugController',
+      (c, t, g, i, p) => DebugController(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'Artifact',
+      (c, t, g, i, p) => Artifact(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'Stream',
+      (c, t, g, i, p) => PlaywrightStream(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'WritableStream',
+      (c, t, g, i, p) => WritableStream(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'Disposable',
+      (c, t, g, i, p) => Disposable(c, t, g, i, p),
+    );
     registerObjectFactory('Dialog', (c, t, g, i, p) => Dialog(c, t, g, i, p));
     registerObjectFactory('Worker', (c, t, g, i, p) => Worker(c, t, g, i, p));
-    registerObjectFactory('BindingCall', (c, t, g, i, p) => BindingCall(c, t, g, i, p));
-    registerObjectFactory('EventTarget', (c, t, g, i, p) => EventTarget(c, t, g, i, p));
+    registerObjectFactory(
+      'BindingCall',
+      (c, t, g, i, p) => BindingCall(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'EventTarget',
+      (c, t, g, i, p) => EventTarget(c, t, g, i, p),
+    );
     registerObjectFactory('Android', (c, t, g, i, p) => Android(c, t, g, i, p));
-    registerObjectFactory('AndroidDevice', (c, t, g, i, p) => AndroidDevice(c, t, g, i, p));
-    registerObjectFactory('AndroidSocket', (c, t, g, i, p) => AndroidSocket(c, t, g, i, p));
-    registerObjectFactory('Electron', (c, t, g, i, p) => Electron(c, t, g, i, p));
-    registerObjectFactory('ElectronApplication', (c, t, g, i, p) => ElectronApplication(c, t, g, i, p));
+    registerObjectFactory(
+      'AndroidDevice',
+      (c, t, g, i, p) => AndroidDevice(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'AndroidSocket',
+      (c, t, g, i, p) => AndroidSocket(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'Electron',
+      (c, t, g, i, p) => Electron(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'ElectronApplication',
+      (c, t, g, i, p) => ElectronApplication(c, t, g, i, p),
+    );
     registerObjectFactory('Root', (c, t, g, i, p) => Root(c, t, g, i, p));
-    registerObjectFactory('SocksSupport', (c, t, g, i, p) => SocksSupport(c, t, g, i, p));
-    registerObjectFactory('JsonPipe', (c, t, g, i, p) => JsonPipe(c, t, g, i, p));
+    registerObjectFactory(
+      'SocksSupport',
+      (c, t, g, i, p) => SocksSupport(c, t, g, i, p),
+    );
+    registerObjectFactory(
+      'JsonPipe',
+      (c, t, g, i, p) => JsonPipe(c, t, g, i, p),
+    );
   }
 
   void registerObjectFactory(String type, ChannelOwnerFactory factory) {

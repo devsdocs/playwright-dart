@@ -15,12 +15,14 @@ class Request extends RequestBase {
   String get method => initializer['method'] as String;
   String? get postData => initializer['postData'] as String?;
   Map<String, dynamic> get headers =>
-      (initializer['headers'] as List?)
-          ?.fold<Map<String, dynamic>>({}, (map, header) {
-            map[(header['name'] as String).toLowerCase()] =
-                header['value'] as String;
-            return map;
-          }) ??
+      (initializer['headers'] as List?)?.fold<Map<String, dynamic>>({}, (
+        map,
+        header,
+      ) {
+        map[(header['name'] as String).toLowerCase()] =
+            header['value'] as String;
+        return map;
+      }) ??
       {};
   bool get isNavigationRequest =>
       initializer['isNavigationRequest'] as bool? ?? false;
@@ -36,7 +38,8 @@ class Request extends RequestBase {
     final result = await channel_rawRequestHeaders();
     final headers = result['headers'] as List;
     return {
-      for (final h in headers) (h['name'] as String).toLowerCase(): h['value'] as String,
+      for (final h in headers)
+        (h['name'] as String).toLowerCase(): h['value'] as String,
     };
   }
 

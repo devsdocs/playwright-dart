@@ -226,20 +226,36 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   }
 
   Future<ElementHandle?> querySelector(String selector, {bool? strict}) async {
-    final result = await channel_querySelector(selector: selector, strict: strict);
+    final result = await channel_querySelector(
+      selector: selector,
+      strict: strict,
+    );
     final element = result['element'];
     if (element == null) return null;
-    return ChannelOwner.from<ElementHandle>(connection, element as Map<String, dynamic>);
+    return ChannelOwner.from<ElementHandle>(
+      connection,
+      element as Map<String, dynamic>,
+    );
   }
 
   Future<List<ElementHandle>> querySelectorAll(String selector) async {
     final result = await channel_querySelectorAll(selector: selector);
     final elements = result['elements'] as List;
-    return elements.map((e) => ChannelOwner.from<ElementHandle>(connection, e as Map<String, dynamic>)).toList();
+    return elements
+        .map(
+          (e) => ChannelOwner.from<ElementHandle>(
+            connection,
+            e as Map<String, dynamic>,
+          ),
+        )
+        .toList();
   }
 
   Future<void> dispatchEvent(String type, {dynamic eventInit}) async {
-    await channel_dispatchEvent(type: type, eventInit: serializeArgument(eventInit));
+    await channel_dispatchEvent(
+      type: type,
+      eventInit: serializeArgument(eventInit),
+    );
   }
 
   Future<List<int>> screenshot({
@@ -269,7 +285,7 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     } else if (values is List) {
       options.addAll(values.map((v) => {'valueOrLabel': v.toString()}));
     }
-    
+
     final result = await channel_selectOption(
       options: options.isNotEmpty ? options : null,
       force: force,
@@ -283,17 +299,22 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   }
 
   Future<void> setInputFiles(List<String> files, {double? timeout}) async {
-    await channel_setInputFiles(
-      localPaths: files,
+    await channel_setInputFiles(localPaths: files, timeout: timeout ?? 30000.0);
+  }
+
+  Future<void> waitForElementState(String state, {double? timeout}) async {
+    await channel_waitForElementState(
+      state: state,
       timeout: timeout ?? 30000.0,
     );
   }
 
-  Future<void> waitForElementState(String state, {double? timeout}) async {
-    await channel_waitForElementState(state: state, timeout: timeout ?? 30000.0);
-  }
-
-  Future<ElementHandle?> waitForSelector(String selector, {bool? strict, String? state, double? timeout}) async {
+  Future<ElementHandle?> waitForSelector(
+    String selector, {
+    bool? strict,
+    String? state,
+    double? timeout,
+  }) async {
     final result = await channel_waitForSelector(
       selector: selector,
       strict: strict,
@@ -302,6 +323,9 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     );
     final element = result['element'];
     if (element == null) return null;
-    return ChannelOwner.from<ElementHandle>(connection, element as Map<String, dynamic>);
+    return ChannelOwner.from<ElementHandle>(
+      connection,
+      element as Map<String, dynamic>,
+    );
   }
 }

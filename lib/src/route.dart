@@ -56,10 +56,10 @@ class Route extends RouteBase {
     String? postData,
     bool isFallback = false,
   }) => continueRoute(
-        url: url,
-        method: method,
-        headers: headers,
-        postData: postData,
-        isFallback: isFallback,
-      );
+    url: url,
+    method: method,
+    headers: headers,
+    postData: postData,
+    isFallback: isFallback,
+  );
 }

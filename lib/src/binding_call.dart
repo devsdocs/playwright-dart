@@ -17,11 +17,7 @@ class BindingCall extends BindingCallBase {
   Future<void> reject(dynamic error) async {
     // Basic error serialization mapping for now
     final serializedError = SerializedError(
-      error: {
-        'message': error.toString(),
-        'name': 'Error',
-        'stack': '',
-      },
+      error: {'message': error.toString(), 'name': 'Error', 'stack': ''},
     );
     await channel_reject(error: serializedError);
   }

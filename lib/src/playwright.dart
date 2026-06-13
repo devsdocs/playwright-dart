@@ -69,7 +69,7 @@ class Playwright extends PlaywrightBase {
 
     // Initialize the root object to get Playwright
     final result = await connection.sendMessageToServer('', 'initialize', {
-      'sdkLanguage': 'javascript', 
+      'sdkLanguage': 'javascript',
     });
 
     return ChannelOwner.from<Playwright>(

@@ -99,9 +99,7 @@ class LocalUtils extends LocalUtilsBase {
     return result['traceId'] as String? ?? '';
   }
 
-  Future<void> addStackToTracingNoReply(
-    ClientSideCallMetadata callData,
-  ) async {
+  Future<void> addStackToTracingNoReply(ClientSideCallMetadata callData) async {
     await channel_addStackToTracingNoReply(callData: callData);
   }
 

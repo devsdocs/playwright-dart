@@ -14,7 +14,11 @@ class ElectronApplication extends ElectronApplicationBase {
     return await channel_browserWindow(page: page);
   }
 
-  Future<dynamic> evaluateExpression(String expression, {bool? isFunction, dynamic arg}) async {
+  Future<dynamic> evaluateExpression(
+    String expression, {
+    bool? isFunction,
+    dynamic arg,
+  }) async {
     final result = await channel_evaluateExpression(
       expression: expression,
       isFunction: isFunction,
@@ -23,7 +27,11 @@ class ElectronApplication extends ElectronApplicationBase {
     return parseSerializedValue(result['value'] as Map<String, dynamic>);
   }
 
-  Future<dynamic> evaluateExpressionHandle(String expression, {bool? isFunction, dynamic arg}) async {
+  Future<dynamic> evaluateExpressionHandle(
+    String expression, {
+    bool? isFunction,
+    dynamic arg,
+  }) async {
     final result = await channel_evaluateExpressionHandle(
       expression: expression,
       isFunction: isFunction,

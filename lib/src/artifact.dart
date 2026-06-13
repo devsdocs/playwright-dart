@@ -26,7 +26,7 @@ class Artifact extends ArtifactBase {
     final result = await channel_failure();
     return result['error'] as String? ?? '';
   }
-  
+
   // Aliases for missing script check
   Future<String> failure() => failureError();
   Future<Map<String, dynamic>> saveAsStream() => channel_saveAsStream();

@@ -35,12 +35,17 @@ class JSHandle extends JSHandleBase {
     await channel_dispose();
   }
 
-  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) => evaluate(expression, arg);
-  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) => evaluateHandle(expression, arg);
+  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) =>
+      evaluate(expression, arg);
+  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) =>
+      evaluateHandle(expression, arg);
 
   Future<JSHandle> getProperty(String propertyName) async {
     final result = await super.channel_getProperty(name: propertyName);
-    return ChannelOwner.from<JSHandle>(connection, result['handle'] as Map<String, dynamic>);
+    return ChannelOwner.from<JSHandle>(
+      connection,
+      result['handle'] as Map<String, dynamic>,
+    );
   }
 
   Future<Map<String, JSHandle>> getProperties() async {
@@ -54,7 +59,7 @@ class JSHandle extends JSHandleBase {
     }
     return map;
   }
-  
+
   Future<Map<String, JSHandle>> getPropertyList() => getProperties();
 
   Future<dynamic> jsonValue() async {

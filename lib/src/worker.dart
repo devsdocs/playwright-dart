@@ -38,8 +38,10 @@ class Worker extends WorkerBase {
   }
 
   // Aliases for missing script check
-  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) => evaluate(expression, arg);
-  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) => evaluateHandle(expression, arg);
+  Future<dynamic> evaluateExpression(String expression, [dynamic arg]) =>
+      evaluate(expression, arg);
+  Future<JSHandle> evaluateExpressionHandle(String expression, [dynamic arg]) =>
+      evaluateHandle(expression, arg);
   // Unused right now, just for completeness:
   // Future<dynamic> updateSubscription() => channel_updateSubscription();
 }

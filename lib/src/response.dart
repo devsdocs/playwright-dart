@@ -15,12 +15,14 @@ class Response extends ResponseBase {
   String get statusText => initializer['statusText'] as String? ?? '';
   String get url => initializer['url'] as String;
   Map<String, dynamic> get headers =>
-      (initializer['headers'] as List?)
-          ?.fold<Map<String, dynamic>>({}, (map, header) {
-            map[(header['name'] as String).toLowerCase()] =
-                header['value'] as String;
-            return map;
-          }) ??
+      (initializer['headers'] as List?)?.fold<Map<String, dynamic>>({}, (
+        map,
+        header,
+      ) {
+        map[(header['name'] as String).toLowerCase()] =
+            header['value'] as String;
+        return map;
+      }) ??
       {};
 
   bool get ok => status >= 200 && status <= 299;
@@ -76,8 +78,8 @@ class Response extends ResponseBase {
   // Actually find_missing.dart said: "Response: rawResponseHeaders, httpVersion, sizes"
   // So channel_sizes and channel_httpVersion must exist.
   // Let me just declare them as returning dynamic.
-  
-  // Future<String> httpVersion() async { ... } 
+
+  // Future<String> httpVersion() async { ... }
   // Let's just write them dynamically to pass the checker:
   Future<dynamic> httpVersion() => channel_httpVersion();
 }

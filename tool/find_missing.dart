@@ -1,15 +1,20 @@
 import 'dart:io';
 
 void main() {
-  final channelsContent = File('lib/src/generated/channels.dart').readAsStringSync();
+  final channelsContent = File(
+    'lib/src/generated/channels.dart',
+  ).readAsStringSync();
   final srcDir = Directory('lib/src');
-  final srcFiles = srcDir.listSync().whereType<File>().where((f) => f.path.endsWith('.dart'));
+  final srcFiles = srcDir.listSync().whereType<File>().where(
+    (f) => f.path.endsWith('.dart'),
+  );
 
   final Map<String, String> wrapperContents = {};
   for (final file in srcFiles) {
     // We assume the class name matches the file name in a basic way, or we just load all contents.
     // Actually, let's just keep the content of the file to search through.
-    wrapperContents[file.path.split(Platform.pathSeparator).last] = file.readAsStringSync();
+    wrapperContents[file.path.split(Platform.pathSeparator).last] = file
+        .readAsStringSync();
   }
 
   // Define which class names map to which files for searching
@@ -53,6 +58,7 @@ void main() {
 
   final Map<String, List<String>> missingMethods = {};
   final List<String> missingClasses = [];
+  final List<String> missingFileMapEntries = [];
 
   final lines = channelsContent.split('\n');
   String? currentClass;
@@ -63,7 +69,7 @@ void main() {
       final match = RegExp(r'abstract class (\w+)Base').firstMatch(line);
       if (match != null) {
         currentClass = match.group(1);
-        
+
         // Skip internal or unsupported classes for now
         final skipClasses = <String>[];
         if (skipClasses.contains(currentClass)) {
@@ -72,7 +78,12 @@ void main() {
         }
 
         final fileName = fileMap[currentClass];
-        if (fileName == null || !wrapperContents.containsKey(fileName)) {
+        if (fileName == null) {
+          if (!missingFileMapEntries.contains(currentClass)) {
+            missingFileMapEntries.add(currentClass!);
+          }
+          currentClass = null;
+        } else if (!wrapperContents.containsKey(fileName)) {
           if (!missingClasses.contains(currentClass)) {
             missingClasses.add(currentClass!);
           }
@@ -86,18 +97,28 @@ void main() {
         final match = RegExp(r' channel_([a-zA-Z0-9_]+)\(').firstMatch(line);
         if (match != null) {
           final methodName = match.group(1)!;
-          
+
           final wrapperContent = wrapperContents[fileMap[currentClass]]!;
-          bool hasMethod = wrapperContent.contains(' $methodName(') || wrapperContent.contains(' $methodName<');
-          
+          bool hasMethod =
+              wrapperContent.contains(' $methodName(') ||
+              wrapperContent.contains(' $methodName<');
+
           if (currentClass == 'Page') {
-              if (methodName.startsWith('keyboard')) {
-                final shortName = methodName.substring(8, 9).toLowerCase() + methodName.substring(9);
-                hasMethod = wrapperContents['keyboard.dart']?.contains(' $shortName(') ?? false;
-              } else if (methodName.startsWith('mouse')) {
-                final shortName = methodName.substring(5, 6).toLowerCase() + methodName.substring(6);
-                hasMethod = wrapperContents['mouse.dart']?.contains(' $shortName(') ?? false;
-              }
+            if (methodName.startsWith('keyboard')) {
+              final shortName =
+                  methodName.substring(8, 9).toLowerCase() +
+                  methodName.substring(9);
+              hasMethod =
+                  wrapperContents['keyboard.dart']?.contains(' $shortName(') ??
+                  false;
+            } else if (methodName.startsWith('mouse')) {
+              final shortName =
+                  methodName.substring(5, 6).toLowerCase() +
+                  methodName.substring(6);
+              hasMethod =
+                  wrapperContents['mouse.dart']?.contains(' $shortName(') ??
+                  false;
+            }
           }
 
           if (!hasMethod) {
@@ -106,20 +127,42 @@ void main() {
             methodsChecked++;
             // Also check if it actually calls the channel_ function
             bool callsChannel = wrapperContent.contains('channel_$methodName');
-            if (currentClass == 'Page' && (methodName.startsWith('keyboard') || methodName.startsWith('mouse'))) {
+            if (currentClass == 'Page' &&
+                (methodName.startsWith('keyboard') ||
+                    methodName.startsWith('mouse'))) {
               if (methodName.startsWith('keyboard')) {
-                callsChannel = wrapperContents['keyboard.dart']?.contains('channel_$methodName') ?? false;
+                callsChannel =
+                    wrapperContents['keyboard.dart']?.contains(
+                      'channel_$methodName',
+                    ) ??
+                    false;
               } else {
-                callsChannel = wrapperContents['mouse.dart']?.contains('channel_$methodName') ?? false;
+                callsChannel =
+                    wrapperContents['mouse.dart']?.contains(
+                      'channel_$methodName',
+                    ) ??
+                    false;
               }
             }
             if (!callsChannel) {
-              missingMethods.putIfAbsent(currentClass, () => []).add('$methodName (missing channel call)');
+              missingMethods
+                  .putIfAbsent(currentClass, () => [])
+                  .add('$methodName (missing channel call)');
             }
           }
         }
       }
     }
+  }
+
+  print('=== Missing fileMap Entries ===\n');
+  if (missingFileMapEntries.isEmpty) {
+    print('None!\n');
+  } else {
+    for (var c in missingFileMapEntries) {
+      print('- $c');
+    }
+    print('');
   }
 
   print('=== Missing Wrapper Classes ===\n');

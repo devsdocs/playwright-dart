@@ -9,8 +9,18 @@ class Tracing extends TracingBase {
     super.parent,
   ]);
 
-  Future<void> start({String? name, bool? snapshots, bool? screenshots, bool? live}) async {
-    await channel_tracingStart(name: name, snapshots: snapshots, screenshots: screenshots, live: live);
+  Future<void> start({
+    String? name,
+    bool? snapshots,
+    bool? screenshots,
+    bool? live,
+  }) async {
+    await channel_tracingStart(
+      name: name,
+      snapshots: snapshots,
+      screenshots: screenshots,
+      live: live,
+    );
   }
 
   Future<Map<String, dynamic>> startChunk({String? name, String? title}) async {
@@ -34,11 +44,26 @@ class Tracing extends TracingBase {
   }
 
   // Aliases for missing script check
-  Future<void> tracingStart({String? name, bool? snapshots, bool? screenshots, bool? live}) => start(name: name, snapshots: snapshots, screenshots: screenshots, live: live);
-  Future<Map<String, dynamic>> tracingStartChunk({String? name, String? title}) => startChunk(name: name, title: title);
-  Future<void> tracingGroup(String name, {Map<String, dynamic>? location}) => group(name, location: location);
+  Future<void> tracingStart({
+    String? name,
+    bool? snapshots,
+    bool? screenshots,
+    bool? live,
+  }) => start(
+    name: name,
+    snapshots: snapshots,
+    screenshots: screenshots,
+    live: live,
+  );
+  Future<Map<String, dynamic>> tracingStartChunk({
+    String? name,
+    String? title,
+  }) => startChunk(name: name, title: title);
+  Future<void> tracingGroup(String name, {Map<String, dynamic>? location}) =>
+      group(name, location: location);
   Future<void> tracingGroupEnd() => groupEnd();
-  Future<Map<String, dynamic>> tracingStopChunk({String mode = 'doNotSave'}) => stopChunk(mode: mode);
+  Future<Map<String, dynamic>> tracingStopChunk({String mode = 'doNotSave'}) =>
+      stopChunk(mode: mode);
   Future<void> tracingStop() => stop();
   Future<dynamic> harStart() => channel_harStart(options: RecordHarOptions());
   Future<dynamic> harExport() => channel_harExport(mode: 'zip');
