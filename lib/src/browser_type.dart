@@ -24,10 +24,10 @@ class BrowserType extends BrowserTypeBase {
   /// Launches a new local browser instance.
   ///
   /// Automatically downloads the browser binary if it is not already installed.
-  Future<Browser> launch() async {
+  Future<Browser> launch({LaunchOptions? options}) async {
     await ensureBrowsersInstalled();
     final result = await super.channel_launch(
-      mixinValue: LaunchOptions(timeout: 30000.0),
+      launchOptions: options ?? LaunchOptions(timeout: 30000.0),
     );
     return result.browser as Browser;
   }
@@ -44,9 +44,9 @@ class BrowserType extends BrowserTypeBase {
   }) async {
     await ensureBrowsersInstalled();
     final result = await super.channel_launchPersistentContext(
-      mixin1Value: launchOptions ?? LaunchOptions(timeout: 30000.0),
-      mixin2Value: contextOptions ?? ContextOptions(),
       userDataDir: userDataDir,
+      launchOptions: launchOptions ?? LaunchOptions(timeout: 30000.0),
+      contextOptions: contextOptions ?? ContextOptions(),
       slowMo: slowMo,
     );
     return result.context as BrowserContext;

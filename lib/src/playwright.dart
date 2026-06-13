@@ -6,6 +6,7 @@ import 'driver.dart';
 import 'transport.dart';
 import 'connection.dart';
 import 'api_request_context.dart';
+import 'selectors.dart';
 
 /// The main Playwright module. Provides access to browser types (Chromium, Firefox, WebKit).
 class Playwright extends PlaywrightBase {
@@ -20,6 +21,9 @@ class Playwright extends PlaywrightBase {
 
   /// Utilities related to local file paths and connections.
   late final LocalUtils utils;
+
+  /// Custom selectors API.
+  late final Selectors selectors;
 
   Playwright(
     super.connection,
@@ -38,6 +42,7 @@ class Playwright extends PlaywrightBase {
     );
     webkit = ChannelOwner.from<BrowserType>(connection, initializer['webkit']);
     utils = ChannelOwner.from<LocalUtils>(connection, initializer['utils']);
+    selectors = Selectors(this);
   }
 
   /// Creates an APIRequestContext to send network requests directly from the

@@ -166,13 +166,13 @@ class AndroidDevice extends AndroidDeviceBase {
   }
 
   Future<BrowserContext> launchBrowser({
-    required ContextOptions mixin,
+    required ContextOptions contextOptions,
     String? pkg,
     List<String>? args,
     Map<String, dynamic>? proxy,
   }) async {
     final result = await channel_launchBrowser(
-      mixinValue: mixin,
+      contextOptions: contextOptions,
       pkg: pkg,
       args: args,
       proxy: proxy,

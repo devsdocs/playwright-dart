@@ -33,6 +33,9 @@ import 'src/worker_test_cases.dart' as worker_test_cases;
 import 'src/download_test_cases.dart' as download_test_cases;
 import 'src/api_request_context_test_cases.dart'
     as api_request_context_test_cases;
+import 'src/locator_assertions_test_cases.dart' as locator_assertions_test_cases;
+import 'src/route_from_har_test_cases.dart' as route_from_har_test_cases;
+import 'src/selectors_test_cases.dart' as selectors_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -74,4 +77,7 @@ void main() {
   download_test_cases.main();
   api_request_context_test_cases.main();
   real_world_test_cases.main();
+  locator_assertions_test_cases.main();
+  route_from_har_test_cases.main();
+  selectors_test_cases.main();
 }

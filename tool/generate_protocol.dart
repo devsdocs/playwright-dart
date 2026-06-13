@@ -55,6 +55,15 @@ void main() async {
 
   final mutableProtocol = deepClone(protocol) as Map<String, dynamic>;
 
+  // Inject recordHar into ContextOptions
+  if (mutableProtocol.containsKey('ContextOptions')) {
+    final ctxOpts = mutableProtocol['ContextOptions'] as Map<String, dynamic>;
+    if (ctxOpts.containsKey('properties')) {
+      final props = ctxOpts['properties'] as Map<String, dynamic>;
+      props['recordHar'] = {'type': 'object?', '\$ref': 'RecordHarOptions'};
+    }
+  }
+
   final interfaces = <String>{};
   for (final entry in mutableProtocol.entries) {
     if (entry.value['type'] == 'interface') {
@@ -244,7 +253,7 @@ void main() async {
         dartType = 'String';
         break;
       case 'json':
-        dartType = 'Map<String, dynamic>';
+        dartType = 'dynamic';
         break;
       default:
         dartType = baseType;
@@ -518,8 +527,14 @@ void main() async {
           final params = cmdDef['parameters'] as Map<String, dynamic>;
           final sortedParams = params.keys.toList()..sort();
           for (final pKey in sortedParams) {
-            var pName = sanitizeName(pKey);
             final pType = resolveDartType(params[pKey]);
+            var pName = sanitizeName(pKey);
+            if (pKey.startsWith(r'$mixin')) {
+              final baseType = pType.replaceAll('?', '');
+              pName =
+                  baseType.substring(0, 1).toLowerCase() +
+                  baseType.substring(1);
+            }
             paramList.add({
               'name': pName,
               'type': pType,

@@ -1591,19 +1591,19 @@ class BrowserTypeLaunchResult {
 }
 
 class CDPSessionSendResult {
-  final Map<String, dynamic> result;
+  final dynamic result;
 
-  CDPSessionSendResult({required this.result});
+  CDPSessionSendResult({this.result});
 
   factory CDPSessionSendResult.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return CDPSessionSendResult(result: (json['result'])!);
+    return CDPSessionSendResult(result: json['result']);
   }
 
   Map<String, dynamic> toJson() {
-    return {'result': result};
+    return {if (result != null) 'result': result};
   }
 }
 
@@ -1754,6 +1754,7 @@ class ContextOptions {
   final bool? noDefaultViewport;
   final bool? offline;
   final List<String>? permissions;
+  final Map<String, dynamic>? recordHar;
   final Map<String, dynamic>? recordVideo;
   final ContextOptionsReducedMotionEnum? reducedMotion;
   final Map<String, dynamic>? screen;
@@ -1785,6 +1786,7 @@ class ContextOptions {
     this.noDefaultViewport,
     this.offline,
     this.permissions,
+    this.recordHar,
     this.recordVideo,
     this.reducedMotion,
     this.screen,
@@ -1840,6 +1842,7 @@ class ContextOptions {
       noDefaultViewport: json['noDefaultViewport'],
       offline: json['offline'],
       permissions: (json['permissions'] as List?)?.cast<String>(),
+      recordHar: json['recordHar'],
       recordVideo: json['recordVideo'],
       reducedMotion: json['reducedMotion'] == null
           ? null
@@ -1884,6 +1887,7 @@ class ContextOptions {
       if (noDefaultViewport != null) 'noDefaultViewport': noDefaultViewport,
       if (offline != null) 'offline': offline,
       if (permissions != null) 'permissions': permissions,
+      if (recordHar != null) 'recordHar': recordHar,
       if (recordVideo != null) 'recordVideo': recordVideo,
       if (reducedMotion != null) 'reducedMotion': reducedMotion,
       if (screen != null) 'screen': screen,
@@ -3185,7 +3189,7 @@ class LaunchOptions {
   final String? downloadsPath;
   final List<NameValue>? env;
   final String? executablePath;
-  final Map<String, dynamic>? firefoxUserPrefs;
+  final dynamic firefoxUserPrefs;
   final bool? handleSIGHUP;
   final bool? handleSIGINT;
   final bool? handleSIGTERM;
@@ -5283,13 +5287,13 @@ abstract class AndroidDeviceBase extends EventTargetBase {
   }
 
   Future<AndroidDeviceLaunchBrowserResult> channel_launchBrowser({
-    required ContextOptions mixinValue,
+    required ContextOptions contextOptions,
     List<String>? args,
     String? pkg,
     Map<String, dynamic>? proxy,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(contextOptions.toJson());
     if (args != null) payload['args'] = args;
     if (pkg != null) payload['pkg'] = pkg;
     if (proxy != null) payload['proxy'] = proxy;
@@ -5677,12 +5681,12 @@ abstract class BrowserBase extends ChannelOwner {
   }
 
   Future<BrowserNewContextResult> channel_newContext({
-    required ContextOptions mixinValue,
+    required ContextOptions contextOptions,
     Map<String, dynamic>? proxy,
     Map<String, dynamic>? storageState,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(contextOptions.toJson());
     if (proxy != null) payload['proxy'] = proxy;
     if (storageState != null) payload['storageState'] = storageState;
     final response = await connection.sendMessageToServer(
@@ -5694,12 +5698,12 @@ abstract class BrowserBase extends ChannelOwner {
   }
 
   Future<BrowserNewContextForReuseResult> channel_newContextForReuse({
-    required ContextOptions mixinValue,
+    required ContextOptions contextOptions,
     Map<String, dynamic>? proxy,
     Map<String, dynamic>? storageState,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(contextOptions.toJson());
     if (proxy != null) payload['proxy'] = proxy;
     if (storageState != null) payload['storageState'] = storageState;
     final response = await connection.sendMessageToServer(
@@ -5715,14 +5719,14 @@ abstract class BrowserBase extends ChannelOwner {
 
   Future<BrowserStartServerResult> channel_startServer({
     String? host,
-    Map<String, dynamic>? metadata,
+    dynamic metadata,
     int? port,
     required String title,
     String? workspaceDir,
   }) async {
     final payload = <String, dynamic>{};
     if (host != null) payload['host'] = host;
-    if (metadata != null) payload['metadata'] = metadata;
+    if (metadata != null) payload['metadata'] = metadata.toJson();
     if (port != null) payload['port'] = port;
     payload['title'] = title;
     if (workspaceDir != null) payload['workspaceDir'] = workspaceDir;
@@ -6004,11 +6008,11 @@ abstract class BrowserContextBase extends EventTargetBase {
   }
 
   Future<void> channel_enableRecorder({
-    Map<String, dynamic>? contextOptions,
+    dynamic contextOptions,
     String? device,
     bool? handleSIGINT,
     String? language,
-    Map<String, dynamic>? launchOptions,
+    dynamic launchOptions,
     BrowserContextEnableRecorderModeEnum? mode,
     bool? omitCallTracking,
     String? outputFile,
@@ -6018,11 +6022,15 @@ abstract class BrowserContextBase extends EventTargetBase {
     String? testIdAttributeName,
   }) async {
     final payload = <String, dynamic>{};
-    if (contextOptions != null) payload['contextOptions'] = contextOptions;
+    if (contextOptions != null) {
+      payload['contextOptions'] = contextOptions.toJson();
+    }
     if (device != null) payload['device'] = device;
     if (handleSIGINT != null) payload['handleSIGINT'] = handleSIGINT;
     if (language != null) payload['language'] = language;
-    if (launchOptions != null) payload['launchOptions'] = launchOptions;
+    if (launchOptions != null) {
+      payload['launchOptions'] = launchOptions.toJson();
+    }
     if (mode != null) payload['mode'] = mode.value;
     if (omitCallTracking != null) {
       payload['omitCallTracking'] = omitCallTracking;
@@ -6316,11 +6324,11 @@ abstract class BrowserTypeBase extends ChannelOwner {
   }
 
   Future<BrowserTypeLaunchResult> channel_launch({
-    required LaunchOptions mixinValue,
+    required LaunchOptions launchOptions,
     double? slowMo,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(launchOptions.toJson());
     if (slowMo != null) payload['slowMo'] = slowMo;
     final response = await connection.sendMessageToServer(
       guid,
@@ -6332,14 +6340,14 @@ abstract class BrowserTypeBase extends ChannelOwner {
 
   Future<BrowserTypeLaunchPersistentContextResult>
   channel_launchPersistentContext({
-    required LaunchOptions mixin1Value,
-    required ContextOptions mixin2Value,
+    required LaunchOptions launchOptions,
+    required ContextOptions contextOptions,
     double? slowMo,
     required String userDataDir,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixin1Value.toJson());
-    payload.addAll(mixin2Value.toJson());
+    payload.addAll(launchOptions.toJson());
+    payload.addAll(contextOptions.toJson());
     if (slowMo != null) payload['slowMo'] = slowMo;
     payload['userDataDir'] = userDataDir;
     final response = await connection.sendMessageToServer(
@@ -6370,11 +6378,11 @@ abstract class CDPSessionBase extends ChannelOwner {
 
   Future<CDPSessionSendResult> channel_send({
     required String method,
-    Map<String, dynamic>? params,
+    dynamic params,
   }) async {
     final payload = <String, dynamic>{};
     payload['method'] = method;
-    if (params != null) payload['params'] = params;
+    if (params != null) payload['params'] = params.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'send',
@@ -7112,13 +7120,13 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   Future<ElementHandleScreenshotResult> channel_screenshot({
-    required CommonScreenshotOptions mixinValue,
+    required CommonScreenshotOptions commonScreenshotOptions,
     int? quality,
     required double timeout,
     ElementHandleScreenshotTypeEnum? type,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(commonScreenshotOptions.toJson());
     if (quality != null) payload['quality'] = quality;
     payload['timeout'] = timeout;
     if (type != null) payload['type'] = type.value;
@@ -7676,7 +7684,7 @@ abstract class FrameBase extends ChannelOwner {
     List<ExpectedTextValue>? expectedText,
     SerializedArgument? expectedValue,
     required String expression,
-    Map<String, dynamic>? expressionArg,
+    dynamic expressionArg,
     required bool isNot,
     FrameExpectPseudoEnum? pseudo,
     String? selector,
@@ -7690,7 +7698,9 @@ abstract class FrameBase extends ChannelOwner {
       payload['expectedValue'] = expectedValue.toJson();
     }
     payload['expression'] = expression;
-    if (expressionArg != null) payload['expressionArg'] = expressionArg;
+    if (expressionArg != null) {
+      payload['expressionArg'] = expressionArg.toJson();
+    }
     payload['isNot'] = isNot;
     if (pseudo != null) payload['pseudo'] = pseudo.value;
     if (selector != null) payload['selector'] = selector;
@@ -8392,9 +8402,9 @@ abstract class JsonPipeBase extends ChannelOwner {
     return;
   }
 
-  Future<void> channel_send({required Map<String, dynamic> message}) async {
+  Future<void> channel_send({dynamic message}) async {
     final payload = <String, dynamic>{};
-    payload['message'] = message;
+    if (message != null) payload['message'] = message.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'send',
@@ -8429,7 +8439,7 @@ abstract class LocalUtilsBase extends ChannelOwner {
   Future<LocalUtilsConnectResult> channel_connect({
     required String endpoint,
     String? exposeNetwork,
-    Map<String, dynamic>? headers,
+    dynamic headers,
     double? slowMo,
     int? socksProxyRedirectPortForTest,
     required double timeout,
@@ -8437,7 +8447,7 @@ abstract class LocalUtilsBase extends ChannelOwner {
     final payload = <String, dynamic>{};
     payload['endpoint'] = endpoint;
     if (exposeNetwork != null) payload['exposeNetwork'] = exposeNetwork;
-    if (headers != null) payload['headers'] = headers;
+    if (headers != null) payload['headers'] = headers.toJson();
     if (slowMo != null) payload['slowMo'] = slowMo;
     if (socksProxyRedirectPortForTest != null) {
       payload['socksProxyRedirectPortForTest'] = socksProxyRedirectPortForTest;
@@ -8693,7 +8703,7 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<PageExpectScreenshotResult> channel_expectScreenshot({
-    required CommonScreenshotOptions mixinValue,
+    required CommonScreenshotOptions commonScreenshotOptions,
     Rect? clip,
     String? comparator,
     String? expected,
@@ -8706,7 +8716,7 @@ abstract class PageBase extends EventTargetBase {
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(commonScreenshotOptions.toJson());
     if (clip != null) payload['clip'] = clip.toJson();
     if (comparator != null) payload['comparator'] = comparator;
     if (expected != null) payload['expected'] = expected;
@@ -9102,10 +9112,10 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<void> channel_screencastShowActions({
-    required ShowActionsOptions mixinValue,
+    required ShowActionsOptions showActionsOptions,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(showActionsOptions.toJson());
     final response = await connection.sendMessageToServer(
       guid,
       'screencastShowActions',
@@ -9161,7 +9171,7 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<PageScreenshotResult> channel_screenshot({
-    required CommonScreenshotOptions mixinValue,
+    required CommonScreenshotOptions commonScreenshotOptions,
     Rect? clip,
     bool? fullPage,
     int? quality,
@@ -9169,7 +9179,7 @@ abstract class PageBase extends EventTargetBase {
     PageScreenshotTypeEnum? type,
   }) async {
     final payload = <String, dynamic>{};
-    payload.addAll(mixinValue.toJson());
+    payload.addAll(commonScreenshotOptions.toJson());
     if (clip != null) payload['clip'] = clip.toJson();
     if (fullPage != null) payload['fullPage'] = fullPage;
     if (quality != null) payload['quality'] = quality;

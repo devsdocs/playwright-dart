@@ -29,9 +29,14 @@ class Browser extends BrowserBase {
   /// It won't share cookies/cache with other browser contexts.
   Future<BrowserContext> newContext({ContextOptions? options}) async {
     final result = await super.channel_newContext(
-      mixinValue: options ?? ContextOptions(),
+      contextOptions: options ?? ContextOptions(),
     );
-    return result.context as BrowserContext;
+    final context = result.context as BrowserContext;
+    final playwright =
+        connection.objects.values.firstWhere((e) => e is PlaywrightBase)
+            as Playwright;
+    await playwright.selectors.addContext(context);
+    return context;
   }
 
   /// Closes the browser and all of its pages.
@@ -129,7 +134,7 @@ class Browser extends BrowserBase {
     Map<String, dynamic>? storageState,
   }) async {
     final result = await channel_newContextForReuse(
-      mixinValue: ContextOptions(),
+      contextOptions: ContextOptions(),
       proxy: proxy,
       storageState: storageState,
     );

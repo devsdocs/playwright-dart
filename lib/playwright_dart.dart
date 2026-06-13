@@ -25,11 +25,13 @@ export 'src/browser_context.dart';
 export 'src/page.dart';
 export 'src/frame.dart';
 export 'src/locator.dart';
+export 'src/selectors.dart';
 export 'src/generated/channels.dart' hide Channel;
 
 // Interaction
 export 'src/element_handle.dart';
 export 'src/jshandle.dart';
+export 'src/locator_assertions.dart';
 export 'src/keyboard.dart';
 export 'src/mouse.dart';
 

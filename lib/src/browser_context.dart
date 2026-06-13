@@ -2,6 +2,8 @@ import 'cdp_session.dart';
 import 'frame.dart';
 import 'page.dart';
 import 'generated/channels.dart';
+import 'route.dart';
+import 'route_from_har.dart';
 
 /// BrowserContexts provide a way to operate multiple independent browser sessions.
 ///
@@ -235,5 +237,52 @@ class BrowserContext extends BrowserContextBase {
     required bool enabled,
   }) async {
     await channel_updateSubscription(event: event, enabled: enabled);
+  }
+
+  /// Routing provides the capability to modify network requests that are made by a context.
+  Future<void> route(String url, Future<void> Function(Route) handler) async {
+    await channel_setNetworkInterceptionPatterns(
+      patterns: [
+        {'glob': url},
+      ],
+    );
+
+    onEvent.listen((event) async {
+      if (event['event'] == 'route') {
+        final params = event['params'] as Map<String, dynamic>;
+        final routeObj = connection.objects[params['route']['guid']] as Route;
+        final requestObj = routeObj.request;
+
+        final matches = url == '**/*' || url == '*' || url.contains('*')
+            ? true
+            : requestObj.url.contains(url);
+
+        if (matches) {
+          await handler(routeObj);
+        }
+      }
+    });
+  }
+
+  Future<void> unroute(
+    String url, {
+    Future<void> Function(Route route)? handler,
+  }) async {
+    // A simplified unroute that clears the glob pattern for now.
+    await channel_setNetworkInterceptionPatterns(patterns: []);
+  }
+
+  /// Serves all requests matching the given [url] from the HAR file.
+  Future<void> routeFromHAR(
+    String harPath, {
+    String? url,
+    bool notFoundFallback = false,
+  }) async {
+    await sharedRouteFromHAR(
+      this,
+      harPath,
+      url: url,
+      notFoundFallback: notFoundFallback,
+    );
   }
 }

@@ -256,16 +256,12 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
   }
 
   Future<List<int>> screenshot({
-    double? timeout,
-    ElementHandleScreenshotTypeEnum? type,
-    int? quality,
-    CommonScreenshotOptions? mixin,
+    CommonScreenshotOptions? options,
+    required double timeout,
   }) async {
     final result = await channel_screenshot(
-      timeout: timeout ?? 30000.0,
-      type: type,
-      quality: quality,
-      mixinValue: mixin ?? CommonScreenshotOptions(),
+      commonScreenshotOptions: options ?? CommonScreenshotOptions(),
+      timeout: timeout,
     );
     return base64Decode(result.binary);
   }

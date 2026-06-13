@@ -1,6 +1,7 @@
 import 'frame.dart';
 import 'generated/channels.dart';
 import 'serialization.dart';
+import 'locator_assertions.dart';
 
 /// Locators are the central piece of Playwright's auto-waiting and retry-ability.
 ///
@@ -11,6 +12,10 @@ class Locator {
   final String selector;
 
   Locator(this.frame, this.selector);
+
+  /// Returns an assertions object that provides web-first assertions for this locator.
+  LocatorAssertions expect({double? timeout}) =>
+      LocatorAssertions(this, false, timeout);
 
   /// Creates a locator that matches both this locator and the given selector.
   Locator locator(String selectorOrLocator) {

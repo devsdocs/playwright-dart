@@ -12,6 +12,7 @@ import 'route.dart';
 import 'dialog.dart';
 import 'worker.dart';
 import 'artifact.dart';
+import 'route_from_har.dart';
 
 /// Page provides methods to interact with a single tab or extension background page in a browser.
 ///
@@ -105,6 +106,20 @@ class Page extends PageBase {
   /// Routing provides the capability to modify network requests that are made by a page.
   ///
   /// Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+  /// Serves all requests matching the given [url] from the HAR file.
+  Future<void> routeFromHAR(
+    String harPath, {
+    String? url,
+    bool notFoundFallback = false,
+  }) async {
+    await sharedRouteFromHAR(
+      this,
+      harPath,
+      url: url,
+      notFoundFallback: notFoundFallback,
+    );
+  }
+
   Future<void> route(String url, Future<void> Function(Route) handler) async {
     await channel_setNetworkInterceptionPatterns(
       patterns: [
@@ -206,7 +221,7 @@ class Page extends PageBase {
           : null,
       quality: quality,
       fullPage: fullPage,
-      mixinValue: CommonScreenshotOptions(),
+      commonScreenshotOptions: CommonScreenshotOptions(),
     );
     final buffer = base64Decode(result.binary);
     if (path != null) {
@@ -692,7 +707,7 @@ class Page extends PageBase {
       threshold: threshold,
       fullPage: fullPage,
       clip: clip,
-      mixinValue: screenshotOptions,
+      commonScreenshotOptions: screenshotOptions,
     );
   }
 
@@ -758,7 +773,7 @@ class Page extends PageBase {
   }
 
   Future<void> screencastShowActions(ShowActionsOptions options) async {
-    await channel_screencastShowActions(mixinValue: options);
+    await channel_screencastShowActions(showActionsOptions: options);
   }
 
   Future<void> screencastHideActions() async {
