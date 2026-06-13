@@ -54,6 +54,8 @@ class Connection {
   int _lastId = 0;
   final Map<String, ChannelOwnerFactory> _objectFactories = {};
   RootChannelOwner? rootObject;
+  bool _isClosed = false;
+  bool isAutoCloseEnabled = true;
 
   Connection(this.transport) {
     transport.onMessage = _dispatch;
@@ -181,6 +183,9 @@ class Connection {
     String method, [
     Map<String, dynamic>? params,
   ]) {
+    if (_isClosed) {
+      return Future.error(Exception('Connection is closed'));
+    }
     final id = ++_lastId;
     final message = {
       'id': id,
@@ -270,10 +275,15 @@ class Connection {
   }
 
   void _onClose() {
+    _isClosed = true;
     for (final callback in _callbacks.values) {
       callback.completeError(Exception('Connection closed'));
     }
     _callbacks.clear();
+  }
+
+  void close() {
+    transport.close();
   }
 
   String _parseError(dynamic error) {

@@ -2,12 +2,17 @@ import 'frame.dart';
 import 'generated/channels.dart';
 import 'serialization.dart';
 
+/// Locators are the central piece of Playwright's auto-waiting and retry-ability.
+/// 
+/// In a nutshell, locators represent a way to find element(s) on the page at any moment.
 class Locator {
+  /// The frame this locator belongs to.
   final Frame frame;
   final String selector;
 
   Locator(this.frame, this.selector);
 
+  /// Creates a locator that matches both this locator and the given selector.
   Locator locator(String selectorOrLocator) {
     return Locator(frame, '$selector >> $selectorOrLocator');
   }
@@ -52,6 +57,9 @@ class Locator {
     return locator('internal:testid=[data-testid="$testId"]');
   }
 
+  /// Click an element.
+  /// 
+  /// It will wait for the element to be visible, enabled and stable.
   Future<void> click({bool? force, double? timeout}) async {
     await frame.channel_click(
       selector: selector,
@@ -60,6 +68,7 @@ class Locator {
     );
   }
 
+  /// Fills an `<input>`, `<textarea>` or `[contenteditable]` element with the provided value.
   Future<void> fill(String value, {bool? force, double? timeout}) async {
     await frame.channel_fill(
       selector: selector,
@@ -101,6 +110,7 @@ class Locator {
     return result.value as String;
   }
 
+  /// Hovers over the element.
   Future<void> hover({bool? force, double? timeout}) async {
     await frame.channel_hover(
       selector: selector,
@@ -142,6 +152,7 @@ class Locator {
     return result.value;
   }
 
+  /// Returns whether the element is visible.
   Future<bool> isVisible() async {
     final result = await frame.channel_isVisible(selector: selector);
     return result.value;
@@ -168,6 +179,7 @@ class Locator {
     return result.value;
   }
 
+  /// Returns whether the element is enabled.
   Future<bool> isEnabled({double? timeout}) async {
     final result = await frame.channel_isEnabled(
       selector: selector,
@@ -205,6 +217,7 @@ class Locator {
     );
   }
 
+  /// Focuses the element, and then uses keyboard to press the given key.
   Future<void> press(String key, {double? delay, double? timeout}) async {
     await frame.channel_press(
       selector: selector,
@@ -222,6 +235,7 @@ class Locator {
     );
   }
 
+  /// Selects one or multiple options in the `<select>` element.
   Future<List<String>> selectOption(
     dynamic values, {
     bool? force,

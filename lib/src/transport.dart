@@ -101,3 +101,38 @@ class StdioTransport implements Transport {
   @override
   set onClose(CloseCallback callback) => _onClose = callback;
 }
+
+class JsonPipeTransport implements Transport {
+  final dynamic _pipe; // JsonPipe
+  MessageCallback? _onMessage;
+  CloseCallback? _onClose;
+
+  JsonPipeTransport(this._pipe) {
+    _pipe.onEvent.listen((eventData) {
+      final eventName = eventData['event'];
+      final params = eventData['params'];
+
+      if (eventName == 'message') {
+        _onMessage?.call(params['message'] as Map<String, dynamic>);
+      } else if (eventName == 'closed') {
+        _onClose?.call();
+      }
+    });
+  }
+
+  @override
+  void send(Map<String, dynamic> message) {
+    _pipe.send(message);
+  }
+
+  @override
+  void close() {
+    _pipe.close();
+  }
+
+  @override
+  set onMessage(MessageCallback callback) => _onMessage = callback;
+
+  @override
+  set onClose(CloseCallback callback) => _onClose = callback;
+}

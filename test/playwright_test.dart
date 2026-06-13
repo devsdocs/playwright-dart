@@ -22,6 +22,9 @@ import 'src/browser_context_advanced_test_cases.dart'
     as browser_context_advanced_test_cases;
 import 'src/network_advanced_test_cases.dart' as network_advanced_test_cases;
 import 'src/input_devices_test_cases.dart' as input_devices_test_cases;
+import 'src/websocket_connect_test_cases.dart'
+    as websocket_connect_test_cases;
+import 'src/lifecycle_test_cases.dart' as lifecycle_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -52,5 +55,7 @@ void main() {
   browser_context_advanced_test_cases.main();
   network_advanced_test_cases.main();
   input_devices_test_cases.main();
+  websocket_connect_test_cases.main();
+  lifecycle_test_cases.main();
   real_world_test_cases.main();
 }

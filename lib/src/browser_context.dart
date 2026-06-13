@@ -3,6 +3,9 @@ import 'frame.dart';
 import 'page.dart';
 import 'generated/channels.dart';
 
+/// BrowserContexts provide a way to operate multiple independent browser sessions.
+/// 
+/// If a page opens another page, e.g. with a `window.open` call, the popup will belong to the parent page's browser context.
 class BrowserContext extends BrowserContextBase {
   BrowserContext(
     super.connection,
@@ -12,11 +15,15 @@ class BrowserContext extends BrowserContextBase {
     super.parent,
   ]);
 
+  /// Creates a new page in the browser context.
   Future<Page> newPage() async {
     final result = await super.channel_newPage();
     return result.page as Page;
   }
 
+  /// Adds cookies into this browser context.
+  /// 
+  /// All pages within this context will have these cookies installed.
   Future<void> addCookies(List<SetNetworkCookie> cookies) async {
     await super.channel_addCookies(cookies: cookies);
   }
@@ -29,6 +36,9 @@ class BrowserContext extends BrowserContextBase {
     await super.channel_clearCookies(name: name, domain: domain, path: path);
   }
 
+  /// Returns the browser context cookies.
+  /// 
+  /// If no [urls] are specified, this method returns cookies for all pages.
   Future<List<NetworkCookie>> cookies({List<String>? urls}) async {
     final result = await super.channel_cookies(urls: urls ?? []);
     return result.cookies;
@@ -44,6 +54,7 @@ class BrowserContext extends BrowserContextBase {
     );
   }
 
+  /// The extra HTTP headers will be sent with every request the context initiates.
   Future<void> setExtraHTTPHeaders(Map<String, String> headers) async {
     final mappedHeaders = headers.entries
         .map((e) => NameValue(name: e.key, value: e.value))
@@ -63,10 +74,12 @@ class BrowserContext extends BrowserContextBase {
     await channel_setHTTPCredentials(httpCredentials: credentials);
   }
 
+  /// Emulates network being offline or online.
   Future<void> setOffline(bool offline) async {
     await channel_setOffline(offline: offline);
   }
 
+  /// Returns storage state for this browser context, contains current cookies and local storage snapshot.
   Future<BrowserContextStorageStateResult> storageState({
     bool? indexedDB,
   }) async {
@@ -78,6 +91,9 @@ class BrowserContext extends BrowserContextBase {
     await channel_setStorageState(storageState: state);
   }
 
+  /// Adds a script which would be evaluated in one of the following scenarios:
+  /// - Whenever a page is created in the browser context.
+  /// - Whenever a child frame is attached or navigated in any page in the browser context.
   Future<void> addInitScript(String source) async {
     await channel_addInitScript(source: source);
   }

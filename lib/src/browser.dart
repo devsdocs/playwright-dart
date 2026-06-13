@@ -4,7 +4,17 @@ import 'page.dart';
 import 'generated/channels.dart';
 import 'artifact.dart';
 import 'stream.dart';
+import 'playwright.dart';
 
+/// A Browser is created via [BrowserType.launch].
+///
+/// An example of using a Browser to create a Page:
+/// ```dart
+/// final browser = await playwright.chromium.launch();
+/// final page = await browser.newPage();
+/// await page.goto('https://example.com');
+/// await browser.close();
+/// ```
 class Browser extends BrowserBase {
   Browser(
     super.connection,
@@ -14,6 +24,9 @@ class Browser extends BrowserBase {
     super.parent,
   ]);
 
+  /// Creates a new browser context.
+  /// 
+  /// It won't share cookies/cache with other browser contexts.
   Future<BrowserContext> newContext({ContextOptions? options}) async {
     final result = await super.channel_newContext(
       mixin: options ?? ContextOptions(),
@@ -21,8 +34,30 @@ class Browser extends BrowserBase {
     return result.context as BrowserContext;
   }
 
+  /// Closes the browser and all of its pages.
+  /// 
+  /// If [autoClose] was true when initializing Playwright, closing the last
+  /// active browser will automatically shut down the underlying driver process.
   Future<void> close({String? reason}) async {
     await channel_close(reason: reason);
+
+    // Auto-shutdown Playwright connection if this was the last active browser.
+    // This emulates Node.js unref() behavior where `browser.close()` gracefully exits the application.
+    if (connection.isAutoCloseEnabled) {
+      try {
+        final activeBrowsers =
+            connection.objects.values.whereType<Browser>().length;
+        if (activeBrowsers <= 1) {
+          final playwright =
+              connection.objects.values.whereType<Playwright>().firstOrNull;
+          if (playwright != null) {
+            await playwright.stop();
+          }
+        }
+      } catch (_) {
+        // Ignore errors during auto-shutdown
+      }
+    }
   }
 
   Future<dynamic> newBrowserCDPSession() async {
@@ -106,6 +141,9 @@ class Browser extends BrowserBase {
     await channel_disconnectFromReusedContext(reason: reason);
   }
 
+  /// Creates a new page in a new browser context.
+  /// 
+  /// Closing this page will close the context as well.
   Future<Page> newPage() async {
     final context = await newContext();
     return await context.newPage();

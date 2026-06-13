@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'channel_owner.dart';
 import 'generated/channels.dart';
 
+/// Response class represents responses which are received by page.
 class Response extends ResponseBase {
   Response(
     super.connection,
@@ -11,8 +12,13 @@ class Response extends ResponseBase {
     super.parent,
   ]);
 
+  /// Contains the status code of the response (e.g., 200 for a success).
   int get status => initializer['status'] as int;
+
+  /// Contains the status text of the response (e.g. usually an "OK" for a success).
   String get statusText => initializer['statusText'] as String? ?? '';
+
+  /// Contains the URL of the response.
   String get url => initializer['url'] as String;
   Map<String, dynamic> get headers =>
       (initializer['headers'] as List?)?.fold<Map<String, dynamic>>({}, (
@@ -35,16 +41,19 @@ class Response extends ResponseBase {
     );
   }
 
+  /// Returns the buffer with response body.
   Future<List<int>> body() async {
     final result = await channel_body();
     return base64Decode(result.binary);
   }
 
+  /// Returns the text representation of response body.
   Future<String> text() async {
     final bytes = await body();
     return utf8.decode(bytes);
   }
 
+  /// Returns the JSON representation of response body.
   Future<dynamic> json() async {
     final content = await text();
     return jsonDecode(content);

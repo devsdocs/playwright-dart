@@ -11,6 +11,9 @@ import 'touchscreen.dart';
 import 'route.dart';
 import 'dialog.dart';
 
+/// Page provides methods to interact with a single tab or extension background page in a browser.
+/// 
+/// One Browser instance might have multiple Page instances.
 class Page extends PageBase {
   late final Keyboard keyboard;
   late final Mouse mouse;
@@ -43,10 +46,15 @@ class Page extends PageBase {
     });
   }
 
+  /// Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+  /// last redirect.
+  ///
+  /// `url` - URL to navigate page to. The url should include scheme, e.g. `https://`.
   Future<void> goto(String url) async {
     await mainFrame.goto(url);
   }
 
+  /// Returns the page's title.
   Future<String> title() async {
     final result = await connection.sendMessageToServer(
       _mainFrameGuid,
@@ -56,11 +64,16 @@ class Page extends PageBase {
     return result['value'] as String;
   }
 
-  /// Returns a locator for the given selector.
+  /// The method returns an element locator that can be used to perform actions on this page/frame.
+  /// Locator is resolved to the element immediately before performing an action, so a series of actions on the same locator can in fact be performed on different DOM elements.
   Locator locator(String selector) {
     return mainFrame.locator(selector);
   }
 
+  /// Returns the value of the `expression` invocation.
+  /// 
+  /// If the function passed to the `page.evaluate` returns a Promise, then `page.evaluate` would wait for the promise to resolve and return its value.
+  /// If the function passed to the `page.evaluate` returns a non-Serializable value, then `page.evaluate` resolves to `undefined`.
   Future<dynamic> evaluate(String expression, [dynamic arg]) async {
     return mainFrame.evaluate(expression, arg);
   }
@@ -73,6 +86,9 @@ class Page extends PageBase {
     return mainFrame.waitForSelector(selector, state: state, timeout: timeout);
   }
 
+  /// Routing provides the capability to modify network requests that are made by a page.
+  /// 
+  /// Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
   Future<void> route(String url, Future<void> Function(Route) handler) async {
     await channel_setNetworkInterceptionPatterns(
       patterns: [
@@ -106,7 +122,7 @@ class Page extends PageBase {
     });
   }
 
-  /// Returns a locator by text.
+  /// Allows locating elements that contain given text.
   Locator getByText(String text, {bool exact = false}) {
     if (exact) {
       return locator('internal:text="$text"');
@@ -115,7 +131,7 @@ class Page extends PageBase {
     return locator('internal:text=$text');
   }
 
-  /// Returns a locator by role.
+  /// Allows locating elements by their ARIA role, ARIA attributes and accessible name.
   Locator getByRole(String role, {String? name}) {
     var selector = 'internal:role=$role';
     if (name != null) {
@@ -159,6 +175,7 @@ class Page extends PageBase {
     );
   }
 
+  /// Returns the buffer with the captured screenshot.
   Future<Uint8List> screenshot({
     String? path,
     bool? fullPage,
@@ -182,6 +199,9 @@ class Page extends PageBase {
     return buffer;
   }
 
+  /// Returns the PDF buffer.
+  /// 
+  /// `path` - The file path to save the PDF to. If `path` is a relative path, then it is resolved relative to the current working directory.
   Future<Uint8List> pdf({String? path, String? format, bool? landscape}) async {
     final result = await channel_pdf(format: format, landscape: landscape);
     final buffer = base64Decode(result.pdf);
@@ -207,6 +227,9 @@ class Page extends PageBase {
     await channel_addInitScript(source: source);
   }
 
+  /// Closes the page.
+  /// 
+  /// If `runBeforeUnload` is `true`, a `beforeunload` dialog might be summoned and should be handled manually via `page.onDialog`.
   Future<void> close({bool? runBeforeUnload, String? reason}) async {
     await channel_close(runBeforeUnload: runBeforeUnload, reason: reason);
   }

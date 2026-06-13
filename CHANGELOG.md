@@ -1,3 +1,9 @@
+## 2.0.0
+
+- **Feature (Breaking)**: Introduced `autoClose` behavior to emulate Node.js driver lifecycle patterns. Playwright Dart now automatically closes the driver process when the last browser is closed. Set `autoClose: false` in `PlaywrightDart.create()` to disable this behavior and manage the lifecycle manually.
+- **Feature**: Added WebSocket CDP connection support (`connectOverCDP`) for integrating with remote providers like Browserless.
+- **Documentation**: Substantial inline API documentation added across all core modules to improve auto-completion and Developer Experience.
+
 ## 1.0.1
 
 Update supported platform

@@ -1,4 +1,3 @@
-
 import 'channel_owner.dart';
 import 'browser_type.dart';
 import 'local_utils.dart';
@@ -7,10 +6,18 @@ import 'driver.dart';
 import 'transport.dart';
 import 'connection.dart';
 
+/// The main Playwright module. Provides access to browser types (Chromium, Firefox, WebKit).
 class Playwright extends PlaywrightBase {
+  /// Provides access to the Chromium browser type.
   late final BrowserType chromium;
+
+  /// Provides access to the Firefox browser type.
   late final BrowserType firefox;
+
+  /// Provides access to the WebKit browser type.
   late final BrowserType webkit;
+
+  /// Utilities related to local file paths and connections.
   late final LocalUtils utils;
 
   Playwright(
@@ -32,6 +39,8 @@ class Playwright extends PlaywrightBase {
     utils = ChannelOwner.from<LocalUtils>(connection, initializer['utils']);
   }
 
+  /// Creates an APIRequestContext to send network requests directly from the
+  /// Playwright runner without requiring a browser instance.
   // Returns APIRequestContext, which will be implemented in Phase 8
   Future<dynamic> newRequest({
     String? baseURL,
@@ -61,14 +70,26 @@ class Playwright extends PlaywrightBase {
     );
     return result.request;
   }
+
+  /// Closes the playwright connection and terminates the driver.
+  Future<void> stop() async {
+    connection.close();
+  }
 }
 
+/// The entrypoint for Playwright Dart.
 class PlaywrightDart {
-  /// Launches the Playwright driver and connects to it, returning [Playwright].
-  static Future<Playwright> create() async {
+  /// Launches the background Playwright driver and connects to it, returning the 
+  /// root [Playwright] API instance.
+  /// 
+  /// Set [autoClose] to false if you want to manually manage the Playwright 
+  /// driver lifecycle (Python/Java pattern) instead of auto-shutting down 
+  /// when the last browser is closed.
+  static Future<Playwright> create({bool autoClose = true}) async {
     final process = await Driver.run();
     final transport = StdioTransport(process);
     final connection = Connection(transport);
+    connection.isAutoCloseEnabled = autoClose;
 
     // Initialize the root object to get Playwright
     final result = await connection.sendMessageToServer('', 'initialize', {

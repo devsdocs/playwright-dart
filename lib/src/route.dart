@@ -1,6 +1,7 @@
 import 'generated/channels.dart';
 import 'request.dart';
 
+/// Whenever a network route is set up with `page.route()` or `browserContext.route()`, the `Route` object allows to handle the route.
 class Route extends RouteBase {
   Route(
     super.connection,
@@ -10,23 +11,32 @@ class Route extends RouteBase {
     super.parent,
   ]);
 
+  /// A request to be routed.
   Request get request =>
       connection.objects[initializer['request']['guid']] as Request;
 
+  /// Aborts the route's request.
   Future<void> abort({String? errorCode}) async {
     await channel_abort(errorCode: errorCode);
   }
 
+  /// Fulfills route's request with given response.
   Future<void> fulfill({
     int? status,
     Map<String, String>? headers,
     String? body,
     bool? isBase64,
+    String? contentType,
     String? fetchResponseUid,
   }) async {
-    final mappedHeaders = headers?.entries
-        .map((e) => NameValue(name: e.key, value: e.value))
-        .toList();
+    final mappedHeaders =
+        headers?.entries
+            .map((e) => NameValue(name: e.key, value: e.value))
+            .toList() ??
+        [];
+    if (contentType != null) {
+      mappedHeaders.add(NameValue(name: 'content-type', value: contentType));
+    }
     await channel_fulfill(
       status: status,
       headers: mappedHeaders,
@@ -36,6 +46,7 @@ class Route extends RouteBase {
     );
   }
 
+  /// Continues route's request with optional overrides.
   Future<void> continueRoute({
     String? url,
     String? method,
