@@ -20,7 +20,7 @@ A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable 
 
 ```yaml
 dependencies:
-  playwright_dart: ^0.1.0
+  playwright_dart: ^1.0.0
 ```
 
 ## Quick Start
