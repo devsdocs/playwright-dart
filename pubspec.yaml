@@ -2,7 +2,7 @@ name: playwright_dart
 description: >-
   A complete Dart port of Playwright — fast, reliable browser automation
   for Chromium, Firefox, and WebKit with full API parity to Node.js v1.60.0.
-version: 2.1.0
+version: 2.2.0
 homepage: https://playwright.dev
 repository: https://github.com/devsdocs/playwright-dart
 issue_tracker: https://github.com/devsdocs/playwright-dart/issues

@@ -1,3 +1,10 @@
+## 2.2.0
+
+- **Feature**: Implemented missing page events: `onConsole`, `onRequest`, `onResponse`, `onRequestFinished`, `onRequestFailed`, `onFileChooser`, `onWebSocket`, `onCrash`, `onClose`, `onPageError`, and `onPopup`.
+- **Feature**: Implemented asynchronous wait methods on `Page` and `Frame`: `waitForRequest`, `waitForResponse`, `waitForLoadState`, `waitForURL`, and `waitForNavigation`.
+- **Feature**: Added new wrapper classes for advanced interactions: `ConsoleMessage`, `FileChooser`, and `Video`.
+- **Bug Fix**: Fixed protocol event routing issues where network and console events were missing because they are dispatched to the `BrowserContext` channel instead of the `Page` channel.
+
 ## 2.1.0
 
 - **Feature**: Officially exposed `onWorker` and `onDownload` events on the `Page` API, giving access to `Worker` and `Artifact` components.
