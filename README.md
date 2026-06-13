@@ -47,6 +47,7 @@ void main() async {
 ## Advanced Features
 
 ### Locators
+
 Playwright's `Locator` API is fully supported for strict and reliable interactions.
 
 ```dart
@@ -58,6 +59,7 @@ await page.locator('nav').getByText('Docs').click();
 ```
 
 ### Network Interception
+
 Intercept, mock, or modify network traffic seamlessly.
 
 ```dart
@@ -77,6 +79,7 @@ await page.route('**/api/data', (route, request) async {
 ```
 
 ### Tracing
+
 Record traces to debug tests locally using the Playwright Trace Viewer.
 
 ```dart
@@ -89,6 +92,7 @@ final trace = await browser.stopTracing();
 ```
 
 ### CDPSession (Chrome DevTools Protocol)
+
 Connect directly to the Chrome DevTools Protocol to do advanced manipulation.
 
 ```dart
@@ -108,6 +112,7 @@ await session.send('Network.enable');
 ## Contributing
 
 To regenerate protocol files:
+
 ```bash
 dart tool/generate_protocol.dart
 dart tool/find_missing.dart
