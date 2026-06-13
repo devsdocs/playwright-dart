@@ -1,5 +1,10 @@
-## 2.0.0
+## 2.1.0
 
+- **Feature**: Officially exposed `onWorker` and `onDownload` events on the `Page` API, giving access to `Worker` and `Artifact` components.
+- **Bug Fix**: Fixed a critical crash in `APIRequestContext.fetch()` and `Playwright.newRequest()` preventing raw HTTP requests from working.
+- **Documentation**: Emphasized that Node.js is automatically bundled by the driver downloader, requiring zero manual installation by users for a seamless out-of-the-box experience.
+
+## 2.0.0
 - **Feature (Breaking)**: Introduced `autoClose` behavior to emulate Node.js driver lifecycle patterns. Playwright Dart now automatically closes the driver process when the last browser is closed. Set `autoClose: false` in `PlaywrightDart.create()` to disable this behavior and manage the lifecycle manually.
 - **Feature**: Added WebSocket CDP connection support (`connectOverCDP`) for integrating with remote providers like Browserless.
 - **Documentation**: Substantial inline API documentation added across all core modules to improve auto-completion and Developer Experience.
