@@ -6,23 +6,7 @@ import 'package:playwright_dart/src/version.dart';
 void main() async {
   final Map<String, dynamic> protocol = {};
 
-  final version = await getPlaywrightVersion();
-  print('Resolving Playwright protocol for version $version...');
-
-  final response = await HttpClient().getUrl(
-    Uri.parse(
-      'https://api.github.com/repos/microsoft/playwright/contents/packages/protocol/spec?ref=v$version',
-    ),
-  );
-  final request = await response.close();
-  final body = await request.transform(const Utf8Decoder()).join();
-
-  if (request.statusCode != 200) {
-    print('Failed to fetch protocol specs from GitHub: $body');
-    exit(1);
-  }
-
-  final List<dynamic> files = jsonDecode(body);
+  List<dynamic> files = await getAllProtocolYml();
 
   print('Fetching ${files.length} spec files from GitHub...');
   for (final file in files) {
@@ -206,7 +190,7 @@ void main() async {
   for (final entry in protocol.entries) {
     final name = entry.key;
     final def = entry.value as YamlMap;
-    if (def['type'].toString().startsWith('enum')) {
+    if (def['type'] == 'enum') {
       buffer.writeln('enum $name {');
       final literals = def['literals'] as YamlList;
       for (var i = 0; i < literals.length; i++) {
@@ -382,4 +366,25 @@ void main() async {
   final outFile = File('lib/src/generated/channels.dart');
   outFile.writeAsStringSync(buffer.toString());
   print('Generated ${outFile.path}');
+}
+
+Future<List<dynamic>> getAllProtocolYml() async {
+  final version = await getPlaywrightVersion();
+  print('Resolving Playwright protocol for version $version...');
+
+  final response = await HttpClient().getUrl(
+    Uri.parse(
+      'https://api.github.com/repos/microsoft/playwright/contents/packages/protocol/spec?ref=v$version',
+    ),
+  );
+  final request = await response.close();
+  final body = await request.transform(const Utf8Decoder()).join();
+
+  if (request.statusCode != 200) {
+    print('Failed to fetch protocol specs from GitHub: $body');
+    exit(1);
+  }
+
+  final List<dynamic> files = jsonDecode(body);
+  return files;
 }
