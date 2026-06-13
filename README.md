@@ -3,6 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/playwright_dart.svg)](https://pub.dev/packages/playwright_dart)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![API Parity](https://img.shields.io/badge/API_Parity-100%25-brightgreen.svg)](https://playwright.dev)
+[![AI Assisted](https://img.shields.io/badge/AI-Assisted-purple.svg)](https://github.com/devsdocs/playwright-dart)
 
 A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable browser automation for Chromium, Firefox, and WebKit.
 
@@ -186,3 +187,9 @@ dart analyze
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+---
+
+> 🤖 **AI-Assisted Development**
+>
+> This repository was built and maintained with the assistance of an advanced AI agent. The AI helped port the entire Playwright Node.js API to Dart, generated the protocol bindings, and achieved 100% API parity and test coverage for the protocol structures!
