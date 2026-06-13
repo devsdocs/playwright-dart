@@ -149,8 +149,9 @@ void main() async {
                 final sig = sigMatch.group(1)!;
                 for (final paramKey in params.keys) {
                   final keyStr = paramKey.toString();
-                  if (keyStr.startsWith(r'$'))
+                  if (keyStr.startsWith(r'$')) {
                     continue; // Ignore mixins and refs
+                  }
                   final paramName = _sanitizeName(keyStr);
                   if (!sig.contains(RegExp('\\b$paramName\\b'))) {
                     print(

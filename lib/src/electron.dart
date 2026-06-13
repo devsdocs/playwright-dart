@@ -44,12 +44,18 @@ class Electron extends ElectronBase {
       bypassCSP: bypassCSP,
       colorScheme: colorScheme,
       extraHTTPHeaders: extraHTTPHeaders,
-      geolocation: geolocation,
-      httpCredentials: httpCredentials,
+      geolocation: geolocation == null
+          ? null
+          : ElectronLaunchGeolocation.fromJson(geolocation),
+      httpCredentials: httpCredentials == null
+          ? null
+          : ElectronLaunchHttpCredentials.fromJson(httpCredentials),
       ignoreHTTPSErrors: ignoreHTTPSErrors,
       locale: locale,
       offline: offline,
-      recordVideo: recordVideo,
+      recordVideo: recordVideo == null
+          ? null
+          : ElectronLaunchRecordVideo.fromJson(recordVideo),
       strictSelectors: strictSelectors,
       timezoneId: timezoneId,
       tracesDir: tracesDir,

@@ -1,3 +1,8 @@
+## 2.3.1
+
+- **Fix**: Generated structs (`BrowserNewContextStorageState`, `BrowserNewContextProxy`, etc.) now recursively serialize deep object properties and arrays when `toJson()` is called. This fixes the runtime `type 'X' is not a subtype of type 'Map<String, dynamic>'` errors encountered when using `page.setViewportSize` or `context.setStorageState` with nested definitions.
+- **Fix**: Corrected argument mapping in wrapper classes (`BrowserContext`, `Page`, `ElementHandle`, `Frame`) to strictly parse standard `Map<String, dynamic>` maps to their corresponding generated structs automatically.
+
 ## 2.3.0
 
 - **Feature**: Achieved 100% parameter parity with Playwright Node.js `v1.60.0`. Added over 200 missing parameters across core classes (`Page`, `Frame`, `ElementHandle`, `BrowserContext`, `APIRequestContext`, `Electron`, `Worker`, `DebugController`, `Tracing`, and `AndroidDevice`) to fully align with the underlying protocol.

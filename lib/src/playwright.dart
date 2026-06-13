@@ -66,11 +66,17 @@ class Playwright extends PlaywrightBase {
       ignoreHTTPSErrors: ignoreHTTPSErrors,
       extraHTTPHeaders: extraHTTPHeaders,
       failOnStatusCode: failOnStatusCode,
-      clientCertificates: clientCertificates,
+      clientCertificates: clientCertificates
+          ?.map((e) => PlaywrightNewRequestClientCertificatesItems.fromJson(e))
+          .toList(),
       maxRedirects: maxRedirects,
-      httpCredentials: httpCredentials,
-      proxy: proxy,
-      storageState: storageState,
+      httpCredentials: httpCredentials == null
+          ? null
+          : PlaywrightNewRequestHttpCredentials.fromJson(httpCredentials),
+      proxy: proxy == null ? null : PlaywrightNewRequestProxy.fromJson(proxy),
+      storageState: storageState == null
+          ? null
+          : PlaywrightNewRequestStorageState.fromJson(storageState),
       tracesDir: tracesDir,
     );
     return result.request as APIRequestContext;

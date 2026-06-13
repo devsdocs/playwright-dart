@@ -85,11 +85,21 @@ class BrowserContext extends BrowserContextBase {
   }
 
   Future<void> setGeolocation(Map<String, dynamic>? geolocation) async {
-    await channel_setGeolocation(geolocation: geolocation);
+    await channel_setGeolocation(
+      geolocation: geolocation == null
+          ? null
+          : BrowserContextSetGeolocationGeolocation.fromJson(geolocation),
+    );
   }
 
   Future<void> setHTTPCredentials(Map<String, dynamic>? httpCredentials) async {
-    await channel_setHTTPCredentials(httpCredentials: httpCredentials);
+    await channel_setHTTPCredentials(
+      httpCredentials: httpCredentials == null
+          ? null
+          : BrowserContextSetHTTPCredentialsHttpCredentials.fromJson(
+              httpCredentials,
+            ),
+    );
   }
 
   /// Emulates network being offline or online.
@@ -105,8 +115,10 @@ class BrowserContext extends BrowserContextBase {
     return result;
   }
 
-  Future<void> setStorageState(Map<String, dynamic> storageState) async {
-    await channel_setStorageState(storageState: storageState);
+  Future<void> setStorageState(Map<String, dynamic> state) async {
+    await channel_setStorageState(
+      storageState: BrowserContextSetStorageStateStorageState.fromJson(state),
+    );
   }
 
   /// Adds a script which would be evaluated in one of the following scenarios:
@@ -123,7 +135,16 @@ class BrowserContext extends BrowserContextBase {
   Future<void> setNetworkInterceptionPatterns(
     List<Map<String, dynamic>> patterns,
   ) async {
-    await channel_setNetworkInterceptionPatterns(patterns: patterns);
+    await channel_setNetworkInterceptionPatterns(
+      patterns: patterns
+          .map(
+            (e) =>
+                BrowserContextSetNetworkInterceptionPatternsPatternsItems.fromJson(
+                  e,
+                ),
+          )
+          .toList(),
+    );
   }
 
   Future<void> pause() async {
@@ -209,7 +230,16 @@ class BrowserContext extends BrowserContextBase {
   Future<void> setWebSocketInterceptionPatterns(
     List<Map<String, dynamic>> patterns,
   ) async {
-    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
+    await channel_setWebSocketInterceptionPatterns(
+      patterns: patterns
+          .map(
+            (e) =>
+                BrowserContextSetWebSocketInterceptionPatternsPatternsItems.fromJson(
+                  e,
+                ),
+          )
+          .toList(),
+    );
   }
 
   Future<void> enableRecorder({
@@ -261,7 +291,9 @@ class BrowserContext extends BrowserContextBase {
   }) async {
     return await channel_createTempFiles(
       rootDirName: rootDirName,
-      items: items,
+      items: items
+          .map((e) => BrowserContextCreateTempFilesItemsItems.fromJson(e))
+          .toList(),
     );
   }
 
@@ -276,7 +308,9 @@ class BrowserContext extends BrowserContextBase {
   Future<void> route(String url, Future<void> Function(Route) handler) async {
     await channel_setNetworkInterceptionPatterns(
       patterns: [
-        {'glob': url},
+        BrowserContextSetNetworkInterceptionPatternsPatternsItems.fromJson({
+          'glob': url,
+        }),
       ],
     );
 

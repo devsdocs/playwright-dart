@@ -179,7 +179,9 @@ class AndroidDevice extends AndroidDeviceBase {
       contextOptions: contextOptions,
       pkg: pkg,
       args: args,
-      proxy: proxy,
+      proxy: proxy == null
+          ? null
+          : AndroidDeviceLaunchBrowserProxy.fromJson(proxy),
     );
     return result.context as BrowserContext;
   }

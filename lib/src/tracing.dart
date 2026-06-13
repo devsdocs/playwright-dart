@@ -32,7 +32,12 @@ class Tracing extends TracingBase {
   }
 
   Future<void> group(String name, {Map<String, dynamic>? location}) async {
-    await channel_tracingGroup(name: name, location: location);
+    await channel_tracingGroup(
+      name: name,
+      location: location == null
+          ? null
+          : TracingTracingGroupLocation.fromJson(location),
+    );
   }
 
   Future<void> groupEnd() async {

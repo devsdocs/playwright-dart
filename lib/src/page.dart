@@ -369,7 +369,7 @@ class Page extends PageBase {
   Future<void> route(String url, Future<void> Function(Route) handler) async {
     await channel_setNetworkInterceptionPatterns(
       patterns: [
-        {'glob': url},
+        PageSetNetworkInterceptionPatternsPatternsItems.fromJson({'glob': url}),
       ],
     );
 
@@ -447,7 +447,9 @@ class Page extends PageBase {
   }
 
   Future<void> setViewportSize(Map<String, dynamic> viewportSize) async {
-    await channel_setViewportSize(viewportSize: viewportSize);
+    await channel_setViewportSize(
+      viewportSize: PageSetViewportSizeViewportSize.fromJson(viewportSize),
+    );
   }
 
   /// Returns the buffer with the captured screenshot.
@@ -508,7 +510,7 @@ class Page extends PageBase {
       width: width,
       height: height,
       preferCSSPageSize: preferCSSPageSize,
-      margin: margin,
+      margin: margin == null ? null : PagePdfMargin.fromJson(margin),
       tagged: tagged,
       outline: outline,
     );
@@ -903,7 +905,13 @@ class Page extends PageBase {
   Future<void> setNetworkInterceptionPatterns(
     List<Map<String, dynamic>> patterns,
   ) async {
-    await channel_setNetworkInterceptionPatterns(patterns: patterns);
+    await channel_setNetworkInterceptionPatterns(
+      patterns: patterns
+          .map(
+            (e) => PageSetNetworkInterceptionPatternsPatternsItems.fromJson(e),
+          )
+          .toList(),
+    );
   }
 
   /// Touchscreen API also available through [this.touchscreen.tap()]
@@ -930,7 +938,7 @@ class Page extends PageBase {
     bool? record,
   }) async {
     await channel_screencastStart(
-      size: size,
+      size: size == null ? null : PageScreencastStartSize.fromJson(size),
       quality: quality,
       sendFrames: sendFrames,
       record: record,
@@ -1000,7 +1008,9 @@ class Page extends PageBase {
       expected: expected,
       timeout: timeout,
       isNot: isNot,
-      locator: locator,
+      locator: locator == null
+          ? null
+          : PageExpectScreenshotLocator.fromJson(locator),
       comparator: comparator,
       maxDiffPixels: maxDiffPixels,
       maxDiffPixelRatio: maxDiffPixelRatio,
@@ -1016,7 +1026,14 @@ class Page extends PageBase {
   Future<void> setWebSocketInterceptionPatterns(
     List<Map<String, dynamic>> patterns,
   ) async {
-    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
+    await channel_setWebSocketInterceptionPatterns(
+      patterns: patterns
+          .map(
+            (e) =>
+                PageSetWebSocketInterceptionPatternsPatternsItems.fromJson(e),
+          )
+          .toList(),
+    );
   }
 
   // --- JS/CSS Coverage ---

@@ -18,7 +18,7 @@ class ConsoleMessage {
   List<dynamic> get args => _message.args;
 
   /// Location of the console message.
-  Map<String, dynamic> get location => _message.location;
+  channels.ConsoleMessageLocation get location => _message.location;
 
   /// The timestamp when the message was generated.
   double get timestamp => _message.timestamp;

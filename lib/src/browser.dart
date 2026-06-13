@@ -32,10 +32,15 @@ class Browser extends BrowserBase {
     Map<String, dynamic>? proxy,
     Map<String, dynamic>? storageState,
   }) async {
+    if (proxy != null) {
+      options ??= ContextOptions();
+    }
     final result = await super.channel_newContext(
       contextOptions: options ?? ContextOptions(),
-      proxy: proxy,
-      storageState: storageState,
+      proxy: proxy == null ? null : BrowserNewContextProxy.fromJson(proxy),
+      storageState: storageState == null
+          ? null
+          : BrowserNewContextStorageState.fromJson(storageState),
     );
     final context = result.context as BrowserContext;
     final playwright =
@@ -141,8 +146,12 @@ class Browser extends BrowserBase {
   }) async {
     final result = await channel_newContextForReuse(
       contextOptions: ContextOptions(),
-      proxy: proxy,
-      storageState: storageState,
+      proxy: proxy == null
+          ? null
+          : BrowserNewContextForReuseProxy.fromJson(proxy),
+      storageState: storageState == null
+          ? null
+          : BrowserNewContextForReuseStorageState.fromJson(storageState),
     );
     return result.context as BrowserContext;
   }

@@ -150,12 +150,12 @@ enum ContextOptionsForcedColorsEnum {
   const ContextOptionsForcedColorsEnum(this.value);
 }
 
-enum ContextOptionsHttpCredentialsPropertiesSendEnum {
+enum ContextOptionsHttpCredentialsSendEnum {
   always('always'),
   unauthorized('unauthorized');
 
   final String value;
-  const ContextOptionsHttpCredentialsPropertiesSendEnum(this.value);
+  const ContextOptionsHttpCredentialsSendEnum(this.value);
 }
 
 enum ContextOptionsReducedMotionEnum {
@@ -302,13 +302,13 @@ enum ElementHandleWaitForSelectorStateEnum {
   const ElementHandleWaitForSelectorStateEnum(this.value);
 }
 
-enum EventTargetWaitForEventInfoInfoPropertiesPhaseEnum {
+enum EventTargetWaitForEventInfoInfoPhaseEnum {
   before('before'),
   after('after'),
   log('log');
 
   final String value;
-  const EventTargetWaitForEventInfoInfoPropertiesPhaseEnum(this.value);
+  const EventTargetWaitForEventInfoInfoPhaseEnum(this.value);
 }
 
 enum FrameAriaSnapshotModeEnum {
@@ -530,12 +530,12 @@ enum PageUpdateSubscriptionEventEnum {
   const PageUpdateSubscriptionEventEnum(this.value);
 }
 
-enum PlaywrightNewRequestHttpCredentialsPropertiesSendEnum {
+enum PlaywrightNewRequestHttpCredentialsSendEnum {
   always('always'),
   unauthorized('unauthorized');
 
   final String value;
-  const PlaywrightNewRequestHttpCredentialsPropertiesSendEnum(this.value);
+  const PlaywrightNewRequestHttpCredentialsSendEnum(this.value);
 }
 
 enum RecordHarOptionsContentEnum {
@@ -565,7 +565,7 @@ enum SDKLanguage {
   const SDKLanguage(this.value);
 }
 
-enum SerializedValueTaPropertiesKEnum {
+enum SerializedValueTaKEnum {
   i8('i8'),
   ui8('ui8'),
   ui8c('ui8c'),
@@ -579,7 +579,7 @@ enum SerializedValueTaPropertiesKEnum {
   bui64('bui64');
 
   final String value;
-  const SerializedValueTaPropertiesKEnum(this.value);
+  const SerializedValueTaKEnum(this.value);
 }
 
 enum SerializedValueVEnum {
@@ -649,12 +649,12 @@ class APIRequestContextFetchLogResult {
     Connection? connection,
   }) {
     return APIRequestContextFetchLogResult(
-      log: ((json['log'] as List?)?.cast<String>()) ?? [],
+      log: ((json[r'log'] as List?)?.cast<String>()) ?? [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'log': log};
+    return {r'log': log};
   }
 }
 
@@ -667,11 +667,11 @@ class APIRequestContextFetchResponseBodyResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return APIRequestContextFetchResponseBodyResult(binary: json['binary']);
+    return APIRequestContextFetchResponseBodyResult(binary: json[r'binary']);
   }
 
   Map<String, dynamic> toJson() {
-    return {if (binary != null) 'binary': binary};
+    return {if (binary != null) r'binary': binary};
   }
 }
 
@@ -685,14 +685,14 @@ class APIRequestContextFetchResult {
     Connection? connection,
   }) {
     return APIRequestContextFetchResult(
-      response: (json['response'] == null
+      response: (json[r'response'] == null
           ? null
-          : APIResponse.fromJson(json['response']))!,
+          : APIResponse.fromJson(json[r'response']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'response': response};
+    return {r'response': response.toJson()};
   }
 }
 
@@ -711,12 +711,12 @@ class APIRequestContextStorageStateResult {
   }) {
     return APIRequestContextStorageStateResult(
       cookies:
-          ((json['cookies'] as List?)
+          ((json[r'cookies'] as List?)
               ?.map((e) => NetworkCookie.fromJson(e))
               .toList()) ??
           [],
       origins:
-          ((json['origins'] as List?)
+          ((json[r'origins'] as List?)
               ?.map((e) => OriginStorage.fromJson(e))
               .toList()) ??
           [],
@@ -724,7 +724,10 @@ class APIRequestContextStorageStateResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'cookies': cookies, 'origins': origins};
+    return {
+      r'cookies': cookies.map((e) => e.toJson()).toList(),
+      r'origins': origins.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -748,25 +751,25 @@ class APIResponse {
     Connection? connection,
   }) {
     return APIResponse(
-      fetchUid: (json['fetchUid'])!,
+      fetchUid: (json[r'fetchUid'])!,
       headers:
-          ((json['headers'] as List?)
+          ((json[r'headers'] as List?)
               ?.map((e) => NameValue.fromJson(e))
               .toList()) ??
           [],
-      status: (json['status'])!,
-      statusText: (json['statusText'])!,
-      url: (json['url'])!,
+      status: (json[r'status'])!,
+      statusText: (json[r'statusText'])!,
+      url: (json[r'url'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'fetchUid': fetchUid,
-      'headers': headers,
-      'status': status,
-      'statusText': statusText,
-      'url': url,
+      r'fetchUid': fetchUid,
+      r'headers': headers.map((e) => e.toJson()).toList(),
+      r'status': status,
+      r'statusText': statusText,
+      r'url': url,
     };
   }
 }
@@ -781,14 +784,16 @@ class AndroidDeviceConnectToWebViewResult {
     Connection? connection,
   }) {
     return AndroidDeviceConnectToWebViewResult(
-      context: (connection != null && json['context'] != null
-          ? ChannelOwner.from<BrowserContextBase>(connection, json['context'])
+      context: (connection != null && json[r'context'] != null
+          ? ChannelOwner.from<BrowserContextBase>(connection, json[r'context'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'context': context};
+    return {
+      r'context': {'guid': context.guid},
+    };
   }
 }
 
@@ -802,14 +807,49 @@ class AndroidDeviceInfoResult {
     Connection? connection,
   }) {
     return AndroidDeviceInfoResult(
-      info: (json['info'] == null
+      info: (json[r'info'] == null
           ? null
-          : AndroidElementInfo.fromJson(json['info']))!,
+          : AndroidElementInfo.fromJson(json[r'info']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'info': info};
+    return {r'info': info.toJson()};
+  }
+}
+
+class AndroidDeviceLaunchBrowserProxy {
+  final String? bypass;
+  final String? password;
+  final String server;
+  final String? username;
+
+  AndroidDeviceLaunchBrowserProxy({
+    this.bypass,
+    this.password,
+    required this.server,
+    this.username,
+  });
+
+  factory AndroidDeviceLaunchBrowserProxy.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return AndroidDeviceLaunchBrowserProxy(
+      bypass: json[r'bypass'],
+      password: json[r'password'],
+      server: (json[r'server'])!,
+      username: json[r'username'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (bypass != null) r'bypass': bypass,
+      if (password != null) r'password': password,
+      r'server': server,
+      if (username != null) r'username': username,
+    };
   }
 }
 
@@ -823,14 +863,16 @@ class AndroidDeviceLaunchBrowserResult {
     Connection? connection,
   }) {
     return AndroidDeviceLaunchBrowserResult(
-      context: (connection != null && json['context'] != null
-          ? ChannelOwner.from<BrowserContextBase>(connection, json['context'])
+      context: (connection != null && json[r'context'] != null
+          ? ChannelOwner.from<BrowserContextBase>(connection, json[r'context'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'context': context};
+    return {
+      r'context': {'guid': context.guid},
+    };
   }
 }
 
@@ -844,14 +886,16 @@ class AndroidDeviceOpenResult {
     Connection? connection,
   }) {
     return AndroidDeviceOpenResult(
-      socket: (connection != null && json['socket'] != null
-          ? ChannelOwner.from<AndroidSocketBase>(connection, json['socket'])
+      socket: (connection != null && json[r'socket'] != null
+          ? ChannelOwner.from<AndroidSocketBase>(connection, json[r'socket'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'socket': socket};
+    return {
+      r'socket': {'guid': socket.guid},
+    };
   }
 }
 
@@ -864,11 +908,11 @@ class AndroidDeviceScreenshotResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return AndroidDeviceScreenshotResult(binary: (json['binary'])!);
+    return AndroidDeviceScreenshotResult(binary: (json[r'binary'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'binary': binary};
+    return {r'binary': binary};
   }
 }
 
@@ -881,11 +925,11 @@ class AndroidDeviceShellResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return AndroidDeviceShellResult(result: (json['result'])!);
+    return AndroidDeviceShellResult(result: (json[r'result'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'result': result};
+    return {r'result': result};
   }
 }
 
@@ -901,7 +945,7 @@ class AndroidDevicesResult {
     return AndroidDevicesResult(
       devices:
           (connection != null
-              ? (json['devices'] as List?)
+              ? (json[r'devices'] as List?)
                     ?.map(
                       (e) =>
                           ChannelOwner.from<AndroidDeviceBase>(connection, e),
@@ -913,7 +957,9 @@ class AndroidDevicesResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'devices': devices};
+    return {
+      r'devices': devices.map((e) => {'guid': e.guid}).toList(),
+    };
   }
 }
 
@@ -959,45 +1005,48 @@ class AndroidElementInfo {
     Connection? connection,
   }) {
     return AndroidElementInfo(
-      bounds: (json['bounds'] == null ? null : Rect.fromJson(json['bounds']))!,
-      checkable: (json['checkable'])!,
-      checked: (json['checked'])!,
-      children: (json['children'] as List?)
+      bounds: (json[r'bounds'] == null
+          ? null
+          : Rect.fromJson(json[r'bounds']))!,
+      checkable: (json[r'checkable'])!,
+      checked: (json[r'checked'])!,
+      children: (json[r'children'] as List?)
           ?.map((e) => AndroidElementInfo.fromJson(e))
           .toList(),
-      clazz: (json['clazz'])!,
-      clickable: (json['clickable'])!,
-      desc: (json['desc'])!,
-      enabled: (json['enabled'])!,
-      focusable: (json['focusable'])!,
-      focused: (json['focused'])!,
-      longClickable: (json['longClickable'])!,
-      pkg: (json['pkg'])!,
-      res: (json['res'])!,
-      scrollable: (json['scrollable'])!,
-      selected: (json['selected'])!,
-      text: (json['text'])!,
+      clazz: (json[r'clazz'])!,
+      clickable: (json[r'clickable'])!,
+      desc: (json[r'desc'])!,
+      enabled: (json[r'enabled'])!,
+      focusable: (json[r'focusable'])!,
+      focused: (json[r'focused'])!,
+      longClickable: (json[r'longClickable'])!,
+      pkg: (json[r'pkg'])!,
+      res: (json[r'res'])!,
+      scrollable: (json[r'scrollable'])!,
+      selected: (json[r'selected'])!,
+      text: (json[r'text'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'bounds': bounds,
-      'checkable': checkable,
-      'checked': checked,
-      if (children != null) 'children': children,
-      'clazz': clazz,
-      'clickable': clickable,
-      'desc': desc,
-      'enabled': enabled,
-      'focusable': focusable,
-      'focused': focused,
-      'longClickable': longClickable,
-      'pkg': pkg,
-      'res': res,
-      'scrollable': scrollable,
-      'selected': selected,
-      'text': text,
+      r'bounds': bounds.toJson(),
+      r'checkable': checkable,
+      r'checked': checked,
+      if (children != null)
+        r'children': children?.map((e) => e.toJson()).toList(),
+      r'clazz': clazz,
+      r'clickable': clickable,
+      r'desc': desc,
+      r'enabled': enabled,
+      r'focusable': focusable,
+      r'focused': focused,
+      r'longClickable': longClickable,
+      r'pkg': pkg,
+      r'res': res,
+      r'scrollable': scrollable,
+      r'selected': selected,
+      r'text': text,
     };
   }
 }
@@ -1012,8 +1061,8 @@ class AndroidSelector {
   final bool? enabled;
   final bool? focusable;
   final bool? focused;
-  final Map<String, dynamic>? hasChild;
-  final Map<String, dynamic>? hasDescendant;
+  final AndroidSelectorHasChild? hasChild;
+  final AndroidSelectorHasDescendant? hasDescendant;
   final bool? longClickable;
   final String? pkg;
   final String? res;
@@ -1046,45 +1095,96 @@ class AndroidSelector {
     Connection? connection,
   }) {
     return AndroidSelector(
-      checkable: json['checkable'],
-      checked: json['checked'],
-      clazz: json['clazz'],
-      clickable: json['clickable'],
-      depth: json['depth'],
-      desc: json['desc'],
-      enabled: json['enabled'],
-      focusable: json['focusable'],
-      focused: json['focused'],
-      hasChild: json['hasChild'],
-      hasDescendant: json['hasDescendant'],
-      longClickable: json['longClickable'],
-      pkg: json['pkg'],
-      res: json['res'],
-      scrollable: json['scrollable'],
-      selected: json['selected'],
-      text: json['text'],
+      checkable: json[r'checkable'],
+      checked: json[r'checked'],
+      clazz: json[r'clazz'],
+      clickable: json[r'clickable'],
+      depth: json[r'depth'],
+      desc: json[r'desc'],
+      enabled: json[r'enabled'],
+      focusable: json[r'focusable'],
+      focused: json[r'focused'],
+      hasChild: json[r'hasChild'] == null
+          ? null
+          : AndroidSelectorHasChild.fromJson(json[r'hasChild']),
+      hasDescendant: json[r'hasDescendant'] == null
+          ? null
+          : AndroidSelectorHasDescendant.fromJson(json[r'hasDescendant']),
+      longClickable: json[r'longClickable'],
+      pkg: json[r'pkg'],
+      res: json[r'res'],
+      scrollable: json[r'scrollable'],
+      selected: json[r'selected'],
+      text: json[r'text'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (checkable != null) 'checkable': checkable,
-      if (checked != null) 'checked': checked,
-      if (clazz != null) 'clazz': clazz,
-      if (clickable != null) 'clickable': clickable,
-      if (depth != null) 'depth': depth,
-      if (desc != null) 'desc': desc,
-      if (enabled != null) 'enabled': enabled,
-      if (focusable != null) 'focusable': focusable,
-      if (focused != null) 'focused': focused,
-      if (hasChild != null) 'hasChild': hasChild,
-      if (hasDescendant != null) 'hasDescendant': hasDescendant,
-      if (longClickable != null) 'longClickable': longClickable,
-      if (pkg != null) 'pkg': pkg,
-      if (res != null) 'res': res,
-      if (scrollable != null) 'scrollable': scrollable,
-      if (selected != null) 'selected': selected,
-      if (text != null) 'text': text,
+      if (checkable != null) r'checkable': checkable,
+      if (checked != null) r'checked': checked,
+      if (clazz != null) r'clazz': clazz,
+      if (clickable != null) r'clickable': clickable,
+      if (depth != null) r'depth': depth,
+      if (desc != null) r'desc': desc,
+      if (enabled != null) r'enabled': enabled,
+      if (focusable != null) r'focusable': focusable,
+      if (focused != null) r'focused': focused,
+      if (hasChild != null) r'hasChild': hasChild?.toJson(),
+      if (hasDescendant != null) r'hasDescendant': hasDescendant?.toJson(),
+      if (longClickable != null) r'longClickable': longClickable,
+      if (pkg != null) r'pkg': pkg,
+      if (res != null) r'res': res,
+      if (scrollable != null) r'scrollable': scrollable,
+      if (selected != null) r'selected': selected,
+      if (text != null) r'text': text,
+    };
+  }
+}
+
+class AndroidSelectorHasChild {
+  final AndroidSelector androidSelector;
+
+  AndroidSelectorHasChild({required this.androidSelector});
+
+  factory AndroidSelectorHasChild.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return AndroidSelectorHasChild(
+      androidSelector: (json[r'androidSelector'] == null
+          ? null
+          : AndroidSelector.fromJson(json[r'androidSelector']))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'androidSelector': androidSelector.toJson()};
+  }
+}
+
+class AndroidSelectorHasDescendant {
+  final AndroidSelector androidSelector;
+  final int? maxDepth;
+
+  AndroidSelectorHasDescendant({required this.androidSelector, this.maxDepth});
+
+  factory AndroidSelectorHasDescendant.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return AndroidSelectorHasDescendant(
+      androidSelector: (json[r'androidSelector'] == null
+          ? null
+          : AndroidSelector.fromJson(json[r'androidSelector']))!,
+      maxDepth: json[r'maxDepth'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'androidSelector': androidSelector.toJson(),
+      if (maxDepth != null) r'maxDepth': maxDepth,
     };
   }
 }
@@ -1105,14 +1205,14 @@ class AndroidWebView {
     Connection? connection,
   }) {
     return AndroidWebView(
-      pid: (json['pid'])!,
-      pkg: (json['pkg'])!,
-      socketName: (json['socketName'])!,
+      pid: (json[r'pid'])!,
+      pkg: (json[r'pkg'])!,
+      socketName: (json[r'socketName'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'pid': pid, 'pkg': pkg, 'socketName': socketName};
+    return {r'pid': pid, r'pkg': pkg, r'socketName': socketName};
   }
 }
 
@@ -1125,11 +1225,11 @@ class ArtifactFailureResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ArtifactFailureResult(error: json['error']);
+    return ArtifactFailureResult(error: json[r'error']);
   }
 
   Map<String, dynamic> toJson() {
-    return {if (error != null) 'error': error};
+    return {if (error != null) r'error': error};
   }
 }
 
@@ -1142,11 +1242,11 @@ class ArtifactPathAfterFinishedResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ArtifactPathAfterFinishedResult(value: (json['value'])!);
+    return ArtifactPathAfterFinishedResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -1160,14 +1260,16 @@ class ArtifactSaveAsStreamResult {
     Connection? connection,
   }) {
     return ArtifactSaveAsStreamResult(
-      stream: (connection != null && json['stream'] != null
-          ? ChannelOwner.from<StreamBase>(connection, json['stream'])
+      stream: (connection != null && json[r'stream'] != null
+          ? ChannelOwner.from<StreamBase>(connection, json[r'stream'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'stream': stream};
+    return {
+      r'stream': {'guid': stream.guid},
+    };
   }
 }
 
@@ -1181,14 +1283,16 @@ class ArtifactStreamResult {
     Connection? connection,
   }) {
     return ArtifactStreamResult(
-      stream: (connection != null && json['stream'] != null
-          ? ChannelOwner.from<StreamBase>(connection, json['stream'])
+      stream: (connection != null && json[r'stream'] != null
+          ? ChannelOwner.from<StreamBase>(connection, json[r'stream'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'stream': stream};
+    return {
+      r'stream': {'guid': stream.guid},
+    };
   }
 }
 
@@ -1202,14 +1306,16 @@ class BrowserContextAddInitScriptResult {
     Connection? connection,
   }) {
     return BrowserContextAddInitScriptResult(
-      disposable: (connection != null && json['disposable'] != null
-          ? ChannelOwner.from<DisposableBase>(connection, json['disposable'])
+      disposable: (connection != null && json[r'disposable'] != null
+          ? ChannelOwner.from<DisposableBase>(connection, json[r'disposable'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'disposable': disposable};
+    return {
+      r'disposable': {'guid': disposable.guid},
+    };
   }
 }
 
@@ -1224,7 +1330,7 @@ class BrowserContextCookiesResult {
   }) {
     return BrowserContextCookiesResult(
       cookies:
-          ((json['cookies'] as List?)
+          ((json[r'cookies'] as List?)
               ?.map((e) => NetworkCookie.fromJson(e))
               .toList()) ??
           [],
@@ -1232,7 +1338,34 @@ class BrowserContextCookiesResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'cookies': cookies};
+    return {r'cookies': cookies.map((e) => e.toJson()).toList()};
+  }
+}
+
+class BrowserContextCreateTempFilesItemsItems {
+  final double? lastModifiedMs;
+  final String name;
+
+  BrowserContextCreateTempFilesItemsItems({
+    this.lastModifiedMs,
+    required this.name,
+  });
+
+  factory BrowserContextCreateTempFilesItemsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextCreateTempFilesItemsItems(
+      lastModifiedMs: (json[r'lastModifiedMs'] as num?)?.toDouble(),
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (lastModifiedMs != null) r'lastModifiedMs': lastModifiedMs,
+      r'name': name,
+    };
   }
 }
 
@@ -1250,12 +1383,12 @@ class BrowserContextCreateTempFilesResult {
     Connection? connection,
   }) {
     return BrowserContextCreateTempFilesResult(
-      rootDir: connection != null && json['rootDir'] != null
-          ? ChannelOwner.from<WritableStreamBase>(connection, json['rootDir'])
+      rootDir: connection != null && json[r'rootDir'] != null
+          ? ChannelOwner.from<WritableStreamBase>(connection, json[r'rootDir'])
           : null,
       writableStreams:
           (connection != null
-              ? (json['writableStreams'] as List?)
+              ? (json[r'writableStreams'] as List?)
                     ?.map(
                       (e) =>
                           ChannelOwner.from<WritableStreamBase>(connection, e),
@@ -1268,8 +1401,8 @@ class BrowserContextCreateTempFilesResult {
 
   Map<String, dynamic> toJson() {
     return {
-      if (rootDir != null) 'rootDir': rootDir,
-      'writableStreams': writableStreams,
+      if (rootDir != null) r'rootDir': {'guid': rootDir?.guid},
+      r'writableStreams': writableStreams.map((e) => {'guid': e.guid}).toList(),
     };
   }
 }
@@ -1284,14 +1417,16 @@ class BrowserContextExposeBindingResult {
     Connection? connection,
   }) {
     return BrowserContextExposeBindingResult(
-      disposable: (connection != null && json['disposable'] != null
-          ? ChannelOwner.from<DisposableBase>(connection, json['disposable'])
+      disposable: (connection != null && json[r'disposable'] != null
+          ? ChannelOwner.from<DisposableBase>(connection, json[r'disposable'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'disposable': disposable};
+    return {
+      r'disposable': {'guid': disposable.guid},
+    };
   }
 }
 
@@ -1305,14 +1440,16 @@ class BrowserContextNewCDPSessionResult {
     Connection? connection,
   }) {
     return BrowserContextNewCDPSessionResult(
-      session: (connection != null && json['session'] != null
-          ? ChannelOwner.from<CDPSessionBase>(connection, json['session'])
+      session: (connection != null && json[r'session'] != null
+          ? ChannelOwner.from<CDPSessionBase>(connection, json[r'session'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'session': session};
+    return {
+      r'session': {'guid': session.guid},
+    };
   }
 }
 
@@ -1326,14 +1463,207 @@ class BrowserContextNewPageResult {
     Connection? connection,
   }) {
     return BrowserContextNewPageResult(
-      page: (connection != null && json['page'] != null
-          ? ChannelOwner.from<PageBase>(connection, json['page'])
+      page: (connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'page': page};
+    return {
+      r'page': {'guid': page.guid},
+    };
+  }
+}
+
+class BrowserContextPageErrorEventLocation {
+  final int column;
+  final int line;
+  final String url;
+
+  BrowserContextPageErrorEventLocation({
+    required this.column,
+    required this.line,
+    required this.url,
+  });
+
+  factory BrowserContextPageErrorEventLocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextPageErrorEventLocation(
+      column: (json[r'column'])!,
+      line: (json[r'line'])!,
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'column': column, r'line': line, r'url': url};
+  }
+}
+
+class BrowserContextSetGeolocationGeolocation {
+  final double? accuracy;
+  final double latitude;
+  final double longitude;
+
+  BrowserContextSetGeolocationGeolocation({
+    this.accuracy,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory BrowserContextSetGeolocationGeolocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextSetGeolocationGeolocation(
+      accuracy: (json[r'accuracy'] as num?)?.toDouble(),
+      latitude: ((json[r'latitude'] as num?)?.toDouble())!,
+      longitude: ((json[r'longitude'] as num?)?.toDouble())!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (accuracy != null) r'accuracy': accuracy,
+      r'latitude': latitude,
+      r'longitude': longitude,
+    };
+  }
+}
+
+class BrowserContextSetHTTPCredentialsHttpCredentials {
+  final String? origin;
+  final String password;
+  final String username;
+
+  BrowserContextSetHTTPCredentialsHttpCredentials({
+    this.origin,
+    required this.password,
+    required this.username,
+  });
+
+  factory BrowserContextSetHTTPCredentialsHttpCredentials.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextSetHTTPCredentialsHttpCredentials(
+      origin: json[r'origin'],
+      password: (json[r'password'])!,
+      username: (json[r'username'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (origin != null) r'origin': origin,
+      r'password': password,
+      r'username': username,
+    };
+  }
+}
+
+class BrowserContextSetNetworkInterceptionPatternsPatternsItems {
+  final String? glob;
+  final String? regexFlags;
+  final String? regexSource;
+  final URLPattern? urlPattern;
+
+  BrowserContextSetNetworkInterceptionPatternsPatternsItems({
+    this.glob,
+    this.regexFlags,
+    this.regexSource,
+    this.urlPattern,
+  });
+
+  factory BrowserContextSetNetworkInterceptionPatternsPatternsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextSetNetworkInterceptionPatternsPatternsItems(
+      glob: json[r'glob'],
+      regexFlags: json[r'regexFlags'],
+      regexSource: json[r'regexSource'],
+      urlPattern: json[r'urlPattern'] == null
+          ? null
+          : URLPattern.fromJson(json[r'urlPattern']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (glob != null) r'glob': glob,
+      if (regexFlags != null) r'regexFlags': regexFlags,
+      if (regexSource != null) r'regexSource': regexSource,
+      if (urlPattern != null) r'urlPattern': urlPattern?.toJson(),
+    };
+  }
+}
+
+class BrowserContextSetStorageStateStorageState {
+  final List<SetNetworkCookie>? cookies;
+  final List<SetOriginStorage>? origins;
+
+  BrowserContextSetStorageStateStorageState({this.cookies, this.origins});
+
+  factory BrowserContextSetStorageStateStorageState.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextSetStorageStateStorageState(
+      cookies: (json[r'cookies'] as List?)
+          ?.map((e) => SetNetworkCookie.fromJson(e))
+          .toList(),
+      origins: (json[r'origins'] as List?)
+          ?.map((e) => SetOriginStorage.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (cookies != null) r'cookies': cookies?.map((e) => e.toJson()).toList(),
+      if (origins != null) r'origins': origins?.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class BrowserContextSetWebSocketInterceptionPatternsPatternsItems {
+  final String? glob;
+  final String? regexFlags;
+  final String? regexSource;
+  final URLPattern? urlPattern;
+
+  BrowserContextSetWebSocketInterceptionPatternsPatternsItems({
+    this.glob,
+    this.regexFlags,
+    this.regexSource,
+    this.urlPattern,
+  });
+
+  factory BrowserContextSetWebSocketInterceptionPatternsPatternsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextSetWebSocketInterceptionPatternsPatternsItems(
+      glob: json[r'glob'],
+      regexFlags: json[r'regexFlags'],
+      regexSource: json[r'regexSource'],
+      urlPattern: json[r'urlPattern'] == null
+          ? null
+          : URLPattern.fromJson(json[r'urlPattern']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (glob != null) r'glob': glob,
+      if (regexFlags != null) r'regexFlags': regexFlags,
+      if (regexSource != null) r'regexSource': regexSource,
+      if (urlPattern != null) r'urlPattern': urlPattern?.toJson(),
+    };
   }
 }
 
@@ -1352,12 +1682,12 @@ class BrowserContextStorageStateResult {
   }) {
     return BrowserContextStorageStateResult(
       cookies:
-          ((json['cookies'] as List?)
+          ((json[r'cookies'] as List?)
               ?.map((e) => NetworkCookie.fromJson(e))
               .toList()) ??
           [],
       origins:
-          ((json['origins'] as List?)
+          ((json[r'origins'] as List?)
               ?.map((e) => OriginStorage.fromJson(e))
               .toList()) ??
           [],
@@ -1365,7 +1695,10 @@ class BrowserContextStorageStateResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'cookies': cookies, 'origins': origins};
+    return {
+      r'cookies': cookies.map((e) => e.toJson()).toList(),
+      r'origins': origins.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -1379,12 +1712,12 @@ class BrowserDefaultUserAgentForTestResult {
     Connection? connection,
   }) {
     return BrowserDefaultUserAgentForTestResult(
-      userAgent: (json['userAgent'])!,
+      userAgent: (json[r'userAgent'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'userAgent': userAgent};
+    return {r'userAgent': userAgent};
   }
 }
 
@@ -1398,14 +1731,51 @@ class BrowserNewBrowserCDPSessionResult {
     Connection? connection,
   }) {
     return BrowserNewBrowserCDPSessionResult(
-      session: (connection != null && json['session'] != null
-          ? ChannelOwner.from<CDPSessionBase>(connection, json['session'])
+      session: (connection != null && json[r'session'] != null
+          ? ChannelOwner.from<CDPSessionBase>(connection, json[r'session'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'session': session};
+    return {
+      r'session': {'guid': session.guid},
+    };
+  }
+}
+
+class BrowserNewContextForReuseProxy {
+  final String? bypass;
+  final String? password;
+  final String server;
+  final String? username;
+
+  BrowserNewContextForReuseProxy({
+    this.bypass,
+    this.password,
+    required this.server,
+    this.username,
+  });
+
+  factory BrowserNewContextForReuseProxy.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserNewContextForReuseProxy(
+      bypass: json[r'bypass'],
+      password: json[r'password'],
+      server: (json[r'server'])!,
+      username: json[r'username'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (bypass != null) r'bypass': bypass,
+      if (password != null) r'password': password,
+      r'server': server,
+      if (username != null) r'username': username,
+    };
   }
 }
 
@@ -1419,14 +1789,79 @@ class BrowserNewContextForReuseResult {
     Connection? connection,
   }) {
     return BrowserNewContextForReuseResult(
-      context: (connection != null && json['context'] != null
-          ? ChannelOwner.from<BrowserContextBase>(connection, json['context'])
+      context: (connection != null && json[r'context'] != null
+          ? ChannelOwner.from<BrowserContextBase>(connection, json[r'context'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'context': context};
+    return {
+      r'context': {'guid': context.guid},
+    };
+  }
+}
+
+class BrowserNewContextForReuseStorageState {
+  final List<SetNetworkCookie>? cookies;
+  final List<SetOriginStorage>? origins;
+
+  BrowserNewContextForReuseStorageState({this.cookies, this.origins});
+
+  factory BrowserNewContextForReuseStorageState.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserNewContextForReuseStorageState(
+      cookies: (json[r'cookies'] as List?)
+          ?.map((e) => SetNetworkCookie.fromJson(e))
+          .toList(),
+      origins: (json[r'origins'] as List?)
+          ?.map((e) => SetOriginStorage.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (cookies != null) r'cookies': cookies?.map((e) => e.toJson()).toList(),
+      if (origins != null) r'origins': origins?.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class BrowserNewContextProxy {
+  final String? bypass;
+  final String? password;
+  final String server;
+  final String? username;
+
+  BrowserNewContextProxy({
+    this.bypass,
+    this.password,
+    required this.server,
+    this.username,
+  });
+
+  factory BrowserNewContextProxy.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserNewContextProxy(
+      bypass: json[r'bypass'],
+      password: json[r'password'],
+      server: (json[r'server'])!,
+      username: json[r'username'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (bypass != null) r'bypass': bypass,
+      if (password != null) r'password': password,
+      r'server': server,
+      if (username != null) r'username': username,
+    };
   }
 }
 
@@ -1440,14 +1875,44 @@ class BrowserNewContextResult {
     Connection? connection,
   }) {
     return BrowserNewContextResult(
-      context: (connection != null && json['context'] != null
-          ? ChannelOwner.from<BrowserContextBase>(connection, json['context'])
+      context: (connection != null && json[r'context'] != null
+          ? ChannelOwner.from<BrowserContextBase>(connection, json[r'context'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'context': context};
+    return {
+      r'context': {'guid': context.guid},
+    };
+  }
+}
+
+class BrowserNewContextStorageState {
+  final List<SetNetworkCookie>? cookies;
+  final List<SetOriginStorage>? origins;
+
+  BrowserNewContextStorageState({this.cookies, this.origins});
+
+  factory BrowserNewContextStorageState.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserNewContextStorageState(
+      cookies: (json[r'cookies'] as List?)
+          ?.map((e) => SetNetworkCookie.fromJson(e))
+          .toList(),
+      origins: (json[r'origins'] as List?)
+          ?.map((e) => SetOriginStorage.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (cookies != null) r'cookies': cookies?.map((e) => e.toJson()).toList(),
+      if (origins != null) r'origins': origins?.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -1460,11 +1925,11 @@ class BrowserStartServerResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return BrowserStartServerResult(endpoint: (json['endpoint'])!);
+    return BrowserStartServerResult(endpoint: (json[r'endpoint'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'endpoint': endpoint};
+    return {r'endpoint': endpoint};
   }
 }
 
@@ -1478,14 +1943,16 @@ class BrowserStopTracingResult {
     Connection? connection,
   }) {
     return BrowserStopTracingResult(
-      artifact: (connection != null && json['artifact'] != null
-          ? ChannelOwner.from<ArtifactBase>(connection, json['artifact'])
+      artifact: (connection != null && json[r'artifact'] != null
+          ? ChannelOwner.from<ArtifactBase>(connection, json[r'artifact'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'artifact': artifact};
+    return {
+      r'artifact': {'guid': artifact.guid},
+    };
   }
 }
 
@@ -1500,13 +1967,13 @@ class BrowserTypeConnectOverCDPResult {
     Connection? connection,
   }) {
     return BrowserTypeConnectOverCDPResult(
-      browser: (connection != null && json['browser'] != null
-          ? ChannelOwner.from<BrowserBase>(connection, json['browser'])
+      browser: (connection != null && json[r'browser'] != null
+          ? ChannelOwner.from<BrowserBase>(connection, json[r'browser'])
           : null)!,
-      defaultContext: connection != null && json['defaultContext'] != null
+      defaultContext: connection != null && json[r'defaultContext'] != null
           ? ChannelOwner.from<BrowserContextBase>(
               connection,
-              json['defaultContext'],
+              json[r'defaultContext'],
             )
           : null,
     );
@@ -1514,8 +1981,9 @@ class BrowserTypeConnectOverCDPResult {
 
   Map<String, dynamic> toJson() {
     return {
-      'browser': browser,
-      if (defaultContext != null) 'defaultContext': defaultContext,
+      r'browser': {'guid': browser.guid},
+      if (defaultContext != null)
+        r'defaultContext': {'guid': defaultContext?.guid},
     };
   }
 }
@@ -1530,14 +1998,16 @@ class BrowserTypeConnectToWorkerResult {
     Connection? connection,
   }) {
     return BrowserTypeConnectToWorkerResult(
-      worker: (connection != null && json['worker'] != null
-          ? ChannelOwner.from<WorkerBase>(connection, json['worker'])
+      worker: (connection != null && json[r'worker'] != null
+          ? ChannelOwner.from<WorkerBase>(connection, json[r'worker'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'worker': worker};
+    return {
+      r'worker': {'guid': worker.guid},
+    };
   }
 }
 
@@ -1555,17 +2025,20 @@ class BrowserTypeLaunchPersistentContextResult {
     Connection? connection,
   }) {
     return BrowserTypeLaunchPersistentContextResult(
-      browser: (connection != null && json['browser'] != null
-          ? ChannelOwner.from<BrowserBase>(connection, json['browser'])
+      browser: (connection != null && json[r'browser'] != null
+          ? ChannelOwner.from<BrowserBase>(connection, json[r'browser'])
           : null)!,
-      context: (connection != null && json['context'] != null
-          ? ChannelOwner.from<BrowserContextBase>(connection, json['context'])
+      context: (connection != null && json[r'context'] != null
+          ? ChannelOwner.from<BrowserContextBase>(connection, json[r'context'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'browser': browser, 'context': context};
+    return {
+      r'browser': {'guid': browser.guid},
+      r'context': {'guid': context.guid},
+    };
   }
 }
 
@@ -1579,14 +2052,16 @@ class BrowserTypeLaunchResult {
     Connection? connection,
   }) {
     return BrowserTypeLaunchResult(
-      browser: (connection != null && json['browser'] != null
-          ? ChannelOwner.from<BrowserBase>(connection, json['browser'])
+      browser: (connection != null && json[r'browser'] != null
+          ? ChannelOwner.from<BrowserBase>(connection, json[r'browser'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'browser': browser};
+    return {
+      r'browser': {'guid': browser.guid},
+    };
   }
 }
 
@@ -1599,11 +2074,11 @@ class CDPSessionSendResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return CDPSessionSendResult(result: json['result']);
+    return CDPSessionSendResult(result: json[r'result']);
   }
 
   Map<String, dynamic> toJson() {
-    return {if (result != null) 'result': result};
+    return {if (result != null) r'result': result};
   }
 }
 
@@ -1618,22 +2093,25 @@ class ClientSideCallMetadata {
     Connection? connection,
   }) {
     return ClientSideCallMetadata(
-      id: (json['id'])!,
-      stack: (json['stack'] as List?)
+      id: (json[r'id'])!,
+      stack: (json[r'stack'] as List?)
           ?.map((e) => StackFrame.fromJson(e))
           .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, if (stack != null) 'stack': stack};
+    return {
+      r'id': id,
+      if (stack != null) r'stack': stack?.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
 class CommonScreenshotOptions {
   final CommonScreenshotOptionsAnimationsEnum? animations;
   final CommonScreenshotOptionsCaretEnum? caret;
-  final List<Map<String, dynamic>>? mask;
+  final List<CommonScreenshotOptionsMaskItems>? mask;
   final String? maskColor;
   final bool? omitBackground;
   final CommonScreenshotOptionsScaleEnum? scale;
@@ -1654,44 +2132,75 @@ class CommonScreenshotOptions {
     Connection? connection,
   }) {
     return CommonScreenshotOptions(
-      animations: json['animations'] == null
+      animations: json[r'animations'] == null
           ? null
           : CommonScreenshotOptionsAnimationsEnum.values.firstWhere(
-              (e) => e.value == json['animations'],
+              (e) => e.value == json[r'animations'],
             ),
-      caret: json['caret'] == null
+      caret: json[r'caret'] == null
           ? null
           : CommonScreenshotOptionsCaretEnum.values.firstWhere(
-              (e) => e.value == json['caret'],
+              (e) => e.value == json[r'caret'],
             ),
-      mask: (json['mask'] as List?)?.cast<Map<String, dynamic>>(),
-      maskColor: json['maskColor'],
-      omitBackground: json['omitBackground'],
-      scale: json['scale'] == null
+      mask: (json[r'mask'] as List?)
+          ?.map((e) => CommonScreenshotOptionsMaskItems.fromJson(e))
+          .toList(),
+      maskColor: json[r'maskColor'],
+      omitBackground: json[r'omitBackground'],
+      scale: json[r'scale'] == null
           ? null
           : CommonScreenshotOptionsScaleEnum.values.firstWhere(
-              (e) => e.value == json['scale'],
+              (e) => e.value == json[r'scale'],
             ),
-      style: json['style'],
+      style: json[r'style'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (animations != null) 'animations': animations,
-      if (caret != null) 'caret': caret,
-      if (mask != null) 'mask': mask,
-      if (maskColor != null) 'maskColor': maskColor,
-      if (omitBackground != null) 'omitBackground': omitBackground,
-      if (scale != null) 'scale': scale,
-      if (style != null) 'style': style,
+      if (animations != null) r'animations': animations?.value,
+      if (caret != null) r'caret': caret?.value,
+      if (mask != null) r'mask': mask?.map((e) => e.toJson()).toList(),
+      if (maskColor != null) r'maskColor': maskColor,
+      if (omitBackground != null) r'omitBackground': omitBackground,
+      if (scale != null) r'scale': scale?.value,
+      if (style != null) r'style': style,
+    };
+  }
+}
+
+class CommonScreenshotOptionsMaskItems {
+  final FrameBase frame;
+  final String selector;
+
+  CommonScreenshotOptionsMaskItems({
+    required this.frame,
+    required this.selector,
+  });
+
+  factory CommonScreenshotOptionsMaskItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return CommonScreenshotOptionsMaskItems(
+      frame: (connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
+          : null)!,
+      selector: (json[r'selector'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'frame': {'guid': frame.guid},
+      r'selector': selector,
     };
   }
 }
 
 class ConsoleMessage {
   final List<JSHandleBase> args;
-  final Map<String, dynamic> location;
+  final ConsoleMessageLocation location;
   final String text;
   final double timestamp;
   final String type;
@@ -1711,25 +2220,58 @@ class ConsoleMessage {
     return ConsoleMessage(
       args:
           (connection != null
-              ? (json['args'] as List?)
+              ? (json[r'args'] as List?)
                     ?.map((e) => ChannelOwner.from<JSHandleBase>(connection, e))
                     .toList()
               : null) ??
           [],
-      location: (json['location'])!,
-      text: (json['text'])!,
-      timestamp: ((json['timestamp'] as num?)?.toDouble())!,
-      type: (json['type'])!,
+      location: (json[r'location'] == null
+          ? null
+          : ConsoleMessageLocation.fromJson(json[r'location']))!,
+      text: (json[r'text'])!,
+      timestamp: ((json[r'timestamp'] as num?)?.toDouble())!,
+      type: (json[r'type'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'args': args,
-      'location': location,
-      'text': text,
-      'timestamp': timestamp,
-      'type': type,
+      r'args': args.map((e) => {'guid': e.guid}).toList(),
+      r'location': location.toJson(),
+      r'text': text,
+      r'timestamp': timestamp,
+      r'type': type,
+    };
+  }
+}
+
+class ConsoleMessageLocation {
+  final int columnNumber;
+  final int lineNumber;
+  final String url;
+
+  ConsoleMessageLocation({
+    required this.columnNumber,
+    required this.lineNumber,
+    required this.url,
+  });
+
+  factory ConsoleMessageLocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ConsoleMessageLocation(
+      columnNumber: (json[r'columnNumber'])!,
+      lineNumber: (json[r'lineNumber'])!,
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'columnNumber': columnNumber,
+      r'lineNumber': lineNumber,
+      r'url': url,
     };
   }
 }
@@ -1738,15 +2280,15 @@ class ContextOptions {
   final ContextOptionsAcceptDownloadsEnum? acceptDownloads;
   final String? baseURL;
   final bool? bypassCSP;
-  final List<Map<String, dynamic>>? clientCertificates;
+  final List<ContextOptionsClientCertificatesItems>? clientCertificates;
   final ContextOptionsColorSchemeEnum? colorScheme;
   final ContextOptionsContrastEnum? contrast;
   final double? deviceScaleFactor;
   final List<NameValue>? extraHTTPHeaders;
   final ContextOptionsForcedColorsEnum? forcedColors;
-  final Map<String, dynamic>? geolocation;
+  final ContextOptionsGeolocation? geolocation;
   final bool? hasTouch;
-  final Map<String, dynamic>? httpCredentials;
+  final ContextOptionsHttpCredentials? httpCredentials;
   final bool? ignoreHTTPSErrors;
   final bool? isMobile;
   final bool? javaScriptEnabled;
@@ -1754,17 +2296,17 @@ class ContextOptions {
   final bool? noDefaultViewport;
   final bool? offline;
   final List<String>? permissions;
-  final Map<String, dynamic>? recordHar;
-  final Map<String, dynamic>? recordVideo;
+  final RecordHarOptions? recordHar;
+  final ContextOptionsRecordVideo? recordVideo;
   final ContextOptionsReducedMotionEnum? reducedMotion;
-  final Map<String, dynamic>? screen;
+  final ContextOptionsScreen? screen;
   final List<SelectorEngine>? selectorEngines;
   final ContextOptionsServiceWorkersEnum? serviceWorkers;
   final bool? strictSelectors;
   final String? testIdAttributeName;
   final String? timezoneId;
   final String? userAgent;
-  final Map<String, dynamic>? viewport;
+  final ContextOptionsViewport? viewport;
 
   ContextOptions({
     this.acceptDownloads,
@@ -1804,101 +2346,437 @@ class ContextOptions {
     Connection? connection,
   }) {
     return ContextOptions(
-      acceptDownloads: json['acceptDownloads'] == null
+      acceptDownloads: json[r'acceptDownloads'] == null
           ? null
           : ContextOptionsAcceptDownloadsEnum.values.firstWhere(
-              (e) => e.value == json['acceptDownloads'],
+              (e) => e.value == json[r'acceptDownloads'],
             ),
-      baseURL: json['baseURL'],
-      bypassCSP: json['bypassCSP'],
-      clientCertificates: (json['clientCertificates'] as List?)
-          ?.cast<Map<String, dynamic>>(),
-      colorScheme: json['colorScheme'] == null
+      baseURL: json[r'baseURL'],
+      bypassCSP: json[r'bypassCSP'],
+      clientCertificates: (json[r'clientCertificates'] as List?)
+          ?.map((e) => ContextOptionsClientCertificatesItems.fromJson(e))
+          .toList(),
+      colorScheme: json[r'colorScheme'] == null
           ? null
           : ContextOptionsColorSchemeEnum.values.firstWhere(
-              (e) => e.value == json['colorScheme'],
+              (e) => e.value == json[r'colorScheme'],
             ),
-      contrast: json['contrast'] == null
+      contrast: json[r'contrast'] == null
           ? null
           : ContextOptionsContrastEnum.values.firstWhere(
-              (e) => e.value == json['contrast'],
+              (e) => e.value == json[r'contrast'],
             ),
-      deviceScaleFactor: (json['deviceScaleFactor'] as num?)?.toDouble(),
-      extraHTTPHeaders: (json['extraHTTPHeaders'] as List?)
+      deviceScaleFactor: (json[r'deviceScaleFactor'] as num?)?.toDouble(),
+      extraHTTPHeaders: (json[r'extraHTTPHeaders'] as List?)
           ?.map((e) => NameValue.fromJson(e))
           .toList(),
-      forcedColors: json['forcedColors'] == null
+      forcedColors: json[r'forcedColors'] == null
           ? null
           : ContextOptionsForcedColorsEnum.values.firstWhere(
-              (e) => e.value == json['forcedColors'],
+              (e) => e.value == json[r'forcedColors'],
             ),
-      geolocation: json['geolocation'],
-      hasTouch: json['hasTouch'],
-      httpCredentials: json['httpCredentials'],
-      ignoreHTTPSErrors: json['ignoreHTTPSErrors'],
-      isMobile: json['isMobile'],
-      javaScriptEnabled: json['javaScriptEnabled'],
-      locale: json['locale'],
-      noDefaultViewport: json['noDefaultViewport'],
-      offline: json['offline'],
-      permissions: (json['permissions'] as List?)?.cast<String>(),
-      recordHar: json['recordHar'],
-      recordVideo: json['recordVideo'],
-      reducedMotion: json['reducedMotion'] == null
+      geolocation: json[r'geolocation'] == null
+          ? null
+          : ContextOptionsGeolocation.fromJson(json[r'geolocation']),
+      hasTouch: json[r'hasTouch'],
+      httpCredentials: json[r'httpCredentials'] == null
+          ? null
+          : ContextOptionsHttpCredentials.fromJson(json[r'httpCredentials']),
+      ignoreHTTPSErrors: json[r'ignoreHTTPSErrors'],
+      isMobile: json[r'isMobile'],
+      javaScriptEnabled: json[r'javaScriptEnabled'],
+      locale: json[r'locale'],
+      noDefaultViewport: json[r'noDefaultViewport'],
+      offline: json[r'offline'],
+      permissions: (json[r'permissions'] as List?)?.cast<String>(),
+      recordHar: json[r'recordHar'] == null
+          ? null
+          : RecordHarOptions.fromJson(json[r'recordHar']),
+      recordVideo: json[r'recordVideo'] == null
+          ? null
+          : ContextOptionsRecordVideo.fromJson(json[r'recordVideo']),
+      reducedMotion: json[r'reducedMotion'] == null
           ? null
           : ContextOptionsReducedMotionEnum.values.firstWhere(
-              (e) => e.value == json['reducedMotion'],
+              (e) => e.value == json[r'reducedMotion'],
             ),
-      screen: json['screen'],
-      selectorEngines: (json['selectorEngines'] as List?)
+      screen: json[r'screen'] == null
+          ? null
+          : ContextOptionsScreen.fromJson(json[r'screen']),
+      selectorEngines: (json[r'selectorEngines'] as List?)
           ?.map((e) => SelectorEngine.fromJson(e))
           .toList(),
-      serviceWorkers: json['serviceWorkers'] == null
+      serviceWorkers: json[r'serviceWorkers'] == null
           ? null
           : ContextOptionsServiceWorkersEnum.values.firstWhere(
-              (e) => e.value == json['serviceWorkers'],
+              (e) => e.value == json[r'serviceWorkers'],
             ),
-      strictSelectors: json['strictSelectors'],
-      testIdAttributeName: json['testIdAttributeName'],
-      timezoneId: json['timezoneId'],
-      userAgent: json['userAgent'],
-      viewport: json['viewport'],
+      strictSelectors: json[r'strictSelectors'],
+      testIdAttributeName: json[r'testIdAttributeName'],
+      timezoneId: json[r'timezoneId'],
+      userAgent: json[r'userAgent'],
+      viewport: json[r'viewport'] == null
+          ? null
+          : ContextOptionsViewport.fromJson(json[r'viewport']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (acceptDownloads != null) 'acceptDownloads': acceptDownloads,
-      if (baseURL != null) 'baseURL': baseURL,
-      if (bypassCSP != null) 'bypassCSP': bypassCSP,
-      if (clientCertificates != null) 'clientCertificates': clientCertificates,
-      if (colorScheme != null) 'colorScheme': colorScheme,
-      if (contrast != null) 'contrast': contrast,
-      if (deviceScaleFactor != null) 'deviceScaleFactor': deviceScaleFactor,
-      if (extraHTTPHeaders != null) 'extraHTTPHeaders': extraHTTPHeaders,
-      if (forcedColors != null) 'forcedColors': forcedColors,
-      if (geolocation != null) 'geolocation': geolocation,
-      if (hasTouch != null) 'hasTouch': hasTouch,
-      if (httpCredentials != null) 'httpCredentials': httpCredentials,
-      if (ignoreHTTPSErrors != null) 'ignoreHTTPSErrors': ignoreHTTPSErrors,
-      if (isMobile != null) 'isMobile': isMobile,
-      if (javaScriptEnabled != null) 'javaScriptEnabled': javaScriptEnabled,
-      if (locale != null) 'locale': locale,
-      if (noDefaultViewport != null) 'noDefaultViewport': noDefaultViewport,
-      if (offline != null) 'offline': offline,
-      if (permissions != null) 'permissions': permissions,
-      if (recordHar != null) 'recordHar': recordHar,
-      if (recordVideo != null) 'recordVideo': recordVideo,
-      if (reducedMotion != null) 'reducedMotion': reducedMotion,
-      if (screen != null) 'screen': screen,
-      if (selectorEngines != null) 'selectorEngines': selectorEngines,
-      if (serviceWorkers != null) 'serviceWorkers': serviceWorkers,
-      if (strictSelectors != null) 'strictSelectors': strictSelectors,
+      if (acceptDownloads != null) r'acceptDownloads': acceptDownloads?.value,
+      if (baseURL != null) r'baseURL': baseURL,
+      if (bypassCSP != null) r'bypassCSP': bypassCSP,
+      if (clientCertificates != null)
+        r'clientCertificates': clientCertificates
+            ?.map((e) => e.toJson())
+            .toList(),
+      if (colorScheme != null) r'colorScheme': colorScheme?.value,
+      if (contrast != null) r'contrast': contrast?.value,
+      if (deviceScaleFactor != null) r'deviceScaleFactor': deviceScaleFactor,
+      if (extraHTTPHeaders != null)
+        r'extraHTTPHeaders': extraHTTPHeaders?.map((e) => e.toJson()).toList(),
+      if (forcedColors != null) r'forcedColors': forcedColors?.value,
+      if (geolocation != null) r'geolocation': geolocation?.toJson(),
+      if (hasTouch != null) r'hasTouch': hasTouch,
+      if (httpCredentials != null)
+        r'httpCredentials': httpCredentials?.toJson(),
+      if (ignoreHTTPSErrors != null) r'ignoreHTTPSErrors': ignoreHTTPSErrors,
+      if (isMobile != null) r'isMobile': isMobile,
+      if (javaScriptEnabled != null) r'javaScriptEnabled': javaScriptEnabled,
+      if (locale != null) r'locale': locale,
+      if (noDefaultViewport != null) r'noDefaultViewport': noDefaultViewport,
+      if (offline != null) r'offline': offline,
+      if (permissions != null) r'permissions': permissions,
+      if (recordHar != null) r'recordHar': recordHar?.toJson(),
+      if (recordVideo != null) r'recordVideo': recordVideo?.toJson(),
+      if (reducedMotion != null) r'reducedMotion': reducedMotion?.value,
+      if (screen != null) r'screen': screen?.toJson(),
+      if (selectorEngines != null)
+        r'selectorEngines': selectorEngines?.map((e) => e.toJson()).toList(),
+      if (serviceWorkers != null) r'serviceWorkers': serviceWorkers?.value,
+      if (strictSelectors != null) r'strictSelectors': strictSelectors,
       if (testIdAttributeName != null)
-        'testIdAttributeName': testIdAttributeName,
-      if (timezoneId != null) 'timezoneId': timezoneId,
-      if (userAgent != null) 'userAgent': userAgent,
-      if (viewport != null) 'viewport': viewport,
+        r'testIdAttributeName': testIdAttributeName,
+      if (timezoneId != null) r'timezoneId': timezoneId,
+      if (userAgent != null) r'userAgent': userAgent,
+      if (viewport != null) r'viewport': viewport?.toJson(),
+    };
+  }
+}
+
+class ContextOptionsClientCertificatesItems {
+  final String? cert;
+  final String? key;
+  final String origin;
+  final String? passphrase;
+  final String? pfx;
+
+  ContextOptionsClientCertificatesItems({
+    this.cert,
+    this.key,
+    required this.origin,
+    this.passphrase,
+    this.pfx,
+  });
+
+  factory ContextOptionsClientCertificatesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsClientCertificatesItems(
+      cert: json[r'cert'],
+      key: json[r'key'],
+      origin: (json[r'origin'])!,
+      passphrase: json[r'passphrase'],
+      pfx: json[r'pfx'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (cert != null) r'cert': cert,
+      if (key != null) r'key': key,
+      r'origin': origin,
+      if (passphrase != null) r'passphrase': passphrase,
+      if (pfx != null) r'pfx': pfx,
+    };
+  }
+}
+
+class ContextOptionsGeolocation {
+  final double? accuracy;
+  final double latitude;
+  final double longitude;
+
+  ContextOptionsGeolocation({
+    this.accuracy,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory ContextOptionsGeolocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsGeolocation(
+      accuracy: (json[r'accuracy'] as num?)?.toDouble(),
+      latitude: ((json[r'latitude'] as num?)?.toDouble())!,
+      longitude: ((json[r'longitude'] as num?)?.toDouble())!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (accuracy != null) r'accuracy': accuracy,
+      r'latitude': latitude,
+      r'longitude': longitude,
+    };
+  }
+}
+
+class ContextOptionsHttpCredentials {
+  final String? origin;
+  final String password;
+  final ContextOptionsHttpCredentialsSendEnum? send;
+  final String username;
+
+  ContextOptionsHttpCredentials({
+    this.origin,
+    required this.password,
+    this.send,
+    required this.username,
+  });
+
+  factory ContextOptionsHttpCredentials.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsHttpCredentials(
+      origin: json[r'origin'],
+      password: (json[r'password'])!,
+      send: json[r'send'] == null
+          ? null
+          : ContextOptionsHttpCredentialsSendEnum.values.firstWhere(
+              (e) => e.value == json[r'send'],
+            ),
+      username: (json[r'username'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (origin != null) r'origin': origin,
+      r'password': password,
+      if (send != null) r'send': send?.value,
+      r'username': username,
+    };
+  }
+}
+
+class ContextOptionsRecordVideo {
+  final String? dir;
+  final ContextOptionsRecordVideoShowActions? showActions;
+  final ContextOptionsRecordVideoSize? size;
+
+  ContextOptionsRecordVideo({this.dir, this.showActions, this.size});
+
+  factory ContextOptionsRecordVideo.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsRecordVideo(
+      dir: json[r'dir'],
+      showActions: json[r'showActions'] == null
+          ? null
+          : ContextOptionsRecordVideoShowActions.fromJson(json[r'showActions']),
+      size: json[r'size'] == null
+          ? null
+          : ContextOptionsRecordVideoSize.fromJson(json[r'size']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (dir != null) r'dir': dir,
+      if (showActions != null) r'showActions': showActions?.toJson(),
+      if (size != null) r'size': size?.toJson(),
+    };
+  }
+}
+
+class ContextOptionsRecordVideoShowActions {
+  final ShowActionsOptions mixinValue;
+
+  ContextOptionsRecordVideoShowActions({required this.mixinValue});
+
+  factory ContextOptionsRecordVideoShowActions.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsRecordVideoShowActions(
+      mixinValue: (json[r'$mixin'] == null
+          ? null
+          : ShowActionsOptions.fromJson(json[r'$mixin']))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'$mixin': mixinValue.toJson()};
+  }
+}
+
+class ContextOptionsRecordVideoSize {
+  final int height;
+  final int width;
+
+  ContextOptionsRecordVideoSize({required this.height, required this.width});
+
+  factory ContextOptionsRecordVideoSize.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsRecordVideoSize(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
+  }
+}
+
+class ContextOptionsScreen {
+  final int height;
+  final int width;
+
+  ContextOptionsScreen({required this.height, required this.width});
+
+  factory ContextOptionsScreen.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsScreen(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
+  }
+}
+
+class ContextOptionsViewport {
+  final int height;
+  final int width;
+
+  ContextOptionsViewport({required this.height, required this.width});
+
+  factory ContextOptionsViewport.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ContextOptionsViewport(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
+  }
+}
+
+class DebuggerPausedStateChangedEventPausedDetails {
+  final DebuggerPausedStateChangedEventPausedDetailsLocation location;
+  final String? stack;
+  final String title;
+
+  DebuggerPausedStateChangedEventPausedDetails({
+    required this.location,
+    this.stack,
+    required this.title,
+  });
+
+  factory DebuggerPausedStateChangedEventPausedDetails.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebuggerPausedStateChangedEventPausedDetails(
+      location: (json[r'location'] == null
+          ? null
+          : DebuggerPausedStateChangedEventPausedDetailsLocation.fromJson(
+              json[r'location'],
+            ))!,
+      stack: json[r'stack'],
+      title: (json[r'title'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'location': location.toJson(),
+      if (stack != null) r'stack': stack,
+      r'title': title,
+    };
+  }
+}
+
+class DebuggerPausedStateChangedEventPausedDetailsLocation {
+  final int? column;
+  final String file;
+  final int? line;
+
+  DebuggerPausedStateChangedEventPausedDetailsLocation({
+    this.column,
+    required this.file,
+    this.line,
+  });
+
+  factory DebuggerPausedStateChangedEventPausedDetailsLocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebuggerPausedStateChangedEventPausedDetailsLocation(
+      column: json[r'column'],
+      file: (json[r'file'])!,
+      line: json[r'line'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (column != null) r'column': column,
+      r'file': file,
+      if (line != null) r'line': line,
+    };
+  }
+}
+
+class DebuggerRunToLocation {
+  final int? column;
+  final String file;
+  final int? line;
+
+  DebuggerRunToLocation({this.column, required this.file, this.line});
+
+  factory DebuggerRunToLocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebuggerRunToLocation(
+      column: json[r'column'],
+      file: (json[r'file'])!,
+      line: json[r'line'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (column != null) r'column': column,
+      r'file': file,
+      if (line != null) r'line': line,
     };
   }
 }
@@ -1913,14 +2791,16 @@ class ElectronApplicationBrowserWindowResult {
     Connection? connection,
   }) {
     return ElectronApplicationBrowserWindowResult(
-      handle: (connection != null && json['handle'] != null
-          ? ChannelOwner.from<JSHandleBase>(connection, json['handle'])
+      handle: (connection != null && json[r'handle'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handle': handle};
+    return {
+      r'handle': {'guid': handle.guid},
+    };
   }
 }
 
@@ -1934,14 +2814,16 @@ class ElectronApplicationEvaluateExpressionHandleResult {
     Connection? connection,
   }) {
     return ElectronApplicationEvaluateExpressionHandleResult(
-      handle: (connection != null && json['handle'] != null
-          ? ChannelOwner.from<JSHandleBase>(connection, json['handle'])
+      handle: (connection != null && json[r'handle'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handle': handle};
+    return {
+      r'handle': {'guid': handle.guid},
+    };
   }
 }
 
@@ -1955,14 +2837,149 @@ class ElectronApplicationEvaluateExpressionResult {
     Connection? connection,
   }) {
     return ElectronApplicationEvaluateExpressionResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
+  }
+}
+
+class ElectronLaunchGeolocation {
+  final double? accuracy;
+  final double latitude;
+  final double longitude;
+
+  ElectronLaunchGeolocation({
+    this.accuracy,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory ElectronLaunchGeolocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElectronLaunchGeolocation(
+      accuracy: (json[r'accuracy'] as num?)?.toDouble(),
+      latitude: ((json[r'latitude'] as num?)?.toDouble())!,
+      longitude: ((json[r'longitude'] as num?)?.toDouble())!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (accuracy != null) r'accuracy': accuracy,
+      r'latitude': latitude,
+      r'longitude': longitude,
+    };
+  }
+}
+
+class ElectronLaunchHttpCredentials {
+  final String? origin;
+  final String password;
+  final String username;
+
+  ElectronLaunchHttpCredentials({
+    this.origin,
+    required this.password,
+    required this.username,
+  });
+
+  factory ElectronLaunchHttpCredentials.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElectronLaunchHttpCredentials(
+      origin: json[r'origin'],
+      password: (json[r'password'])!,
+      username: (json[r'username'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (origin != null) r'origin': origin,
+      r'password': password,
+      r'username': username,
+    };
+  }
+}
+
+class ElectronLaunchRecordVideo {
+  final String? dir;
+  final ElectronLaunchRecordVideoShowActions? showActions;
+  final ElectronLaunchRecordVideoSize? size;
+
+  ElectronLaunchRecordVideo({this.dir, this.showActions, this.size});
+
+  factory ElectronLaunchRecordVideo.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElectronLaunchRecordVideo(
+      dir: json[r'dir'],
+      showActions: json[r'showActions'] == null
+          ? null
+          : ElectronLaunchRecordVideoShowActions.fromJson(json[r'showActions']),
+      size: json[r'size'] == null
+          ? null
+          : ElectronLaunchRecordVideoSize.fromJson(json[r'size']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (dir != null) r'dir': dir,
+      if (showActions != null) r'showActions': showActions?.toJson(),
+      if (size != null) r'size': size?.toJson(),
+    };
+  }
+}
+
+class ElectronLaunchRecordVideoShowActions {
+  final ShowActionsOptions mixinValue;
+
+  ElectronLaunchRecordVideoShowActions({required this.mixinValue});
+
+  factory ElectronLaunchRecordVideoShowActions.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElectronLaunchRecordVideoShowActions(
+      mixinValue: (json[r'$mixin'] == null
+          ? null
+          : ShowActionsOptions.fromJson(json[r'$mixin']))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'$mixin': mixinValue.toJson()};
+  }
+}
+
+class ElectronLaunchRecordVideoSize {
+  final int height;
+  final int width;
+
+  ElectronLaunchRecordVideoSize({required this.height, required this.width});
+
+  factory ElectronLaunchRecordVideoSize.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElectronLaunchRecordVideoSize(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
   }
 }
 
@@ -1977,17 +2994,19 @@ class ElectronLaunchResult {
   }) {
     return ElectronLaunchResult(
       electronApplication:
-          (connection != null && json['electronApplication'] != null
+          (connection != null && json[r'electronApplication'] != null
           ? ChannelOwner.from<ElectronApplicationBase>(
               connection,
-              json['electronApplication'],
+              json[r'electronApplication'],
             )
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'electronApplication': electronApplication};
+    return {
+      r'electronApplication': {'guid': electronApplication.guid},
+    };
   }
 }
 
@@ -2001,12 +3020,12 @@ class ElementHandleBoundingBoxResult {
     Connection? connection,
   }) {
     return ElementHandleBoundingBoxResult(
-      value: json['value'] == null ? null : Rect.fromJson(json['value']),
+      value: json[r'value'] == null ? null : Rect.fromJson(json[r'value']),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (value != null) 'value': value};
+    return {if (value != null) r'value': value?.toJson()};
   }
 }
 
@@ -2020,14 +3039,16 @@ class ElementHandleContentFrameResult {
     Connection? connection,
   }) {
     return ElementHandleContentFrameResult(
-      frame: connection != null && json['frame'] != null
-          ? ChannelOwner.from<FrameBase>(connection, json['frame'])
+      frame: connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (frame != null) 'frame': frame};
+    return {
+      if (frame != null) r'frame': {'guid': frame?.guid},
+    };
   }
 }
 
@@ -2041,14 +3062,14 @@ class ElementHandleEvalOnSelectorAllResult {
     Connection? connection,
   }) {
     return ElementHandleEvalOnSelectorAllResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
@@ -2062,14 +3083,14 @@ class ElementHandleEvalOnSelectorResult {
     Connection? connection,
   }) {
     return ElementHandleEvalOnSelectorResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
@@ -2082,11 +3103,11 @@ class ElementHandleGetAttributeResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleGetAttributeResult(value: json['value']);
+    return ElementHandleGetAttributeResult(value: json[r'value']);
   }
 
   Map<String, dynamic> toJson() {
-    return {if (value != null) 'value': value};
+    return {if (value != null) r'value': value};
   }
 }
 
@@ -2099,11 +3120,11 @@ class ElementHandleInnerHTMLResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleInnerHTMLResult(value: (json['value'])!);
+    return ElementHandleInnerHTMLResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2116,11 +3137,11 @@ class ElementHandleInnerTextResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleInnerTextResult(value: (json['value'])!);
+    return ElementHandleInnerTextResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2133,11 +3154,11 @@ class ElementHandleInputValueResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleInputValueResult(value: (json['value'])!);
+    return ElementHandleInputValueResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2150,11 +3171,11 @@ class ElementHandleIsCheckedResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleIsCheckedResult(value: (json['value'])!);
+    return ElementHandleIsCheckedResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2167,11 +3188,11 @@ class ElementHandleIsDisabledResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleIsDisabledResult(value: (json['value'])!);
+    return ElementHandleIsDisabledResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2184,11 +3205,11 @@ class ElementHandleIsEditableResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleIsEditableResult(value: (json['value'])!);
+    return ElementHandleIsEditableResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2201,11 +3222,11 @@ class ElementHandleIsEnabledResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleIsEnabledResult(value: (json['value'])!);
+    return ElementHandleIsEnabledResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2218,11 +3239,11 @@ class ElementHandleIsHiddenResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleIsHiddenResult(value: (json['value'])!);
+    return ElementHandleIsHiddenResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2235,11 +3256,11 @@ class ElementHandleIsVisibleResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleIsVisibleResult(value: (json['value'])!);
+    return ElementHandleIsVisibleResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2253,14 +3274,16 @@ class ElementHandleOwnerFrameResult {
     Connection? connection,
   }) {
     return ElementHandleOwnerFrameResult(
-      frame: connection != null && json['frame'] != null
-          ? ChannelOwner.from<FrameBase>(connection, json['frame'])
+      frame: connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (frame != null) 'frame': frame};
+    return {
+      if (frame != null) r'frame': {'guid': frame?.guid},
+    };
   }
 }
 
@@ -2276,7 +3299,7 @@ class ElementHandleQuerySelectorAllResult {
     return ElementHandleQuerySelectorAllResult(
       elements:
           (connection != null
-              ? (json['elements'] as List?)
+              ? (json[r'elements'] as List?)
                     ?.map(
                       (e) =>
                           ChannelOwner.from<ElementHandleBase>(connection, e),
@@ -2288,7 +3311,9 @@ class ElementHandleQuerySelectorAllResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'elements': elements};
+    return {
+      r'elements': elements.map((e) => {'guid': e.guid}).toList(),
+    };
   }
 }
 
@@ -2302,14 +3327,16 @@ class ElementHandleQuerySelectorResult {
     Connection? connection,
   }) {
     return ElementHandleQuerySelectorResult(
-      element: connection != null && json['element'] != null
-          ? ChannelOwner.from<ElementHandleBase>(connection, json['element'])
+      element: connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (element != null) 'element': element};
+    return {
+      if (element != null) r'element': {'guid': element?.guid},
+    };
   }
 }
 
@@ -2322,11 +3349,46 @@ class ElementHandleScreenshotResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleScreenshotResult(binary: (json['binary'])!);
+    return ElementHandleScreenshotResult(binary: (json[r'binary'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'binary': binary};
+    return {r'binary': binary};
+  }
+}
+
+class ElementHandleSelectOptionOptionsItems {
+  final int? index;
+  final String? label;
+  final String? value;
+  final String? valueOrLabel;
+
+  ElementHandleSelectOptionOptionsItems({
+    this.index,
+    this.label,
+    this.value,
+    this.valueOrLabel,
+  });
+
+  factory ElementHandleSelectOptionOptionsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElementHandleSelectOptionOptionsItems(
+      index: json[r'index'],
+      label: json[r'label'],
+      value: json[r'value'],
+      valueOrLabel: json[r'valueOrLabel'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (index != null) r'index': index,
+      if (label != null) r'label': label,
+      if (value != null) r'value': value,
+      if (valueOrLabel != null) r'valueOrLabel': valueOrLabel,
+    };
   }
 }
 
@@ -2340,12 +3402,43 @@ class ElementHandleSelectOptionResult {
     Connection? connection,
   }) {
     return ElementHandleSelectOptionResult(
-      values: ((json['values'] as List?)?.cast<String>()) ?? [],
+      values: ((json[r'values'] as List?)?.cast<String>()) ?? [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'values': values};
+    return {r'values': values};
+  }
+}
+
+class ElementHandleSetInputFilesPayloadsItems {
+  final String buffer;
+  final String? mimeType;
+  final String name;
+
+  ElementHandleSetInputFilesPayloadsItems({
+    required this.buffer,
+    this.mimeType,
+    required this.name,
+  });
+
+  factory ElementHandleSetInputFilesPayloadsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElementHandleSetInputFilesPayloadsItems(
+      buffer: (json[r'buffer'])!,
+      mimeType: json[r'mimeType'],
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'buffer': buffer,
+      if (mimeType != null) r'mimeType': mimeType,
+      r'name': name,
+    };
   }
 }
 
@@ -2358,11 +3451,11 @@ class ElementHandleTextContentResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ElementHandleTextContentResult(value: json['value']);
+    return ElementHandleTextContentResult(value: json[r'value']);
   }
 
   Map<String, dynamic> toJson() {
-    return {if (value != null) 'value': value};
+    return {if (value != null) r'value': value};
   }
 }
 
@@ -2376,14 +3469,59 @@ class ElementHandleWaitForSelectorResult {
     Connection? connection,
   }) {
     return ElementHandleWaitForSelectorResult(
-      element: connection != null && json['element'] != null
-          ? ChannelOwner.from<ElementHandleBase>(connection, json['element'])
+      element: connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (element != null) 'element': element};
+    return {
+      if (element != null) r'element': {'guid': element?.guid},
+    };
+  }
+}
+
+class EventTargetWaitForEventInfoInfo {
+  final String? error;
+  final String? event;
+  final String? message;
+  final EventTargetWaitForEventInfoInfoPhaseEnum phase;
+  final String waitId;
+
+  EventTargetWaitForEventInfoInfo({
+    this.error,
+    this.event,
+    this.message,
+    required this.phase,
+    required this.waitId,
+  });
+
+  factory EventTargetWaitForEventInfoInfo.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return EventTargetWaitForEventInfoInfo(
+      error: json[r'error'],
+      event: json[r'event'],
+      message: json[r'message'],
+      phase: (json[r'phase'] == null
+          ? null
+          : EventTargetWaitForEventInfoInfoPhaseEnum.values.firstWhere(
+              (e) => e.value == json[r'phase'],
+            ))!,
+      waitId: (json[r'waitId'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (error != null) r'error': error,
+      if (event != null) r'event': event,
+      if (message != null) r'message': message,
+      r'phase': phase.value,
+      r'waitId': waitId,
+    };
   }
 }
 
@@ -2409,30 +3547,30 @@ class ExpectedTextValue {
     Connection? connection,
   }) {
     return ExpectedTextValue(
-      ignoreCase: json['ignoreCase'],
-      matchSubstring: json['matchSubstring'],
-      normalizeWhiteSpace: json['normalizeWhiteSpace'],
-      regexFlags: json['regexFlags'],
-      regexSource: json['regexSource'],
-      string: json['string'],
+      ignoreCase: json[r'ignoreCase'],
+      matchSubstring: json[r'matchSubstring'],
+      normalizeWhiteSpace: json[r'normalizeWhiteSpace'],
+      regexFlags: json[r'regexFlags'],
+      regexSource: json[r'regexSource'],
+      string: json[r'string'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (ignoreCase != null) 'ignoreCase': ignoreCase,
-      if (matchSubstring != null) 'matchSubstring': matchSubstring,
+      if (ignoreCase != null) r'ignoreCase': ignoreCase,
+      if (matchSubstring != null) r'matchSubstring': matchSubstring,
       if (normalizeWhiteSpace != null)
-        'normalizeWhiteSpace': normalizeWhiteSpace,
-      if (regexFlags != null) 'regexFlags': regexFlags,
-      if (regexSource != null) 'regexSource': regexSource,
-      if (string != null) 'string': string,
+        r'normalizeWhiteSpace': normalizeWhiteSpace,
+      if (regexFlags != null) r'regexFlags': regexFlags,
+      if (regexSource != null) r'regexSource': regexSource,
+      if (string != null) r'string': string,
     };
   }
 }
 
 class FormField {
-  final Map<String, dynamic>? file;
+  final FormFieldFile? file;
   final String name;
   final String? value;
 
@@ -2443,17 +3581,46 @@ class FormField {
     Connection? connection,
   }) {
     return FormField(
-      file: json['file'],
-      name: (json['name'])!,
-      value: json['value'],
+      file: json[r'file'] == null
+          ? null
+          : FormFieldFile.fromJson(json[r'file']),
+      name: (json[r'name'])!,
+      value: json[r'value'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (file != null) 'file': file,
-      'name': name,
-      if (value != null) 'value': value,
+      if (file != null) r'file': file?.toJson(),
+      r'name': name,
+      if (value != null) r'value': value,
+    };
+  }
+}
+
+class FormFieldFile {
+  final String buffer;
+  final String? mimeType;
+  final String name;
+
+  FormFieldFile({required this.buffer, this.mimeType, required this.name});
+
+  factory FormFieldFile.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FormFieldFile(
+      buffer: (json[r'buffer'])!,
+      mimeType: json[r'mimeType'],
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'buffer': buffer,
+      if (mimeType != null) r'mimeType': mimeType,
+      r'name': name,
     };
   }
 }
@@ -2468,14 +3635,16 @@ class FrameAddScriptTagResult {
     Connection? connection,
   }) {
     return FrameAddScriptTagResult(
-      element: (connection != null && json['element'] != null
-          ? ChannelOwner.from<ElementHandleBase>(connection, json['element'])
+      element: (connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'element': element};
+    return {
+      r'element': {'guid': element.guid},
+    };
   }
 }
 
@@ -2489,14 +3658,16 @@ class FrameAddStyleTagResult {
     Connection? connection,
   }) {
     return FrameAddStyleTagResult(
-      element: (connection != null && json['element'] != null
-          ? ChannelOwner.from<ElementHandleBase>(connection, json['element'])
+      element: (connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'element': element};
+    return {
+      r'element': {'guid': element.guid},
+    };
   }
 }
 
@@ -2509,11 +3680,11 @@ class FrameAriaSnapshotResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameAriaSnapshotResult(snapshot: (json['snapshot'])!);
+    return FrameAriaSnapshotResult(snapshot: (json[r'snapshot'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'snapshot': snapshot};
+    return {r'snapshot': snapshot};
   }
 }
 
@@ -2526,11 +3697,63 @@ class FrameContentResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameContentResult(value: (json['value'])!);
+    return FrameContentResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
+  }
+}
+
+class FrameDropDataItems {
+  final String mimeType;
+  final String value;
+
+  FrameDropDataItems({required this.mimeType, required this.value});
+
+  factory FrameDropDataItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameDropDataItems(
+      mimeType: (json[r'mimeType'])!,
+      value: (json[r'value'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'mimeType': mimeType, r'value': value};
+  }
+}
+
+class FrameDropPayloadsItems {
+  final String buffer;
+  final String? mimeType;
+  final String name;
+
+  FrameDropPayloadsItems({
+    required this.buffer,
+    this.mimeType,
+    required this.name,
+  });
+
+  factory FrameDropPayloadsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameDropPayloadsItems(
+      buffer: (json[r'buffer'])!,
+      mimeType: json[r'mimeType'],
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'buffer': buffer,
+      if (mimeType != null) r'mimeType': mimeType,
+      r'name': name,
+    };
   }
 }
 
@@ -2544,14 +3767,14 @@ class FrameEvalOnSelectorAllResult {
     Connection? connection,
   }) {
     return FrameEvalOnSelectorAllResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
@@ -2565,14 +3788,14 @@ class FrameEvalOnSelectorResult {
     Connection? connection,
   }) {
     return FrameEvalOnSelectorResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
@@ -2586,14 +3809,16 @@ class FrameEvaluateExpressionHandleResult {
     Connection? connection,
   }) {
     return FrameEvaluateExpressionHandleResult(
-      handle: (connection != null && json['handle'] != null
-          ? ChannelOwner.from<JSHandleBase>(connection, json['handle'])
+      handle: (connection != null && json[r'handle'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handle': handle};
+    return {
+      r'handle': {'guid': handle.guid},
+    };
   }
 }
 
@@ -2607,14 +3832,14 @@ class FrameEvaluateExpressionResult {
     Connection? connection,
   }) {
     return FrameEvaluateExpressionResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
@@ -2622,7 +3847,7 @@ class FrameExpectResult {
   final String? errorMessage;
   final List<String>? log;
   final bool matches;
-  final Map<String, dynamic>? received;
+  final FrameExpectResultReceived? received;
   final bool? timedOut;
 
   FrameExpectResult({
@@ -2638,21 +3863,49 @@ class FrameExpectResult {
     Connection? connection,
   }) {
     return FrameExpectResult(
-      errorMessage: json['errorMessage'],
-      log: (json['log'] as List?)?.cast<String>(),
-      matches: (json['matches'])!,
-      received: json['received'],
-      timedOut: json['timedOut'],
+      errorMessage: json[r'errorMessage'],
+      log: (json[r'log'] as List?)?.cast<String>(),
+      matches: (json[r'matches'])!,
+      received: json[r'received'] == null
+          ? null
+          : FrameExpectResultReceived.fromJson(json[r'received']),
+      timedOut: json[r'timedOut'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (errorMessage != null) 'errorMessage': errorMessage,
-      if (log != null) 'log': log,
-      'matches': matches,
-      if (received != null) 'received': received,
-      if (timedOut != null) 'timedOut': timedOut,
+      if (errorMessage != null) r'errorMessage': errorMessage,
+      if (log != null) r'log': log,
+      r'matches': matches,
+      if (received != null) r'received': received?.toJson(),
+      if (timedOut != null) r'timedOut': timedOut,
+    };
+  }
+}
+
+class FrameExpectResultReceived {
+  final String? ariaSnapshot;
+  final SerializedValue? value;
+
+  FrameExpectResultReceived({this.ariaSnapshot, this.value});
+
+  factory FrameExpectResultReceived.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameExpectResultReceived(
+      ariaSnapshot: json[r'ariaSnapshot'],
+      value: json[r'value'] == null
+          ? null
+          : SerializedValue.fromJson(json[r'value']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (ariaSnapshot != null) r'ariaSnapshot': ariaSnapshot,
+      if (value != null) r'value': value?.toJson(),
     };
   }
 }
@@ -2667,14 +3920,16 @@ class FrameFrameElementResult {
     Connection? connection,
   }) {
     return FrameFrameElementResult(
-      element: (connection != null && json['element'] != null
-          ? ChannelOwner.from<ElementHandleBase>(connection, json['element'])
+      element: (connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'element': element};
+    return {
+      r'element': {'guid': element.guid},
+    };
   }
 }
 
@@ -2687,11 +3942,11 @@ class FrameGetAttributeResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameGetAttributeResult(value: json['value']);
+    return FrameGetAttributeResult(value: json[r'value']);
   }
 
   Map<String, dynamic> toJson() {
-    return {if (value != null) 'value': value};
+    return {if (value != null) r'value': value};
   }
 }
 
@@ -2705,14 +3960,16 @@ class FrameGotoResult {
     Connection? connection,
   }) {
     return FrameGotoResult(
-      response: connection != null && json['response'] != null
-          ? ChannelOwner.from<ResponseBase>(connection, json['response'])
+      response: connection != null && json[r'response'] != null
+          ? ChannelOwner.from<ResponseBase>(connection, json[r'response'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (response != null) 'response': response};
+    return {
+      if (response != null) r'response': {'guid': response?.guid},
+    };
   }
 }
 
@@ -2725,11 +3982,11 @@ class FrameInnerHTMLResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameInnerHTMLResult(value: (json['value'])!);
+    return FrameInnerHTMLResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2742,11 +3999,11 @@ class FrameInnerTextResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameInnerTextResult(value: (json['value'])!);
+    return FrameInnerTextResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2759,11 +4016,11 @@ class FrameInputValueResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameInputValueResult(value: (json['value'])!);
+    return FrameInputValueResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2776,11 +4033,11 @@ class FrameIsCheckedResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameIsCheckedResult(value: (json['value'])!);
+    return FrameIsCheckedResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2793,11 +4050,11 @@ class FrameIsDisabledResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameIsDisabledResult(value: (json['value'])!);
+    return FrameIsDisabledResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2810,11 +4067,11 @@ class FrameIsEditableResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameIsEditableResult(value: (json['value'])!);
+    return FrameIsEditableResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2827,11 +4084,11 @@ class FrameIsEnabledResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameIsEnabledResult(value: (json['value'])!);
+    return FrameIsEnabledResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2844,11 +4101,11 @@ class FrameIsHiddenResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameIsHiddenResult(value: (json['value'])!);
+    return FrameIsHiddenResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2861,11 +4118,34 @@ class FrameIsVisibleResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameIsVisibleResult(value: (json['value'])!);
+    return FrameIsVisibleResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
+  }
+}
+
+class FrameNavigatedEventNewDocument {
+  final RequestBase? request;
+
+  FrameNavigatedEventNewDocument({this.request});
+
+  factory FrameNavigatedEventNewDocument.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameNavigatedEventNewDocument(
+      request: connection != null && json[r'request'] != null
+          ? ChannelOwner.from<RequestBase>(connection, json[r'request'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (request != null) r'request': {'guid': request?.guid},
+    };
   }
 }
 
@@ -2878,11 +4158,11 @@ class FrameQueryCountResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameQueryCountResult(value: (json['value'])!);
+    return FrameQueryCountResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -2898,7 +4178,7 @@ class FrameQuerySelectorAllResult {
     return FrameQuerySelectorAllResult(
       elements:
           (connection != null
-              ? (json['elements'] as List?)
+              ? (json[r'elements'] as List?)
                     ?.map(
                       (e) =>
                           ChannelOwner.from<ElementHandleBase>(connection, e),
@@ -2910,7 +4190,9 @@ class FrameQuerySelectorAllResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'elements': elements};
+    return {
+      r'elements': elements.map((e) => {'guid': e.guid}).toList(),
+    };
   }
 }
 
@@ -2924,14 +4206,16 @@ class FrameQuerySelectorResult {
     Connection? connection,
   }) {
     return FrameQuerySelectorResult(
-      element: connection != null && json['element'] != null
-          ? ChannelOwner.from<ElementHandleBase>(connection, json['element'])
+      element: connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (element != null) 'element': element};
+    return {
+      if (element != null) r'element': {'guid': element?.guid},
+    };
   }
 }
 
@@ -2945,12 +4229,47 @@ class FrameResolveSelectorResult {
     Connection? connection,
   }) {
     return FrameResolveSelectorResult(
-      resolvedSelector: (json['resolvedSelector'])!,
+      resolvedSelector: (json[r'resolvedSelector'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'resolvedSelector': resolvedSelector};
+    return {r'resolvedSelector': resolvedSelector};
+  }
+}
+
+class FrameSelectOptionOptionsItems {
+  final int? index;
+  final String? label;
+  final String? value;
+  final String? valueOrLabel;
+
+  FrameSelectOptionOptionsItems({
+    this.index,
+    this.label,
+    this.value,
+    this.valueOrLabel,
+  });
+
+  factory FrameSelectOptionOptionsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameSelectOptionOptionsItems(
+      index: json[r'index'],
+      label: json[r'label'],
+      value: json[r'value'],
+      valueOrLabel: json[r'valueOrLabel'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (index != null) r'index': index,
+      if (label != null) r'label': label,
+      if (value != null) r'value': value,
+      if (valueOrLabel != null) r'valueOrLabel': valueOrLabel,
+    };
   }
 }
 
@@ -2964,12 +4283,43 @@ class FrameSelectOptionResult {
     Connection? connection,
   }) {
     return FrameSelectOptionResult(
-      values: ((json['values'] as List?)?.cast<String>()) ?? [],
+      values: ((json[r'values'] as List?)?.cast<String>()) ?? [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'values': values};
+    return {r'values': values};
+  }
+}
+
+class FrameSetInputFilesPayloadsItems {
+  final String buffer;
+  final String? mimeType;
+  final String name;
+
+  FrameSetInputFilesPayloadsItems({
+    required this.buffer,
+    this.mimeType,
+    required this.name,
+  });
+
+  factory FrameSetInputFilesPayloadsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameSetInputFilesPayloadsItems(
+      buffer: (json[r'buffer'])!,
+      mimeType: json[r'mimeType'],
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'buffer': buffer,
+      if (mimeType != null) r'mimeType': mimeType,
+      r'name': name,
+    };
   }
 }
 
@@ -2982,11 +4332,11 @@ class FrameTextContentResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameTextContentResult(value: json['value']);
+    return FrameTextContentResult(value: json[r'value']);
   }
 
   Map<String, dynamic> toJson() {
-    return {if (value != null) 'value': value};
+    return {if (value != null) r'value': value};
   }
 }
 
@@ -2999,11 +4349,11 @@ class FrameTitleResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return FrameTitleResult(value: (json['value'])!);
+    return FrameTitleResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -3017,14 +4367,16 @@ class FrameWaitForFunctionResult {
     Connection? connection,
   }) {
     return FrameWaitForFunctionResult(
-      handle: (connection != null && json['handle'] != null
-          ? ChannelOwner.from<JSHandleBase>(connection, json['handle'])
+      handle: (connection != null && json[r'handle'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handle': handle};
+    return {
+      r'handle': {'guid': handle.guid},
+    };
   }
 }
 
@@ -3038,20 +4390,22 @@ class FrameWaitForSelectorResult {
     Connection? connection,
   }) {
     return FrameWaitForSelectorResult(
-      element: connection != null && json['element'] != null
-          ? ChannelOwner.from<ElementHandleBase>(connection, json['element'])
+      element: connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (element != null) 'element': element};
+    return {
+      if (element != null) r'element': {'guid': element?.guid},
+    };
   }
 }
 
 class IndexedDBDatabase {
   final String name;
-  final List<Map<String, dynamic>> stores;
+  final List<IndexedDBDatabaseStoresItems> stores;
   final int version;
 
   IndexedDBDatabase({
@@ -3065,14 +4419,147 @@ class IndexedDBDatabase {
     Connection? connection,
   }) {
     return IndexedDBDatabase(
-      name: (json['name'])!,
-      stores: ((json['stores'] as List?)?.cast<Map<String, dynamic>>()) ?? [],
-      version: (json['version'])!,
+      name: (json[r'name'])!,
+      stores:
+          ((json[r'stores'] as List?)
+              ?.map((e) => IndexedDBDatabaseStoresItems.fromJson(e))
+              .toList()) ??
+          [],
+      version: (json[r'version'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'stores': stores, 'version': version};
+    return {
+      r'name': name,
+      r'stores': stores.map((e) => e.toJson()).toList(),
+      r'version': version,
+    };
+  }
+}
+
+class IndexedDBDatabaseStoresItems {
+  final bool autoIncrement;
+  final List<IndexedDBDatabaseStoresItemsIndexesItems> indexes;
+  final String? keyPath;
+  final List<String>? keyPathArray;
+  final String name;
+  final List<IndexedDBDatabaseStoresItemsRecordsItems> records;
+
+  IndexedDBDatabaseStoresItems({
+    required this.autoIncrement,
+    required this.indexes,
+    this.keyPath,
+    this.keyPathArray,
+    required this.name,
+    required this.records,
+  });
+
+  factory IndexedDBDatabaseStoresItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return IndexedDBDatabaseStoresItems(
+      autoIncrement: (json[r'autoIncrement'])!,
+      indexes:
+          ((json[r'indexes'] as List?)
+              ?.map((e) => IndexedDBDatabaseStoresItemsIndexesItems.fromJson(e))
+              .toList()) ??
+          [],
+      keyPath: json[r'keyPath'],
+      keyPathArray: (json[r'keyPathArray'] as List?)?.cast<String>(),
+      name: (json[r'name'])!,
+      records:
+          ((json[r'records'] as List?)
+              ?.map((e) => IndexedDBDatabaseStoresItemsRecordsItems.fromJson(e))
+              .toList()) ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'autoIncrement': autoIncrement,
+      r'indexes': indexes.map((e) => e.toJson()).toList(),
+      if (keyPath != null) r'keyPath': keyPath,
+      if (keyPathArray != null) r'keyPathArray': keyPathArray,
+      r'name': name,
+      r'records': records.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class IndexedDBDatabaseStoresItemsIndexesItems {
+  final String? keyPath;
+  final List<String>? keyPathArray;
+  final bool multiEntry;
+  final String name;
+  final bool unique;
+
+  IndexedDBDatabaseStoresItemsIndexesItems({
+    this.keyPath,
+    this.keyPathArray,
+    required this.multiEntry,
+    required this.name,
+    required this.unique,
+  });
+
+  factory IndexedDBDatabaseStoresItemsIndexesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return IndexedDBDatabaseStoresItemsIndexesItems(
+      keyPath: json[r'keyPath'],
+      keyPathArray: (json[r'keyPathArray'] as List?)?.cast<String>(),
+      multiEntry: (json[r'multiEntry'])!,
+      name: (json[r'name'])!,
+      unique: (json[r'unique'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (keyPath != null) r'keyPath': keyPath,
+      if (keyPathArray != null) r'keyPathArray': keyPathArray,
+      r'multiEntry': multiEntry,
+      r'name': name,
+      r'unique': unique,
+    };
+  }
+}
+
+class IndexedDBDatabaseStoresItemsRecordsItems {
+  final dynamic key;
+  final dynamic keyEncoded;
+  final dynamic value;
+  final dynamic valueEncoded;
+
+  IndexedDBDatabaseStoresItemsRecordsItems({
+    this.key,
+    this.keyEncoded,
+    this.value,
+    this.valueEncoded,
+  });
+
+  factory IndexedDBDatabaseStoresItemsRecordsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return IndexedDBDatabaseStoresItemsRecordsItems(
+      key: json[r'key'],
+      keyEncoded: json[r'keyEncoded'],
+      value: json[r'value'],
+      valueEncoded: json[r'valueEncoded'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (key != null) r'key': key,
+      if (keyEncoded != null) r'keyEncoded': keyEncoded,
+      if (value != null) r'value': value,
+      if (valueEncoded != null) r'valueEncoded': valueEncoded,
+    };
   }
 }
 
@@ -3086,14 +4573,16 @@ class JSHandleEvaluateExpressionHandleResult {
     Connection? connection,
   }) {
     return JSHandleEvaluateExpressionHandleResult(
-      handle: (connection != null && json['handle'] != null
-          ? ChannelOwner.from<JSHandleBase>(connection, json['handle'])
+      handle: (connection != null && json[r'handle'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handle': handle};
+    return {
+      r'handle': {'guid': handle.guid},
+    };
   }
 }
 
@@ -3107,19 +4596,19 @@ class JSHandleEvaluateExpressionResult {
     Connection? connection,
   }) {
     return JSHandleEvaluateExpressionResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
 class JSHandleGetPropertyListResult {
-  final List<Map<String, dynamic>> properties;
+  final List<JSHandleGetPropertyListResultPropertiesItems> properties;
 
   JSHandleGetPropertyListResult({required this.properties});
 
@@ -3129,12 +4618,46 @@ class JSHandleGetPropertyListResult {
   }) {
     return JSHandleGetPropertyListResult(
       properties:
-          ((json['properties'] as List?)?.cast<Map<String, dynamic>>()) ?? [],
+          ((json[r'properties'] as List?)
+              ?.map(
+                (e) => JSHandleGetPropertyListResultPropertiesItems.fromJson(e),
+              )
+              .toList()) ??
+          [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'properties': properties};
+    return {r'properties': properties.map((e) => e.toJson()).toList()};
+  }
+}
+
+class JSHandleGetPropertyListResultPropertiesItems {
+  final String name;
+  final JSHandleBase value;
+
+  JSHandleGetPropertyListResultPropertiesItems({
+    required this.name,
+    required this.value,
+  });
+
+  factory JSHandleGetPropertyListResultPropertiesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return JSHandleGetPropertyListResultPropertiesItems(
+      name: (json[r'name'])!,
+      value: (connection != null && json[r'value'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'value'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'name': name,
+      r'value': {'guid': value.guid},
+    };
   }
 }
 
@@ -3148,14 +4671,16 @@ class JSHandleGetPropertyResult {
     Connection? connection,
   }) {
     return JSHandleGetPropertyResult(
-      handle: (connection != null && json['handle'] != null
-          ? ChannelOwner.from<JSHandleBase>(connection, json['handle'])
+      handle: (connection != null && json[r'handle'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handle': handle};
+    return {
+      r'handle': {'guid': handle.guid},
+    };
   }
 }
 
@@ -3169,14 +4694,14 @@ class JSHandleJsonValueResult {
     Connection? connection,
   }) {
     return JSHandleJsonValueResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
@@ -3196,7 +4721,7 @@ class LaunchOptions {
   final bool? headless;
   final bool? ignoreAllDefaultArgs;
   final List<String>? ignoreDefaultArgs;
-  final Map<String, dynamic>? proxy;
+  final LaunchOptionsProxy? proxy;
   final double timeout;
   final String? tracesDir;
 
@@ -3226,48 +4751,85 @@ class LaunchOptions {
     Connection? connection,
   }) {
     return LaunchOptions(
-      args: (json['args'] as List?)?.cast<String>(),
-      artifactsDir: json['artifactsDir'],
-      cdpPort: json['cdpPort'],
-      channel: json['channel'],
-      chromiumSandbox: json['chromiumSandbox'],
-      downloadsPath: json['downloadsPath'],
-      env: (json['env'] as List?)?.map((e) => NameValue.fromJson(e)).toList(),
-      executablePath: json['executablePath'],
-      firefoxUserPrefs: json['firefoxUserPrefs'],
-      handleSIGHUP: json['handleSIGHUP'],
-      handleSIGINT: json['handleSIGINT'],
-      handleSIGTERM: json['handleSIGTERM'],
-      headless: json['headless'],
-      ignoreAllDefaultArgs: json['ignoreAllDefaultArgs'],
-      ignoreDefaultArgs: (json['ignoreDefaultArgs'] as List?)?.cast<String>(),
-      proxy: json['proxy'],
-      timeout: ((json['timeout'] as num?)?.toDouble())!,
-      tracesDir: json['tracesDir'],
+      args: (json[r'args'] as List?)?.cast<String>(),
+      artifactsDir: json[r'artifactsDir'],
+      cdpPort: json[r'cdpPort'],
+      channel: json[r'channel'],
+      chromiumSandbox: json[r'chromiumSandbox'],
+      downloadsPath: json[r'downloadsPath'],
+      env: (json[r'env'] as List?)?.map((e) => NameValue.fromJson(e)).toList(),
+      executablePath: json[r'executablePath'],
+      firefoxUserPrefs: json[r'firefoxUserPrefs'],
+      handleSIGHUP: json[r'handleSIGHUP'],
+      handleSIGINT: json[r'handleSIGINT'],
+      handleSIGTERM: json[r'handleSIGTERM'],
+      headless: json[r'headless'],
+      ignoreAllDefaultArgs: json[r'ignoreAllDefaultArgs'],
+      ignoreDefaultArgs: (json[r'ignoreDefaultArgs'] as List?)?.cast<String>(),
+      proxy: json[r'proxy'] == null
+          ? null
+          : LaunchOptionsProxy.fromJson(json[r'proxy']),
+      timeout: ((json[r'timeout'] as num?)?.toDouble())!,
+      tracesDir: json[r'tracesDir'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (args != null) 'args': args,
-      if (artifactsDir != null) 'artifactsDir': artifactsDir,
-      if (cdpPort != null) 'cdpPort': cdpPort,
-      if (channel != null) 'channel': channel,
-      if (chromiumSandbox != null) 'chromiumSandbox': chromiumSandbox,
-      if (downloadsPath != null) 'downloadsPath': downloadsPath,
-      if (env != null) 'env': env,
-      if (executablePath != null) 'executablePath': executablePath,
-      if (firefoxUserPrefs != null) 'firefoxUserPrefs': firefoxUserPrefs,
-      if (handleSIGHUP != null) 'handleSIGHUP': handleSIGHUP,
-      if (handleSIGINT != null) 'handleSIGINT': handleSIGINT,
-      if (handleSIGTERM != null) 'handleSIGTERM': handleSIGTERM,
-      if (headless != null) 'headless': headless,
+      if (args != null) r'args': args,
+      if (artifactsDir != null) r'artifactsDir': artifactsDir,
+      if (cdpPort != null) r'cdpPort': cdpPort,
+      if (channel != null) r'channel': channel,
+      if (chromiumSandbox != null) r'chromiumSandbox': chromiumSandbox,
+      if (downloadsPath != null) r'downloadsPath': downloadsPath,
+      if (env != null) r'env': env?.map((e) => e.toJson()).toList(),
+      if (executablePath != null) r'executablePath': executablePath,
+      if (firefoxUserPrefs != null) r'firefoxUserPrefs': firefoxUserPrefs,
+      if (handleSIGHUP != null) r'handleSIGHUP': handleSIGHUP,
+      if (handleSIGINT != null) r'handleSIGINT': handleSIGINT,
+      if (handleSIGTERM != null) r'handleSIGTERM': handleSIGTERM,
+      if (headless != null) r'headless': headless,
       if (ignoreAllDefaultArgs != null)
-        'ignoreAllDefaultArgs': ignoreAllDefaultArgs,
-      if (ignoreDefaultArgs != null) 'ignoreDefaultArgs': ignoreDefaultArgs,
-      if (proxy != null) 'proxy': proxy,
-      'timeout': timeout,
-      if (tracesDir != null) 'tracesDir': tracesDir,
+        r'ignoreAllDefaultArgs': ignoreAllDefaultArgs,
+      if (ignoreDefaultArgs != null) r'ignoreDefaultArgs': ignoreDefaultArgs,
+      if (proxy != null) r'proxy': proxy?.toJson(),
+      r'timeout': timeout,
+      if (tracesDir != null) r'tracesDir': tracesDir,
+    };
+  }
+}
+
+class LaunchOptionsProxy {
+  final String? bypass;
+  final String? password;
+  final String server;
+  final String? username;
+
+  LaunchOptionsProxy({
+    this.bypass,
+    this.password,
+    required this.server,
+    this.username,
+  });
+
+  factory LaunchOptionsProxy.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return LaunchOptionsProxy(
+      bypass: json[r'bypass'],
+      password: json[r'password'],
+      server: (json[r'server'])!,
+      username: json[r'username'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (bypass != null) r'bypass': bypass,
+      if (password != null) r'password': password,
+      r'server': server,
+      if (username != null) r'username': username,
     };
   }
 }
@@ -3284,18 +4846,21 @@ class LocalUtilsConnectResult {
   }) {
     return LocalUtilsConnectResult(
       headers:
-          ((json['headers'] as List?)
+          ((json[r'headers'] as List?)
               ?.map((e) => NameValue.fromJson(e))
               .toList()) ??
           [],
-      pipe: (connection != null && json['pipe'] != null
-          ? ChannelOwner.from<JsonPipeBase>(connection, json['pipe'])
+      pipe: (connection != null && json[r'pipe'] != null
+          ? ChannelOwner.from<JsonPipeBase>(connection, json[r'pipe'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'headers': headers, 'pipe': pipe};
+    return {
+      r'headers': headers.map((e) => e.toJson()).toList(),
+      r'pipe': {'guid': pipe.guid},
+    };
   }
 }
 
@@ -3308,11 +4873,11 @@ class LocalUtilsGlobToRegexResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return LocalUtilsGlobToRegexResult(regex: (json['regex'])!);
+    return LocalUtilsGlobToRegexResult(regex: (json[r'regex'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'regex': regex};
+    return {r'regex': regex};
   }
 }
 
@@ -3338,29 +4903,29 @@ class LocalUtilsHarLookupResult {
     Connection? connection,
   }) {
     return LocalUtilsHarLookupResult(
-      action: (json['action'] == null
+      action: (json[r'action'] == null
           ? null
           : LocalUtilsHarLookupResultActionEnum.values.firstWhere(
-              (e) => e.value == json['action'],
+              (e) => e.value == json[r'action'],
             ))!,
-      body: json['body'],
-      headers: (json['headers'] as List?)
+      body: json[r'body'],
+      headers: (json[r'headers'] as List?)
           ?.map((e) => NameValue.fromJson(e))
           .toList(),
-      message: json['message'],
-      redirectURL: json['redirectURL'],
-      status: json['status'],
+      message: json[r'message'],
+      redirectURL: json[r'redirectURL'],
+      status: json[r'status'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'action': action,
-      if (body != null) 'body': body,
-      if (headers != null) 'headers': headers,
-      if (message != null) 'message': message,
-      if (redirectURL != null) 'redirectURL': redirectURL,
-      if (status != null) 'status': status,
+      r'action': action.value,
+      if (body != null) r'body': body,
+      if (headers != null) r'headers': headers?.map((e) => e.toJson()).toList(),
+      if (message != null) r'message': message,
+      if (redirectURL != null) r'redirectURL': redirectURL,
+      if (status != null) r'status': status,
     };
   }
 }
@@ -3375,13 +4940,16 @@ class LocalUtilsHarOpenResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return LocalUtilsHarOpenResult(error: json['error'], harId: json['harId']);
+    return LocalUtilsHarOpenResult(
+      error: json[r'error'],
+      harId: json[r'harId'],
+    );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (error != null) 'error': error,
-      if (harId != null) 'harId': harId,
+      if (error != null) r'error': error,
+      if (harId != null) r'harId': harId,
     };
   }
 }
@@ -3395,17 +4963,17 @@ class LocalUtilsTracingStartedResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return LocalUtilsTracingStartedResult(stacksId: (json['stacksId'])!);
+    return LocalUtilsTracingStartedResult(stacksId: (json[r'stacksId'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'stacksId': stacksId};
+    return {r'stacksId': stacksId};
   }
 }
 
 class Metadata {
   final bool? internal;
-  final Map<String, dynamic>? location;
+  final MetadataLocation? location;
   final String? stepId;
   final String? title;
 
@@ -3416,19 +4984,48 @@ class Metadata {
     Connection? connection,
   }) {
     return Metadata(
-      internal: json['internal'],
-      location: json['location'],
-      stepId: json['stepId'],
-      title: json['title'],
+      internal: json[r'internal'],
+      location: json[r'location'] == null
+          ? null
+          : MetadataLocation.fromJson(json[r'location']),
+      stepId: json[r'stepId'],
+      title: json[r'title'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (internal != null) 'internal': internal,
-      if (location != null) 'location': location,
-      if (stepId != null) 'stepId': stepId,
-      if (title != null) 'title': title,
+      if (internal != null) r'internal': internal,
+      if (location != null) r'location': location?.toJson(),
+      if (stepId != null) r'stepId': stepId,
+      if (title != null) r'title': title,
+    };
+  }
+}
+
+class MetadataLocation {
+  final int? column;
+  final String file;
+  final int? line;
+
+  MetadataLocation({this.column, required this.file, this.line});
+
+  factory MetadataLocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return MetadataLocation(
+      column: json[r'column'],
+      file: (json[r'file'])!,
+      line: json[r'line'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (column != null) r'column': column,
+      r'file': file,
+      if (line != null) r'line': line,
     };
   }
 }
@@ -3443,11 +5040,11 @@ class NameValue {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return NameValue(name: (json['name'])!, value: (json['value'])!);
+    return NameValue(name: (json[r'name'])!, value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'value': value};
+    return {r'name': name, r'value': value};
   }
 }
 
@@ -3481,36 +5078,36 @@ class NetworkCookie {
     Connection? connection,
   }) {
     return NetworkCookie(
-      crHasCrossSiteAncestor: json['_crHasCrossSiteAncestor'],
-      domain: (json['domain'])!,
-      expires: ((json['expires'] as num?)?.toDouble())!,
-      httpOnly: (json['httpOnly'])!,
-      name: (json['name'])!,
-      partitionKey: json['partitionKey'],
-      path: (json['path'])!,
-      sameSite: (json['sameSite'] == null
+      crHasCrossSiteAncestor: json[r'_crHasCrossSiteAncestor'],
+      domain: (json[r'domain'])!,
+      expires: ((json[r'expires'] as num?)?.toDouble())!,
+      httpOnly: (json[r'httpOnly'])!,
+      name: (json[r'name'])!,
+      partitionKey: json[r'partitionKey'],
+      path: (json[r'path'])!,
+      sameSite: (json[r'sameSite'] == null
           ? null
           : NetworkCookieSameSiteEnum.values.firstWhere(
-              (e) => e.value == json['sameSite'],
+              (e) => e.value == json[r'sameSite'],
             ))!,
-      secure: (json['secure'])!,
-      value: (json['value'])!,
+      secure: (json[r'secure'])!,
+      value: (json[r'value'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       if (crHasCrossSiteAncestor != null)
-        '_crHasCrossSiteAncestor': crHasCrossSiteAncestor,
-      'domain': domain,
-      'expires': expires,
-      'httpOnly': httpOnly,
-      'name': name,
-      if (partitionKey != null) 'partitionKey': partitionKey,
-      'path': path,
-      'sameSite': sameSite,
-      'secure': secure,
-      'value': value,
+        r'_crHasCrossSiteAncestor': crHasCrossSiteAncestor,
+      r'domain': domain,
+      r'expires': expires,
+      r'httpOnly': httpOnly,
+      r'name': name,
+      if (partitionKey != null) r'partitionKey': partitionKey,
+      r'path': path,
+      r'sameSite': sameSite.value,
+      r'secure': secure,
+      r'value': value,
     };
   }
 }
@@ -3531,23 +5128,24 @@ class OriginStorage {
     Connection? connection,
   }) {
     return OriginStorage(
-      indexedDB: (json['indexedDB'] as List?)
+      indexedDB: (json[r'indexedDB'] as List?)
           ?.map((e) => IndexedDBDatabase.fromJson(e))
           .toList(),
       localStorage:
-          ((json['localStorage'] as List?)
+          ((json[r'localStorage'] as List?)
               ?.map((e) => NameValue.fromJson(e))
               .toList()) ??
           [],
-      origin: (json['origin'])!,
+      origin: (json[r'origin'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (indexedDB != null) 'indexedDB': indexedDB,
-      'localStorage': localStorage,
-      'origin': origin,
+      if (indexedDB != null)
+        r'indexedDB': indexedDB?.map((e) => e.toJson()).toList(),
+      r'localStorage': localStorage.map((e) => e.toJson()).toList(),
+      r'origin': origin,
     };
   }
 }
@@ -3562,19 +5160,21 @@ class PageAddInitScriptResult {
     Connection? connection,
   }) {
     return PageAddInitScriptResult(
-      disposable: (connection != null && json['disposable'] != null
-          ? ChannelOwner.from<DisposableBase>(connection, json['disposable'])
+      disposable: (connection != null && json[r'disposable'] != null
+          ? ChannelOwner.from<DisposableBase>(connection, json[r'disposable'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'disposable': disposable};
+    return {
+      r'disposable': {'guid': disposable.guid},
+    };
   }
 }
 
 class PageConsoleMessagesResult {
-  final List<Map<String, dynamic>> messages;
+  final List<PageConsoleMessagesResultMessagesItems> messages;
 
   PageConsoleMessagesResult({required this.messages});
 
@@ -3584,12 +5184,62 @@ class PageConsoleMessagesResult {
   }) {
     return PageConsoleMessagesResult(
       messages:
-          ((json['messages'] as List?)?.cast<Map<String, dynamic>>()) ?? [],
+          ((json[r'messages'] as List?)
+              ?.map((e) => PageConsoleMessagesResultMessagesItems.fromJson(e))
+              .toList()) ??
+          [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'messages': messages};
+    return {r'messages': messages.map((e) => e.toJson()).toList()};
+  }
+}
+
+class PageConsoleMessagesResultMessagesItems {
+  final ConsoleMessage mixinValue;
+
+  PageConsoleMessagesResultMessagesItems({required this.mixinValue});
+
+  factory PageConsoleMessagesResultMessagesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageConsoleMessagesResultMessagesItems(
+      mixinValue: (json[r'$mixin'] == null
+          ? null
+          : ConsoleMessage.fromJson(json[r'$mixin']))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'$mixin': mixinValue.toJson()};
+  }
+}
+
+class PageExpectScreenshotLocator {
+  final FrameBase frame;
+  final String selector;
+
+  PageExpectScreenshotLocator({required this.frame, required this.selector});
+
+  factory PageExpectScreenshotLocator.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageExpectScreenshotLocator(
+      frame: (connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
+          : null)!,
+      selector: (json[r'selector'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'frame': {'guid': frame.guid},
+      r'selector': selector,
+    };
   }
 }
 
@@ -3615,23 +5265,23 @@ class PageExpectScreenshotResult {
     Connection? connection,
   }) {
     return PageExpectScreenshotResult(
-      actual: json['actual'],
-      diff: json['diff'],
-      errorMessage: json['errorMessage'],
-      log: (json['log'] as List?)?.cast<String>(),
-      previous: json['previous'],
-      timedOut: json['timedOut'],
+      actual: json[r'actual'],
+      diff: json[r'diff'],
+      errorMessage: json[r'errorMessage'],
+      log: (json[r'log'] as List?)?.cast<String>(),
+      previous: json[r'previous'],
+      timedOut: json[r'timedOut'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (actual != null) 'actual': actual,
-      if (diff != null) 'diff': diff,
-      if (errorMessage != null) 'errorMessage': errorMessage,
-      if (log != null) 'log': log,
-      if (previous != null) 'previous': previous,
-      if (timedOut != null) 'timedOut': timedOut,
+      if (actual != null) r'actual': actual,
+      if (diff != null) r'diff': diff,
+      if (errorMessage != null) r'errorMessage': errorMessage,
+      if (log != null) r'log': log,
+      if (previous != null) r'previous': previous,
+      if (timedOut != null) r'timedOut': timedOut,
     };
   }
 }
@@ -3646,14 +5296,16 @@ class PageExposeBindingResult {
     Connection? connection,
   }) {
     return PageExposeBindingResult(
-      disposable: (connection != null && json['disposable'] != null
-          ? ChannelOwner.from<DisposableBase>(connection, json['disposable'])
+      disposable: (connection != null && json[r'disposable'] != null
+          ? ChannelOwner.from<DisposableBase>(connection, json[r'disposable'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'disposable': disposable};
+    return {
+      r'disposable': {'guid': disposable.guid},
+    };
   }
 }
 
@@ -3667,14 +5319,16 @@ class PageGoBackResult {
     Connection? connection,
   }) {
     return PageGoBackResult(
-      response: connection != null && json['response'] != null
-          ? ChannelOwner.from<ResponseBase>(connection, json['response'])
+      response: connection != null && json[r'response'] != null
+          ? ChannelOwner.from<ResponseBase>(connection, json[r'response'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (response != null) 'response': response};
+    return {
+      if (response != null) r'response': {'guid': response?.guid},
+    };
   }
 }
 
@@ -3688,14 +5342,16 @@ class PageGoForwardResult {
     Connection? connection,
   }) {
     return PageGoForwardResult(
-      response: connection != null && json['response'] != null
-          ? ChannelOwner.from<ResponseBase>(connection, json['response'])
+      response: connection != null && json[r'response'] != null
+          ? ChannelOwner.from<ResponseBase>(connection, json[r'response'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (response != null) 'response': response};
+    return {
+      if (response != null) r'response': {'guid': response?.guid},
+    };
   }
 }
 
@@ -3710,7 +5366,7 @@ class PagePageErrorsResult {
   }) {
     return PagePageErrorsResult(
       errors:
-          ((json['errors'] as List?)
+          ((json[r'errors'] as List?)
               ?.map((e) => SerializedError.fromJson(e))
               .toList()) ??
           [],
@@ -3718,7 +5374,37 @@ class PagePageErrorsResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'errors': errors};
+    return {r'errors': errors.map((e) => e.toJson()).toList()};
+  }
+}
+
+class PagePdfMargin {
+  final String? bottom;
+  final String? left;
+  final String? right;
+  final String? top;
+
+  PagePdfMargin({this.bottom, this.left, this.right, this.top});
+
+  factory PagePdfMargin.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PagePdfMargin(
+      bottom: json[r'bottom'],
+      left: json[r'left'],
+      right: json[r'right'],
+      top: json[r'top'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (bottom != null) r'bottom': bottom,
+      if (left != null) r'left': left,
+      if (right != null) r'right': right,
+      if (top != null) r'top': top,
+    };
   }
 }
 
@@ -3731,11 +5417,11 @@ class PagePdfResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PagePdfResult(pdf: (json['pdf'])!);
+    return PagePdfResult(pdf: (json[r'pdf'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'pdf': pdf};
+    return {r'pdf': pdf};
   }
 }
 
@@ -3748,11 +5434,11 @@ class PagePickLocatorResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PagePickLocatorResult(selector: (json['selector'])!);
+    return PagePickLocatorResult(selector: (json[r'selector'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'selector': selector};
+    return {r'selector': selector};
   }
 }
 
@@ -3765,11 +5451,11 @@ class PageRegisterLocatorHandlerResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PageRegisterLocatorHandlerResult(uid: (json['uid'])!);
+    return PageRegisterLocatorHandlerResult(uid: (json[r'uid'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'uid': uid};
+    return {r'uid': uid};
   }
 }
 
@@ -3783,14 +5469,16 @@ class PageReloadResult {
     Connection? connection,
   }) {
     return PageReloadResult(
-      response: connection != null && json['response'] != null
-          ? ChannelOwner.from<ResponseBase>(connection, json['response'])
+      response: connection != null && json[r'response'] != null
+          ? ChannelOwner.from<ResponseBase>(connection, json[r'response'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (response != null) 'response': response};
+    return {
+      if (response != null) r'response': {'guid': response?.guid},
+    };
   }
 }
 
@@ -3806,7 +5494,7 @@ class PageRequestsResult {
     return PageRequestsResult(
       requests:
           (connection != null
-              ? (json['requests'] as List?)
+              ? (json[r'requests'] as List?)
                     ?.map((e) => ChannelOwner.from<RequestBase>(connection, e))
                     .toList()
               : null) ??
@@ -3815,7 +5503,9 @@ class PageRequestsResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'requests': requests};
+    return {
+      r'requests': requests.map((e) => {'guid': e.guid}).toList(),
+    };
   }
 }
 
@@ -3828,11 +5518,11 @@ class PageScreencastShowOverlayResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PageScreencastShowOverlayResult(id: (json['id'])!);
+    return PageScreencastShowOverlayResult(id: (json[r'id'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id};
+    return {r'id': id};
   }
 }
 
@@ -3846,14 +5536,37 @@ class PageScreencastStartResult {
     Connection? connection,
   }) {
     return PageScreencastStartResult(
-      artifact: connection != null && json['artifact'] != null
-          ? ChannelOwner.from<ArtifactBase>(connection, json['artifact'])
+      artifact: connection != null && json[r'artifact'] != null
+          ? ChannelOwner.from<ArtifactBase>(connection, json[r'artifact'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (artifact != null) 'artifact': artifact};
+    return {
+      if (artifact != null) r'artifact': {'guid': artifact?.guid},
+    };
+  }
+}
+
+class PageScreencastStartSize {
+  final int height;
+  final int width;
+
+  PageScreencastStartSize({required this.height, required this.width});
+
+  factory PageScreencastStartSize.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageScreencastStartSize(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
   }
 }
 
@@ -3866,16 +5579,111 @@ class PageScreenshotResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PageScreenshotResult(binary: (json['binary'])!);
+    return PageScreenshotResult(binary: (json[r'binary'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'binary': binary};
+    return {r'binary': binary};
+  }
+}
+
+class PageSetNetworkInterceptionPatternsPatternsItems {
+  final String? glob;
+  final String? regexFlags;
+  final String? regexSource;
+  final URLPattern? urlPattern;
+
+  PageSetNetworkInterceptionPatternsPatternsItems({
+    this.glob,
+    this.regexFlags,
+    this.regexSource,
+    this.urlPattern,
+  });
+
+  factory PageSetNetworkInterceptionPatternsPatternsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageSetNetworkInterceptionPatternsPatternsItems(
+      glob: json[r'glob'],
+      regexFlags: json[r'regexFlags'],
+      regexSource: json[r'regexSource'],
+      urlPattern: json[r'urlPattern'] == null
+          ? null
+          : URLPattern.fromJson(json[r'urlPattern']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (glob != null) r'glob': glob,
+      if (regexFlags != null) r'regexFlags': regexFlags,
+      if (regexSource != null) r'regexSource': regexSource,
+      if (urlPattern != null) r'urlPattern': urlPattern?.toJson(),
+    };
+  }
+}
+
+class PageSetViewportSizeViewportSize {
+  final int height;
+  final int width;
+
+  PageSetViewportSizeViewportSize({required this.height, required this.width});
+
+  factory PageSetViewportSizeViewportSize.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageSetViewportSizeViewportSize(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
+  }
+}
+
+class PageSetWebSocketInterceptionPatternsPatternsItems {
+  final String? glob;
+  final String? regexFlags;
+  final String? regexSource;
+  final URLPattern? urlPattern;
+
+  PageSetWebSocketInterceptionPatternsPatternsItems({
+    this.glob,
+    this.regexFlags,
+    this.regexSource,
+    this.urlPattern,
+  });
+
+  factory PageSetWebSocketInterceptionPatternsPatternsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageSetWebSocketInterceptionPatternsPatternsItems(
+      glob: json[r'glob'],
+      regexFlags: json[r'regexFlags'],
+      regexSource: json[r'regexSource'],
+      urlPattern: json[r'urlPattern'] == null
+          ? null
+          : URLPattern.fromJson(json[r'urlPattern']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (glob != null) r'glob': glob,
+      if (regexFlags != null) r'regexFlags': regexFlags,
+      if (regexSource != null) r'regexSource': regexSource,
+      if (urlPattern != null) r'urlPattern': urlPattern?.toJson(),
+    };
   }
 }
 
 class PageStopCSSCoverageResult {
-  final List<Map<String, dynamic>> entries;
+  final List<PageStopCSSCoverageResultEntriesItems> entries;
 
   PageStopCSSCoverageResult({required this.entries});
 
@@ -3884,17 +5692,85 @@ class PageStopCSSCoverageResult {
     Connection? connection,
   }) {
     return PageStopCSSCoverageResult(
-      entries: ((json['entries'] as List?)?.cast<Map<String, dynamic>>()) ?? [],
+      entries:
+          ((json[r'entries'] as List?)
+              ?.map((e) => PageStopCSSCoverageResultEntriesItems.fromJson(e))
+              .toList()) ??
+          [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'entries': entries};
+    return {r'entries': entries.map((e) => e.toJson()).toList()};
+  }
+}
+
+class PageStopCSSCoverageResultEntriesItems {
+  final List<PageStopCSSCoverageResultEntriesItemsRangesItems> ranges;
+  final String? text;
+  final String url;
+
+  PageStopCSSCoverageResultEntriesItems({
+    required this.ranges,
+    this.text,
+    required this.url,
+  });
+
+  factory PageStopCSSCoverageResultEntriesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageStopCSSCoverageResultEntriesItems(
+      ranges:
+          ((json[r'ranges'] as List?)
+              ?.map(
+                (e) =>
+                    PageStopCSSCoverageResultEntriesItemsRangesItems.fromJson(
+                      e,
+                    ),
+              )
+              .toList()) ??
+          [],
+      text: json[r'text'],
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'ranges': ranges.map((e) => e.toJson()).toList(),
+      if (text != null) r'text': text,
+      r'url': url,
+    };
+  }
+}
+
+class PageStopCSSCoverageResultEntriesItemsRangesItems {
+  final int end;
+  final int start;
+
+  PageStopCSSCoverageResultEntriesItemsRangesItems({
+    required this.end,
+    required this.start,
+  });
+
+  factory PageStopCSSCoverageResultEntriesItemsRangesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageStopCSSCoverageResultEntriesItemsRangesItems(
+      end: (json[r'end'])!,
+      start: (json[r'start'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'end': end, r'start': start};
   }
 }
 
 class PageStopJSCoverageResult {
-  final List<Map<String, dynamic>> entries;
+  final List<PageStopJSCoverageResultEntriesItems> entries;
 
   PageStopJSCoverageResult({required this.entries});
 
@@ -3903,12 +5779,269 @@ class PageStopJSCoverageResult {
     Connection? connection,
   }) {
     return PageStopJSCoverageResult(
-      entries: ((json['entries'] as List?)?.cast<Map<String, dynamic>>()) ?? [],
+      entries:
+          ((json[r'entries'] as List?)
+              ?.map((e) => PageStopJSCoverageResultEntriesItems.fromJson(e))
+              .toList()) ??
+          [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'entries': entries};
+    return {r'entries': entries.map((e) => e.toJson()).toList()};
+  }
+}
+
+class PageStopJSCoverageResultEntriesItems {
+  final List<PageStopJSCoverageResultEntriesItemsFunctionsItems> functions;
+  final String scriptId;
+  final String? source;
+  final String url;
+
+  PageStopJSCoverageResultEntriesItems({
+    required this.functions,
+    required this.scriptId,
+    this.source,
+    required this.url,
+  });
+
+  factory PageStopJSCoverageResultEntriesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageStopJSCoverageResultEntriesItems(
+      functions:
+          ((json[r'functions'] as List?)
+              ?.map(
+                (e) =>
+                    PageStopJSCoverageResultEntriesItemsFunctionsItems.fromJson(
+                      e,
+                    ),
+              )
+              .toList()) ??
+          [],
+      scriptId: (json[r'scriptId'])!,
+      source: json[r'source'],
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'functions': functions.map((e) => e.toJson()).toList(),
+      r'scriptId': scriptId,
+      if (source != null) r'source': source,
+      r'url': url,
+    };
+  }
+}
+
+class PageStopJSCoverageResultEntriesItemsFunctionsItems {
+  final String functionName;
+  final bool isBlockCoverage;
+  final List<PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems>
+  ranges;
+
+  PageStopJSCoverageResultEntriesItemsFunctionsItems({
+    required this.functionName,
+    required this.isBlockCoverage,
+    required this.ranges,
+  });
+
+  factory PageStopJSCoverageResultEntriesItemsFunctionsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageStopJSCoverageResultEntriesItemsFunctionsItems(
+      functionName: (json[r'functionName'])!,
+      isBlockCoverage: (json[r'isBlockCoverage'])!,
+      ranges:
+          ((json[r'ranges'] as List?)
+              ?.map(
+                (e) =>
+                    PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems.fromJson(
+                      e,
+                    ),
+              )
+              .toList()) ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'functionName': functionName,
+      r'isBlockCoverage': isBlockCoverage,
+      r'ranges': ranges.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems {
+  final int count;
+  final int endOffset;
+  final int startOffset;
+
+  PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems({
+    required this.count,
+    required this.endOffset,
+    required this.startOffset,
+  });
+
+  factory PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems(
+      count: (json[r'count'])!,
+      endOffset: (json[r'endOffset'])!,
+      startOffset: (json[r'startOffset'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'count': count,
+      r'endOffset': endOffset,
+      r'startOffset': startOffset,
+    };
+  }
+}
+
+class PageViewportSizeChangedEventViewportSize {
+  final int height;
+  final int width;
+
+  PageViewportSizeChangedEventViewportSize({
+    required this.height,
+    required this.width,
+  });
+
+  factory PageViewportSizeChangedEventViewportSize.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageViewportSizeChangedEventViewportSize(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
+  }
+}
+
+class PlaywrightNewRequestClientCertificatesItems {
+  final String? cert;
+  final String? key;
+  final String origin;
+  final String? passphrase;
+  final String? pfx;
+
+  PlaywrightNewRequestClientCertificatesItems({
+    this.cert,
+    this.key,
+    required this.origin,
+    this.passphrase,
+    this.pfx,
+  });
+
+  factory PlaywrightNewRequestClientCertificatesItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PlaywrightNewRequestClientCertificatesItems(
+      cert: json[r'cert'],
+      key: json[r'key'],
+      origin: (json[r'origin'])!,
+      passphrase: json[r'passphrase'],
+      pfx: json[r'pfx'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (cert != null) r'cert': cert,
+      if (key != null) r'key': key,
+      r'origin': origin,
+      if (passphrase != null) r'passphrase': passphrase,
+      if (pfx != null) r'pfx': pfx,
+    };
+  }
+}
+
+class PlaywrightNewRequestHttpCredentials {
+  final String? origin;
+  final String password;
+  final PlaywrightNewRequestHttpCredentialsSendEnum? send;
+  final String username;
+
+  PlaywrightNewRequestHttpCredentials({
+    this.origin,
+    required this.password,
+    this.send,
+    required this.username,
+  });
+
+  factory PlaywrightNewRequestHttpCredentials.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PlaywrightNewRequestHttpCredentials(
+      origin: json[r'origin'],
+      password: (json[r'password'])!,
+      send: json[r'send'] == null
+          ? null
+          : PlaywrightNewRequestHttpCredentialsSendEnum.values.firstWhere(
+              (e) => e.value == json[r'send'],
+            ),
+      username: (json[r'username'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (origin != null) r'origin': origin,
+      r'password': password,
+      if (send != null) r'send': send?.value,
+      r'username': username,
+    };
+  }
+}
+
+class PlaywrightNewRequestProxy {
+  final String? bypass;
+  final String? password;
+  final String server;
+  final String? username;
+
+  PlaywrightNewRequestProxy({
+    this.bypass,
+    this.password,
+    required this.server,
+    this.username,
+  });
+
+  factory PlaywrightNewRequestProxy.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PlaywrightNewRequestProxy(
+      bypass: json[r'bypass'],
+      password: json[r'password'],
+      server: (json[r'server'])!,
+      username: json[r'username'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (bypass != null) r'bypass': bypass,
+      if (password != null) r'password': password,
+      r'server': server,
+      if (username != null) r'username': username,
+    };
   }
 }
 
@@ -3922,17 +6055,47 @@ class PlaywrightNewRequestResult {
     Connection? connection,
   }) {
     return PlaywrightNewRequestResult(
-      request: (connection != null && json['request'] != null
+      request: (connection != null && json[r'request'] != null
           ? ChannelOwner.from<APIRequestContextBase>(
               connection,
-              json['request'],
+              json[r'request'],
             )
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'request': request};
+    return {
+      r'request': {'guid': request.guid},
+    };
+  }
+}
+
+class PlaywrightNewRequestStorageState {
+  final List<NetworkCookie>? cookies;
+  final List<SetOriginStorage>? origins;
+
+  PlaywrightNewRequestStorageState({this.cookies, this.origins});
+
+  factory PlaywrightNewRequestStorageState.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PlaywrightNewRequestStorageState(
+      cookies: (json[r'cookies'] as List?)
+          ?.map((e) => NetworkCookie.fromJson(e))
+          .toList(),
+      origins: (json[r'origins'] as List?)
+          ?.map((e) => SetOriginStorage.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (cookies != null) r'cookies': cookies?.map((e) => e.toJson()).toList(),
+      if (origins != null) r'origins': origins?.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -3944,13 +6107,13 @@ class Point {
 
   factory Point.fromJson(Map<String, dynamic> json, {Connection? connection}) {
     return Point(
-      x: ((json['x'] as num?)?.toDouble())!,
-      y: ((json['y'] as num?)?.toDouble())!,
+      x: ((json[r'x'] as num?)?.toDouble())!,
+      y: ((json[r'y'] as num?)?.toDouble())!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'x': x, 'y': y};
+    return {r'x': x, r'y': y};
   }
 }
 
@@ -3978,40 +6141,40 @@ class RecordHarOptions {
     Connection? connection,
   }) {
     return RecordHarOptions(
-      content: json['content'] == null
+      content: json[r'content'] == null
           ? null
           : RecordHarOptionsContentEnum.values.firstWhere(
-              (e) => e.value == json['content'],
+              (e) => e.value == json[r'content'],
             ),
-      harPath: json['harPath'],
-      mode: json['mode'] == null
+      harPath: json[r'harPath'],
+      mode: json[r'mode'] == null
           ? null
           : RecordHarOptionsModeEnum.values.firstWhere(
-              (e) => e.value == json['mode'],
+              (e) => e.value == json[r'mode'],
             ),
-      resourcesDir: json['resourcesDir'],
-      urlGlob: json['urlGlob'],
-      urlRegexFlags: json['urlRegexFlags'],
-      urlRegexSource: json['urlRegexSource'],
+      resourcesDir: json[r'resourcesDir'],
+      urlGlob: json[r'urlGlob'],
+      urlRegexFlags: json[r'urlRegexFlags'],
+      urlRegexSource: json[r'urlRegexSource'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (content != null) 'content': content,
-      if (harPath != null) 'harPath': harPath,
-      if (mode != null) 'mode': mode,
-      if (resourcesDir != null) 'resourcesDir': resourcesDir,
-      if (urlGlob != null) 'urlGlob': urlGlob,
-      if (urlRegexFlags != null) 'urlRegexFlags': urlRegexFlags,
-      if (urlRegexSource != null) 'urlRegexSource': urlRegexSource,
+      if (content != null) r'content': content?.value,
+      if (harPath != null) r'harPath': harPath,
+      if (mode != null) r'mode': mode?.value,
+      if (resourcesDir != null) r'resourcesDir': resourcesDir,
+      if (urlGlob != null) r'urlGlob': urlGlob,
+      if (urlRegexFlags != null) r'urlRegexFlags': urlRegexFlags,
+      if (urlRegexSource != null) r'urlRegexSource': urlRegexSource,
     };
   }
 }
 
 class RecorderSource {
   final String? group;
-  final List<Map<String, dynamic>> highlight;
+  final List<RecorderSourceHighlightItems> highlight;
   final String id;
   final bool isRecorded;
   final String label;
@@ -4035,29 +6198,53 @@ class RecorderSource {
     Connection? connection,
   }) {
     return RecorderSource(
-      group: json['group'],
+      group: json[r'group'],
       highlight:
-          ((json['highlight'] as List?)?.cast<Map<String, dynamic>>()) ?? [],
-      id: (json['id'])!,
-      isRecorded: (json['isRecorded'])!,
-      label: (json['label'])!,
-      language: (json['language'])!,
-      revealLine: json['revealLine'],
-      text: (json['text'])!,
+          ((json[r'highlight'] as List?)
+              ?.map((e) => RecorderSourceHighlightItems.fromJson(e))
+              .toList()) ??
+          [],
+      id: (json[r'id'])!,
+      isRecorded: (json[r'isRecorded'])!,
+      label: (json[r'label'])!,
+      language: (json[r'language'])!,
+      revealLine: json[r'revealLine'],
+      text: (json[r'text'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (group != null) 'group': group,
-      'highlight': highlight,
-      'id': id,
-      'isRecorded': isRecorded,
-      'label': label,
-      'language': language,
-      if (revealLine != null) 'revealLine': revealLine,
-      'text': text,
+      if (group != null) r'group': group,
+      r'highlight': highlight.map((e) => e.toJson()).toList(),
+      r'id': id,
+      r'isRecorded': isRecorded,
+      r'label': label,
+      r'language': language,
+      if (revealLine != null) r'revealLine': revealLine,
+      r'text': text,
     };
+  }
+}
+
+class RecorderSourceHighlightItems {
+  final int line;
+  final String type;
+
+  RecorderSourceHighlightItems({required this.line, required this.type});
+
+  factory RecorderSourceHighlightItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return RecorderSourceHighlightItems(
+      line: (json[r'line'])!,
+      type: (json[r'type'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'line': line, r'type': type};
   }
 }
 
@@ -4076,15 +6263,15 @@ class Rect {
 
   factory Rect.fromJson(Map<String, dynamic> json, {Connection? connection}) {
     return Rect(
-      height: ((json['height'] as num?)?.toDouble())!,
-      width: ((json['width'] as num?)?.toDouble())!,
-      x: ((json['x'] as num?)?.toDouble())!,
-      y: ((json['y'] as num?)?.toDouble())!,
+      height: ((json[r'height'] as num?)?.toDouble())!,
+      width: ((json[r'width'] as num?)?.toDouble())!,
+      x: ((json[r'x'] as num?)?.toDouble())!,
+      y: ((json[r'y'] as num?)?.toDouble())!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'height': height, 'width': width, 'x': x, 'y': y};
+    return {r'height': height, r'width': width, r'x': x, r'y': y};
   }
 }
 
@@ -4098,11 +6285,11 @@ class RemoteAddr {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return RemoteAddr(ipAddress: (json['ipAddress'])!, port: (json['port'])!);
+    return RemoteAddr(ipAddress: (json[r'ipAddress'])!, port: (json[r'port'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'ipAddress': ipAddress, 'port': port};
+    return {r'ipAddress': ipAddress, r'port': port};
   }
 }
 
@@ -4117,7 +6304,7 @@ class RequestRawRequestHeadersResult {
   }) {
     return RequestRawRequestHeadersResult(
       headers:
-          ((json['headers'] as List?)
+          ((json[r'headers'] as List?)
               ?.map((e) => NameValue.fromJson(e))
               .toList()) ??
           [],
@@ -4125,7 +6312,7 @@ class RequestRawRequestHeadersResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'headers': headers};
+    return {r'headers': headers.map((e) => e.toJson()).toList()};
   }
 }
 
@@ -4139,14 +6326,16 @@ class RequestResponseResult {
     Connection? connection,
   }) {
     return RequestResponseResult(
-      response: connection != null && json['response'] != null
-          ? ChannelOwner.from<ResponseBase>(connection, json['response'])
+      response: connection != null && json[r'response'] != null
+          ? ChannelOwner.from<ResponseBase>(connection, json[r'response'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (response != null) 'response': response};
+    return {
+      if (response != null) r'response': {'guid': response?.guid},
+    };
   }
 }
 
@@ -4168,19 +6357,19 @@ class RequestSizes {
     Connection? connection,
   }) {
     return RequestSizes(
-      requestBodySize: (json['requestBodySize'])!,
-      requestHeadersSize: (json['requestHeadersSize'])!,
-      responseBodySize: (json['responseBodySize'])!,
-      responseHeadersSize: (json['responseHeadersSize'])!,
+      requestBodySize: (json[r'requestBodySize'])!,
+      requestHeadersSize: (json[r'requestHeadersSize'])!,
+      responseBodySize: (json[r'responseBodySize'])!,
+      responseHeadersSize: (json[r'responseHeadersSize'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'requestBodySize': requestBodySize,
-      'requestHeadersSize': requestHeadersSize,
-      'responseBodySize': responseBodySize,
-      'responseHeadersSize': responseHeadersSize,
+      r'requestBodySize': requestBodySize,
+      r'requestHeadersSize': requestHeadersSize,
+      r'responseBodySize': responseBodySize,
+      r'responseHeadersSize': responseHeadersSize,
     };
   }
 }
@@ -4211,28 +6400,28 @@ class ResourceTiming {
     Connection? connection,
   }) {
     return ResourceTiming(
-      connectEnd: ((json['connectEnd'] as num?)?.toDouble())!,
-      connectStart: ((json['connectStart'] as num?)?.toDouble())!,
-      domainLookupEnd: ((json['domainLookupEnd'] as num?)?.toDouble())!,
-      domainLookupStart: ((json['domainLookupStart'] as num?)?.toDouble())!,
-      requestStart: ((json['requestStart'] as num?)?.toDouble())!,
-      responseStart: ((json['responseStart'] as num?)?.toDouble())!,
-      secureConnectionStart: ((json['secureConnectionStart'] as num?)
+      connectEnd: ((json[r'connectEnd'] as num?)?.toDouble())!,
+      connectStart: ((json[r'connectStart'] as num?)?.toDouble())!,
+      domainLookupEnd: ((json[r'domainLookupEnd'] as num?)?.toDouble())!,
+      domainLookupStart: ((json[r'domainLookupStart'] as num?)?.toDouble())!,
+      requestStart: ((json[r'requestStart'] as num?)?.toDouble())!,
+      responseStart: ((json[r'responseStart'] as num?)?.toDouble())!,
+      secureConnectionStart: ((json[r'secureConnectionStart'] as num?)
           ?.toDouble())!,
-      startTime: ((json['startTime'] as num?)?.toDouble())!,
+      startTime: ((json[r'startTime'] as num?)?.toDouble())!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'connectEnd': connectEnd,
-      'connectStart': connectStart,
-      'domainLookupEnd': domainLookupEnd,
-      'domainLookupStart': domainLookupStart,
-      'requestStart': requestStart,
-      'responseStart': responseStart,
-      'secureConnectionStart': secureConnectionStart,
-      'startTime': startTime,
+      r'connectEnd': connectEnd,
+      r'connectStart': connectStart,
+      r'domainLookupEnd': domainLookupEnd,
+      r'domainLookupStart': domainLookupStart,
+      r'requestStart': requestStart,
+      r'responseStart': responseStart,
+      r'secureConnectionStart': secureConnectionStart,
+      r'startTime': startTime,
     };
   }
 }
@@ -4246,11 +6435,11 @@ class ResponseBodyResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ResponseBodyResult(binary: (json['binary'])!);
+    return ResponseBodyResult(binary: (json[r'binary'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'binary': binary};
+    return {r'binary': binary};
   }
 }
 
@@ -4263,11 +6452,11 @@ class ResponseHttpVersionResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return ResponseHttpVersionResult(value: (json['value'])!);
+    return ResponseHttpVersionResult(value: (json[r'value'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value};
   }
 }
 
@@ -4282,7 +6471,7 @@ class ResponseRawResponseHeadersResult {
   }) {
     return ResponseRawResponseHeadersResult(
       headers:
-          ((json['headers'] as List?)
+          ((json[r'headers'] as List?)
               ?.map((e) => NameValue.fromJson(e))
               .toList()) ??
           [],
@@ -4290,7 +6479,7 @@ class ResponseRawResponseHeadersResult {
   }
 
   Map<String, dynamic> toJson() {
-    return {'headers': headers};
+    return {r'headers': headers.map((e) => e.toJson()).toList()};
   }
 }
 
@@ -4304,14 +6493,14 @@ class ResponseSecurityDetailsResult {
     Connection? connection,
   }) {
     return ResponseSecurityDetailsResult(
-      value: json['value'] == null
+      value: json[r'value'] == null
           ? null
-          : SecurityDetails.fromJson(json['value']),
+          : SecurityDetails.fromJson(json[r'value']),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (value != null) 'value': value};
+    return {if (value != null) r'value': value?.toJson()};
   }
 }
 
@@ -4325,12 +6514,14 @@ class ResponseServerAddrResult {
     Connection? connection,
   }) {
     return ResponseServerAddrResult(
-      value: json['value'] == null ? null : RemoteAddr.fromJson(json['value']),
+      value: json[r'value'] == null
+          ? null
+          : RemoteAddr.fromJson(json[r'value']),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {if (value != null) 'value': value};
+    return {if (value != null) r'value': value?.toJson()};
   }
 }
 
@@ -4344,14 +6535,14 @@ class ResponseSizesResult {
     Connection? connection,
   }) {
     return ResponseSizesResult(
-      sizes: (json['sizes'] == null
+      sizes: (json[r'sizes'] == null
           ? null
-          : RequestSizes.fromJson(json['sizes']))!,
+          : RequestSizes.fromJson(json[r'sizes']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'sizes': sizes};
+    return {r'sizes': sizes.toJson()};
   }
 }
 
@@ -4365,14 +6556,16 @@ class RootInitializeResult {
     Connection? connection,
   }) {
     return RootInitializeResult(
-      playwright: (connection != null && json['playwright'] != null
-          ? ChannelOwner.from<PlaywrightBase>(connection, json['playwright'])
+      playwright: (connection != null && json[r'playwright'] != null
+          ? ChannelOwner.from<PlaywrightBase>(connection, json[r'playwright'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'playwright': playwright};
+    return {
+      r'playwright': {'guid': playwright.guid},
+    };
   }
 }
 
@@ -4396,21 +6589,21 @@ class SecurityDetails {
     Connection? connection,
   }) {
     return SecurityDetails(
-      issuer: json['issuer'],
-      protocol: json['protocol'],
-      subjectName: json['subjectName'],
-      validFrom: (json['validFrom'] as num?)?.toDouble(),
-      validTo: (json['validTo'] as num?)?.toDouble(),
+      issuer: json[r'issuer'],
+      protocol: json[r'protocol'],
+      subjectName: json[r'subjectName'],
+      validFrom: (json[r'validFrom'] as num?)?.toDouble(),
+      validTo: (json[r'validTo'] as num?)?.toDouble(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (issuer != null) 'issuer': issuer,
-      if (protocol != null) 'protocol': protocol,
-      if (subjectName != null) 'subjectName': subjectName,
-      if (validFrom != null) 'validFrom': validFrom,
-      if (validTo != null) 'validTo': validTo,
+      if (issuer != null) r'issuer': issuer,
+      if (protocol != null) r'protocol': protocol,
+      if (subjectName != null) r'subjectName': subjectName,
+      if (validFrom != null) r'validFrom': validFrom,
+      if (validTo != null) r'validTo': validTo,
     };
   }
 }
@@ -4431,17 +6624,17 @@ class SelectorEngine {
     Connection? connection,
   }) {
     return SelectorEngine(
-      contentScript: json['contentScript'],
-      name: (json['name'])!,
-      source: (json['source'])!,
+      contentScript: json[r'contentScript'],
+      name: (json[r'name'])!,
+      source: (json[r'source'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (contentScript != null) 'contentScript': contentScript,
-      'name': name,
-      'source': source,
+      if (contentScript != null) r'contentScript': contentScript,
+      r'name': name,
+      r'source': source,
     };
   }
 }
@@ -4459,24 +6652,27 @@ class SerializedArgument {
     return SerializedArgument(
       handles:
           (connection != null
-              ? (json['handles'] as List?)
+              ? (json[r'handles'] as List?)
                     ?.map((e) => ChannelOwner.from<ChannelOwner>(connection, e))
                     .toList()
               : null) ??
           [],
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handles': handles, 'value': value};
+    return {
+      r'handles': handles.map((e) => {'guid': e.guid}).toList(),
+      r'value': value.toJson(),
+    };
   }
 }
 
 class SerializedError {
-  final Map<String, dynamic>? error;
+  final SerializedErrorError? error;
   final SerializedValue? value;
 
   SerializedError({this.error, this.value});
@@ -4486,17 +6682,46 @@ class SerializedError {
     Connection? connection,
   }) {
     return SerializedError(
-      error: json['error'],
-      value: json['value'] == null
+      error: json[r'error'] == null
           ? null
-          : SerializedValue.fromJson(json['value']),
+          : SerializedErrorError.fromJson(json[r'error']),
+      value: json[r'value'] == null
+          ? null
+          : SerializedValue.fromJson(json[r'value']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (error != null) 'error': error,
-      if (value != null) 'value': value,
+      if (error != null) r'error': error?.toJson(),
+      if (value != null) r'value': value?.toJson(),
+    };
+  }
+}
+
+class SerializedErrorError {
+  final String message;
+  final String name;
+  final String? stack;
+
+  SerializedErrorError({required this.message, required this.name, this.stack});
+
+  factory SerializedErrorError.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SerializedErrorError(
+      message: (json[r'message'])!,
+      name: (json[r'name'])!,
+      stack: json[r'stack'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'message': message,
+      r'name': name,
+      if (stack != null) r'stack': stack,
     };
   }
 }
@@ -4506,15 +6731,15 @@ class SerializedValue {
   final bool? b;
   final String? bi;
   final String? d;
-  final Map<String, dynamic>? e;
+  final SerializedValueE? e;
   final int? h;
   final int? id;
   final double? n;
-  final List<Map<String, dynamic>>? o;
-  final Map<String, dynamic>? r;
+  final List<SerializedValueOItems>? o;
+  final SerializedValueR? r;
   final int? ref;
   final String? s;
-  final Map<String, dynamic>? ta;
+  final SerializedValueTa? ta;
   final String? u;
   final SerializedValueVEnum? v;
 
@@ -4541,44 +6766,137 @@ class SerializedValue {
     Connection? connection,
   }) {
     return SerializedValue(
-      a: (json['a'] as List?)?.map((e) => SerializedValue.fromJson(e)).toList(),
-      b: json['b'],
-      bi: json['bi'],
-      d: json['d'],
-      e: json['e'],
-      h: json['h'],
-      id: json['id'],
-      n: (json['n'] as num?)?.toDouble(),
-      o: (json['o'] as List?)?.cast<Map<String, dynamic>>(),
-      r: json['r'],
-      ref: json['ref'],
-      s: json['s'],
-      ta: json['ta'],
-      u: json['u'],
-      v: json['v'] == null
+      a: (json[r'a'] as List?)
+          ?.map((e) => SerializedValue.fromJson(e))
+          .toList(),
+      b: json[r'b'],
+      bi: json[r'bi'],
+      d: json[r'd'],
+      e: json[r'e'] == null ? null : SerializedValueE.fromJson(json[r'e']),
+      h: json[r'h'],
+      id: json[r'id'],
+      n: (json[r'n'] as num?)?.toDouble(),
+      o: (json[r'o'] as List?)
+          ?.map((e) => SerializedValueOItems.fromJson(e))
+          .toList(),
+      r: json[r'r'] == null ? null : SerializedValueR.fromJson(json[r'r']),
+      ref: json[r'ref'],
+      s: json[r's'],
+      ta: json[r'ta'] == null ? null : SerializedValueTa.fromJson(json[r'ta']),
+      u: json[r'u'],
+      v: json[r'v'] == null
           ? null
-          : SerializedValueVEnum.values.firstWhere((e) => e.value == json['v']),
+          : SerializedValueVEnum.values.firstWhere(
+              (e) => e.value == json[r'v'],
+            ),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (a != null) 'a': a,
-      if (b != null) 'b': b,
-      if (bi != null) 'bi': bi,
-      if (d != null) 'd': d,
-      if (e != null) 'e': e,
-      if (h != null) 'h': h,
-      if (id != null) 'id': id,
-      if (n != null) 'n': n,
-      if (o != null) 'o': o,
-      if (r != null) 'r': r,
-      if (ref != null) 'ref': ref,
-      if (s != null) 's': s,
-      if (ta != null) 'ta': ta,
-      if (u != null) 'u': u,
-      if (v != null) 'v': v,
+      if (a != null) r'a': a?.map((e) => e.toJson()).toList(),
+      if (b != null) r'b': b,
+      if (bi != null) r'bi': bi,
+      if (d != null) r'd': d,
+      if (e != null) r'e': e?.toJson(),
+      if (h != null) r'h': h,
+      if (id != null) r'id': id,
+      if (n != null) r'n': n,
+      if (o != null) r'o': o?.map((e) => e.toJson()).toList(),
+      if (r != null) r'r': r?.toJson(),
+      if (ref != null) r'ref': ref,
+      if (s != null) r's': s,
+      if (ta != null) r'ta': ta?.toJson(),
+      if (u != null) r'u': u,
+      if (v != null) r'v': v?.value,
     };
+  }
+}
+
+class SerializedValueE {
+  final String m;
+  final String n;
+  final String s;
+
+  SerializedValueE({required this.m, required this.n, required this.s});
+
+  factory SerializedValueE.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SerializedValueE(
+      m: (json[r'm'])!,
+      n: (json[r'n'])!,
+      s: (json[r's'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'm': m, r'n': n, r's': s};
+  }
+}
+
+class SerializedValueOItems {
+  final String k;
+  final SerializedValue v;
+
+  SerializedValueOItems({required this.k, required this.v});
+
+  factory SerializedValueOItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SerializedValueOItems(
+      k: (json[r'k'])!,
+      v: (json[r'v'] == null ? null : SerializedValue.fromJson(json[r'v']))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'k': k, r'v': v.toJson()};
+  }
+}
+
+class SerializedValueR {
+  final String f;
+  final String p;
+
+  SerializedValueR({required this.f, required this.p});
+
+  factory SerializedValueR.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SerializedValueR(f: (json[r'f'])!, p: (json[r'p'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'f': f, r'p': p};
+  }
+}
+
+class SerializedValueTa {
+  final String b;
+  final SerializedValueTaKEnum k;
+
+  SerializedValueTa({required this.b, required this.k});
+
+  factory SerializedValueTa.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SerializedValueTa(
+      b: (json[r'b'])!,
+      k: (json[r'k'] == null
+          ? null
+          : SerializedValueTaKEnum.values.firstWhere(
+              (e) => e.value == json[r'k'],
+            ))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'b': b, r'k': k.value};
   }
 }
 
@@ -4614,38 +6932,38 @@ class SetNetworkCookie {
     Connection? connection,
   }) {
     return SetNetworkCookie(
-      crHasCrossSiteAncestor: json['_crHasCrossSiteAncestor'],
-      domain: json['domain'],
-      expires: (json['expires'] as num?)?.toDouble(),
-      httpOnly: json['httpOnly'],
-      name: (json['name'])!,
-      partitionKey: json['partitionKey'],
-      path: json['path'],
-      sameSite: json['sameSite'] == null
+      crHasCrossSiteAncestor: json[r'_crHasCrossSiteAncestor'],
+      domain: json[r'domain'],
+      expires: (json[r'expires'] as num?)?.toDouble(),
+      httpOnly: json[r'httpOnly'],
+      name: (json[r'name'])!,
+      partitionKey: json[r'partitionKey'],
+      path: json[r'path'],
+      sameSite: json[r'sameSite'] == null
           ? null
           : SetNetworkCookieSameSiteEnum.values.firstWhere(
-              (e) => e.value == json['sameSite'],
+              (e) => e.value == json[r'sameSite'],
             ),
-      secure: json['secure'],
-      url: json['url'],
-      value: (json['value'])!,
+      secure: json[r'secure'],
+      url: json[r'url'],
+      value: (json[r'value'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       if (crHasCrossSiteAncestor != null)
-        '_crHasCrossSiteAncestor': crHasCrossSiteAncestor,
-      if (domain != null) 'domain': domain,
-      if (expires != null) 'expires': expires,
-      if (httpOnly != null) 'httpOnly': httpOnly,
-      'name': name,
-      if (partitionKey != null) 'partitionKey': partitionKey,
-      if (path != null) 'path': path,
-      if (sameSite != null) 'sameSite': sameSite,
-      if (secure != null) 'secure': secure,
-      if (url != null) 'url': url,
-      'value': value,
+        r'_crHasCrossSiteAncestor': crHasCrossSiteAncestor,
+      if (domain != null) r'domain': domain,
+      if (expires != null) r'expires': expires,
+      if (httpOnly != null) r'httpOnly': httpOnly,
+      r'name': name,
+      if (partitionKey != null) r'partitionKey': partitionKey,
+      if (path != null) r'path': path,
+      if (sameSite != null) r'sameSite': sameSite?.value,
+      if (secure != null) r'secure': secure,
+      if (url != null) r'url': url,
+      r'value': value,
     };
   }
 }
@@ -4666,23 +6984,24 @@ class SetOriginStorage {
     Connection? connection,
   }) {
     return SetOriginStorage(
-      indexedDB: (json['indexedDB'] as List?)
+      indexedDB: (json[r'indexedDB'] as List?)
           ?.map((e) => IndexedDBDatabase.fromJson(e))
           .toList(),
       localStorage:
-          ((json['localStorage'] as List?)
+          ((json[r'localStorage'] as List?)
               ?.map((e) => NameValue.fromJson(e))
               .toList()) ??
           [],
-      origin: (json['origin'])!,
+      origin: (json[r'origin'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (indexedDB != null) 'indexedDB': indexedDB,
-      'localStorage': localStorage,
-      'origin': origin,
+      if (indexedDB != null)
+        r'indexedDB': indexedDB?.map((e) => e.toJson()).toList(),
+      r'localStorage': localStorage.map((e) => e.toJson()).toList(),
+      r'origin': origin,
     };
   }
 }
@@ -4699,21 +7018,21 @@ class ShowActionsOptions {
     Connection? connection,
   }) {
     return ShowActionsOptions(
-      duration: (json['duration'] as num?)?.toDouble(),
-      fontSize: json['fontSize'],
-      position: json['position'] == null
+      duration: (json[r'duration'] as num?)?.toDouble(),
+      fontSize: json[r'fontSize'],
+      position: json[r'position'] == null
           ? null
           : ShowActionsOptionsPositionEnum.values.firstWhere(
-              (e) => e.value == json['position'],
+              (e) => e.value == json[r'position'],
             ),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (duration != null) 'duration': duration,
-      if (fontSize != null) 'fontSize': fontSize,
-      if (position != null) 'position': position,
+      if (duration != null) r'duration': duration,
+      if (fontSize != null) r'fontSize': fontSize,
+      if (position != null) r'position': position?.value,
     };
   }
 }
@@ -4736,19 +7055,19 @@ class StackFrame {
     Connection? connection,
   }) {
     return StackFrame(
-      column: (json['column'])!,
-      file: (json['file'])!,
-      function: json['function'],
-      line: (json['line'])!,
+      column: (json[r'column'])!,
+      file: (json[r'file'])!,
+      function: json[r'function'],
+      line: (json[r'line'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'column': column,
-      'file': file,
-      if (function != null) 'function': function,
-      'line': line,
+      r'column': column,
+      r'file': file,
+      if (function != null) r'function': function,
+      r'line': line,
     };
   }
 }
@@ -4762,11 +7081,11 @@ class StreamReadResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return StreamReadResult(binary: (json['binary'])!);
+    return StreamReadResult(binary: (json[r'binary'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'binary': binary};
+    return {r'binary': binary};
   }
 }
 
@@ -4781,10 +7100,10 @@ class TracingHarExportResult {
     Connection? connection,
   }) {
     return TracingHarExportResult(
-      artifact: connection != null && json['artifact'] != null
-          ? ChannelOwner.from<ArtifactBase>(connection, json['artifact'])
+      artifact: connection != null && json[r'artifact'] != null
+          ? ChannelOwner.from<ArtifactBase>(connection, json[r'artifact'])
           : null,
-      entries: (json['entries'] as List?)
+      entries: (json[r'entries'] as List?)
           ?.map((e) => NameValue.fromJson(e))
           .toList(),
     );
@@ -4792,8 +7111,8 @@ class TracingHarExportResult {
 
   Map<String, dynamic> toJson() {
     return {
-      if (artifact != null) 'artifact': artifact,
-      if (entries != null) 'entries': entries,
+      if (artifact != null) r'artifact': {'guid': artifact?.guid},
+      if (entries != null) r'entries': entries?.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -4807,11 +7126,38 @@ class TracingHarStartResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return TracingHarStartResult(harId: (json['harId'])!);
+    return TracingHarStartResult(harId: (json[r'harId'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'harId': harId};
+    return {r'harId': harId};
+  }
+}
+
+class TracingTracingGroupLocation {
+  final int? column;
+  final String file;
+  final int? line;
+
+  TracingTracingGroupLocation({this.column, required this.file, this.line});
+
+  factory TracingTracingGroupLocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return TracingTracingGroupLocation(
+      column: json[r'column'],
+      file: (json[r'file'])!,
+      line: json[r'line'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (column != null) r'column': column,
+      r'file': file,
+      if (line != null) r'line': line,
+    };
   }
 }
 
@@ -4824,11 +7170,11 @@ class TracingTracingStartChunkResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return TracingTracingStartChunkResult(traceName: (json['traceName'])!);
+    return TracingTracingStartChunkResult(traceName: (json[r'traceName'])!);
   }
 
   Map<String, dynamic> toJson() {
-    return {'traceName': traceName};
+    return {r'traceName': traceName};
   }
 }
 
@@ -4843,10 +7189,10 @@ class TracingTracingStopChunkResult {
     Connection? connection,
   }) {
     return TracingTracingStopChunkResult(
-      artifact: connection != null && json['artifact'] != null
-          ? ChannelOwner.from<ArtifactBase>(connection, json['artifact'])
+      artifact: connection != null && json[r'artifact'] != null
+          ? ChannelOwner.from<ArtifactBase>(connection, json[r'artifact'])
           : null,
-      entries: (json['entries'] as List?)
+      entries: (json[r'entries'] as List?)
           ?.map((e) => NameValue.fromJson(e))
           .toList(),
     );
@@ -4854,8 +7200,8 @@ class TracingTracingStopChunkResult {
 
   Map<String, dynamic> toJson() {
     return {
-      if (artifact != null) 'artifact': artifact,
-      if (entries != null) 'entries': entries,
+      if (artifact != null) r'artifact': {'guid': artifact?.guid},
+      if (entries != null) r'entries': entries?.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -4886,27 +7232,27 @@ class URLPattern {
     Connection? connection,
   }) {
     return URLPattern(
-      hash: (json['hash'])!,
-      hostname: (json['hostname'])!,
-      password: (json['password'])!,
-      pathname: (json['pathname'])!,
-      port: (json['port'])!,
-      protocol: (json['protocol'])!,
-      search: (json['search'])!,
-      username: (json['username'])!,
+      hash: (json[r'hash'])!,
+      hostname: (json[r'hostname'])!,
+      password: (json[r'password'])!,
+      pathname: (json[r'pathname'])!,
+      port: (json[r'port'])!,
+      protocol: (json[r'protocol'])!,
+      search: (json[r'search'])!,
+      username: (json[r'username'])!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'hash': hash,
-      'hostname': hostname,
-      'password': password,
-      'pathname': pathname,
-      'port': port,
-      'protocol': protocol,
-      'search': search,
-      'username': username,
+      r'hash': hash,
+      r'hostname': hostname,
+      r'password': password,
+      r'pathname': pathname,
+      r'port': port,
+      r'protocol': protocol,
+      r'search': search,
+      r'username': username,
     };
   }
 }
@@ -4921,14 +7267,16 @@ class WorkerEvaluateExpressionHandleResult {
     Connection? connection,
   }) {
     return WorkerEvaluateExpressionHandleResult(
-      handle: (connection != null && json['handle'] != null
-          ? ChannelOwner.from<JSHandleBase>(connection, json['handle'])
+      handle: (connection != null && json[r'handle'] != null
+          ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
           : null)!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'handle': handle};
+    return {
+      r'handle': {'guid': handle.guid},
+    };
   }
 }
 
@@ -4942,14 +7290,14 @@ class WorkerEvaluateExpressionResult {
     Connection? connection,
   }) {
     return WorkerEvaluateExpressionResult(
-      value: (json['value'] == null
+      value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json['value']))!,
+          : SerializedValue.fromJson(json[r'value']))!,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'value': value};
+    return {r'value': value.toJson()};
   }
 }
 
@@ -5290,13 +7638,13 @@ abstract class AndroidDeviceBase extends EventTargetBase {
     required ContextOptions contextOptions,
     List<String>? args,
     String? pkg,
-    Map<String, dynamic>? proxy,
+    AndroidDeviceLaunchBrowserProxy? proxy,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(contextOptions.toJson());
     if (args != null) payload['args'] = args;
     if (pkg != null) payload['pkg'] = pkg;
-    if (proxy != null) payload['proxy'] = proxy;
+    if (proxy != null) payload['proxy'] = proxy.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'launchBrowser',
@@ -5682,13 +8030,13 @@ abstract class BrowserBase extends ChannelOwner {
 
   Future<BrowserNewContextResult> channel_newContext({
     required ContextOptions contextOptions,
-    Map<String, dynamic>? proxy,
-    Map<String, dynamic>? storageState,
+    BrowserNewContextProxy? proxy,
+    BrowserNewContextStorageState? storageState,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(contextOptions.toJson());
-    if (proxy != null) payload['proxy'] = proxy;
-    if (storageState != null) payload['storageState'] = storageState;
+    if (proxy != null) payload['proxy'] = proxy.toJson();
+    if (storageState != null) payload['storageState'] = storageState.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'newContext',
@@ -5699,13 +8047,13 @@ abstract class BrowserBase extends ChannelOwner {
 
   Future<BrowserNewContextForReuseResult> channel_newContextForReuse({
     required ContextOptions contextOptions,
-    Map<String, dynamic>? proxy,
-    Map<String, dynamic>? storageState,
+    BrowserNewContextForReuseProxy? proxy,
+    BrowserNewContextForReuseStorageState? storageState,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(contextOptions.toJson());
-    if (proxy != null) payload['proxy'] = proxy;
-    if (storageState != null) payload['storageState'] = storageState;
+    if (proxy != null) payload['proxy'] = proxy.toJson();
+    if (storageState != null) payload['storageState'] = storageState.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'newContextForReuse',
@@ -5981,7 +8329,7 @@ abstract class BrowserContextBase extends EventTargetBase {
   }
 
   Future<BrowserContextCreateTempFilesResult> channel_createTempFiles({
-    required List<Map<String, dynamic>> items,
+    required List<BrowserContextCreateTempFilesItemsItems> items,
     String? rootDirName,
   }) async {
     final payload = <String, dynamic>{};
@@ -6150,10 +8498,10 @@ abstract class BrowserContextBase extends EventTargetBase {
   }
 
   Future<void> channel_setGeolocation({
-    Map<String, dynamic>? geolocation,
+    BrowserContextSetGeolocationGeolocation? geolocation,
   }) async {
     final payload = <String, dynamic>{};
-    if (geolocation != null) payload['geolocation'] = geolocation;
+    if (geolocation != null) payload['geolocation'] = geolocation.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'setGeolocation',
@@ -6163,10 +8511,12 @@ abstract class BrowserContextBase extends EventTargetBase {
   }
 
   Future<void> channel_setHTTPCredentials({
-    Map<String, dynamic>? httpCredentials,
+    BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
   }) async {
     final payload = <String, dynamic>{};
-    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
+    if (httpCredentials != null) {
+      payload['httpCredentials'] = httpCredentials.toJson();
+    }
     final response = await connection.sendMessageToServer(
       guid,
       'setHTTPCredentials',
@@ -6176,7 +8526,8 @@ abstract class BrowserContextBase extends EventTargetBase {
   }
 
   Future<void> channel_setNetworkInterceptionPatterns({
-    required List<Map<String, dynamic>> patterns,
+    required List<BrowserContextSetNetworkInterceptionPatternsPatternsItems>
+    patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
@@ -6200,10 +8551,10 @@ abstract class BrowserContextBase extends EventTargetBase {
   }
 
   Future<void> channel_setStorageState({
-    Map<String, dynamic>? storageState,
+    BrowserContextSetStorageStateStorageState? storageState,
   }) async {
     final payload = <String, dynamic>{};
-    if (storageState != null) payload['storageState'] = storageState;
+    if (storageState != null) payload['storageState'] = storageState.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'setStorageState',
@@ -6226,7 +8577,8 @@ abstract class BrowserContextBase extends EventTargetBase {
   }
 
   Future<void> channel_setWebSocketInterceptionPatterns({
-    required List<Map<String, dynamic>> patterns,
+    required List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems>
+    patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
@@ -6511,9 +8863,9 @@ abstract class DebuggerBase extends EventTargetBase {
     return;
   }
 
-  Future<void> channel_runTo({required Map<String, dynamic> location}) async {
+  Future<void> channel_runTo({required DebuggerRunToLocation location}) async {
     final payload = <String, dynamic>{};
-    payload['location'] = location;
+    payload['location'] = location.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'runTo',
@@ -6584,12 +8936,12 @@ abstract class ElectronBase extends ChannelOwner {
     List<NameValue>? env,
     String? executablePath,
     List<NameValue>? extraHTTPHeaders,
-    Map<String, dynamic>? geolocation,
-    Map<String, dynamic>? httpCredentials,
+    ElectronLaunchGeolocation? geolocation,
+    ElectronLaunchHttpCredentials? httpCredentials,
     bool? ignoreHTTPSErrors,
     String? locale,
     bool? offline,
-    Map<String, dynamic>? recordVideo,
+    ElectronLaunchRecordVideo? recordVideo,
     List<SelectorEngine>? selectorEngines,
     bool? strictSelectors,
     String? testIdAttributeName,
@@ -6612,14 +8964,16 @@ abstract class ElectronBase extends ChannelOwner {
     if (extraHTTPHeaders != null) {
       payload['extraHTTPHeaders'] = extraHTTPHeaders;
     }
-    if (geolocation != null) payload['geolocation'] = geolocation;
-    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
+    if (geolocation != null) payload['geolocation'] = geolocation.toJson();
+    if (httpCredentials != null) {
+      payload['httpCredentials'] = httpCredentials.toJson();
+    }
     if (ignoreHTTPSErrors != null) {
       payload['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
     }
     if (locale != null) payload['locale'] = locale;
     if (offline != null) payload['offline'] = offline;
-    if (recordVideo != null) payload['recordVideo'] = recordVideo;
+    if (recordVideo != null) payload['recordVideo'] = recordVideo.toJson();
     if (selectorEngines != null) payload['selectorEngines'] = selectorEngines;
     if (strictSelectors != null) payload['strictSelectors'] = strictSelectors;
     if (testIdAttributeName != null) {
@@ -7155,7 +9509,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   Future<ElementHandleSelectOptionResult> channel_selectOption({
     List<ElementHandleBase>? elements,
     bool? force,
-    List<Map<String, dynamic>>? options,
+    List<ElementHandleSelectOptionOptionsItems>? options,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
@@ -7193,7 +9547,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     WritableStreamBase? directoryStream,
     String? localDirectory,
     List<String>? localPaths,
-    List<Map<String, dynamic>>? payloads,
+    List<ElementHandleSetInputFilesPayloadsItems>? payloads,
     List<WritableStreamBase>? streams,
     required double timeout,
   }) async {
@@ -7327,10 +9681,10 @@ abstract class EventTargetBase extends ChannelOwner {
   ]);
 
   Future<void> channel_waitForEventInfo({
-    required Map<String, dynamic> info,
+    required EventTargetWaitForEventInfoInfo info,
   }) async {
     final payload = <String, dynamic>{};
-    payload['info'] = info;
+    payload['info'] = info.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'waitForEventInfo',
@@ -7570,9 +9924,9 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   Future<void> channel_drop({
-    List<Map<String, dynamic>>? data,
+    List<FrameDropDataItems>? data,
     List<String>? localPaths,
-    List<Map<String, dynamic>>? payloads,
+    List<FrameDropPayloadsItems>? payloads,
     Point? position,
     required String selector,
     List<WritableStreamBase>? streams,
@@ -8085,7 +10439,7 @@ abstract class FrameBase extends ChannelOwner {
   Future<FrameSelectOptionResult> channel_selectOption({
     List<ElementHandleBase>? elements,
     bool? force,
-    List<Map<String, dynamic>>? options,
+    List<FrameSelectOptionOptionsItems>? options,
     required String selector,
     bool? strict,
     required double timeout,
@@ -8126,7 +10480,7 @@ abstract class FrameBase extends ChannelOwner {
     WritableStreamBase? directoryStream,
     String? localDirectory,
     List<String>? localPaths,
-    List<Map<String, dynamic>>? payloads,
+    List<FrameSetInputFilesPayloadsItems>? payloads,
     required String selector,
     List<WritableStreamBase>? streams,
     bool? strict,
@@ -8709,7 +11063,7 @@ abstract class PageBase extends EventTargetBase {
     String? expected,
     bool? fullPage,
     required bool isNot,
-    Map<String, dynamic>? locator,
+    PageExpectScreenshotLocator? locator,
     double? maxDiffPixelRatio,
     int? maxDiffPixels,
     double? threshold,
@@ -8722,7 +11076,7 @@ abstract class PageBase extends EventTargetBase {
     if (expected != null) payload['expected'] = expected;
     if (fullPage != null) payload['fullPage'] = fullPage;
     payload['isNot'] = isNot;
-    if (locator != null) payload['locator'] = locator;
+    if (locator != null) payload['locator'] = locator.toJson();
     if (maxDiffPixelRatio != null) {
       payload['maxDiffPixelRatio'] = maxDiffPixelRatio;
     }
@@ -8958,7 +11312,7 @@ abstract class PageBase extends EventTargetBase {
     String? headerTemplate,
     String? height,
     bool? landscape,
-    Map<String, dynamic>? margin,
+    PagePdfMargin? margin,
     bool? outline,
     String? pageRanges,
     bool? preferCSSPageSize,
@@ -8976,7 +11330,7 @@ abstract class PageBase extends EventTargetBase {
     if (headerTemplate != null) payload['headerTemplate'] = headerTemplate;
     if (height != null) payload['height'] = height;
     if (landscape != null) payload['landscape'] = landscape;
-    if (margin != null) payload['margin'] = margin;
+    if (margin != null) payload['margin'] = margin.toJson();
     if (outline != null) payload['outline'] = outline;
     if (pageRanges != null) payload['pageRanges'] = pageRanges;
     if (preferCSSPageSize != null) {
@@ -9146,13 +11500,13 @@ abstract class PageBase extends EventTargetBase {
     int? quality,
     bool? record,
     bool? sendFrames,
-    Map<String, dynamic>? size,
+    PageScreencastStartSize? size,
   }) async {
     final payload = <String, dynamic>{};
     if (quality != null) payload['quality'] = quality;
     if (record != null) payload['record'] = record;
     if (sendFrames != null) payload['sendFrames'] = sendFrames;
-    if (size != null) payload['size'] = size;
+    if (size != null) payload['size'] = size.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'screencastStart',
@@ -9218,7 +11572,7 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<void> channel_setNetworkInterceptionPatterns({
-    required List<Map<String, dynamic>> patterns,
+    required List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
@@ -9231,10 +11585,10 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<void> channel_setViewportSize({
-    required Map<String, dynamic> viewportSize,
+    required PageSetViewportSizeViewportSize viewportSize,
   }) async {
     final payload = <String, dynamic>{};
-    payload['viewportSize'] = viewportSize;
+    payload['viewportSize'] = viewportSize.toJson();
     final response = await connection.sendMessageToServer(
       guid,
       'setViewportSize',
@@ -9244,7 +11598,7 @@ abstract class PageBase extends EventTargetBase {
   }
 
   Future<void> channel_setWebSocketInterceptionPatterns({
-    required List<Map<String, dynamic>> patterns,
+    required List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
@@ -9359,14 +11713,14 @@ abstract class PlaywrightBase extends ChannelOwner {
 
   Future<PlaywrightNewRequestResult> channel_newRequest({
     String? baseURL,
-    List<Map<String, dynamic>>? clientCertificates,
+    List<PlaywrightNewRequestClientCertificatesItems>? clientCertificates,
     List<NameValue>? extraHTTPHeaders,
     bool? failOnStatusCode,
-    Map<String, dynamic>? httpCredentials,
+    PlaywrightNewRequestHttpCredentials? httpCredentials,
     bool? ignoreHTTPSErrors,
     int? maxRedirects,
-    Map<String, dynamic>? proxy,
-    Map<String, dynamic>? storageState,
+    PlaywrightNewRequestProxy? proxy,
+    PlaywrightNewRequestStorageState? storageState,
     String? tracesDir,
     String? userAgent,
   }) async {
@@ -9381,13 +11735,15 @@ abstract class PlaywrightBase extends ChannelOwner {
     if (failOnStatusCode != null) {
       payload['failOnStatusCode'] = failOnStatusCode;
     }
-    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
+    if (httpCredentials != null) {
+      payload['httpCredentials'] = httpCredentials.toJson();
+    }
     if (ignoreHTTPSErrors != null) {
       payload['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
     }
     if (maxRedirects != null) payload['maxRedirects'] = maxRedirects;
-    if (proxy != null) payload['proxy'] = proxy;
-    if (storageState != null) payload['storageState'] = storageState;
+    if (proxy != null) payload['proxy'] = proxy.toJson();
+    if (storageState != null) payload['storageState'] = storageState.toJson();
     if (tracesDir != null) payload['tracesDir'] = tracesDir;
     if (userAgent != null) payload['userAgent'] = userAgent;
     final response = await connection.sendMessageToServer(
@@ -9739,11 +12095,11 @@ abstract class TracingBase extends ChannelOwner {
   }
 
   Future<void> channel_tracingGroup({
-    Map<String, dynamic>? location,
+    TracingTracingGroupLocation? location,
     required String name,
   }) async {
     final payload = <String, dynamic>{};
-    if (location != null) payload['location'] = location;
+    if (location != null) payload['location'] = location.toJson();
     payload['name'] = name;
     final response = await connection.sendMessageToServer(
       guid,

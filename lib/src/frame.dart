@@ -718,9 +718,11 @@ class Frame extends FrameBase {
     await channel_drop(
       selector: selector,
       strict: strict,
-      payloads: payloads,
+      payloads: payloads
+          ?.map((e) => FrameDropPayloadsItems.fromJson(e))
+          .toList(),
       localPaths: localPaths,
-      data: data,
+      data: data?.map((e) => FrameDropDataItems.fromJson(e)).toList(),
       timeout: timeout ?? 30000.0,
       position: position != null
           ? Point(x: position['x'] as double, y: position['y'] as double)
@@ -844,10 +846,12 @@ class Frame extends FrameBase {
       elements: elements != null
           ? elements.cast<ElementHandleBase>()
           : parsed.elements,
-      options: options ?? parsed.options,
+      options: (options ?? parsed.options)
+          ?.map((e) => FrameSelectOptionOptionsItems.fromJson(e))
+          .toList(),
+      strict: strict,
       force: force,
       timeout: timeout ?? 30000.0,
-      strict: strict,
     );
     return (result.values as List).cast<String>();
   }
@@ -867,10 +871,11 @@ class Frame extends FrameBase {
     final parsed = parseInputFiles(files);
     await channel_setInputFiles(
       selector: selector,
-      payloads: payloads ?? parsed.payloads,
+      payloads: (payloads ?? parsed.payloads)
+          ?.map((e) => FrameSetInputFilesPayloadsItems.fromJson(e))
+          .toList(),
       localPaths: localPaths ?? parsed.localPaths,
       timeout: timeout ?? 30000.0,
-
       strict: strict,
       localDirectory: localDirectory,
       directoryStream: directoryStream as WritableStreamBase?,

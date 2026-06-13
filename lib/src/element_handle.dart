@@ -454,7 +454,11 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
 
     final result = await channel_selectOption(
       elements: elements,
-      options: finalOptions?.isNotEmpty == true ? finalOptions : null,
+      options: finalOptions?.isNotEmpty == true
+          ? finalOptions
+                ?.map((e) => ElementHandleSelectOptionOptionsItems.fromJson(e))
+                .toList()
+          : null,
       force: force,
       timeout: timeout ?? 30000.0,
     );
@@ -477,7 +481,9 @@ class ElementHandle extends ElementHandleBase implements JSHandle {
     await channel_setInputFiles(
       localPaths: localPaths ?? files,
       timeout: timeout ?? 30000.0,
-      payloads: payloads,
+      payloads: payloads
+          ?.map((e) => ElementHandleSetInputFilesPayloadsItems.fromJson(e))
+          .toList(),
       localDirectory: localDirectory,
       directoryStream: directoryStream as WritableStreamBase?,
       streams: streams?.map((s) => s as WritableStreamBase).toList(),

@@ -107,6 +107,20 @@ void main() async {
         node['type'] = node['type'].toString().endsWith('?')
             ? '$enumName?'
             : enumName;
+      } else if (typeStr == 'object' && node.containsKey('properties')) {
+        String structName = prefix;
+        final props = node['properties'] as Map;
+        for (final key in props.keys.toList()) {
+          extractEnumsRecursive(
+            props[key],
+            '$structName${capitalize(toCamelCase(key.toString()))}',
+          );
+        }
+        syntheticStructs.add({'name': structName, 'properties': props});
+        node['type'] = node['type'].toString().endsWith('?')
+            ? '$structName?'
+            : structName;
+        node.remove('properties');
       } else {
         for (final key in node.keys.toList()) {
           extractEnumsRecursive(
@@ -218,6 +232,9 @@ void main() async {
           baseType = typeStr;
         }
       }
+      if (typeDef.containsKey(r'$ref')) {
+        baseType = typeDef[r'$ref'] as String;
+      }
 
       if (baseType == 'array') {
         final items = typeDef['items'];
@@ -296,7 +313,9 @@ void main() async {
     final sortedKeys = properties.keys.toList()..sort();
     for (final key in sortedKeys) {
       final propName = sanitizeName(key);
-      final safeName = propName == 'enum' ? 'enumValue' : propName;
+      final safeName = propName == 'enum'
+          ? 'enumValue'
+          : (propName == r'$mixin' ? r'\$mixin' : propName);
       final propDef = properties[key];
       final type = resolveDartType(propDef);
       out.writeln('  final $type $safeName;');
@@ -329,11 +348,11 @@ void main() async {
         final wireName = f['wireName'];
         final type = f['type'] as String;
 
-        String parser = 'json[\'$wireName\']';
+        String parser = 'json[r\'$wireName\']';
         if (type == 'dynamic' || type == 'dynamic?') {
           // just map directly
         } else if (type == 'double' || type == 'double?') {
-          parser = '(json[\'$wireName\'] as num?)?.toDouble()';
+          parser = '(json[r\'$wireName\'] as num?)?.toDouble()';
         } else if (type.startsWith('List<')) {
           final innerType = type.substring(
             5,
@@ -341,13 +360,13 @@ void main() async {
           );
           if (innerType == 'double') {
             parser =
-                '(json[\'$wireName\'] as List?)?.map((e) => (e as num).toDouble()).toList()';
+                '(json[r\'$wireName\'] as List?)?.map((e) => (e as num).toDouble()).toList()';
           } else if (innerType == 'String' ||
               innerType == 'int' ||
               innerType == 'bool' ||
               innerType == 'dynamic' ||
               innerType == 'Map<String, dynamic>') {
-            parser = '(json[\'$wireName\'] as List?)?.cast<$innerType>()';
+            parser = '(json[r\'$wireName\'] as List?)?.cast<$innerType>()';
           } else {
             // Enum or Object or Interface
             if (interfaces.contains(innerType.replaceAll('Base', '')) ||
@@ -357,13 +376,13 @@ void main() async {
                   ? 'ChannelOwner'
                   : innerType;
               parser =
-                  'connection != null ? (json[\'$wireName\'] as List?)?.map((e) => ChannelOwner.from<$baseType>(connection, e)).toList() : null';
+                  'connection != null ? (json[r\'$wireName\'] as List?)?.map((e) => ChannelOwner.from<$baseType>(connection, e)).toList() : null';
             } else if (knownEnums.contains(innerType)) {
               parser =
-                  '(json[\'$wireName\'] as List?)?.map((e) => $innerType.values.firstWhere((v) => v.value == e)).toList()';
+                  '(json[r\'$wireName\'] as List?)?.map((e) => $innerType.values.firstWhere((v) => v.value == e)).toList()';
             } else {
               parser =
-                  '(json[\'$wireName\'] as List?)?.map((e) => $innerType.fromJson(e)).toList()';
+                  '(json[r\'$wireName\'] as List?)?.map((e) => $innerType.fromJson(e)).toList()';
             }
           }
         } else if (interfaces.contains(
@@ -377,11 +396,11 @@ void main() async {
               ? 'ChannelOwner'
               : type.replaceAll('?', '');
           parser =
-              'connection != null && json[\'$wireName\'] != null ? ChannelOwner.from<$base>(connection, json[\'$wireName\']) : null';
+              'connection != null && json[r\'$wireName\'] != null ? ChannelOwner.from<$base>(connection, json[r\'$wireName\']) : null';
         } else if (knownEnums.contains(type.replaceAll('?', ''))) {
           final enumBase = type.replaceAll('?', '');
           parser =
-              'json[\'$wireName\'] == null ? null : $enumBase.values.firstWhere((e) => e.value == json[\'$wireName\'])';
+              'json[r\'$wireName\'] == null ? null : $enumBase.values.firstWhere((e) => e.value == json[r\'$wireName\'])';
         } else if (!type.startsWith('String') &&
             !type.startsWith('int') &&
             !type.startsWith('double') &&
@@ -390,7 +409,7 @@ void main() async {
             !type.startsWith('dynamic')) {
           final objBase = type.replaceAll('?', '');
           parser =
-              'json[\'$wireName\'] == null ? null : $objBase.fromJson(json[\'$wireName\'])';
+              'json[r\'$wireName\'] == null ? null : $objBase.fromJson(json[r\'$wireName\'])';
         }
 
         if (!f['nullable']) {
@@ -412,10 +431,44 @@ void main() async {
       for (final f in fields) {
         final name = f['name'];
         final wireName = f['wireName'];
-        if (f['nullable']) {
-          out.writeln('      if ($name != null) \'$wireName\': $name,');
+        final type = f['type'] as String;
+        final nullable = f['nullable'] as bool;
+
+        String valStr = name;
+        if (type.startsWith('List<') &&
+            !type.contains('dynamic') &&
+            !type.contains('String') &&
+            !type.contains('int') &&
+            !type.contains('double') &&
+            !type.contains('bool') &&
+            !type.contains('Map')) {
+          if (type.contains('Base') || type.contains('ChannelOwner')) {
+            valStr =
+                '$name${nullable ? "?" : ""}.map((e) => {\'guid\': e.guid}).toList()';
+          } else {
+            valStr =
+                '$name${nullable ? "?" : ""}.map((e) => e.toJson()).toList()';
+          }
+        } else if (!type.startsWith('List') &&
+            !type.startsWith('Map') &&
+            !type.startsWith('dynamic') &&
+            !type.startsWith('String') &&
+            !type.startsWith('int') &&
+            !type.startsWith('double') &&
+            !type.startsWith('bool')) {
+          if (type.contains('Enum')) {
+            valStr = '$name${nullable ? "?" : ""}.value';
+          } else if (type.contains('Base') || type.contains('ChannelOwner')) {
+            valStr = '{\'guid\': $name${nullable ? "?" : ""}.guid}';
+          } else {
+            valStr = '$name${nullable ? "?" : ""}.toJson()';
+          }
+        }
+
+        if (nullable) {
+          out.writeln('      if ($name != null) r\'$wireName\': $valStr,');
         } else {
-          out.writeln('      \'$wireName\': $name,');
+          out.writeln('      r\'$wireName\': $valStr,');
         }
       }
       out.writeln('    };');
