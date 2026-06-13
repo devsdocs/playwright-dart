@@ -28,7 +28,7 @@ Future<void> teardownBrowser() async {
   _playwright = null;
 }
 
-void test(String description, FutureOr<void> Function(Page page) body) {
+void test(String description, FutureOr<void> Function(Page page) body, {dart_test.Timeout? timeout}) {
   dart_test.test(description, () async {
     if (_browser == null) {
       throw StateError('Browser is not initialized. Did you call setupBrowser()?');
@@ -44,7 +44,7 @@ void test(String description, FutureOr<void> Function(Page page) body) {
         // Ignore TargetClosedError
       }
     }
-  });
+  }, timeout: timeout);
 }
 
 void group(String description, void Function() body) {
