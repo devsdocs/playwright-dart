@@ -234,9 +234,11 @@ class Connection {
       final factory = _objectFactories[type];
       if (factory != null) {
         factory(this, type, newGuid, initializer, parent);
-        
+
         if (type == 'Dialog' && parent != null) {
-          parent.emitEvent('dialog', {'dialog': {'guid': newGuid}});
+          parent.emitEvent('dialog', {
+            'dialog': {'guid': newGuid},
+          });
         }
       } else {
         // Fallback for objects we haven't mapped yet

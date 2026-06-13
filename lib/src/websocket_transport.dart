@@ -31,15 +31,20 @@ class WebSocketTransport implements Transport {
 
   @override
   void send(Map<String, dynamic> message) {
-    _ws.add(jsonEncode(message, toEncodable: (dynamic item) {
-      if (item == null) return null;
-      try {
-        if (item is Enum) return (item as dynamic).value;
-        return item.toJson();
-      } catch (_) {
-        return item.toString();
-      }
-    }));
+    _ws.add(
+      jsonEncode(
+        message,
+        toEncodable: (dynamic item) {
+          if (item == null) return null;
+          try {
+            if (item is Enum) return (item as dynamic).value;
+            return item.toJson();
+          } catch (_) {
+            return item.toString();
+          }
+        },
+      ),
+    );
   }
 
   @override

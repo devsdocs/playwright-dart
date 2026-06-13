@@ -69,15 +69,18 @@ class StdioTransport implements Transport {
 
   @override
   void send(Map<String, dynamic> message) {
-    final messageStr = jsonEncode(message, toEncodable: (dynamic item) {
-      if (item == null) return null;
-      try {
-        if (item is Enum) return (item as dynamic).value;
-        return item.toJson();
-      } catch (_) {
-        return item.toString();
-      }
-    });
+    final messageStr = jsonEncode(
+      message,
+      toEncodable: (dynamic item) {
+        if (item == null) return null;
+        try {
+          if (item is Enum) return (item as dynamic).value;
+          return item.toJson();
+        } catch (_) {
+          return item.toString();
+        }
+      },
+    );
     final messageBytes = utf8.encode(messageStr);
 
     final lengthBytes = ByteData(4);

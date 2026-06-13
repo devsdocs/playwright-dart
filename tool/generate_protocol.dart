@@ -8,13 +8,28 @@ void main() async {
 
   List<dynamic> files = await getAllProtocolYml();
 
+  final cacheDir = Directory('.protocol_cache');
+  if (!cacheDir.existsSync()) {
+    cacheDir.createSync();
+  }
+
   print('Fetching ${files.length} spec files...');
   for (final file in files) {
     if (file['name'].toString().endsWith('.yml')) {
-      final downloadUrl = file['download_url'];
-      final fileReq = await HttpClient().getUrl(Uri.parse(downloadUrl));
-      final fileRes = await fileReq.close();
-      final content = await fileRes.transform(const Utf8Decoder()).join();
+      final name = file['name'];
+      final cachedYml = File('.protocol_cache/$name');
+      String content;
+
+      if (cachedYml.existsSync()) {
+        content = cachedYml.readAsStringSync();
+      } else {
+        final downloadUrl = file['download_url'];
+        final fileReq = await HttpClient().getUrl(Uri.parse(downloadUrl));
+        final fileRes = await fileReq.close();
+        content = await fileRes.transform(const Utf8Decoder()).join();
+        cachedYml.writeAsStringSync(content);
+      }
+
       final yaml = loadYaml(content) as YamlMap;
       for (final key in yaml.keys) {
         protocol[key.toString()] = yaml[key];

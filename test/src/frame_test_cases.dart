@@ -9,7 +9,7 @@ void main() {
 
       // Wait for iframe to load
       await page.waitForSelector('iframe');
-      
+
       // In Playwright Dart, mainFrame.childFrames might not be exposed synchronously,
       // but we can query the frame using JS or locator.
       final frameElement = page.locator('iframe');
@@ -26,11 +26,11 @@ void main() {
       // Let's check if frameLocator is implemented, otherwise just test frame presence.
       // Assuming frameLocator is not yet on Page, we will skip frameLocator specific tests
       // or just test evaluate.
-      
+
       final buttonCount = await page.evaluate('''() => {
         return document.querySelector('iframe').contentDocument.querySelectorAll('#btn').length;
       }''');
-      
+
       expect(buttonCount, equals(1));
     });
   });

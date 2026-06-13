@@ -12,7 +12,7 @@ void main() {
             value: 'my-value',
             domain: 'example.com',
             path: '/',
-          )
+          ),
         ]);
 
         final cookies = await ctx.cookies(urls: ['https://example.com']);
@@ -39,7 +39,7 @@ void main() {
             value: '123',
             domain: 'example.com',
             path: '/',
-          )
+          ),
         ]);
 
         final cookies1 = await ctx1.cookies(urls: ['https://example.com']);

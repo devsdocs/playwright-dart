@@ -29,41 +29,63 @@ void main() {
       await firstCheckbox.check();
 
       // Verify it has the completed class
-      final className = await page.locator('.todo-list li:first-child').evaluate("el => el.className");
+      final className = await page
+          .locator('.todo-list li:first-child')
+          .evaluate("el => el.className");
       expect(className, contains('completed'));
 
       // Filter to show only active
       await page.locator('a[href="#/active"]').click();
-      
+
       // Wait for filtering to apply
       await Future.delayed(Duration(milliseconds: 500));
-      
-      expect(await page.locator('.todo-list li:visible').evaluateAll('els => els.length'), equals(1));
-      expect(await page.locator('.todo-list li:visible').textContent(), contains('Write more tests'));
+
+      expect(
+        await page
+            .locator('.todo-list li:visible')
+            .evaluateAll('els => els.length'),
+        equals(1),
+      );
+      expect(
+        await page.locator('.todo-list li:visible').textContent(),
+        contains('Write more tests'),
+      );
 
       // Clear completed
       await page.locator('.clear-completed').click();
-      
+
       // Go back to all
       await page.locator('a[href="#/"]').click();
       await Future.delayed(Duration(milliseconds: 500));
-      expect(await page.locator('.todo-list li:visible').evaluateAll('els => els.length'), equals(1));
-      expect(await page.locator('.todo-list li:visible').textContent(), contains('Write more tests'));
+      expect(
+        await page
+            .locator('.todo-list li:visible')
+            .evaluateAll('els => els.length'),
+        equals(1),
+      );
+      expect(
+        await page.locator('.todo-list li:visible').textContent(),
+        contains('Write more tests'),
+      );
     }, timeout: Timeout(Duration(seconds: 45)));
 
-    test('Playwright Dev: Navigation and Search', (page) async {
-      await page.goto('https://playwright.dev/');
-      
-      // Check title
-      final title = await page.title();
-      expect(title, contains('Playwright'));
+    test(
+      'Playwright Dev: Navigation and Search',
+      (page) async {
+        await page.goto('https://playwright.dev/');
 
-      // Click "Get started"
-      await page.locator('text=Get started').click();
+        // Check title
+        final title = await page.title();
+        expect(title, contains('Playwright'));
 
-      // Verify navigation to intro page
-      final currentUrl = await page.evaluate('() => window.location.href');
-      expect(currentUrl, contains('/docs/intro'));
-    }, timeout: Timeout(Duration(seconds: 45)));
+        // Click "Get started"
+        await page.locator('text=Get started').click();
+
+        // Verify navigation to intro page
+        final currentUrl = await page.evaluate('() => window.location.href');
+        expect(currentUrl, contains('/docs/intro'));
+      },
+      timeout: Timeout(Duration(seconds: 45)),
+    );
   });
 }

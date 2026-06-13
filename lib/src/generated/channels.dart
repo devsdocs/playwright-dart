@@ -4608,7 +4608,9 @@ class SetNetworkCookie {
     return SetNetworkCookie(
       crHasCrossSiteAncestor: json['_crHasCrossSiteAncestor'],
       domain: json['domain'],
-      expires: json['expires'] == null ? null : (json['expires'] as num).toDouble(),
+      expires: json['expires'] == null
+          ? null
+          : (json['expires'] as num).toDouble(),
       httpOnly: json['httpOnly'],
       name: (json['name'])!,
       partitionKey: json['partitionKey'],
