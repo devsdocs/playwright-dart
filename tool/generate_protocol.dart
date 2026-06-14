@@ -174,10 +174,10 @@ void main() async {
           final evName = evEntry.key;
           final evDef = evEntry.value as Map<String, dynamic>?;
           if (evDef != null && evDef.containsKey('parameters')) {
-            extractEnumsRecursive(
-              evDef['parameters'],
-              '$name${capitalize(toCamelCase(evName))}Event',
-            );
+            final eventName = '$name${capitalize(toCamelCase(evName))}Event';
+            final paramsMap = evDef['parameters'] as Map<String, dynamic>;
+            extractEnumsRecursive(paramsMap, eventName);
+            syntheticStructs.add({'name': eventName, 'properties': paramsMap});
           }
         }
       }
@@ -430,9 +430,15 @@ void main() async {
             !type.contains('double') &&
             !type.contains('bool') &&
             !type.contains('Map')) {
+          final innerType = type.substring(
+            5,
+            type.length - (type.endsWith('?') ? 2 : 1),
+          );
           if (type.contains('Base') || type.contains('ChannelOwner')) {
             valStr =
                 '$name${nullable ? "?" : ""}.map((e) => {\'guid\': e.guid}).toList()';
+          } else if (knownEnums.contains(innerType)) {
+            valStr = '$name${nullable ? "?" : ""}.map((e) => e.value).toList()';
           } else {
             valStr =
                 '$name${nullable ? "?" : ""}.map((e) => e.toJson()).toList()';
@@ -444,7 +450,7 @@ void main() async {
             !type.startsWith('int') &&
             !type.startsWith('double') &&
             !type.startsWith('bool')) {
-          if (type.contains('Enum')) {
+          if (knownEnums.contains(type.replaceAll('?', ''))) {
             valStr = '$name${nullable ? "?" : ""}.value';
           } else if (type.contains('Base') || type.contains('ChannelOwner')) {
             valStr = '{\'guid\': $name${nullable ? "?" : ""}.guid}';

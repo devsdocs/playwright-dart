@@ -3,8 +3,8 @@ import '../core/browser_context.dart';
 
 /// Interface for AndroidDevice
 abstract interface class AndroidDevice {
-  Stream<dynamic> get onWebViewRemoved;
-  Stream<dynamic> get onWebViewAdded;
+  Stream<AndroidDeviceWebViewRemovedEvent> get onWebViewRemoved;
+  Stream<AndroidDeviceWebViewAddedEvent> get onWebViewAdded;
   Stream<AndroidDevice> get onClose;
   Future<void> wait(
     AndroidSelector androidSelector, {
@@ -85,17 +85,17 @@ abstract interface class AndroidDevice {
 
 class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
   @override
-  Stream<dynamic> get onWebViewRemoved {
+  Stream<AndroidDeviceWebViewRemovedEvent> get onWebViewRemoved {
     return onEvent
         .where((e) => e['event'] == 'webViewRemoved')
-        .map((e) => e['params']['socketName']);
+        .map((e) => AndroidDeviceWebViewRemovedEvent.fromJson(e['params']));
   }
 
   @override
-  Stream<dynamic> get onWebViewAdded {
+  Stream<AndroidDeviceWebViewAddedEvent> get onWebViewAdded {
     return onEvent
         .where((e) => e['event'] == 'webViewAdded')
-        .map((e) => e['params']['webView']);
+        .map((e) => AndroidDeviceWebViewAddedEvent.fromJson(e['params']));
   }
 
   @override

@@ -936,6 +936,44 @@ class AndroidDeviceShellResult {
   }
 }
 
+class AndroidDeviceWebViewAddedEvent {
+  final AndroidWebView webView;
+
+  AndroidDeviceWebViewAddedEvent({required this.webView});
+
+  factory AndroidDeviceWebViewAddedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return AndroidDeviceWebViewAddedEvent(
+      webView: (json[r'webView'] == null
+          ? null
+          : AndroidWebView.fromJson(json[r'webView'], connection: connection))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'webView': webView.toJson()};
+  }
+}
+
+class AndroidDeviceWebViewRemovedEvent {
+  final String socketName;
+
+  AndroidDeviceWebViewRemovedEvent({required this.socketName});
+
+  factory AndroidDeviceWebViewRemovedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return AndroidDeviceWebViewRemovedEvent(socketName: (json[r'socketName'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'socketName': socketName};
+  }
+}
+
 class AndroidDevicesResult {
   final List<AndroidDeviceBase> devices;
 
@@ -1204,6 +1242,23 @@ class AndroidSelectorHasDescendant {
   }
 }
 
+class AndroidSocketDataEvent {
+  final String data;
+
+  AndroidSocketDataEvent({required this.data});
+
+  factory AndroidSocketDataEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return AndroidSocketDataEvent(data: (json[r'data'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'data': data};
+  }
+}
+
 class AndroidWebView {
   final int pid;
   final String pkg;
@@ -1334,6 +1389,66 @@ class BrowserContextAddInitScriptResult {
   }
 }
 
+class BrowserContextBindingCallEvent {
+  final BindingCallBase binding;
+
+  BrowserContextBindingCallEvent({required this.binding});
+
+  factory BrowserContextBindingCallEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextBindingCallEvent(
+      binding: (connection != null && json[r'binding'] != null
+          ? ChannelOwner.from<BindingCallBase>(connection, json[r'binding'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'binding': {'guid': binding.guid},
+    };
+  }
+}
+
+class BrowserContextConsoleEvent {
+  final ConsoleMessage mixinValue;
+  final PageBase? page;
+  final WorkerBase? worker;
+
+  BrowserContextConsoleEvent({
+    required this.mixinValue,
+    this.page,
+    this.worker,
+  });
+
+  factory BrowserContextConsoleEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextConsoleEvent(
+      mixinValue: (json[r'$mixin'] == null
+          ? null
+          : ConsoleMessage.fromJson(json[r'$mixin'], connection: connection))!,
+      page: connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null,
+      worker: connection != null && json[r'worker'] != null
+          ? ChannelOwner.from<WorkerBase>(connection, json[r'worker'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'$mixin': mixinValue.toJson(),
+      if (page != null) r'page': {'guid': page?.guid},
+      if (worker != null) r'worker': {'guid': worker?.guid},
+    };
+  }
+}
+
 class BrowserContextCookiesResult {
   final List<NetworkCookie> cookies;
 
@@ -1422,6 +1537,52 @@ class BrowserContextCreateTempFilesResult {
   }
 }
 
+class BrowserContextDialogEvent {
+  final DialogBase dialog;
+
+  BrowserContextDialogEvent({required this.dialog});
+
+  factory BrowserContextDialogEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextDialogEvent(
+      dialog: (connection != null && json[r'dialog'] != null
+          ? ChannelOwner.from<DialogBase>(connection, json[r'dialog'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'dialog': {'guid': dialog.guid},
+    };
+  }
+}
+
+class BrowserContextEvent {
+  final BrowserContextBase context;
+
+  BrowserContextEvent({required this.context});
+
+  factory BrowserContextEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextEvent(
+      context: (connection != null && json[r'context'] != null
+          ? ChannelOwner.from<BrowserContextBase>(connection, json[r'context'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'context': {'guid': context.guid},
+    };
+  }
+}
+
 class BrowserContextExposeBindingResult {
   final DisposableBase disposable;
 
@@ -1491,6 +1652,46 @@ class BrowserContextNewPageResult {
   }
 }
 
+class BrowserContextPageErrorEvent {
+  final SerializedError error;
+  final BrowserContextPageErrorEventLocation location;
+  final PageBase page;
+
+  BrowserContextPageErrorEvent({
+    required this.error,
+    required this.location,
+    required this.page,
+  });
+
+  factory BrowserContextPageErrorEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextPageErrorEvent(
+      error: (json[r'error'] == null
+          ? null
+          : SerializedError.fromJson(json[r'error'], connection: connection))!,
+      location: (json[r'location'] == null
+          ? null
+          : BrowserContextPageErrorEventLocation.fromJson(
+              json[r'location'],
+              connection: connection,
+            ))!,
+      page: (connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'error': error.toJson(),
+      r'location': location.toJson(),
+      r'page': {'guid': page.guid},
+    };
+  }
+}
+
 class BrowserContextPageErrorEventLocation {
   final int column;
   final int line;
@@ -1515,6 +1716,252 @@ class BrowserContextPageErrorEventLocation {
 
   Map<String, dynamic> toJson() {
     return {r'column': column, r'line': line, r'url': url};
+  }
+}
+
+class BrowserContextPageEvent {
+  final PageBase page;
+
+  BrowserContextPageEvent({required this.page});
+
+  factory BrowserContextPageEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextPageEvent(
+      page: (connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'page': {'guid': page.guid},
+    };
+  }
+}
+
+class BrowserContextRecorderEventEvent {
+  final String code;
+  final dynamic data;
+  final BrowserContextRecorderEventEventEventEnum event;
+  final PageBase page;
+
+  BrowserContextRecorderEventEvent({
+    required this.code,
+    this.data,
+    required this.event,
+    required this.page,
+  });
+
+  factory BrowserContextRecorderEventEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextRecorderEventEvent(
+      code: (json[r'code'])!,
+      data: json[r'data'],
+      event: (json[r'event'] == null
+          ? null
+          : BrowserContextRecorderEventEventEventEnum.values.firstWhere(
+              (e) => e.value == json[r'event'],
+            ))!,
+      page: (connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'code': code,
+      if (data != null) r'data': data,
+      r'event': event.value,
+      r'page': {'guid': page.guid},
+    };
+  }
+}
+
+class BrowserContextRequestEvent {
+  final PageBase? page;
+  final RequestBase request;
+
+  BrowserContextRequestEvent({this.page, required this.request});
+
+  factory BrowserContextRequestEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextRequestEvent(
+      page: connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null,
+      request: (connection != null && json[r'request'] != null
+          ? ChannelOwner.from<RequestBase>(connection, json[r'request'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (page != null) r'page': {'guid': page?.guid},
+      r'request': {'guid': request.guid},
+    };
+  }
+}
+
+class BrowserContextRequestFailedEvent {
+  final String? failureText;
+  final PageBase? page;
+  final RequestBase request;
+  final double responseEndTiming;
+
+  BrowserContextRequestFailedEvent({
+    this.failureText,
+    this.page,
+    required this.request,
+    required this.responseEndTiming,
+  });
+
+  factory BrowserContextRequestFailedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextRequestFailedEvent(
+      failureText: json[r'failureText'],
+      page: connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null,
+      request: (connection != null && json[r'request'] != null
+          ? ChannelOwner.from<RequestBase>(connection, json[r'request'])
+          : null)!,
+      responseEndTiming: ((json[r'responseEndTiming'] as num?)?.toDouble())!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (failureText != null) r'failureText': failureText,
+      if (page != null) r'page': {'guid': page?.guid},
+      r'request': {'guid': request.guid},
+      r'responseEndTiming': responseEndTiming,
+    };
+  }
+}
+
+class BrowserContextRequestFinishedEvent {
+  final PageBase? page;
+  final RequestBase request;
+  final ResponseBase? response;
+  final double responseEndTiming;
+
+  BrowserContextRequestFinishedEvent({
+    this.page,
+    required this.request,
+    this.response,
+    required this.responseEndTiming,
+  });
+
+  factory BrowserContextRequestFinishedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextRequestFinishedEvent(
+      page: connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null,
+      request: (connection != null && json[r'request'] != null
+          ? ChannelOwner.from<RequestBase>(connection, json[r'request'])
+          : null)!,
+      response: connection != null && json[r'response'] != null
+          ? ChannelOwner.from<ResponseBase>(connection, json[r'response'])
+          : null,
+      responseEndTiming: ((json[r'responseEndTiming'] as num?)?.toDouble())!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (page != null) r'page': {'guid': page?.guid},
+      r'request': {'guid': request.guid},
+      if (response != null) r'response': {'guid': response?.guid},
+      r'responseEndTiming': responseEndTiming,
+    };
+  }
+}
+
+class BrowserContextResponseEvent {
+  final PageBase? page;
+  final ResponseBase response;
+
+  BrowserContextResponseEvent({this.page, required this.response});
+
+  factory BrowserContextResponseEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextResponseEvent(
+      page: connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null,
+      response: (connection != null && json[r'response'] != null
+          ? ChannelOwner.from<ResponseBase>(connection, json[r'response'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (page != null) r'page': {'guid': page?.guid},
+      r'response': {'guid': response.guid},
+    };
+  }
+}
+
+class BrowserContextRouteEvent {
+  final RouteBase route;
+
+  BrowserContextRouteEvent({required this.route});
+
+  factory BrowserContextRouteEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextRouteEvent(
+      route: (connection != null && json[r'route'] != null
+          ? ChannelOwner.from<RouteBase>(connection, json[r'route'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'route': {'guid': route.guid},
+    };
+  }
+}
+
+class BrowserContextServiceWorkerEvent {
+  final WorkerBase worker;
+
+  BrowserContextServiceWorkerEvent({required this.worker});
+
+  factory BrowserContextServiceWorkerEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextServiceWorkerEvent(
+      worker: (connection != null && json[r'worker'] != null
+          ? ChannelOwner.from<WorkerBase>(connection, json[r'worker'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'worker': {'guid': worker.guid},
+    };
   }
 }
 
@@ -1713,6 +2160,32 @@ class BrowserContextStorageStateResult {
     return {
       r'cookies': cookies.map((e) => e.toJson()).toList(),
       r'origins': origins.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class BrowserContextWebSocketRouteEvent {
+  final WebSocketRouteBase webSocketRoute;
+
+  BrowserContextWebSocketRouteEvent({required this.webSocketRoute});
+
+  factory BrowserContextWebSocketRouteEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextWebSocketRouteEvent(
+      webSocketRoute: (connection != null && json[r'webSocketRoute'] != null
+          ? ChannelOwner.from<WebSocketRouteBase>(
+              connection,
+              json[r'webSocketRoute'],
+            )
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'webSocketRoute': {'guid': webSocketRoute.guid},
     };
   }
 }
@@ -2077,6 +2550,27 @@ class BrowserTypeLaunchResult {
     return {
       r'browser': {'guid': browser.guid},
     };
+  }
+}
+
+class CDPSessionEventEvent {
+  final String method;
+  final dynamic params;
+
+  CDPSessionEventEvent({required this.method, this.params});
+
+  factory CDPSessionEventEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return CDPSessionEventEvent(
+      method: (json[r'method'])!,
+      params: json[r'params'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'method': method, if (params != null) r'params': params};
   }
 }
 
@@ -2743,6 +3237,149 @@ class ContextOptionsViewport {
   }
 }
 
+class DebugControllerInspectRequestedEvent {
+  final String ariaSnapshot;
+  final String locator;
+  final String selector;
+
+  DebugControllerInspectRequestedEvent({
+    required this.ariaSnapshot,
+    required this.locator,
+    required this.selector,
+  });
+
+  factory DebugControllerInspectRequestedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebugControllerInspectRequestedEvent(
+      ariaSnapshot: (json[r'ariaSnapshot'])!,
+      locator: (json[r'locator'])!,
+      selector: (json[r'selector'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'ariaSnapshot': ariaSnapshot,
+      r'locator': locator,
+      r'selector': selector,
+    };
+  }
+}
+
+class DebugControllerPausedEvent {
+  final bool paused;
+
+  DebugControllerPausedEvent({required this.paused});
+
+  factory DebugControllerPausedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebugControllerPausedEvent(paused: (json[r'paused'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'paused': paused};
+  }
+}
+
+class DebugControllerSetModeRequestedEvent {
+  final String mode;
+
+  DebugControllerSetModeRequestedEvent({required this.mode});
+
+  factory DebugControllerSetModeRequestedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebugControllerSetModeRequestedEvent(mode: (json[r'mode'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'mode': mode};
+  }
+}
+
+class DebugControllerSourceChangedEvent {
+  final List<String>? actions;
+  final String? footer;
+  final String? header;
+  final String text;
+
+  DebugControllerSourceChangedEvent({
+    this.actions,
+    this.footer,
+    this.header,
+    required this.text,
+  });
+
+  factory DebugControllerSourceChangedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebugControllerSourceChangedEvent(
+      actions: (json[r'actions'] as List?)?.cast<String>(),
+      footer: json[r'footer'],
+      header: json[r'header'],
+      text: (json[r'text'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (actions != null) r'actions': actions,
+      if (footer != null) r'footer': footer,
+      if (header != null) r'header': header,
+      r'text': text,
+    };
+  }
+}
+
+class DebugControllerStateChangedEvent {
+  final int pageCount;
+
+  DebugControllerStateChangedEvent({required this.pageCount});
+
+  factory DebugControllerStateChangedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebugControllerStateChangedEvent(pageCount: (json[r'pageCount'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'pageCount': pageCount};
+  }
+}
+
+class DebuggerPausedStateChangedEvent {
+  final DebuggerPausedStateChangedEventPausedDetails? pausedDetails;
+
+  DebuggerPausedStateChangedEvent({this.pausedDetails});
+
+  factory DebuggerPausedStateChangedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebuggerPausedStateChangedEvent(
+      pausedDetails: json[r'pausedDetails'] == null
+          ? null
+          : DebuggerPausedStateChangedEventPausedDetails.fromJson(
+              json[r'pausedDetails'],
+              connection: connection,
+            ),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (pausedDetails != null) r'pausedDetails': pausedDetails?.toJson(),
+    };
+  }
+}
+
 class DebuggerPausedStateChangedEventPausedDetails {
   final DebuggerPausedStateChangedEventPausedDetailsLocation location;
   final String? stack;
@@ -2857,6 +3494,27 @@ class ElectronApplicationBrowserWindowResult {
     return {
       r'handle': {'guid': handle.guid},
     };
+  }
+}
+
+class ElectronApplicationConsoleEvent {
+  final ConsoleMessage mixinValue;
+
+  ElectronApplicationConsoleEvent({required this.mixinValue});
+
+  factory ElectronApplicationConsoleEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElectronApplicationConsoleEvent(
+      mixinValue: (json[r'$mixin'] == null
+          ? null
+          : ConsoleMessage.fromJson(json[r'$mixin'], connection: connection))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'$mixin': mixinValue.toJson()};
   }
 }
 
@@ -4196,6 +4854,74 @@ class FrameIsVisibleResult {
   }
 }
 
+class FrameLoadstateEvent {
+  final LifecycleEvent? add;
+  final LifecycleEvent? remove;
+
+  FrameLoadstateEvent({this.add, this.remove});
+
+  factory FrameLoadstateEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameLoadstateEvent(
+      add: json[r'add'] == null
+          ? null
+          : LifecycleEvent.values.firstWhere((e) => e.value == json[r'add']),
+      remove: json[r'remove'] == null
+          ? null
+          : LifecycleEvent.values.firstWhere((e) => e.value == json[r'remove']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (add != null) r'add': add?.value,
+      if (remove != null) r'remove': remove?.value,
+    };
+  }
+}
+
+class FrameNavigatedEvent {
+  final String? error;
+  final String name;
+  final FrameNavigatedEventNewDocument? newDocument;
+  final String url;
+
+  FrameNavigatedEvent({
+    this.error,
+    required this.name,
+    this.newDocument,
+    required this.url,
+  });
+
+  factory FrameNavigatedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameNavigatedEvent(
+      error: json[r'error'],
+      name: (json[r'name'])!,
+      newDocument: json[r'newDocument'] == null
+          ? null
+          : FrameNavigatedEventNewDocument.fromJson(
+              json[r'newDocument'],
+              connection: connection,
+            ),
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (error != null) r'error': error,
+      r'name': name,
+      if (newDocument != null) r'newDocument': newDocument?.toJson(),
+      r'url': url,
+    };
+  }
+}
+
 class FrameNavigatedEventNewDocument {
   final RequestBase? request;
 
@@ -4793,6 +5519,57 @@ class JSHandleJsonValueResult {
   }
 }
 
+class JSHandlePreviewUpdatedEvent {
+  final String preview;
+
+  JSHandlePreviewUpdatedEvent({required this.preview});
+
+  factory JSHandlePreviewUpdatedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return JSHandlePreviewUpdatedEvent(preview: (json[r'preview'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'preview': preview};
+  }
+}
+
+class JsonPipeClosedEvent {
+  final String? reason;
+
+  JsonPipeClosedEvent({this.reason});
+
+  factory JsonPipeClosedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return JsonPipeClosedEvent(reason: json[r'reason']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {if (reason != null) r'reason': reason};
+  }
+}
+
+class JsonPipeMessageEvent {
+  final dynamic message;
+
+  JsonPipeMessageEvent({this.message});
+
+  factory JsonPipeMessageEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return JsonPipeMessageEvent(message: json[r'message']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {if (message != null) r'message': message};
+  }
+}
+
 class LaunchOptions {
   final List<String>? args;
   final String? artifactsDir;
@@ -5266,6 +6043,29 @@ class PageAddInitScriptResult {
   }
 }
 
+class PageBindingCallEvent {
+  final BindingCallBase binding;
+
+  PageBindingCallEvent({required this.binding});
+
+  factory PageBindingCallEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageBindingCallEvent(
+      binding: (connection != null && json[r'binding'] != null
+          ? ChannelOwner.from<BindingCallBase>(connection, json[r'binding'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'binding': {'guid': binding.guid},
+    };
+  }
+}
+
 class PageConsoleMessagesResult {
   final List<PageConsoleMessagesResultMessagesItems> messages;
 
@@ -5312,6 +6112,39 @@ class PageConsoleMessagesResultMessagesItems {
 
   Map<String, dynamic> toJson() {
     return {r'$mixin': mixinValue.toJson()};
+  }
+}
+
+class PageDownloadEvent {
+  final ArtifactBase artifact;
+  final String suggestedFilename;
+  final String url;
+
+  PageDownloadEvent({
+    required this.artifact,
+    required this.suggestedFilename,
+    required this.url,
+  });
+
+  factory PageDownloadEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageDownloadEvent(
+      artifact: (connection != null && json[r'artifact'] != null
+          ? ChannelOwner.from<ArtifactBase>(connection, json[r'artifact'])
+          : null)!,
+      suggestedFilename: (json[r'suggestedFilename'])!,
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'artifact': {'guid': artifact.guid},
+      r'suggestedFilename': suggestedFilename,
+      r'url': url,
+    };
   }
 }
 
@@ -5407,6 +6240,78 @@ class PageExposeBindingResult {
   }
 }
 
+class PageFileChooserEvent {
+  final ElementHandleBase element;
+  final bool isMultiple;
+
+  PageFileChooserEvent({required this.element, required this.isMultiple});
+
+  factory PageFileChooserEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageFileChooserEvent(
+      element: (connection != null && json[r'element'] != null
+          ? ChannelOwner.from<ElementHandleBase>(connection, json[r'element'])
+          : null)!,
+      isMultiple: (json[r'isMultiple'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'element': {'guid': element.guid},
+      r'isMultiple': isMultiple,
+    };
+  }
+}
+
+class PageFrameAttachedEvent {
+  final FrameBase frame;
+
+  PageFrameAttachedEvent({required this.frame});
+
+  factory PageFrameAttachedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageFrameAttachedEvent(
+      frame: (connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'frame': {'guid': frame.guid},
+    };
+  }
+}
+
+class PageFrameDetachedEvent {
+  final FrameBase frame;
+
+  PageFrameDetachedEvent({required this.frame});
+
+  factory PageFrameDetachedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageFrameDetachedEvent(
+      frame: (connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'frame': {'guid': frame.guid},
+    };
+  }
+}
+
 class PageGoBackResult {
   final ResponseBase? response;
 
@@ -5450,6 +6355,23 @@ class PageGoForwardResult {
     return {
       if (response != null) r'response': {'guid': response?.guid},
     };
+  }
+}
+
+class PageLocatorHandlerTriggeredEvent {
+  final int uid;
+
+  PageLocatorHandlerTriggeredEvent({required this.uid});
+
+  factory PageLocatorHandlerTriggeredEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageLocatorHandlerTriggeredEvent(uid: (json[r'uid'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'uid': uid};
   }
 }
 
@@ -5603,6 +6525,60 @@ class PageRequestsResult {
   Map<String, dynamic> toJson() {
     return {
       r'requests': requests.map((e) => {'guid': e.guid}).toList(),
+    };
+  }
+}
+
+class PageRouteEvent {
+  final RouteBase route;
+
+  PageRouteEvent({required this.route});
+
+  factory PageRouteEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageRouteEvent(
+      route: (connection != null && json[r'route'] != null
+          ? ChannelOwner.from<RouteBase>(connection, json[r'route'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'route': {'guid': route.guid},
+    };
+  }
+}
+
+class PageScreencastFrameEvent {
+  final String data;
+  final int viewportHeight;
+  final int viewportWidth;
+
+  PageScreencastFrameEvent({
+    required this.data,
+    required this.viewportHeight,
+    required this.viewportWidth,
+  });
+
+  factory PageScreencastFrameEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageScreencastFrameEvent(
+      data: (json[r'data'])!,
+      viewportHeight: (json[r'viewportHeight'])!,
+      viewportWidth: (json[r'viewportWidth'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'data': data,
+      r'viewportHeight': viewportHeight,
+      r'viewportWidth': viewportWidth,
     };
   }
 }
@@ -6019,6 +6995,30 @@ class PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems {
   }
 }
 
+class PageViewportSizeChangedEvent {
+  final PageViewportSizeChangedEventViewportSize? viewportSize;
+
+  PageViewportSizeChangedEvent({this.viewportSize});
+
+  factory PageViewportSizeChangedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageViewportSizeChangedEvent(
+      viewportSize: json[r'viewportSize'] == null
+          ? null
+          : PageViewportSizeChangedEventViewportSize.fromJson(
+              json[r'viewportSize'],
+              connection: connection,
+            ),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {if (viewportSize != null) r'viewportSize': viewportSize?.toJson()};
+  }
+}
+
 class PageViewportSizeChangedEventViewportSize {
   final int height;
   final int width;
@@ -6040,6 +7040,78 @@ class PageViewportSizeChangedEventViewportSize {
 
   Map<String, dynamic> toJson() {
     return {r'height': height, r'width': width};
+  }
+}
+
+class PageWebSocketEvent {
+  final WebSocketBase webSocket;
+
+  PageWebSocketEvent({required this.webSocket});
+
+  factory PageWebSocketEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageWebSocketEvent(
+      webSocket: (connection != null && json[r'webSocket'] != null
+          ? ChannelOwner.from<WebSocketBase>(connection, json[r'webSocket'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'webSocket': {'guid': webSocket.guid},
+    };
+  }
+}
+
+class PageWebSocketRouteEvent {
+  final WebSocketRouteBase webSocketRoute;
+
+  PageWebSocketRouteEvent({required this.webSocketRoute});
+
+  factory PageWebSocketRouteEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageWebSocketRouteEvent(
+      webSocketRoute: (connection != null && json[r'webSocketRoute'] != null
+          ? ChannelOwner.from<WebSocketRouteBase>(
+              connection,
+              json[r'webSocketRoute'],
+            )
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'webSocketRoute': {'guid': webSocketRoute.guid},
+    };
+  }
+}
+
+class PageWorkerEvent {
+  final WorkerBase worker;
+
+  PageWorkerEvent({required this.worker});
+
+  factory PageWorkerEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageWorkerEvent(
+      worker: (connection != null && json[r'worker'] != null
+          ? ChannelOwner.from<WorkerBase>(connection, json[r'worker'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'worker': {'guid': worker.guid},
+    };
   }
 }
 
@@ -7166,6 +8238,71 @@ class ShowActionsOptions {
   }
 }
 
+class SocksSupportSocksClosedEvent {
+  final String uid;
+
+  SocksSupportSocksClosedEvent({required this.uid});
+
+  factory SocksSupportSocksClosedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SocksSupportSocksClosedEvent(uid: (json[r'uid'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'uid': uid};
+  }
+}
+
+class SocksSupportSocksDataEvent {
+  final String data;
+  final String uid;
+
+  SocksSupportSocksDataEvent({required this.data, required this.uid});
+
+  factory SocksSupportSocksDataEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SocksSupportSocksDataEvent(
+      data: (json[r'data'])!,
+      uid: (json[r'uid'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'data': data, r'uid': uid};
+  }
+}
+
+class SocksSupportSocksRequestedEvent {
+  final String host;
+  final int port;
+  final String uid;
+
+  SocksSupportSocksRequestedEvent({
+    required this.host,
+    required this.port,
+    required this.uid,
+  });
+
+  factory SocksSupportSocksRequestedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return SocksSupportSocksRequestedEvent(
+      host: (json[r'host'])!,
+      port: (json[r'port'])!,
+      uid: (json[r'uid'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'host': host, r'port': port, r'uid': uid};
+  }
+}
+
 class StackFrame {
   final int column;
   final String file;
@@ -7383,6 +8520,196 @@ class URLPattern {
       r'search': search,
       r'username': username,
     };
+  }
+}
+
+class WebSocketFrameReceivedEvent {
+  final String data;
+  final int opcode;
+
+  WebSocketFrameReceivedEvent({required this.data, required this.opcode});
+
+  factory WebSocketFrameReceivedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketFrameReceivedEvent(
+      data: (json[r'data'])!,
+      opcode: (json[r'opcode'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'data': data, r'opcode': opcode};
+  }
+}
+
+class WebSocketFrameSentEvent {
+  final String data;
+  final int opcode;
+
+  WebSocketFrameSentEvent({required this.data, required this.opcode});
+
+  factory WebSocketFrameSentEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketFrameSentEvent(
+      data: (json[r'data'])!,
+      opcode: (json[r'opcode'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'data': data, r'opcode': opcode};
+  }
+}
+
+class WebSocketRouteClosePageEvent {
+  final int? code;
+  final String? reason;
+  final bool wasClean;
+
+  WebSocketRouteClosePageEvent({
+    this.code,
+    this.reason,
+    required this.wasClean,
+  });
+
+  factory WebSocketRouteClosePageEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketRouteClosePageEvent(
+      code: json[r'code'],
+      reason: json[r'reason'],
+      wasClean: (json[r'wasClean'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (code != null) r'code': code,
+      if (reason != null) r'reason': reason,
+      r'wasClean': wasClean,
+    };
+  }
+}
+
+class WebSocketRouteCloseServerEvent {
+  final int? code;
+  final String? reason;
+  final bool wasClean;
+
+  WebSocketRouteCloseServerEvent({
+    this.code,
+    this.reason,
+    required this.wasClean,
+  });
+
+  factory WebSocketRouteCloseServerEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketRouteCloseServerEvent(
+      code: json[r'code'],
+      reason: json[r'reason'],
+      wasClean: (json[r'wasClean'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (code != null) r'code': code,
+      if (reason != null) r'reason': reason,
+      r'wasClean': wasClean,
+    };
+  }
+}
+
+class WebSocketRouteMessageFromPageEvent {
+  final bool isBase64;
+  final String message;
+
+  WebSocketRouteMessageFromPageEvent({
+    required this.isBase64,
+    required this.message,
+  });
+
+  factory WebSocketRouteMessageFromPageEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketRouteMessageFromPageEvent(
+      isBase64: (json[r'isBase64'])!,
+      message: (json[r'message'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'isBase64': isBase64, r'message': message};
+  }
+}
+
+class WebSocketRouteMessageFromServerEvent {
+  final bool isBase64;
+  final String message;
+
+  WebSocketRouteMessageFromServerEvent({
+    required this.isBase64,
+    required this.message,
+  });
+
+  factory WebSocketRouteMessageFromServerEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketRouteMessageFromServerEvent(
+      isBase64: (json[r'isBase64'])!,
+      message: (json[r'message'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'isBase64': isBase64, r'message': message};
+  }
+}
+
+class WebSocketSocketErrorEvent {
+  final String error;
+
+  WebSocketSocketErrorEvent({required this.error});
+
+  factory WebSocketSocketErrorEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketSocketErrorEvent(error: (json[r'error'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'error': error};
+  }
+}
+
+class WorkerConsoleEvent {
+  final ConsoleMessage mixinValue;
+
+  WorkerConsoleEvent({required this.mixinValue});
+
+  factory WorkerConsoleEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WorkerConsoleEvent(
+      mixinValue: (json[r'$mixin'] == null
+          ? null
+          : ConsoleMessage.fromJson(json[r'$mixin'], connection: connection))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'$mixin': mixinValue.toJson()};
   }
 }
 
