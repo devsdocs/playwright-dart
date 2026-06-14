@@ -7,18 +7,21 @@ void main() async {
   final Map<String, dynamic> protocol = {};
   final Map<String, List<String>> protocolGroups = {};
 
-  List<dynamic> files = await getAllProtocolYml();
+  final version = await getPlaywrightVersion();
+  print('Generating protocol for Playwright version $version...');
 
-  final cacheDir = Directory('.protocol_cache');
+  final cacheDir = Directory('.protocol_cache/$version');
   if (!cacheDir.existsSync()) {
-    cacheDir.createSync();
+    cacheDir.createSync(recursive: true);
   }
+
+  List<dynamic> files = await getAllProtocolYml(version);
 
   print('Fetching ${files.length} spec files...');
   for (final file in files) {
     if (file['name'].toString().endsWith('.yml')) {
       final name = file['name'].toString();
-      final cachedYml = File('.protocol_cache/$name');
+      final cachedYml = File('.protocol_cache/$version/$name');
       String content;
 
       if (cachedYml.existsSync()) {
@@ -686,9 +689,8 @@ void main() async {
   print('Generated ${outFile.path}');
 }
 
-Future<List<dynamic>> getAllProtocolYml() async {
-  final version = await getPlaywrightVersion();
-  final cacheFile = File('.protocol_cache.json');
+Future<List<dynamic>> getAllProtocolYml(String version) async {
+  final cacheFile = File('.protocol_cache/$version/files.json');
   if (cacheFile.existsSync()) {
     return jsonDecode(cacheFile.readAsStringSync());
   }
