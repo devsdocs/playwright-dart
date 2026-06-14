@@ -60,7 +60,9 @@ void main() async {
     final ctxOpts = mutableProtocol['ContextOptions'] as Map<String, dynamic>;
     if (ctxOpts.containsKey('properties')) {
       final props = ctxOpts['properties'] as Map<String, dynamic>;
-      props['recordHar'] = {'type': 'object?', '\$ref': 'RecordHarOptions'};
+      if (!props.containsKey('recordHar')) {
+        props['recordHar'] = {'type': 'object?', '\$ref': 'RecordHarOptions'};
+      }
     }
   }
 
