@@ -11,6 +11,7 @@ dynamic parseSerializedValue(SerializedValue value) {
     if (v == 'NaN') return double.nan;
     if (v == 'Infinity') return double.infinity;
     if (v == '-Infinity') return double.negativeInfinity;
+    if (v == '-0') return -0.0;
   }
   if (value.a != null) {
     return value.a!.map((e) => parseSerializedValue(e)).toList();
@@ -32,7 +33,13 @@ SerializedArgument serializeArgument(dynamic value) {
 SerializedValue serializeValue(dynamic value) {
   if (value == null) return SerializedValue(v: SerializedValueVEnum.undefined);
   if (value is int) return SerializedValue(n: value.toDouble());
-  if (value is double) return SerializedValue(n: value);
+  if (value is double) {
+    if (value.isNaN) return SerializedValue(v: SerializedValueVEnum.nan);
+    if (value == double.infinity) return SerializedValue(v: SerializedValueVEnum.infinity);
+    if (value == double.negativeInfinity) return SerializedValue(v: SerializedValueVEnum.minusInfinity);
+    if (value == 0.0 && value.isNegative) return SerializedValue(v: SerializedValueVEnum.minusZero);
+    return SerializedValue(n: value);
+  }
   if (value is bool) return SerializedValue(b: value);
   if (value is String) return SerializedValue(s: value);
   if (value is List) {

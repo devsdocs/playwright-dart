@@ -42,6 +42,34 @@ void main() {
       expect(result, equals('hello'));
     });
 
+    test('should evaluate returning NaN', (page) async {
+      final result = await page.evaluate('() => NaN');
+      expect(result, isNaN);
+    });
+
+    test('should evaluate returning Infinity', (page) async {
+      final result = await page.evaluate('() => Infinity');
+      expect(result, equals(double.infinity));
+    });
+
+    test('should evaluate returning -Infinity', (page) async {
+      final result = await page.evaluate('() => -Infinity');
+      expect(result, equals(double.negativeInfinity));
+    });
+
+    test('should evaluate returning -0', (page) async {
+      final result = await page.evaluate('() => -0');
+      expect(result, equals(-0.0));
+      expect(result.isNegative, isTrue);
+    });
+
+    test('should pass special numbers as arguments', (page) async {
+      expect(await page.evaluate('(a) => Number.isNaN(a)', double.nan), isTrue);
+      expect(await page.evaluate('(a) => a === Infinity', double.infinity), isTrue);
+      expect(await page.evaluate('(a) => a === -Infinity', double.negativeInfinity), isTrue);
+      expect(await page.evaluate('(a) => Object.is(a, -0)', -0.0), isTrue);
+    });
+
     test('should evaluate with DOM interaction', (page) async {
       await page.setContent('''
         <ul>
