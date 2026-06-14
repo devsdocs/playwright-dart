@@ -1,3 +1,7 @@
+## 3.2.2
+
+- **Documentation**: Fix README
+
 ## 3.2.1
 
 - **Fix**: Updated protocol generator to automatically and recursively inject `connection` bindings into nested object `.fromJson()` factories. This resolves initialization crashes caused by nested objects failing to obtain a valid channel connection.
