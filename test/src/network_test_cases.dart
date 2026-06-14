@@ -54,4 +54,62 @@ void main() {
       expect(text, equals('mocked'));
     });
   });
+
+  group('Response API', () {
+    test('should return basic properties', (page) async {
+      await page.route('**/test', (route) async {
+        await route.fulfill(status: 200, body: 'hello');
+      });
+      final responseFuture = page.waitForResponse(
+        (Response r) => r.url.contains('/test'),
+      );
+      await page.goto('http://localhost/test');
+      final response = await responseFuture;
+
+      expect(response, isNotNull);
+      expect(response.ok, isTrue);
+      expect(response.status, equals(200));
+      expect(response.statusText, equals('OK'));
+      expect(response.url, equals('http://localhost/test'));
+    });
+
+    test('should return response body and headers', (page) async {
+      await page.route('**/api/data', (route) async {
+        await route.fulfill(
+          status: 201,
+          headers: [
+            NameValue(name: 'content-type', value: 'application/json'),
+            NameValue(name: 'x-custom', value: 'my-value'),
+          ],
+          body: '{"message":"mocked"}',
+        );
+      });
+
+      final responseFuture = page.waitForResponse(
+        (Response r) => r.url.contains('/api/data'),
+      );
+      await page.setContent(
+        '<script>fetch("http://localhost/api/data");</script>',
+      );
+      final response = await responseFuture;
+
+      expect(response.status, equals(201));
+
+      final text = await response.text();
+      expect(text, equals('{"message":"mocked"}'));
+
+      final json = await response.json();
+      expect(json['message'], equals('mocked'));
+
+      final body = await response.body();
+      expect(body, isNotEmpty);
+
+      final headers = response.headers;
+      expect(headers['content-type'], equals('application/json'));
+      expect(headers['x-custom'], equals('my-value'));
+
+      final allHeaders = await response.allHeaders();
+      expect(allHeaders['content-type'], equals('application/json'));
+    });
+  });
 }

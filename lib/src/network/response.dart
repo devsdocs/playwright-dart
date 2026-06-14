@@ -119,10 +119,7 @@ class ResponseImpl extends ResponseBase implements Response {
   Future<Map<String, String>> allHeaders() async {
     final result = await channel_rawResponseHeaders();
     final headers = result.headers as List;
-    return {
-      for (final h in headers)
-        (h['name'] as String).toLowerCase(): h['value'] as String,
-    };
+    return {for (final h in headers) h.name.toLowerCase(): h.value};
   }
 
   @override

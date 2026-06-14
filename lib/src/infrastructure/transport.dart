@@ -33,7 +33,10 @@ class StdioTransport implements Transport {
     );
 
     _process.stderr.listen((data) {
-      Logger.debug('[Driver STDERR] ${utf8.decode(data)}', name: 'playwright.transport');
+      Logger.debug(
+        '[Driver STDERR] ${utf8.decode(data)}',
+        name: 'playwright.transport',
+      );
     });
   }
 

@@ -65,8 +65,14 @@ void main() {
 
     test('should pass special numbers as arguments', (page) async {
       expect(await page.evaluate('(a) => Number.isNaN(a)', double.nan), isTrue);
-      expect(await page.evaluate('(a) => a === Infinity', double.infinity), isTrue);
-      expect(await page.evaluate('(a) => a === -Infinity', double.negativeInfinity), isTrue);
+      expect(
+        await page.evaluate('(a) => a === Infinity', double.infinity),
+        isTrue,
+      );
+      expect(
+        await page.evaluate('(a) => a === -Infinity', double.negativeInfinity),
+        isTrue,
+      );
       expect(await page.evaluate('(a) => Object.is(a, -0)', -0.0), isTrue);
     });
 

@@ -3,7 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/playwright_dart.svg)](https://pub.dev/packages/playwright_dart)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![API Parity](https://img.shields.io/badge/API_Parity-100%25-brightgreen.svg)](https://playwright.dev)
-[![Test Coverage](https://img.shields.io/badge/Coverage-33%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
+[![Test Coverage](https://img.shields.io/badge/Coverage-35.7%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
 [![AI Assisted](https://img.shields.io/badge/AI-Assisted-purple.svg)](https://github.com/devsdocs/playwright-dart)
 
 A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable browser automation for Chromium, Firefox, and WebKit.

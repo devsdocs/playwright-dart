@@ -37,6 +37,8 @@ import 'src/locator_assertions_test_cases.dart'
     as locator_assertions_test_cases;
 import 'src/route_from_har_test_cases.dart' as route_from_har_test_cases;
 import 'src/selectors_test_cases.dart' as selectors_test_cases;
+import 'src/jshandle_test_cases.dart' as jshandle_test_cases;
+import 'src/element_handle_test_cases.dart' as element_handle_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -81,4 +83,6 @@ void main() {
   locator_assertions_test_cases.main();
   route_from_har_test_cases.main();
   selectors_test_cases.main();
+  jshandle_test_cases.main();
+  element_handle_test_cases.main();
 }

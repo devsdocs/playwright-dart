@@ -21,6 +21,8 @@ void main() async {
 
   if (totalLines > 0) {
     final coverage = coveredLines / totalLines;
-    print('Total Coverage: ${(coverage * 100).toStringAsFixed(2)}% ($coveredLines/$totalLines)');
+    print(
+      'Total Coverage: ${(coverage * 100).toStringAsFixed(2)}% ($coveredLines/$totalLines)',
+    );
   }
 }

@@ -203,8 +203,8 @@ void main() async {
   buffer.writeln('// AUTO-GENERATED FILE. DO NOT MODIFY.');
   buffer.writeln('// Generated from Playwright protocol.');
   buffer.writeln();
-  buffer.writeln('import \'../channel_owner.dart\';');
-  buffer.writeln('import \'../connection.dart\';');
+  buffer.writeln('import \'../infrastructure/channel_owner.dart\';');
+  buffer.writeln('import \'../infrastructure/connection.dart\';');
   buffer.writeln();
   buffer.writeln('abstract class Channel {}');
   buffer.writeln();
@@ -382,7 +382,7 @@ void main() async {
                   '(json[r\'$wireName\'] as List?)?.map((e) => $innerType.values.firstWhere((v) => v.value == e)).toList()';
             } else {
               parser =
-                  '(json[r\'$wireName\'] as List?)?.map((e) => $innerType.fromJson(e)).toList()';
+                  '(json[r\'$wireName\'] as List?)?.map((e) => $innerType.fromJson(e, connection: connection)).toList()';
             }
           }
         } else if (interfaces.contains(
@@ -409,7 +409,7 @@ void main() async {
             !type.startsWith('dynamic')) {
           final objBase = type.replaceAll('?', '');
           parser =
-              'json[r\'$wireName\'] == null ? null : $objBase.fromJson(json[r\'$wireName\'])';
+              'json[r\'$wireName\'] == null ? null : $objBase.fromJson(json[r\'$wireName\'], connection: connection)';
         }
 
         if (!f['nullable']) {

@@ -19,11 +19,17 @@ Future<void> sharedRouteFromHAR(
 
   await contextOrPage.route(url ?? '**/*', (route) async {
     final request = route.request;
-    Logger.debug('Received request: ${request.method} ${request.url}', name: 'playwright.har');
+    Logger.debug(
+      'Received request: ${request.method} ${request.url}',
+      name: 'playwright.har',
+    );
     try {
       final postData = request.postData;
 
-      Logger.debug('Handling request: ${request.method} ${request.url}', name: 'playwright.har');
+      Logger.debug(
+        'Handling request: ${request.method} ${request.url}',
+        name: 'playwright.har',
+      );
 
       final result = await (playwright).utils.harLookup(
         harId,

@@ -1,4 +1,3 @@
-import '../infrastructure/channel_owner.dart';
 import 'element_handle.dart';
 import '../generated/channels.dart';
 import '../infrastructure/serialization.dart';
@@ -80,7 +79,7 @@ class JSHandleImpl extends JSHandleBase implements JSHandle {
       arg: serializeArgument(arg),
       isFunction: isFunction,
     );
-    return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
+    return result.handle as JSHandle;
   }
 
   @override
@@ -99,21 +98,15 @@ class JSHandleImpl extends JSHandleBase implements JSHandle {
   @override
   Future<JSHandle> getProperty(String name) async {
     final result = await super.channel_getProperty(name: name);
-    return ChannelOwner.from<JSHandleImpl>(
-      connection,
-      result.handle as Map<String, dynamic>,
-    );
+    return result.handle as JSHandle;
   }
 
   @override
   Future<Map<String, JSHandle>> getProperties() async {
     final result = await super.channel_getPropertyList();
     final map = <String, JSHandle>{};
-    for (final property in result.properties as List) {
-      map[property['name'] as String] = ChannelOwner.from<JSHandleImpl>(
-        connection,
-        property['value'] as Map<String, dynamic>,
-      );
+    for (final property in result.properties) {
+      map[property.name] = property.value as JSHandle;
     }
     return map;
   }

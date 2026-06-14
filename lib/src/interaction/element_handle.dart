@@ -175,7 +175,7 @@ class ElementHandleImpl extends ElementHandleBase
       arg: serializeArgument(arg),
       isFunction: isFunction,
     );
-    return ChannelOwner.from(connection, result.handle as Map<String, dynamic>);
+    return result.handle as JSHandle;
   }
 
   @override
@@ -488,23 +488,13 @@ class ElementHandleImpl extends ElementHandleBase
   @override
   Future<Frame?> contentFrame() async {
     final result = await channel_contentFrame();
-    final frame = result.frame;
-    if (frame == null) return null;
-    return ChannelOwner.from<FrameImpl>(
-      connection,
-      frame as Map<String, dynamic>,
-    );
+    return result.frame as Frame?;
   }
 
   @override
   Future<Frame?> ownerFrame() async {
     final result = await channel_ownerFrame();
-    final frame = result.frame;
-    if (frame == null) return null;
-    return ChannelOwner.from<FrameImpl>(
-      connection,
-      frame as Map<String, dynamic>,
-    );
+    return result.frame as Frame?;
   }
 
   @override
@@ -513,26 +503,14 @@ class ElementHandleImpl extends ElementHandleBase
       selector: selector,
       strict: strict,
     );
-    final element = result.element;
-    if (element == null) return null;
-    return ChannelOwner.from<ElementHandleImpl>(
-      connection,
-      element as Map<String, dynamic>,
-    );
+    return result.element as ElementHandle?;
   }
 
   @override
   Future<List<ElementHandle>> querySelectorAll(String selector) async {
     final result = await channel_querySelectorAll(selector: selector);
     final elements = result.elements as List;
-    return elements
-        .map(
-          (e) => ChannelOwner.from<ElementHandleImpl>(
-            connection,
-            e as Map<String, dynamic>,
-          ),
-        )
-        .toList();
+    return elements.cast<ElementHandle>();
   }
 
   @override
@@ -647,11 +625,6 @@ class ElementHandleImpl extends ElementHandleBase
       state: state,
       timeout: timeout ?? 30000.0,
     );
-    final element = result.element;
-    if (element == null) return null;
-    return ChannelOwner.from<ElementHandleImpl>(
-      connection,
-      element as Map<String, dynamic>,
-    );
+    return result.element as ElementHandle?;
   }
 }

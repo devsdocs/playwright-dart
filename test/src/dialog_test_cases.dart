@@ -46,7 +46,9 @@ void main() {
       expect(result, isTrue);
     });
 
-    test('should handle confirm dialog and return false on dismiss', (page) async {
+    test('should handle confirm dialog and return false on dismiss', (
+      page,
+    ) async {
       final dialogCompleter = Completer<Dialog>();
 
       page.onDialog.listen((dialog) async {
@@ -94,7 +96,9 @@ void main() {
       expect(result, equals('Jane Doe'));
     });
 
-    test('should handle prompt dialog and return null on dismiss', (page) async {
+    test('should handle prompt dialog and return null on dismiss', (
+      page,
+    ) async {
       final dialogCompleter = Completer<Dialog>();
 
       page.onDialog.listen((dialog) async {

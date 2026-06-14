@@ -35,9 +35,15 @@ SerializedValue serializeValue(dynamic value) {
   if (value is int) return SerializedValue(n: value.toDouble());
   if (value is double) {
     if (value.isNaN) return SerializedValue(v: SerializedValueVEnum.nan);
-    if (value == double.infinity) return SerializedValue(v: SerializedValueVEnum.infinity);
-    if (value == double.negativeInfinity) return SerializedValue(v: SerializedValueVEnum.minusInfinity);
-    if (value == 0.0 && value.isNegative) return SerializedValue(v: SerializedValueVEnum.minusZero);
+    if (value == double.infinity) {
+      return SerializedValue(v: SerializedValueVEnum.infinity);
+    }
+    if (value == double.negativeInfinity) {
+      return SerializedValue(v: SerializedValueVEnum.minusInfinity);
+    }
+    if (value == 0.0 && value.isNegative) {
+      return SerializedValue(v: SerializedValueVEnum.minusZero);
+    }
     return SerializedValue(n: value);
   }
   if (value is bool) return SerializedValue(b: value);

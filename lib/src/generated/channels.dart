@@ -687,7 +687,7 @@ class APIRequestContextFetchResult {
     return APIRequestContextFetchResult(
       response: (json[r'response'] == null
           ? null
-          : APIResponse.fromJson(json[r'response']))!,
+          : APIResponse.fromJson(json[r'response'], connection: connection))!,
     );
   }
 
@@ -712,12 +712,12 @@ class APIRequestContextStorageStateResult {
     return APIRequestContextStorageStateResult(
       cookies:
           ((json[r'cookies'] as List?)
-              ?.map((e) => NetworkCookie.fromJson(e))
+              ?.map((e) => NetworkCookie.fromJson(e, connection: connection))
               .toList()) ??
           [],
       origins:
           ((json[r'origins'] as List?)
-              ?.map((e) => OriginStorage.fromJson(e))
+              ?.map((e) => OriginStorage.fromJson(e, connection: connection))
               .toList()) ??
           [],
     );
@@ -754,7 +754,7 @@ class APIResponse {
       fetchUid: (json[r'fetchUid'])!,
       headers:
           ((json[r'headers'] as List?)
-              ?.map((e) => NameValue.fromJson(e))
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
       status: (json[r'status'])!,
@@ -809,7 +809,10 @@ class AndroidDeviceInfoResult {
     return AndroidDeviceInfoResult(
       info: (json[r'info'] == null
           ? null
-          : AndroidElementInfo.fromJson(json[r'info']))!,
+          : AndroidElementInfo.fromJson(
+              json[r'info'],
+              connection: connection,
+            ))!,
     );
   }
 
@@ -1007,11 +1010,11 @@ class AndroidElementInfo {
     return AndroidElementInfo(
       bounds: (json[r'bounds'] == null
           ? null
-          : Rect.fromJson(json[r'bounds']))!,
+          : Rect.fromJson(json[r'bounds'], connection: connection))!,
       checkable: (json[r'checkable'])!,
       checked: (json[r'checked'])!,
       children: (json[r'children'] as List?)
-          ?.map((e) => AndroidElementInfo.fromJson(e))
+          ?.map((e) => AndroidElementInfo.fromJson(e, connection: connection))
           .toList(),
       clazz: (json[r'clazz'])!,
       clickable: (json[r'clickable'])!,
@@ -1106,10 +1109,16 @@ class AndroidSelector {
       focused: json[r'focused'],
       hasChild: json[r'hasChild'] == null
           ? null
-          : AndroidSelectorHasChild.fromJson(json[r'hasChild']),
+          : AndroidSelectorHasChild.fromJson(
+              json[r'hasChild'],
+              connection: connection,
+            ),
       hasDescendant: json[r'hasDescendant'] == null
           ? null
-          : AndroidSelectorHasDescendant.fromJson(json[r'hasDescendant']),
+          : AndroidSelectorHasDescendant.fromJson(
+              json[r'hasDescendant'],
+              connection: connection,
+            ),
       longClickable: json[r'longClickable'],
       pkg: json[r'pkg'],
       res: json[r'res'],
@@ -1154,7 +1163,10 @@ class AndroidSelectorHasChild {
     return AndroidSelectorHasChild(
       androidSelector: (json[r'androidSelector'] == null
           ? null
-          : AndroidSelector.fromJson(json[r'androidSelector']))!,
+          : AndroidSelector.fromJson(
+              json[r'androidSelector'],
+              connection: connection,
+            ))!,
     );
   }
 
@@ -1176,7 +1188,10 @@ class AndroidSelectorHasDescendant {
     return AndroidSelectorHasDescendant(
       androidSelector: (json[r'androidSelector'] == null
           ? null
-          : AndroidSelector.fromJson(json[r'androidSelector']))!,
+          : AndroidSelector.fromJson(
+              json[r'androidSelector'],
+              connection: connection,
+            ))!,
       maxDepth: json[r'maxDepth'],
     );
   }
@@ -1331,7 +1346,7 @@ class BrowserContextCookiesResult {
     return BrowserContextCookiesResult(
       cookies:
           ((json[r'cookies'] as List?)
-              ?.map((e) => NetworkCookie.fromJson(e))
+              ?.map((e) => NetworkCookie.fromJson(e, connection: connection))
               .toList()) ??
           [],
     );
@@ -1588,7 +1603,7 @@ class BrowserContextSetNetworkInterceptionPatternsPatternsItems {
       regexSource: json[r'regexSource'],
       urlPattern: json[r'urlPattern'] == null
           ? null
-          : URLPattern.fromJson(json[r'urlPattern']),
+          : URLPattern.fromJson(json[r'urlPattern'], connection: connection),
     );
   }
 
@@ -1614,10 +1629,10 @@ class BrowserContextSetStorageStateStorageState {
   }) {
     return BrowserContextSetStorageStateStorageState(
       cookies: (json[r'cookies'] as List?)
-          ?.map((e) => SetNetworkCookie.fromJson(e))
+          ?.map((e) => SetNetworkCookie.fromJson(e, connection: connection))
           .toList(),
       origins: (json[r'origins'] as List?)
-          ?.map((e) => SetOriginStorage.fromJson(e))
+          ?.map((e) => SetOriginStorage.fromJson(e, connection: connection))
           .toList(),
     );
   }
@@ -1653,7 +1668,7 @@ class BrowserContextSetWebSocketInterceptionPatternsPatternsItems {
       regexSource: json[r'regexSource'],
       urlPattern: json[r'urlPattern'] == null
           ? null
-          : URLPattern.fromJson(json[r'urlPattern']),
+          : URLPattern.fromJson(json[r'urlPattern'], connection: connection),
     );
   }
 
@@ -1683,12 +1698,12 @@ class BrowserContextStorageStateResult {
     return BrowserContextStorageStateResult(
       cookies:
           ((json[r'cookies'] as List?)
-              ?.map((e) => NetworkCookie.fromJson(e))
+              ?.map((e) => NetworkCookie.fromJson(e, connection: connection))
               .toList()) ??
           [],
       origins:
           ((json[r'origins'] as List?)
-              ?.map((e) => OriginStorage.fromJson(e))
+              ?.map((e) => OriginStorage.fromJson(e, connection: connection))
               .toList()) ??
           [],
     );
@@ -1814,10 +1829,10 @@ class BrowserNewContextForReuseStorageState {
   }) {
     return BrowserNewContextForReuseStorageState(
       cookies: (json[r'cookies'] as List?)
-          ?.map((e) => SetNetworkCookie.fromJson(e))
+          ?.map((e) => SetNetworkCookie.fromJson(e, connection: connection))
           .toList(),
       origins: (json[r'origins'] as List?)
-          ?.map((e) => SetOriginStorage.fromJson(e))
+          ?.map((e) => SetOriginStorage.fromJson(e, connection: connection))
           .toList(),
     );
   }
@@ -1900,10 +1915,10 @@ class BrowserNewContextStorageState {
   }) {
     return BrowserNewContextStorageState(
       cookies: (json[r'cookies'] as List?)
-          ?.map((e) => SetNetworkCookie.fromJson(e))
+          ?.map((e) => SetNetworkCookie.fromJson(e, connection: connection))
           .toList(),
       origins: (json[r'origins'] as List?)
-          ?.map((e) => SetOriginStorage.fromJson(e))
+          ?.map((e) => SetOriginStorage.fromJson(e, connection: connection))
           .toList(),
     );
   }
@@ -2095,7 +2110,7 @@ class ClientSideCallMetadata {
     return ClientSideCallMetadata(
       id: (json[r'id'])!,
       stack: (json[r'stack'] as List?)
-          ?.map((e) => StackFrame.fromJson(e))
+          ?.map((e) => StackFrame.fromJson(e, connection: connection))
           .toList(),
     );
   }
@@ -2143,7 +2158,12 @@ class CommonScreenshotOptions {
               (e) => e.value == json[r'caret'],
             ),
       mask: (json[r'mask'] as List?)
-          ?.map((e) => CommonScreenshotOptionsMaskItems.fromJson(e))
+          ?.map(
+            (e) => CommonScreenshotOptionsMaskItems.fromJson(
+              e,
+              connection: connection,
+            ),
+          )
           .toList(),
       maskColor: json[r'maskColor'],
       omitBackground: json[r'omitBackground'],
@@ -2227,7 +2247,10 @@ class ConsoleMessage {
           [],
       location: (json[r'location'] == null
           ? null
-          : ConsoleMessageLocation.fromJson(json[r'location']))!,
+          : ConsoleMessageLocation.fromJson(
+              json[r'location'],
+              connection: connection,
+            ))!,
       text: (json[r'text'])!,
       timestamp: ((json[r'timestamp'] as num?)?.toDouble())!,
       type: (json[r'type'])!,
@@ -2354,7 +2377,12 @@ class ContextOptions {
       baseURL: json[r'baseURL'],
       bypassCSP: json[r'bypassCSP'],
       clientCertificates: (json[r'clientCertificates'] as List?)
-          ?.map((e) => ContextOptionsClientCertificatesItems.fromJson(e))
+          ?.map(
+            (e) => ContextOptionsClientCertificatesItems.fromJson(
+              e,
+              connection: connection,
+            ),
+          )
           .toList(),
       colorScheme: json[r'colorScheme'] == null
           ? null
@@ -2368,7 +2396,7 @@ class ContextOptions {
             ),
       deviceScaleFactor: (json[r'deviceScaleFactor'] as num?)?.toDouble(),
       extraHTTPHeaders: (json[r'extraHTTPHeaders'] as List?)
-          ?.map((e) => NameValue.fromJson(e))
+          ?.map((e) => NameValue.fromJson(e, connection: connection))
           .toList(),
       forcedColors: json[r'forcedColors'] == null
           ? null
@@ -2377,11 +2405,17 @@ class ContextOptions {
             ),
       geolocation: json[r'geolocation'] == null
           ? null
-          : ContextOptionsGeolocation.fromJson(json[r'geolocation']),
+          : ContextOptionsGeolocation.fromJson(
+              json[r'geolocation'],
+              connection: connection,
+            ),
       hasTouch: json[r'hasTouch'],
       httpCredentials: json[r'httpCredentials'] == null
           ? null
-          : ContextOptionsHttpCredentials.fromJson(json[r'httpCredentials']),
+          : ContextOptionsHttpCredentials.fromJson(
+              json[r'httpCredentials'],
+              connection: connection,
+            ),
       ignoreHTTPSErrors: json[r'ignoreHTTPSErrors'],
       isMobile: json[r'isMobile'],
       javaScriptEnabled: json[r'javaScriptEnabled'],
@@ -2391,10 +2425,16 @@ class ContextOptions {
       permissions: (json[r'permissions'] as List?)?.cast<String>(),
       recordHar: json[r'recordHar'] == null
           ? null
-          : RecordHarOptions.fromJson(json[r'recordHar']),
+          : RecordHarOptions.fromJson(
+              json[r'recordHar'],
+              connection: connection,
+            ),
       recordVideo: json[r'recordVideo'] == null
           ? null
-          : ContextOptionsRecordVideo.fromJson(json[r'recordVideo']),
+          : ContextOptionsRecordVideo.fromJson(
+              json[r'recordVideo'],
+              connection: connection,
+            ),
       reducedMotion: json[r'reducedMotion'] == null
           ? null
           : ContextOptionsReducedMotionEnum.values.firstWhere(
@@ -2402,9 +2442,12 @@ class ContextOptions {
             ),
       screen: json[r'screen'] == null
           ? null
-          : ContextOptionsScreen.fromJson(json[r'screen']),
+          : ContextOptionsScreen.fromJson(
+              json[r'screen'],
+              connection: connection,
+            ),
       selectorEngines: (json[r'selectorEngines'] as List?)
-          ?.map((e) => SelectorEngine.fromJson(e))
+          ?.map((e) => SelectorEngine.fromJson(e, connection: connection))
           .toList(),
       serviceWorkers: json[r'serviceWorkers'] == null
           ? null
@@ -2417,7 +2460,10 @@ class ContextOptions {
       userAgent: json[r'userAgent'],
       viewport: json[r'viewport'] == null
           ? null
-          : ContextOptionsViewport.fromJson(json[r'viewport']),
+          : ContextOptionsViewport.fromJson(
+              json[r'viewport'],
+              connection: connection,
+            ),
     );
   }
 
@@ -2588,10 +2634,16 @@ class ContextOptionsRecordVideo {
       dir: json[r'dir'],
       showActions: json[r'showActions'] == null
           ? null
-          : ContextOptionsRecordVideoShowActions.fromJson(json[r'showActions']),
+          : ContextOptionsRecordVideoShowActions.fromJson(
+              json[r'showActions'],
+              connection: connection,
+            ),
       size: json[r'size'] == null
           ? null
-          : ContextOptionsRecordVideoSize.fromJson(json[r'size']),
+          : ContextOptionsRecordVideoSize.fromJson(
+              json[r'size'],
+              connection: connection,
+            ),
     );
   }
 
@@ -2616,7 +2668,10 @@ class ContextOptionsRecordVideoShowActions {
     return ContextOptionsRecordVideoShowActions(
       mixinValue: (json[r'$mixin'] == null
           ? null
-          : ShowActionsOptions.fromJson(json[r'$mixin']))!,
+          : ShowActionsOptions.fromJson(
+              json[r'$mixin'],
+              connection: connection,
+            ))!,
     );
   }
 
@@ -2708,6 +2763,7 @@ class DebuggerPausedStateChangedEventPausedDetails {
           ? null
           : DebuggerPausedStateChangedEventPausedDetailsLocation.fromJson(
               json[r'location'],
+              connection: connection,
             ))!,
       stack: json[r'stack'],
       title: (json[r'title'])!,
@@ -2839,7 +2895,7 @@ class ElectronApplicationEvaluateExpressionResult {
     return ElectronApplicationEvaluateExpressionResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -2925,10 +2981,16 @@ class ElectronLaunchRecordVideo {
       dir: json[r'dir'],
       showActions: json[r'showActions'] == null
           ? null
-          : ElectronLaunchRecordVideoShowActions.fromJson(json[r'showActions']),
+          : ElectronLaunchRecordVideoShowActions.fromJson(
+              json[r'showActions'],
+              connection: connection,
+            ),
       size: json[r'size'] == null
           ? null
-          : ElectronLaunchRecordVideoSize.fromJson(json[r'size']),
+          : ElectronLaunchRecordVideoSize.fromJson(
+              json[r'size'],
+              connection: connection,
+            ),
     );
   }
 
@@ -2953,7 +3015,10 @@ class ElectronLaunchRecordVideoShowActions {
     return ElectronLaunchRecordVideoShowActions(
       mixinValue: (json[r'$mixin'] == null
           ? null
-          : ShowActionsOptions.fromJson(json[r'$mixin']))!,
+          : ShowActionsOptions.fromJson(
+              json[r'$mixin'],
+              connection: connection,
+            ))!,
     );
   }
 
@@ -3020,7 +3085,9 @@ class ElementHandleBoundingBoxResult {
     Connection? connection,
   }) {
     return ElementHandleBoundingBoxResult(
-      value: json[r'value'] == null ? null : Rect.fromJson(json[r'value']),
+      value: json[r'value'] == null
+          ? null
+          : Rect.fromJson(json[r'value'], connection: connection),
     );
   }
 
@@ -3064,7 +3131,7 @@ class ElementHandleEvalOnSelectorAllResult {
     return ElementHandleEvalOnSelectorAllResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -3085,7 +3152,7 @@ class ElementHandleEvalOnSelectorResult {
     return ElementHandleEvalOnSelectorResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -3583,7 +3650,7 @@ class FormField {
     return FormField(
       file: json[r'file'] == null
           ? null
-          : FormFieldFile.fromJson(json[r'file']),
+          : FormFieldFile.fromJson(json[r'file'], connection: connection),
       name: (json[r'name'])!,
       value: json[r'value'],
     );
@@ -3769,7 +3836,7 @@ class FrameEvalOnSelectorAllResult {
     return FrameEvalOnSelectorAllResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -3790,7 +3857,7 @@ class FrameEvalOnSelectorResult {
     return FrameEvalOnSelectorResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -3834,7 +3901,7 @@ class FrameEvaluateExpressionResult {
     return FrameEvaluateExpressionResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -3868,7 +3935,10 @@ class FrameExpectResult {
       matches: (json[r'matches'])!,
       received: json[r'received'] == null
           ? null
-          : FrameExpectResultReceived.fromJson(json[r'received']),
+          : FrameExpectResultReceived.fromJson(
+              json[r'received'],
+              connection: connection,
+            ),
       timedOut: json[r'timedOut'],
     );
   }
@@ -3898,7 +3968,7 @@ class FrameExpectResultReceived {
       ariaSnapshot: json[r'ariaSnapshot'],
       value: json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']),
+          : SerializedValue.fromJson(json[r'value'], connection: connection),
     );
   }
 
@@ -4422,7 +4492,12 @@ class IndexedDBDatabase {
       name: (json[r'name'])!,
       stores:
           ((json[r'stores'] as List?)
-              ?.map((e) => IndexedDBDatabaseStoresItems.fromJson(e))
+              ?.map(
+                (e) => IndexedDBDatabaseStoresItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
               .toList()) ??
           [],
       version: (json[r'version'])!,
@@ -4463,7 +4538,12 @@ class IndexedDBDatabaseStoresItems {
       autoIncrement: (json[r'autoIncrement'])!,
       indexes:
           ((json[r'indexes'] as List?)
-              ?.map((e) => IndexedDBDatabaseStoresItemsIndexesItems.fromJson(e))
+              ?.map(
+                (e) => IndexedDBDatabaseStoresItemsIndexesItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
               .toList()) ??
           [],
       keyPath: json[r'keyPath'],
@@ -4471,7 +4551,12 @@ class IndexedDBDatabaseStoresItems {
       name: (json[r'name'])!,
       records:
           ((json[r'records'] as List?)
-              ?.map((e) => IndexedDBDatabaseStoresItemsRecordsItems.fromJson(e))
+              ?.map(
+                (e) => IndexedDBDatabaseStoresItemsRecordsItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
               .toList()) ??
           [],
     );
@@ -4598,7 +4683,7 @@ class JSHandleEvaluateExpressionResult {
     return JSHandleEvaluateExpressionResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -4620,7 +4705,10 @@ class JSHandleGetPropertyListResult {
       properties:
           ((json[r'properties'] as List?)
               ?.map(
-                (e) => JSHandleGetPropertyListResultPropertiesItems.fromJson(e),
+                (e) => JSHandleGetPropertyListResultPropertiesItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
               )
               .toList()) ??
           [],
@@ -4696,7 +4784,7 @@ class JSHandleJsonValueResult {
     return JSHandleJsonValueResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -4757,7 +4845,9 @@ class LaunchOptions {
       channel: json[r'channel'],
       chromiumSandbox: json[r'chromiumSandbox'],
       downloadsPath: json[r'downloadsPath'],
-      env: (json[r'env'] as List?)?.map((e) => NameValue.fromJson(e)).toList(),
+      env: (json[r'env'] as List?)
+          ?.map((e) => NameValue.fromJson(e, connection: connection))
+          .toList(),
       executablePath: json[r'executablePath'],
       firefoxUserPrefs: json[r'firefoxUserPrefs'],
       handleSIGHUP: json[r'handleSIGHUP'],
@@ -4768,7 +4858,7 @@ class LaunchOptions {
       ignoreDefaultArgs: (json[r'ignoreDefaultArgs'] as List?)?.cast<String>(),
       proxy: json[r'proxy'] == null
           ? null
-          : LaunchOptionsProxy.fromJson(json[r'proxy']),
+          : LaunchOptionsProxy.fromJson(json[r'proxy'], connection: connection),
       timeout: ((json[r'timeout'] as num?)?.toDouble())!,
       tracesDir: json[r'tracesDir'],
     );
@@ -4847,7 +4937,7 @@ class LocalUtilsConnectResult {
     return LocalUtilsConnectResult(
       headers:
           ((json[r'headers'] as List?)
-              ?.map((e) => NameValue.fromJson(e))
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
       pipe: (connection != null && json[r'pipe'] != null
@@ -4910,7 +5000,7 @@ class LocalUtilsHarLookupResult {
             ))!,
       body: json[r'body'],
       headers: (json[r'headers'] as List?)
-          ?.map((e) => NameValue.fromJson(e))
+          ?.map((e) => NameValue.fromJson(e, connection: connection))
           .toList(),
       message: json[r'message'],
       redirectURL: json[r'redirectURL'],
@@ -4987,7 +5077,10 @@ class Metadata {
       internal: json[r'internal'],
       location: json[r'location'] == null
           ? null
-          : MetadataLocation.fromJson(json[r'location']),
+          : MetadataLocation.fromJson(
+              json[r'location'],
+              connection: connection,
+            ),
       stepId: json[r'stepId'],
       title: json[r'title'],
     );
@@ -5129,11 +5222,11 @@ class OriginStorage {
   }) {
     return OriginStorage(
       indexedDB: (json[r'indexedDB'] as List?)
-          ?.map((e) => IndexedDBDatabase.fromJson(e))
+          ?.map((e) => IndexedDBDatabase.fromJson(e, connection: connection))
           .toList(),
       localStorage:
           ((json[r'localStorage'] as List?)
-              ?.map((e) => NameValue.fromJson(e))
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
       origin: (json[r'origin'])!,
@@ -5185,7 +5278,12 @@ class PageConsoleMessagesResult {
     return PageConsoleMessagesResult(
       messages:
           ((json[r'messages'] as List?)
-              ?.map((e) => PageConsoleMessagesResultMessagesItems.fromJson(e))
+              ?.map(
+                (e) => PageConsoleMessagesResultMessagesItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
               .toList()) ??
           [],
     );
@@ -5208,7 +5306,7 @@ class PageConsoleMessagesResultMessagesItems {
     return PageConsoleMessagesResultMessagesItems(
       mixinValue: (json[r'$mixin'] == null
           ? null
-          : ConsoleMessage.fromJson(json[r'$mixin']))!,
+          : ConsoleMessage.fromJson(json[r'$mixin'], connection: connection))!,
     );
   }
 
@@ -5367,7 +5465,7 @@ class PagePageErrorsResult {
     return PagePageErrorsResult(
       errors:
           ((json[r'errors'] as List?)
-              ?.map((e) => SerializedError.fromJson(e))
+              ?.map((e) => SerializedError.fromJson(e, connection: connection))
               .toList()) ??
           [],
     );
@@ -5610,7 +5708,7 @@ class PageSetNetworkInterceptionPatternsPatternsItems {
       regexSource: json[r'regexSource'],
       urlPattern: json[r'urlPattern'] == null
           ? null
-          : URLPattern.fromJson(json[r'urlPattern']),
+          : URLPattern.fromJson(json[r'urlPattern'], connection: connection),
     );
   }
 
@@ -5668,7 +5766,7 @@ class PageSetWebSocketInterceptionPatternsPatternsItems {
       regexSource: json[r'regexSource'],
       urlPattern: json[r'urlPattern'] == null
           ? null
-          : URLPattern.fromJson(json[r'urlPattern']),
+          : URLPattern.fromJson(json[r'urlPattern'], connection: connection),
     );
   }
 
@@ -5694,7 +5792,12 @@ class PageStopCSSCoverageResult {
     return PageStopCSSCoverageResult(
       entries:
           ((json[r'entries'] as List?)
-              ?.map((e) => PageStopCSSCoverageResultEntriesItems.fromJson(e))
+              ?.map(
+                (e) => PageStopCSSCoverageResultEntriesItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
               .toList()) ??
           [],
     );
@@ -5727,6 +5830,7 @@ class PageStopCSSCoverageResultEntriesItems {
                 (e) =>
                     PageStopCSSCoverageResultEntriesItemsRangesItems.fromJson(
                       e,
+                      connection: connection,
                     ),
               )
               .toList()) ??
@@ -5781,7 +5885,12 @@ class PageStopJSCoverageResult {
     return PageStopJSCoverageResult(
       entries:
           ((json[r'entries'] as List?)
-              ?.map((e) => PageStopJSCoverageResultEntriesItems.fromJson(e))
+              ?.map(
+                (e) => PageStopJSCoverageResultEntriesItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
               .toList()) ??
           [],
     );
@@ -5816,6 +5925,7 @@ class PageStopJSCoverageResultEntriesItems {
                 (e) =>
                     PageStopJSCoverageResultEntriesItemsFunctionsItems.fromJson(
                       e,
+                      connection: connection,
                     ),
               )
               .toList()) ??
@@ -5861,6 +5971,7 @@ class PageStopJSCoverageResultEntriesItemsFunctionsItems {
                 (e) =>
                     PageStopJSCoverageResultEntriesItemsFunctionsItemsRangesItems.fromJson(
                       e,
+                      connection: connection,
                     ),
               )
               .toList()) ??
@@ -6083,10 +6194,10 @@ class PlaywrightNewRequestStorageState {
   }) {
     return PlaywrightNewRequestStorageState(
       cookies: (json[r'cookies'] as List?)
-          ?.map((e) => NetworkCookie.fromJson(e))
+          ?.map((e) => NetworkCookie.fromJson(e, connection: connection))
           .toList(),
       origins: (json[r'origins'] as List?)
-          ?.map((e) => SetOriginStorage.fromJson(e))
+          ?.map((e) => SetOriginStorage.fromJson(e, connection: connection))
           .toList(),
     );
   }
@@ -6201,7 +6312,12 @@ class RecorderSource {
       group: json[r'group'],
       highlight:
           ((json[r'highlight'] as List?)
-              ?.map((e) => RecorderSourceHighlightItems.fromJson(e))
+              ?.map(
+                (e) => RecorderSourceHighlightItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
               .toList()) ??
           [],
       id: (json[r'id'])!,
@@ -6305,7 +6421,7 @@ class RequestRawRequestHeadersResult {
     return RequestRawRequestHeadersResult(
       headers:
           ((json[r'headers'] as List?)
-              ?.map((e) => NameValue.fromJson(e))
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
     );
@@ -6472,7 +6588,7 @@ class ResponseRawResponseHeadersResult {
     return ResponseRawResponseHeadersResult(
       headers:
           ((json[r'headers'] as List?)
-              ?.map((e) => NameValue.fromJson(e))
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
     );
@@ -6495,7 +6611,7 @@ class ResponseSecurityDetailsResult {
     return ResponseSecurityDetailsResult(
       value: json[r'value'] == null
           ? null
-          : SecurityDetails.fromJson(json[r'value']),
+          : SecurityDetails.fromJson(json[r'value'], connection: connection),
     );
   }
 
@@ -6516,7 +6632,7 @@ class ResponseServerAddrResult {
     return ResponseServerAddrResult(
       value: json[r'value'] == null
           ? null
-          : RemoteAddr.fromJson(json[r'value']),
+          : RemoteAddr.fromJson(json[r'value'], connection: connection),
     );
   }
 
@@ -6537,7 +6653,7 @@ class ResponseSizesResult {
     return ResponseSizesResult(
       sizes: (json[r'sizes'] == null
           ? null
-          : RequestSizes.fromJson(json[r'sizes']))!,
+          : RequestSizes.fromJson(json[r'sizes'], connection: connection))!,
     );
   }
 
@@ -6659,7 +6775,7 @@ class SerializedArgument {
           [],
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
@@ -6684,10 +6800,13 @@ class SerializedError {
     return SerializedError(
       error: json[r'error'] == null
           ? null
-          : SerializedErrorError.fromJson(json[r'error']),
+          : SerializedErrorError.fromJson(
+              json[r'error'],
+              connection: connection,
+            ),
       value: json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']),
+          : SerializedValue.fromJson(json[r'value'], connection: connection),
     );
   }
 
@@ -6767,22 +6886,30 @@ class SerializedValue {
   }) {
     return SerializedValue(
       a: (json[r'a'] as List?)
-          ?.map((e) => SerializedValue.fromJson(e))
+          ?.map((e) => SerializedValue.fromJson(e, connection: connection))
           .toList(),
       b: json[r'b'],
       bi: json[r'bi'],
       d: json[r'd'],
-      e: json[r'e'] == null ? null : SerializedValueE.fromJson(json[r'e']),
+      e: json[r'e'] == null
+          ? null
+          : SerializedValueE.fromJson(json[r'e'], connection: connection),
       h: json[r'h'],
       id: json[r'id'],
       n: (json[r'n'] as num?)?.toDouble(),
       o: (json[r'o'] as List?)
-          ?.map((e) => SerializedValueOItems.fromJson(e))
+          ?.map(
+            (e) => SerializedValueOItems.fromJson(e, connection: connection),
+          )
           .toList(),
-      r: json[r'r'] == null ? null : SerializedValueR.fromJson(json[r'r']),
+      r: json[r'r'] == null
+          ? null
+          : SerializedValueR.fromJson(json[r'r'], connection: connection),
       ref: json[r'ref'],
       s: json[r's'],
-      ta: json[r'ta'] == null ? null : SerializedValueTa.fromJson(json[r'ta']),
+      ta: json[r'ta'] == null
+          ? null
+          : SerializedValueTa.fromJson(json[r'ta'], connection: connection),
       u: json[r'u'],
       v: json[r'v'] == null
           ? null
@@ -6848,7 +6975,9 @@ class SerializedValueOItems {
   }) {
     return SerializedValueOItems(
       k: (json[r'k'])!,
-      v: (json[r'v'] == null ? null : SerializedValue.fromJson(json[r'v']))!,
+      v: (json[r'v'] == null
+          ? null
+          : SerializedValue.fromJson(json[r'v'], connection: connection))!,
     );
   }
 
@@ -6985,11 +7114,11 @@ class SetOriginStorage {
   }) {
     return SetOriginStorage(
       indexedDB: (json[r'indexedDB'] as List?)
-          ?.map((e) => IndexedDBDatabase.fromJson(e))
+          ?.map((e) => IndexedDBDatabase.fromJson(e, connection: connection))
           .toList(),
       localStorage:
           ((json[r'localStorage'] as List?)
-              ?.map((e) => NameValue.fromJson(e))
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
       origin: (json[r'origin'])!,
@@ -7104,7 +7233,7 @@ class TracingHarExportResult {
           ? ChannelOwner.from<ArtifactBase>(connection, json[r'artifact'])
           : null,
       entries: (json[r'entries'] as List?)
-          ?.map((e) => NameValue.fromJson(e))
+          ?.map((e) => NameValue.fromJson(e, connection: connection))
           .toList(),
     );
   }
@@ -7193,7 +7322,7 @@ class TracingTracingStopChunkResult {
           ? ChannelOwner.from<ArtifactBase>(connection, json[r'artifact'])
           : null,
       entries: (json[r'entries'] as List?)
-          ?.map((e) => NameValue.fromJson(e))
+          ?.map((e) => NameValue.fromJson(e, connection: connection))
           .toList(),
     );
   }
@@ -7292,7 +7421,7 @@ class WorkerEvaluateExpressionResult {
     return WorkerEvaluateExpressionResult(
       value: (json[r'value'] == null
           ? null
-          : SerializedValue.fromJson(json[r'value']))!,
+          : SerializedValue.fromJson(json[r'value'], connection: connection))!,
     );
   }
 
