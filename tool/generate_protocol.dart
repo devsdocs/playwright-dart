@@ -274,24 +274,6 @@ void main() async {
     return dartType;
   }
 
-  String sanitizeName(String name) {
-    String cleanName = name;
-    if (cleanName.startsWith(r'$')) cleanName = cleanName.substring(1);
-    if (cleanName.startsWith('_')) cleanName = cleanName.substring(1);
-
-    if (cleanName == 'return') return 'returnValue';
-    if (cleanName == 'default') return 'defaultValue';
-    if (cleanName == 'continue') return 'continueValue';
-    if (cleanName == 'switch') return 'switchValue';
-    if (cleanName == 'class') return 'classValue';
-    if (cleanName == 'bool') return 'boolValue';
-    if (cleanName == 'mixin') return 'mixinValue';
-    if (cleanName == 'mixin1') return 'mixin1Value';
-    if (cleanName == 'mixin2') return 'mixin2Value';
-
-    return cleanName;
-  }
-
   void generateProperties(
     StringBuffer out,
     String className,
@@ -717,3 +699,21 @@ String toCamelCase(String s) {
 
 String capitalize(String s) =>
     s.isEmpty ? '' : '${s[0].toUpperCase()}${s.substring(1)}';
+
+String sanitizeName(String name) {
+  String cleanName = name;
+  if (cleanName.startsWith(r'$')) cleanName = cleanName.substring(1);
+  if (cleanName.startsWith('_')) cleanName = cleanName.substring(1);
+
+  if (cleanName == 'return') return 'returnValue';
+  if (cleanName == 'default') return 'defaultValue';
+  if (cleanName == 'continue') return 'continueValue';
+  if (cleanName == 'switch') return 'switchValue';
+  if (cleanName == 'class') return 'classValue';
+  if (cleanName == 'bool') return 'boolValue';
+  if (cleanName == 'mixin') return 'mixinValue';
+  if (cleanName == 'mixin1') return 'mixin1Value';
+  if (cleanName == 'mixin2') return 'mixin2Value';
+
+  return cleanName;
+}
