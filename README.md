@@ -2,13 +2,12 @@
 
 [![pub package](https://img.shields.io/pub/v/playwright_dart.svg)](https://pub.dev/packages/playwright_dart)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![API Parity](https://img.shields.io/badge/API_Parity-100%25-brightgreen.svg)](https://playwright.dev)
 [![Test Coverage](https://img.shields.io/badge/Coverage-35.7%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
 [![AI Assisted](https://img.shields.io/badge/AI-Assisted-purple.svg)](https://github.com/devsdocs/playwright-dart)
 
 A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable browser automation for Chromium, Firefox, and WebKit.
 
-**100% API parity** with Node.js Playwright `v1.60.0`, including network interception, tracing, CDP sessions, and the full Locator API.
+**Compatible API** with Node.js Playwright, including network interception, tracing, CDP sessions, and the full Locator API.
 
 ## Features
 
@@ -24,7 +23,7 @@ A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable 
 
 You **do not** need to install Node.js to use this package!
 
-To guarantee 100% compatibility across operating systems without forcing users to manage Node versions, `playwright_dart` automatically downloads a pre-compiled Playwright Driver directly from Microsoft's CDN. This driver **bundles its own isolated, perfectly compatible version of Node.js** (`node.exe` / `node`).
+To guarantee compatibility across operating systems without forcing users to manage Node versions, `playwright_dart` automatically downloads a pre-compiled Playwright Driver directly from Microsoft's CDN. This driver **bundles its own isolated, perfectly compatible version of Node.js** (`node.exe` / `node`).
 
 This means your users and CI pipelines can run browser automation seamlessly out-of-the-box using only Dart. No `npm install`, no global node requirements!
 
@@ -166,7 +165,7 @@ await session.send('Performance.enable');
 | **Debugging** | `Debugger`, `DebugController`, `BindingCall`, `EventTarget` |
 | **Platform** | `Android`, `AndroidDevice`, `Electron`, `ElectronApplication` |
 
-**35 wrapper classes** • **308 channel methods** • **100% protocol coverage**
+**35 wrapper classes** • **308 channel methods**
 
 ## Contributing
 
@@ -174,7 +173,7 @@ await session.send('Performance.enable');
 # Regenerate protocol bindings from Playwright source
 dart tool/generate_protocol.dart
 
-# Verify 100% API parity
+# Verify API
 dart tool/find_missing.dart
 
 # Run tests
@@ -192,4 +191,4 @@ MIT — see [LICENSE](LICENSE) for details.
 
 > 🤖 **AI-Assisted Development**
 >
-> This repository was built and maintained with the assistance of an advanced AI agent. The AI helped port the entire Playwright Node.js API to Dart, generated the protocol bindings, and achieved 100% API parity and test coverage for the protocol structures!
+> This repository was built and maintained with the assistance of an advanced AI agent. The AI helped port the entire Playwright Node.js API to Dart, generated the protocol bindings, and test coverage for the protocol structures!
