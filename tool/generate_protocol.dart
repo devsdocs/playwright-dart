@@ -80,23 +80,6 @@ void main() async {
   final List<Map<String, dynamic>> syntheticStructs = [];
   final Set<String> knownEnums = {};
 
-  String toCamelCase(String s) {
-    if (s.isEmpty) return s;
-    final parts = s.split('_');
-    String result = parts[0];
-    if (result.isNotEmpty) {
-      result = result[0].toLowerCase() + result.substring(1);
-    }
-    return result +
-        parts
-            .skip(1)
-            .map((w) => w.isEmpty ? '' : w[0].toUpperCase() + w.substring(1))
-            .join('');
-  }
-
-  String capitalize(String s) =>
-      s.isEmpty ? '' : '${s[0].toUpperCase()}${s.substring(1)}';
-
   void extractEnumsRecursive(dynamic node, String prefix) {
     if (node is Map) {
       final typeStr = node['type']?.toString().replaceAll('?', '');
@@ -711,3 +694,20 @@ Future<List<dynamic>> getAllProtocolYml(String version) async {
   cacheFile.writeAsStringSync(body);
   return files;
 }
+
+String toCamelCase(String s) {
+  if (s.isEmpty) return s;
+  final parts = s.split('_');
+  String result = parts[0];
+  if (result.isNotEmpty) {
+    result = result[0].toLowerCase() + result.substring(1);
+  }
+  return result +
+      parts
+          .skip(1)
+          .map((w) => w.isEmpty ? '' : w[0].toUpperCase() + w.substring(1))
+          .join('');
+}
+
+String capitalize(String s) =>
+    s.isEmpty ? '' : '${s[0].toUpperCase()}${s.substring(1)}';
