@@ -681,6 +681,8 @@ void main() async {
 
   final outFile = File('lib/src/generated/channels.dart');
   outFile.writeAsStringSync(buffer.toString());
+  await Process.run('dart', ['fix', '--apply']);
+  await Process.run('dart', ['format', '.']);
   print('Generated ${outFile.path}');
 }
 
