@@ -31,7 +31,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.1.0
+  playwright_dart: ^3.2.2
 ```
 
 ## Quick Start
