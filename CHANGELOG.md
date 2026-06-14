@@ -1,3 +1,10 @@
+## 3.2.1
+
+- **Fix**: Updated protocol generator to automatically and recursively inject `connection` bindings into nested object `.fromJson()` factories. This resolves initialization crashes caused by nested objects failing to obtain a valid channel connection.
+- **Fix**: Corrected import paths in generated output so that `channel_owner.dart` correctly targets the `infrastructure` directory.
+- **Fix**: Handled edge cases in header parsing for network Responses.
+- **Test**: Considerably expanded API test coverage across `JSHandle`, `ElementHandle`, and `Response` interfaces. Test suite is now 160+ strong.
+
 ## 3.2.0
 
 - **Feature**: Added a native `Logger` and a `debug` flag to `PlaywrightDart.create(debug: true)`. When enabled, it natively intercepts and logs all raw protocol JSON messages sent to and received from the Playwright driver directly to the terminal stdout.
