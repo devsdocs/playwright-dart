@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:playwright_dart/src/utils/version.dart';
 import 'package:yaml/yaml.dart';
 
-import 'generate_protocol.dart';
+import 'get_all_protocol_yml.dart';
 
 void main() async {
   final Map<String, dynamic> protocol = {};

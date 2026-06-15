@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:yaml/yaml.dart';
 import 'package:playwright_dart/src/utils/version.dart';
 
+import 'get_all_protocol_yml.dart';
+
 void main() async {
   final Map<String, dynamic> protocol = {};
   final Map<String, List<String>> protocolGroups = {};
@@ -658,29 +660,6 @@ void main() async {
   final outFile = File('lib/src/generated/channels.dart');
   outFile.writeAsStringSync(buffer.toString());
   print('Generated ${outFile.path}');
-}
-
-Future<List<dynamic>> getAllProtocolYml(String version) async {
-  final cacheFile = File('.protocol_cache/$version/files.json');
-  if (cacheFile.existsSync()) {
-    return jsonDecode(cacheFile.readAsStringSync());
-  }
-
-  final response = await HttpClient().getUrl(
-    Uri.parse(
-      'https://api.github.com/repos/microsoft/playwright/contents/packages/protocol/spec?ref=v$version',
-    ),
-  );
-  final request = await response.close();
-  final body = await request.transform(const Utf8Decoder()).join();
-  if (request.statusCode != 200) {
-    print('Failed to fetch protocol specs from GitHub: $body');
-    exit(1);
-  }
-
-  final files = jsonDecode(body);
-  cacheFile.writeAsStringSync(body);
-  return files;
 }
 
 String toCamelCase(String s) {
