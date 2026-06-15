@@ -92,10 +92,7 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
       endpoint: endpoint,
       timeout: timeout ?? 30000.0,
     );
-    return ChannelOwner.from<WorkerImpl>(
-      connection,
-      result.worker as Map<String, dynamic>,
-    );
+    return result.worker as Worker;
   }
 
   /// Connects to a remote Browserless or CDP endpoint.
