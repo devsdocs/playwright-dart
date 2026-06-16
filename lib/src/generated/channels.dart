@@ -84,6 +84,15 @@ enum BrowserContextUpdateSubscriptionEventEnum {
   const BrowserContextUpdateSubscriptionEventEnum(this.value);
 }
 
+enum BrowserInitializerBrowserNameEnum {
+  chromium('chromium'),
+  firefox('firefox'),
+  webkit('webkit');
+
+  final String value;
+  const BrowserInitializerBrowserNameEnum(this.value);
+}
+
 enum CommonScreenshotOptionsAnimationsEnum {
   disabled('disabled'),
   allow('allow');
@@ -411,6 +420,17 @@ enum LocalUtilsHarLookupResultActionEnum {
 
   final String value;
   const LocalUtilsHarLookupResultActionEnum(this.value);
+}
+
+enum LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum {
+  chromium('chromium'),
+  firefox('firefox'),
+  webkit('webkit');
+
+  final String value;
+  const LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum(
+    this.value,
+  );
 }
 
 enum LocalUtilsZipModeEnum {
@@ -747,6 +767,29 @@ class APIRequestContextFetchResult {
   }
 }
 
+class APIRequestContextInitializer {
+  final TracingBase tracing;
+
+  APIRequestContextInitializer({required this.tracing});
+
+  factory APIRequestContextInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return APIRequestContextInitializer(
+      tracing: (connection != null && json[r'tracing'] != null
+          ? ChannelOwner.from<TracingBase>(connection, json[r'tracing'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'tracing': {'guid': tracing.guid},
+    };
+  }
+}
+
 class APIRequestContextStorageStateResult {
   final List<NetworkCookie> cookies;
   final List<OriginStorage> origins;
@@ -885,6 +928,27 @@ class AndroidDeviceInfoResult {
 
   Map<String, dynamic> toJson() {
     return {r'info': info.toJson()};
+  }
+}
+
+class AndroidDeviceInitializer {
+  final String model;
+  final String serial;
+
+  AndroidDeviceInitializer({required this.model, required this.serial});
+
+  factory AndroidDeviceInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return AndroidDeviceInitializer(
+      model: (json[r'model'])!,
+      serial: (json[r'serial'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'model': model, r'serial': serial};
   }
 }
 
@@ -1370,6 +1434,23 @@ class ArtifactFailureResult {
   }
 }
 
+class ArtifactInitializer {
+  final String absolutePath;
+
+  ArtifactInitializer({required this.absolutePath});
+
+  factory ArtifactInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ArtifactInitializer(absolutePath: (json[r'absolutePath'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'absolutePath': absolutePath};
+  }
+}
+
 class ArtifactPathAfterFinishedResult {
   final String value;
 
@@ -1429,6 +1510,43 @@ class ArtifactStreamResult {
   Map<String, dynamic> toJson() {
     return {
       r'stream': {'guid': stream.guid},
+    };
+  }
+}
+
+class BindingCallInitializer {
+  final List<SerializedValue> args;
+  final FrameBase frame;
+  final String name;
+
+  BindingCallInitializer({
+    required this.args,
+    required this.frame,
+    required this.name,
+  });
+
+  factory BindingCallInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BindingCallInitializer(
+      args:
+          ((json[r'args'] as List?)
+              ?.map((e) => SerializedValue.fromJson(e, connection: connection))
+              .toList()) ??
+          [],
+      frame: (connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
+          : null)!,
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'args': args.map((e) => e.toJson()).toList(),
+      r'frame': {'guid': frame.guid},
+      r'name': name,
     };
   }
 }
@@ -1719,6 +1837,76 @@ class BrowserContextExposeBindingResult {
     return {
       r'disposable': {'guid': disposable.guid},
     };
+  }
+}
+
+class BrowserContextInitializer {
+  final DebuggerBase debugger;
+  final BrowserContextInitializerOptions options;
+  final APIRequestContextBase requestContext;
+  final TracingBase tracing;
+
+  BrowserContextInitializer({
+    required this.debugger,
+    required this.options,
+    required this.requestContext,
+    required this.tracing,
+  });
+
+  factory BrowserContextInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextInitializer(
+      debugger: (connection != null && json[r'debugger'] != null
+          ? ChannelOwner.from<DebuggerBase>(connection, json[r'debugger'])
+          : null)!,
+      options: (json[r'options'] == null
+          ? null
+          : BrowserContextInitializerOptions.fromJson(
+              json[r'options'],
+              connection: connection,
+            ))!,
+      requestContext: (connection != null && json[r'requestContext'] != null
+          ? ChannelOwner.from<APIRequestContextBase>(
+              connection,
+              json[r'requestContext'],
+            )
+          : null)!,
+      tracing: (connection != null && json[r'tracing'] != null
+          ? ChannelOwner.from<TracingBase>(connection, json[r'tracing'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'debugger': {'guid': debugger.guid},
+      r'options': options.toJson(),
+      r'requestContext': {'guid': requestContext.guid},
+      r'tracing': {'guid': tracing.guid},
+    };
+  }
+}
+
+class BrowserContextInitializerOptions {
+  final ContextOptions mixinValue;
+
+  BrowserContextInitializerOptions({required this.mixinValue});
+
+  factory BrowserContextInitializerOptions.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextInitializerOptions(
+      mixinValue: (json[r'$mixin'] == null
+          ? null
+          : ContextOptions.fromJson(json[r'$mixin'], connection: connection))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'$mixin': mixinValue.toJson()};
   }
 }
 
@@ -2325,6 +2513,41 @@ class BrowserDefaultUserAgentForTestResult {
   }
 }
 
+class BrowserInitializer {
+  final BrowserInitializerBrowserNameEnum browserName;
+  final String name;
+  final String version;
+
+  BrowserInitializer({
+    required this.browserName,
+    required this.name,
+    required this.version,
+  });
+
+  factory BrowserInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserInitializer(
+      browserName: (json[r'browserName'] == null
+          ? null
+          : BrowserInitializerBrowserNameEnum.values.firstWhere(
+              (e) => e.value == json[r'browserName'],
+            ))!,
+      name: (json[r'name'])!,
+      version: (json[r'version'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'browserName': browserName.value,
+      r'name': name,
+      r'version': version,
+    };
+  }
+}
+
 class BrowserNewBrowserCDPSessionResult {
   final CDPSessionBase session;
 
@@ -2615,6 +2838,27 @@ class BrowserTypeConnectToWorkerResult {
   }
 }
 
+class BrowserTypeInitializer {
+  final String executablePath;
+  final String name;
+
+  BrowserTypeInitializer({required this.executablePath, required this.name});
+
+  factory BrowserTypeInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserTypeInitializer(
+      executablePath: (json[r'executablePath'])!,
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'executablePath': executablePath, r'name': name};
+  }
+}
+
 class BrowserTypeLaunchPersistentContextResult {
   final BrowserBase browser;
   final BrowserContextBase context;
@@ -2801,7 +3045,7 @@ class CommonScreenshotOptions {
 
 class CommonScreenshotOptionsMaskItems {
   final FrameBase frame;
-  final String selector;
+  final Pattern selector;
 
   CommonScreenshotOptionsMaskItems({
     required this.frame,
@@ -2816,14 +3060,14 @@ class CommonScreenshotOptionsMaskItems {
       frame: (connection != null && json[r'frame'] != null
           ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
           : null)!,
-      selector: (json[r'selector'])!,
+      selector: (json[r'selector'] as String?)!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       r'frame': {'guid': frame.guid},
-      r'selector': selector,
+      r'selector': selector.toString(),
     };
   }
 }
@@ -3355,8 +3599,8 @@ class ContextOptionsViewport {
 
 class DebugControllerInspectRequestedEvent {
   final String ariaSnapshot;
-  final String locator;
-  final String selector;
+  final Pattern locator;
+  final Pattern selector;
 
   DebugControllerInspectRequestedEvent({
     required this.ariaSnapshot,
@@ -3370,16 +3614,16 @@ class DebugControllerInspectRequestedEvent {
   }) {
     return DebugControllerInspectRequestedEvent(
       ariaSnapshot: (json[r'ariaSnapshot'])!,
-      locator: (json[r'locator'])!,
-      selector: (json[r'selector'])!,
+      locator: (json[r'locator'] as String?)!,
+      selector: (json[r'selector'] as String?)!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       r'ariaSnapshot': ariaSnapshot,
-      r'locator': locator,
-      r'selector': selector,
+      r'locator': locator.toString(),
+      r'selector': selector.toString(),
     };
   }
 }
@@ -3590,6 +3834,43 @@ class DebuggerRunToLocation {
   }
 }
 
+class DialogInitializer {
+  final String defaultValue;
+  final String message;
+  final PageBase? page;
+  final String type;
+
+  DialogInitializer({
+    required this.defaultValue,
+    required this.message,
+    this.page,
+    required this.type,
+  });
+
+  factory DialogInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DialogInitializer(
+      defaultValue: (json[r'defaultValue'])!,
+      message: (json[r'message'])!,
+      page: connection != null && json[r'page'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'page'])
+          : null,
+      type: (json[r'type'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'defaultValue': defaultValue,
+      r'message': message,
+      if (page != null) r'page': {'guid': page?.guid},
+      r'type': type,
+    };
+  }
+}
+
 class ElectronApplicationBrowserWindowResult {
   final JSHandleBase handle;
 
@@ -3675,6 +3956,29 @@ class ElectronApplicationEvaluateExpressionResult {
 
   Map<String, dynamic> toJson() {
     return {r'value': value.toJson()};
+  }
+}
+
+class ElectronApplicationInitializer {
+  final BrowserContextBase context;
+
+  ElectronApplicationInitializer({required this.context});
+
+  factory ElectronApplicationInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ElectronApplicationInitializer(
+      context: (connection != null && json[r'context'] != null
+          ? ChannelOwner.from<BrowserContextBase>(connection, json[r'context'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'context': {'guid': context.guid},
+    };
   }
 }
 
@@ -4704,6 +5008,49 @@ class FrameGotoResult {
   }
 }
 
+class FrameInitializer {
+  final List<LifecycleEvent> loadStates;
+  final String name;
+  final FrameBase? parentFrame;
+  final String url;
+
+  FrameInitializer({
+    required this.loadStates,
+    required this.name,
+    this.parentFrame,
+    required this.url,
+  });
+
+  factory FrameInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameInitializer(
+      loadStates:
+          ((json[r'loadStates'] as List?)
+              ?.map(
+                (e) => LifecycleEvent.values.firstWhere((v) => v.value == e),
+              )
+              .toList()) ??
+          [],
+      name: (json[r'name'])!,
+      parentFrame: connection != null && json[r'parentFrame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'parentFrame'])
+          : null,
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'loadStates': loadStates.map((e) => e.value).toList(),
+      r'name': name,
+      if (parentFrame != null) r'parentFrame': {'guid': parentFrame?.guid},
+      r'url': url,
+    };
+  }
+}
+
 class FrameInnerHTMLResult {
   final String value;
 
@@ -5501,6 +5848,23 @@ class JSHandleGetPropertyResult {
   }
 }
 
+class JSHandleInitializer {
+  final String preview;
+
+  JSHandleInitializer({required this.preview});
+
+  factory JSHandleInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return JSHandleInitializer(preview: (json[r'preview'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'preview': preview};
+  }
+}
+
 class JSHandleJsonValueResult {
   final SerializedValue value;
 
@@ -5821,6 +6185,175 @@ class LocalUtilsHarOpenResult {
       if (error != null) r'error': error,
       if (harId != null) r'harId': harId,
     };
+  }
+}
+
+class LocalUtilsInitializer {
+  final List<LocalUtilsInitializerDeviceDescriptorsItems> deviceDescriptors;
+
+  LocalUtilsInitializer({required this.deviceDescriptors});
+
+  factory LocalUtilsInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return LocalUtilsInitializer(
+      deviceDescriptors:
+          ((json[r'deviceDescriptors'] as List?)
+              ?.map(
+                (e) => LocalUtilsInitializerDeviceDescriptorsItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
+              .toList()) ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'deviceDescriptors': deviceDescriptors.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class LocalUtilsInitializerDeviceDescriptorsItems {
+  final LocalUtilsInitializerDeviceDescriptorsItemsDescriptor descriptor;
+  final String name;
+
+  LocalUtilsInitializerDeviceDescriptorsItems({
+    required this.descriptor,
+    required this.name,
+  });
+
+  factory LocalUtilsInitializerDeviceDescriptorsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return LocalUtilsInitializerDeviceDescriptorsItems(
+      descriptor: (json[r'descriptor'] == null
+          ? null
+          : LocalUtilsInitializerDeviceDescriptorsItemsDescriptor.fromJson(
+              json[r'descriptor'],
+              connection: connection,
+            ))!,
+      name: (json[r'name'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'descriptor': descriptor.toJson(), r'name': name};
+  }
+}
+
+class LocalUtilsInitializerDeviceDescriptorsItemsDescriptor {
+  final LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum
+  defaultBrowserType;
+  final double deviceScaleFactor;
+  final bool hasTouch;
+  final bool isMobile;
+  final LocalUtilsInitializerDeviceDescriptorsItemsDescriptorScreen? screen;
+  final String userAgent;
+  final LocalUtilsInitializerDeviceDescriptorsItemsDescriptorViewport viewport;
+
+  LocalUtilsInitializerDeviceDescriptorsItemsDescriptor({
+    required this.defaultBrowserType,
+    required this.deviceScaleFactor,
+    required this.hasTouch,
+    required this.isMobile,
+    this.screen,
+    required this.userAgent,
+    required this.viewport,
+  });
+
+  factory LocalUtilsInitializerDeviceDescriptorsItemsDescriptor.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return LocalUtilsInitializerDeviceDescriptorsItemsDescriptor(
+      defaultBrowserType: (json[r'defaultBrowserType'] == null
+          ? null
+          : LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum
+                .values
+                .firstWhere((e) => e.value == json[r'defaultBrowserType']))!,
+      deviceScaleFactor: ((json[r'deviceScaleFactor'] as num?)?.toDouble())!,
+      hasTouch: (json[r'hasTouch'])!,
+      isMobile: (json[r'isMobile'])!,
+      screen: json[r'screen'] == null
+          ? null
+          : LocalUtilsInitializerDeviceDescriptorsItemsDescriptorScreen.fromJson(
+              json[r'screen'],
+              connection: connection,
+            ),
+      userAgent: (json[r'userAgent'])!,
+      viewport: (json[r'viewport'] == null
+          ? null
+          : LocalUtilsInitializerDeviceDescriptorsItemsDescriptorViewport.fromJson(
+              json[r'viewport'],
+              connection: connection,
+            ))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'defaultBrowserType': defaultBrowserType.value,
+      r'deviceScaleFactor': deviceScaleFactor,
+      r'hasTouch': hasTouch,
+      r'isMobile': isMobile,
+      if (screen != null) r'screen': screen?.toJson(),
+      r'userAgent': userAgent,
+      r'viewport': viewport.toJson(),
+    };
+  }
+}
+
+class LocalUtilsInitializerDeviceDescriptorsItemsDescriptorScreen {
+  final int height;
+  final int width;
+
+  LocalUtilsInitializerDeviceDescriptorsItemsDescriptorScreen({
+    required this.height,
+    required this.width,
+  });
+
+  factory LocalUtilsInitializerDeviceDescriptorsItemsDescriptorScreen.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return LocalUtilsInitializerDeviceDescriptorsItemsDescriptorScreen(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
+  }
+}
+
+class LocalUtilsInitializerDeviceDescriptorsItemsDescriptorViewport {
+  final int height;
+  final int width;
+
+  LocalUtilsInitializerDeviceDescriptorsItemsDescriptorViewport({
+    required this.height,
+    required this.width,
+  });
+
+  factory LocalUtilsInitializerDeviceDescriptorsItemsDescriptorViewport.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return LocalUtilsInitializerDeviceDescriptorsItemsDescriptorViewport(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
   }
 }
 
@@ -6153,7 +6686,7 @@ class PageDownloadEvent {
 
 class PageExpectScreenshotLocator {
   final FrameBase frame;
-  final String selector;
+  final Pattern selector;
 
   PageExpectScreenshotLocator({required this.frame, required this.selector});
 
@@ -6165,14 +6698,14 @@ class PageExpectScreenshotLocator {
       frame: (connection != null && json[r'frame'] != null
           ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
           : null)!,
-      selector: (json[r'selector'])!,
+      selector: (json[r'selector'] as String?)!,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       r'frame': {'guid': frame.guid},
-      r'selector': selector,
+      r'selector': selector.toString(),
     };
   }
 }
@@ -6335,6 +6868,77 @@ class PageGoForwardResult {
   }
 }
 
+class PageInitializer {
+  final bool isClosed;
+  final FrameBase mainFrame;
+  final PageBase? opener;
+  final ArtifactBase? video;
+  final PageInitializerViewportSize? viewportSize;
+
+  PageInitializer({
+    required this.isClosed,
+    required this.mainFrame,
+    this.opener,
+    this.video,
+    this.viewportSize,
+  });
+
+  factory PageInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageInitializer(
+      isClosed: (json[r'isClosed'])!,
+      mainFrame: (connection != null && json[r'mainFrame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'mainFrame'])
+          : null)!,
+      opener: connection != null && json[r'opener'] != null
+          ? ChannelOwner.from<PageBase>(connection, json[r'opener'])
+          : null,
+      video: connection != null && json[r'video'] != null
+          ? ChannelOwner.from<ArtifactBase>(connection, json[r'video'])
+          : null,
+      viewportSize: json[r'viewportSize'] == null
+          ? null
+          : PageInitializerViewportSize.fromJson(
+              json[r'viewportSize'],
+              connection: connection,
+            ),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'isClosed': isClosed,
+      r'mainFrame': {'guid': mainFrame.guid},
+      if (opener != null) r'opener': {'guid': opener?.guid},
+      if (video != null) r'video': {'guid': video?.guid},
+      if (viewportSize != null) r'viewportSize': viewportSize?.toJson(),
+    };
+  }
+}
+
+class PageInitializerViewportSize {
+  final int height;
+  final int width;
+
+  PageInitializerViewportSize({required this.height, required this.width});
+
+  factory PageInitializerViewportSize.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PageInitializerViewportSize(
+      height: (json[r'height'])!,
+      width: (json[r'width'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'height': height, r'width': width};
+  }
+}
+
 class PageLocatorHandlerTriggeredEvent {
   final int uid;
 
@@ -6423,7 +7027,7 @@ class PagePdfResult {
 }
 
 class PagePickLocatorResult {
-  final String selector;
+  final Pattern selector;
 
   PagePickLocatorResult({required this.selector});
 
@@ -6431,11 +7035,11 @@ class PagePickLocatorResult {
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PagePickLocatorResult(selector: (json[r'selector'])!);
+    return PagePickLocatorResult(selector: (json[r'selector'] as String?)!);
   }
 
   Map<String, dynamic> toJson() {
-    return {r'selector': selector};
+    return {r'selector': selector.toString()};
   }
 }
 
@@ -7136,6 +7740,92 @@ class PageWorkerEvent {
   }
 }
 
+class PlaywrightInitializer {
+  final AndroidBase android;
+  final BrowserTypeBase chromium;
+  final ElectronBase electron;
+  final BrowserTypeBase firefox;
+  final AndroidDeviceBase? preConnectedAndroidDevice;
+  final BrowserBase? preLaunchedBrowser;
+  final SocksSupportBase? socksSupport;
+  final LocalUtilsBase? utils;
+  final BrowserTypeBase webkit;
+
+  PlaywrightInitializer({
+    required this.android,
+    required this.chromium,
+    required this.electron,
+    required this.firefox,
+    this.preConnectedAndroidDevice,
+    this.preLaunchedBrowser,
+    this.socksSupport,
+    this.utils,
+    required this.webkit,
+  });
+
+  factory PlaywrightInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return PlaywrightInitializer(
+      android: (connection != null && json[r'android'] != null
+          ? ChannelOwner.from<AndroidBase>(connection, json[r'android'])
+          : null)!,
+      chromium: (connection != null && json[r'chromium'] != null
+          ? ChannelOwner.from<BrowserTypeBase>(connection, json[r'chromium'])
+          : null)!,
+      electron: (connection != null && json[r'electron'] != null
+          ? ChannelOwner.from<ElectronBase>(connection, json[r'electron'])
+          : null)!,
+      firefox: (connection != null && json[r'firefox'] != null
+          ? ChannelOwner.from<BrowserTypeBase>(connection, json[r'firefox'])
+          : null)!,
+      preConnectedAndroidDevice:
+          connection != null && json[r'preConnectedAndroidDevice'] != null
+          ? ChannelOwner.from<AndroidDeviceBase>(
+              connection,
+              json[r'preConnectedAndroidDevice'],
+            )
+          : null,
+      preLaunchedBrowser:
+          connection != null && json[r'preLaunchedBrowser'] != null
+          ? ChannelOwner.from<BrowserBase>(
+              connection,
+              json[r'preLaunchedBrowser'],
+            )
+          : null,
+      socksSupport: connection != null && json[r'socksSupport'] != null
+          ? ChannelOwner.from<SocksSupportBase>(
+              connection,
+              json[r'socksSupport'],
+            )
+          : null,
+      utils: connection != null && json[r'utils'] != null
+          ? ChannelOwner.from<LocalUtilsBase>(connection, json[r'utils'])
+          : null,
+      webkit: (connection != null && json[r'webkit'] != null
+          ? ChannelOwner.from<BrowserTypeBase>(connection, json[r'webkit'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'android': {'guid': android.guid},
+      r'chromium': {'guid': chromium.guid},
+      r'electron': {'guid': electron.guid},
+      r'firefox': {'guid': firefox.guid},
+      if (preConnectedAndroidDevice != null)
+        r'preConnectedAndroidDevice': {'guid': preConnectedAndroidDevice?.guid},
+      if (preLaunchedBrowser != null)
+        r'preLaunchedBrowser': {'guid': preLaunchedBrowser?.guid},
+      if (socksSupport != null) r'socksSupport': {'guid': socksSupport?.guid},
+      if (utils != null) r'utils': {'guid': utils?.guid},
+      r'webkit': {'guid': webkit.guid},
+    };
+  }
+}
+
 class PlaywrightNewRequestClientCertificatesItems {
   final String? cert;
   final String? key;
@@ -7502,6 +8192,73 @@ class RemoteAddr {
   }
 }
 
+class RequestInitializer {
+  final FrameBase? frame;
+  final List<NameValue> headers;
+  final bool isNavigationRequest;
+  final String method;
+  final String? postData;
+  final RequestBase? redirectedFrom;
+  final String resourceType;
+  final WorkerBase? serviceWorker;
+  final String url;
+
+  RequestInitializer({
+    this.frame,
+    required this.headers,
+    required this.isNavigationRequest,
+    required this.method,
+    this.postData,
+    this.redirectedFrom,
+    required this.resourceType,
+    this.serviceWorker,
+    required this.url,
+  });
+
+  factory RequestInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return RequestInitializer(
+      frame: connection != null && json[r'frame'] != null
+          ? ChannelOwner.from<FrameBase>(connection, json[r'frame'])
+          : null,
+      headers:
+          ((json[r'headers'] as List?)
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
+              .toList()) ??
+          [],
+      isNavigationRequest: (json[r'isNavigationRequest'])!,
+      method: (json[r'method'])!,
+      postData: json[r'postData'],
+      redirectedFrom: connection != null && json[r'redirectedFrom'] != null
+          ? ChannelOwner.from<RequestBase>(connection, json[r'redirectedFrom'])
+          : null,
+      resourceType: (json[r'resourceType'])!,
+      serviceWorker: connection != null && json[r'serviceWorker'] != null
+          ? ChannelOwner.from<WorkerBase>(connection, json[r'serviceWorker'])
+          : null,
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (frame != null) r'frame': {'guid': frame?.guid},
+      r'headers': headers.map((e) => e.toJson()).toList(),
+      r'isNavigationRequest': isNavigationRequest,
+      r'method': method,
+      if (postData != null) r'postData': postData,
+      if (redirectedFrom != null)
+        r'redirectedFrom': {'guid': redirectedFrom?.guid},
+      r'resourceType': resourceType,
+      if (serviceWorker != null)
+        r'serviceWorker': {'guid': serviceWorker?.guid},
+      r'url': url,
+    };
+  }
+}
+
 class RequestRawRequestHeadersResult {
   final List<NameValue> headers;
 
@@ -7669,6 +8426,61 @@ class ResponseHttpVersionResult {
   }
 }
 
+class ResponseInitializer {
+  final bool fromServiceWorker;
+  final List<NameValue> headers;
+  final RequestBase request;
+  final int status;
+  final String statusText;
+  final ResourceTiming timing;
+  final String url;
+
+  ResponseInitializer({
+    required this.fromServiceWorker,
+    required this.headers,
+    required this.request,
+    required this.status,
+    required this.statusText,
+    required this.timing,
+    required this.url,
+  });
+
+  factory ResponseInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return ResponseInitializer(
+      fromServiceWorker: (json[r'fromServiceWorker'])!,
+      headers:
+          ((json[r'headers'] as List?)
+              ?.map((e) => NameValue.fromJson(e, connection: connection))
+              .toList()) ??
+          [],
+      request: (connection != null && json[r'request'] != null
+          ? ChannelOwner.from<RequestBase>(connection, json[r'request'])
+          : null)!,
+      status: (json[r'status'])!,
+      statusText: (json[r'statusText'])!,
+      timing: (json[r'timing'] == null
+          ? null
+          : ResourceTiming.fromJson(json[r'timing'], connection: connection))!,
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'fromServiceWorker': fromServiceWorker,
+      r'headers': headers.map((e) => e.toJson()).toList(),
+      r'request': {'guid': request.guid},
+      r'status': status,
+      r'statusText': statusText,
+      r'timing': timing.toJson(),
+      r'url': url,
+    };
+  }
+}
+
 class ResponseRawResponseHeadersResult {
   final List<NameValue> headers;
 
@@ -7774,6 +8586,29 @@ class RootInitializeResult {
   Map<String, dynamic> toJson() {
     return {
       r'playwright': {'guid': playwright.guid},
+    };
+  }
+}
+
+class RouteInitializer {
+  final RequestBase request;
+
+  RouteInitializer({required this.request});
+
+  factory RouteInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return RouteInitializer(
+      request: (connection != null && json[r'request'] != null
+          ? ChannelOwner.from<RequestBase>(connection, json[r'request'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'request': {'guid': request.guid},
     };
   }
 }
@@ -8680,6 +9515,23 @@ class WebSocketFrameSentEvent {
   }
 }
 
+class WebSocketInitializer {
+  final String url;
+
+  WebSocketInitializer({required this.url});
+
+  factory WebSocketInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketInitializer(url: (json[r'url'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'url': url};
+  }
+}
+
 class WebSocketRouteClosePageEvent {
   final int? code;
   final String? reason;
@@ -8739,6 +9591,27 @@ class WebSocketRouteCloseServerEvent {
       if (reason != null) r'reason': reason,
       r'wasClean': wasClean,
     };
+  }
+}
+
+class WebSocketRouteInitializer {
+  final List<String> protocols;
+  final String url;
+
+  WebSocketRouteInitializer({required this.protocols, required this.url});
+
+  factory WebSocketRouteInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WebSocketRouteInitializer(
+      protocols: ((json[r'protocols'] as List?)?.cast<String>()) ?? [],
+      url: (json[r'url'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'protocols': protocols, r'url': url};
   }
 }
 
@@ -8872,6 +9745,23 @@ class WorkerEvaluateExpressionResult {
   }
 }
 
+class WorkerInitializer {
+  final String url;
+
+  WorkerInitializer({required this.url});
+
+  factory WorkerInitializer.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return WorkerInitializer(url: (json[r'url'])!);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'url': url};
+  }
+}
+
 abstract class APIRequestContextBase extends ChannelOwner {
   APIRequestContextBase(
     super.connection,
@@ -8880,6 +9770,12 @@ abstract class APIRequestContextBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+
+  APIRequestContextInitializer get typedInitializer =>
+      APIRequestContextInitializer.fromJson(
+        super.initializer,
+        connection: connection,
+      );
 
   Future<void> channel_dispose({String? reason}) async {
     final payload = <String, dynamic>{};
@@ -8903,6 +9799,7 @@ abstract class APIRequestContextBase extends ChannelOwner {
     return;
   }
 
+  /// {method} "{url}"
   Future<APIRequestContextFetchResult> channel_fetch({
     String? encodedParams,
     bool? failOnStatusCode,
@@ -8963,6 +9860,7 @@ abstract class APIRequestContextBase extends ChannelOwner {
     );
   }
 
+  /// Get response body
   Future<APIRequestContextFetchResponseBodyResult> channel_fetchResponseBody({
     required String fetchUid,
   }) async {
@@ -8979,6 +9877,7 @@ abstract class APIRequestContextBase extends ChannelOwner {
     );
   }
 
+  /// Get storage state
   Future<APIRequestContextStorageStateResult> channel_storageState({
     bool? indexedDB,
   }) async {
@@ -9033,11 +9932,18 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     super.parent,
   ]);
 
+  AndroidDeviceInitializer get typedInitializer =>
+      AndroidDeviceInitializer.fromJson(
+        super.initializer,
+        connection: connection,
+      );
+
   Future<void> channel_close() async {
     final response = await connection.sendMessageToServer(guid, 'close', {});
     return;
   }
 
+  /// Connect to Web View
   Future<AndroidDeviceConnectToWebViewResult> channel_connectToWebView({
     required String socketName,
   }) async {
@@ -9054,6 +9960,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     );
   }
 
+  /// Drag
   Future<void> channel_drag({
     required AndroidSelector androidSelector,
     required Point dest,
@@ -9073,6 +9980,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Fill "{text}"
   Future<void> channel_fill({
     required AndroidSelector androidSelector,
     required String text,
@@ -9090,6 +9998,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Fling
   Future<void> channel_fling({
     required AndroidSelector androidSelector,
     required AndroidDeviceFlingDirectionEnum direction,
@@ -9122,6 +10031,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return AndroidDeviceInfoResult.fromJson(response, connection: connection);
   }
 
+  /// Drag
   Future<void> channel_inputDrag({
     required Point from,
     required int steps,
@@ -9139,6 +10049,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Press
   Future<void> channel_inputPress({required String key}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
@@ -9150,6 +10061,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Swipe
   Future<void> channel_inputSwipe({
     required List<Point> segments,
     required int steps,
@@ -9165,6 +10077,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Tap
   Future<void> channel_inputTap({required Point point}) async {
     final payload = <String, dynamic>{};
     payload['point'] = point.toJson();
@@ -9176,6 +10089,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Type
   Future<void> channel_inputType({required String text}) async {
     final payload = <String, dynamic>{};
     payload['text'] = text;
@@ -9187,6 +10101,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Install apk
   Future<void> channel_installApk({
     List<String>? args,
     required String file,
@@ -9202,6 +10117,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Launch browser
   Future<AndroidDeviceLaunchBrowserResult> channel_launchBrowser({
     required ContextOptions contextOptions,
     List<String>? args,
@@ -9224,6 +10140,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     );
   }
 
+  /// Long tap
   Future<void> channel_longTap({
     required AndroidSelector androidSelector,
     required double timeout,
@@ -9239,6 +10156,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Open app
   Future<AndroidDeviceOpenResult> channel_open({
     required String command,
   }) async {
@@ -9252,6 +10170,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return AndroidDeviceOpenResult.fromJson(response, connection: connection);
   }
 
+  /// Pinch close
   Future<void> channel_pinchClose({
     required AndroidSelector androidSelector,
     required double percent,
@@ -9271,6 +10190,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Pinch open
   Future<void> channel_pinchOpen({
     required AndroidSelector androidSelector,
     required double percent,
@@ -9290,6 +10210,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Push
   Future<void> channel_push({
     required String file,
     int? mode,
@@ -9307,6 +10228,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Screenshot
   Future<AndroidDeviceScreenshotResult> channel_screenshot() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -9319,6 +10241,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     );
   }
 
+  /// Scroll
   Future<void> channel_scroll({
     required AndroidSelector androidSelector,
     required AndroidDeviceScrollDirectionEnum direction,
@@ -9340,6 +10263,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Execute shell command
   Future<AndroidDeviceShellResult> channel_shell({
     required String command,
   }) async {
@@ -9353,6 +10277,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return AndroidDeviceShellResult.fromJson(response, connection: connection);
   }
 
+  /// Swipe
   Future<void> channel_swipe({
     required AndroidSelector androidSelector,
     required AndroidDeviceSwipeDirectionEnum direction,
@@ -9374,6 +10299,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Tap
   Future<void> channel_tap({
     required AndroidSelector androidSelector,
     double? duration,
@@ -9387,6 +10313,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     return;
   }
 
+  /// Wait
   Future<void> channel_wait({
     required AndroidSelector androidSelector,
     AndroidDeviceWaitStateEnum? state,
@@ -9439,6 +10366,9 @@ abstract class ArtifactBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+
+  ArtifactInitializer get typedInitializer =>
+      ArtifactInitializer.fromJson(super.initializer, connection: connection);
 
   Future<void> channel_cancel() async {
     final response = await connection.sendMessageToServer(guid, 'cancel', {});
@@ -9505,6 +10435,12 @@ abstract class BindingCallBase extends ChannelOwner {
     super.parent,
   ]);
 
+  BindingCallInitializer get typedInitializer =>
+      BindingCallInitializer.fromJson(
+        super.initializer,
+        connection: connection,
+      );
+
   Future<void> channel_reject({required SerializedError error}) async {
     final payload = <String, dynamic>{};
     payload['error'] = error.toJson();
@@ -9537,6 +10473,10 @@ abstract class BrowserBase extends ChannelOwner {
     super.parent,
   ]);
 
+  BrowserInitializer get typedInitializer =>
+      BrowserInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Close browser
   Future<void> channel_close({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
@@ -9583,6 +10523,7 @@ abstract class BrowserBase extends ChannelOwner {
     return;
   }
 
+  /// Create CDP session
   Future<BrowserNewBrowserCDPSessionResult>
   channel_newBrowserCDPSession() async {
     final response = await connection.sendMessageToServer(
@@ -9596,6 +10537,7 @@ abstract class BrowserBase extends ChannelOwner {
     );
   }
 
+  /// Create context
   Future<BrowserNewContextResult> channel_newContext({
     required ContextOptions contextOptions,
     BrowserNewContextProxy? proxy,
@@ -9633,6 +10575,7 @@ abstract class BrowserBase extends ChannelOwner {
     );
   }
 
+  /// Start server
   Future<BrowserStartServerResult> channel_startServer({
     String? host,
     JsonValue metadata,
@@ -9654,6 +10597,7 @@ abstract class BrowserBase extends ChannelOwner {
     return BrowserStartServerResult.fromJson(response, connection: connection);
   }
 
+  /// Start browser tracing
   Future<void> channel_startTracing({
     List<String>? categories,
     PageBase? page,
@@ -9671,6 +10615,7 @@ abstract class BrowserBase extends ChannelOwner {
     return;
   }
 
+  /// Stop server
   Future<void> channel_stopServer() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -9680,6 +10625,7 @@ abstract class BrowserBase extends ChannelOwner {
     return;
   }
 
+  /// Stop browser tracing
   Future<BrowserStopTracingResult> channel_stopTracing() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -9699,6 +10645,13 @@ abstract class BrowserContextBase extends ChannelOwner {
     super.parent,
   ]);
 
+  BrowserContextInitializer get typedInitializer =>
+      BrowserContextInitializer.fromJson(
+        super.initializer,
+        connection: connection,
+      );
+
+  /// Add cookies
   Future<void> channel_addCookies({
     required List<SetNetworkCookie> cookies,
   }) async {
@@ -9712,6 +10665,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Add init script
   Future<BrowserContextAddInitScriptResult> channel_addInitScript({
     required String source,
   }) async {
@@ -9728,6 +10682,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     );
   }
 
+  /// Clear cookies
   Future<void> channel_clearCookies({
     String? domain,
     String? domainRegexFlags,
@@ -9759,6 +10714,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Clear permissions
   Future<void> channel_clearPermissions() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -9768,6 +10724,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Fast forward clock "{ticksNumber|ticksString}"
   Future<void> channel_clockFastForward({
     double? ticksNumber,
     String? ticksString,
@@ -9783,6 +10740,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Install clock "{timeNumber|timeString}"
   Future<void> channel_clockInstall({
     double? timeNumber,
     String? timeString,
@@ -9798,6 +10756,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Pause clock "{timeNumber|timeString}"
   Future<void> channel_clockPauseAt({
     double? timeNumber,
     String? timeString,
@@ -9813,6 +10772,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Resume clock
   Future<void> channel_clockResume() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -9822,6 +10782,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Run clock "{ticksNumber|ticksString}"
   Future<void> channel_clockRunFor({
     double? ticksNumber,
     String? ticksString,
@@ -9837,6 +10798,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Set fixed time "{timeNumber|timeString}"
   Future<void> channel_clockSetFixedTime({
     double? timeNumber,
     String? timeString,
@@ -9852,6 +10814,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Set system time "{timeNumber|timeString}"
   Future<void> channel_clockSetSystemTime({
     double? timeNumber,
     String? timeString,
@@ -9867,6 +10830,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Close context
   Future<void> channel_close({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
@@ -9878,6 +10842,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Get cookies
   Future<BrowserContextCookiesResult> channel_cookies({
     required List<String> urls,
   }) async {
@@ -9912,6 +10877,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     );
   }
 
+  /// Create virtual credential for "{rpId}"
   Future<BrowserContextCredentialsCreateResult> channel_credentialsCreate({
     String? id,
     String? privateKey,
@@ -9936,6 +10902,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     );
   }
 
+  /// Delete virtual credential
   Future<void> channel_credentialsDelete({required String id}) async {
     final payload = <String, dynamic>{};
     payload['id'] = id;
@@ -9947,6 +10914,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Get virtual credentials
   Future<BrowserContextCredentialsGetResult> channel_credentialsGet({
     String? id,
     String? rpId,
@@ -9965,6 +10933,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     );
   }
 
+  /// Install virtual WebAuthn authenticator
   Future<void> channel_credentialsInstall() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10021,6 +10990,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Expose binding
   Future<BrowserContextExposeBindingResult> channel_exposeBinding({
     required String name,
   }) async {
@@ -10046,6 +11016,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Grant permissions
   Future<void> channel_grantPermissions({
     String? origin,
     required List<String> permissions,
@@ -10061,6 +11032,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Create CDP session
   Future<BrowserContextNewCDPSessionResult> channel_newCDPSession({
     FrameBase? frame,
     PageBase? page,
@@ -10079,6 +11051,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     );
   }
 
+  /// Create page
   Future<BrowserContextNewPageResult> channel_newPage() async {
     final response = await connection.sendMessageToServer(guid, 'newPage', {});
     return BrowserContextNewPageResult.fromJson(
@@ -10087,6 +11060,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     );
   }
 
+  /// Pause
   Future<void> channel_pause() async {
     final response = await connection.sendMessageToServer(guid, 'pause', {});
     return;
@@ -10105,6 +11079,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Set extra HTTP headers
   Future<void> channel_setExtraHTTPHeaders({
     required List<NameValue> headers,
   }) async {
@@ -10118,6 +11093,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Set geolocation
   Future<void> channel_setGeolocation({
     BrowserContextSetGeolocationGeolocation? geolocation,
   }) async {
@@ -10131,6 +11107,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Set HTTP credentials
   Future<void> channel_setHTTPCredentials({
     BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
   }) async {
@@ -10145,6 +11122,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Route requests
   Future<void> channel_setNetworkInterceptionPatterns({
     required List<BrowserContextSetNetworkInterceptionPatternsPatternsItems>
     patterns,
@@ -10159,6 +11137,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Set offline mode
   Future<void> channel_setOffline({required bool offline}) async {
     final payload = <String, dynamic>{};
     payload['offline'] = offline;
@@ -10170,6 +11149,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Set storage state
   Future<void> channel_setStorageState({
     BrowserContextSetStorageStateStorageState? storageState,
   }) async {
@@ -10196,6 +11176,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Route WebSockets
   Future<void> channel_setWebSocketInterceptionPatterns({
     required List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems>
     patterns,
@@ -10210,6 +11191,7 @@ abstract class BrowserContextBase extends ChannelOwner {
     return;
   }
 
+  /// Get storage state
   Future<BrowserContextStorageStateResult> channel_storageState({
     bool? indexedDB,
   }) async {
@@ -10251,6 +11233,13 @@ abstract class BrowserTypeBase extends ChannelOwner {
     super.parent,
   ]);
 
+  BrowserTypeInitializer get typedInitializer =>
+      BrowserTypeInitializer.fromJson(
+        super.initializer,
+        connection: connection,
+      );
+
+  /// Connect over CDP
   Future<BrowserTypeConnectOverCDPResult> channel_connectOverCDP({
     String? artifactsDir,
     String? endpointURL,
@@ -10281,6 +11270,7 @@ abstract class BrowserTypeBase extends ChannelOwner {
     );
   }
 
+  /// Connect to worker
   Future<BrowserTypeConnectToWorkerResult> channel_connectToWorker({
     required String endpoint,
     required double timeout,
@@ -10299,6 +11289,7 @@ abstract class BrowserTypeBase extends ChannelOwner {
     );
   }
 
+  /// Launch browser
   Future<BrowserTypeLaunchResult> channel_launch({
     required LaunchOptions launchOptions,
     double? slowMo,
@@ -10314,6 +11305,7 @@ abstract class BrowserTypeBase extends ChannelOwner {
     return BrowserTypeLaunchResult.fromJson(response, connection: connection);
   }
 
+  /// Launch persistent context
   Future<BrowserTypeLaunchPersistentContextResult>
   channel_launchPersistentContext({
     required LaunchOptions launchOptions,
@@ -10347,11 +11339,13 @@ abstract class CDPSessionBase extends ChannelOwner {
     super.parent,
   ]);
 
+  /// Detach CDP session
   Future<void> channel_detach() async {
     final response = await connection.sendMessageToServer(guid, 'detach', {});
     return;
   }
 
+  /// Send CDP command
   Future<CDPSessionSendResult> channel_send({
     required String method,
     JsonValue params,
@@ -10388,11 +11382,11 @@ abstract class DebugControllerBase extends ChannelOwner {
 
   Future<void> channel_highlight({
     String? ariaTemplate,
-    String? selector,
+    Pattern? selector,
   }) async {
     final payload = <String, dynamic>{};
     if (ariaTemplate != null) payload['ariaTemplate'] = ariaTemplate;
-    if (selector != null) payload['selector'] = selector;
+    if (selector != null) payload['selector'] = selector?.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'highlight',
@@ -10466,11 +11460,13 @@ abstract class DebuggerBase extends ChannelOwner {
     super.parent,
   ]);
 
+  /// Step to next call
   Future<void> channel_next() async {
     final response = await connection.sendMessageToServer(guid, 'next', {});
     return;
   }
 
+  /// Pause on next call
   Future<void> channel_requestPause() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10480,11 +11476,13 @@ abstract class DebuggerBase extends ChannelOwner {
     return;
   }
 
+  /// Resume
   Future<void> channel_resume() async {
     final response = await connection.sendMessageToServer(guid, 'resume', {});
     return;
   }
 
+  /// Run to location
   Future<void> channel_runTo({required DebuggerRunToLocation location}) async {
     final payload = <String, dynamic>{};
     payload['location'] = location.toJson();
@@ -10506,6 +11504,10 @@ abstract class DialogBase extends ChannelOwner {
     super.parent,
   ]);
 
+  DialogInitializer get typedInitializer =>
+      DialogInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Accept dialog
   Future<void> channel_accept({String? promptText}) async {
     final payload = <String, dynamic>{};
     if (promptText != null) payload['promptText'] = promptText;
@@ -10517,6 +11519,7 @@ abstract class DialogBase extends ChannelOwner {
     return;
   }
 
+  /// Dismiss dialog
   Future<void> channel_dismiss() async {
     final response = await connection.sendMessageToServer(guid, 'dismiss', {});
     return;
@@ -10547,6 +11550,7 @@ abstract class ElectronBase extends ChannelOwner {
     super.parent,
   ]);
 
+  /// Launch electron
   Future<ElectronLaunchResult> channel_launch({
     ElectronLaunchAcceptDownloadsEnum? acceptDownloads,
     List<String>? args,
@@ -10617,6 +11621,12 @@ abstract class ElectronApplicationBase extends ChannelOwner {
     super.parent,
   ]);
 
+  ElectronApplicationInitializer get typedInitializer =>
+      ElectronApplicationInitializer.fromJson(
+        super.initializer,
+        connection: connection,
+      );
+
   Future<ElectronApplicationBrowserWindowResult> channel_browserWindow({
     required PageBase page,
   }) async {
@@ -10633,6 +11643,7 @@ abstract class ElectronApplicationBase extends ChannelOwner {
     );
   }
 
+  /// Evaluate
   Future<ElectronApplicationEvaluateExpressionResult>
   channel_evaluateExpression({
     required SerializedArgument arg,
@@ -10654,6 +11665,7 @@ abstract class ElectronApplicationBase extends ChannelOwner {
     );
   }
 
+  /// Evaluate
   Future<ElectronApplicationEvaluateExpressionHandleResult>
   channel_evaluateExpressionHandle({
     required SerializedArgument arg,
@@ -10700,6 +11712,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     super.parent,
   ]);
 
+  /// Get bounding box
   Future<ElementHandleBoundingBoxResult> channel_boundingBox() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10712,6 +11725,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Check
   Future<void> channel_check({
     bool? force,
     Point? position,
@@ -10731,6 +11745,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Click
   Future<void> channel_click({
     ElementHandleClickButtonEnum? button,
     int? clickCount,
@@ -10762,6 +11777,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Get content frame
   Future<ElementHandleContentFrameResult> channel_contentFrame() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10774,6 +11790,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Double click
   Future<void> channel_dblclick({
     ElementHandleDblclickButtonEnum? button,
     double? delay,
@@ -10801,6 +11818,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Dispatch event
   Future<void> channel_dispatchEvent({
     required SerializedArgument eventInit,
     required String type,
@@ -10816,18 +11834,19 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Evaluate
   Future<ElementHandleEvalOnSelectorResult> channel_evalOnSelector({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
-    required String selector,
+    required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
@@ -10840,17 +11859,18 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Evaluate
   Future<ElementHandleEvalOnSelectorAllResult> channel_evalOnSelectorAll({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
-    required String selector,
+    required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'evalOnSelectorAll',
@@ -10862,6 +11882,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Fill "{value}"
   Future<void> channel_fill({
     bool? force,
     required double timeout,
@@ -10879,11 +11900,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Focus
   Future<void> channel_focus() async {
     final response = await connection.sendMessageToServer(guid, 'focus', {});
     return;
   }
 
+  /// Get attribute
   Future<ElementHandleGetAttributeResult> channel_getAttribute({
     required String name,
   }) async {
@@ -10900,6 +11923,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Hover
   Future<void> channel_hover({
     bool? force,
     List<ElementHandleHoverModifiersEnum>? modifiers,
@@ -10921,6 +11945,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Get HTML
   Future<ElementHandleInnerHTMLResult> channel_innerHTML() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10933,6 +11958,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Get inner text
   Future<ElementHandleInnerTextResult> channel_innerText() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10945,6 +11971,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Get input value
   Future<ElementHandleInputValueResult> channel_inputValue() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10957,6 +11984,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Is checked
   Future<ElementHandleIsCheckedResult> channel_isChecked() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10969,6 +11997,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Is disabled
   Future<ElementHandleIsDisabledResult> channel_isDisabled() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10981,6 +12010,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Is editable
   Future<ElementHandleIsEditableResult> channel_isEditable() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -10993,6 +12023,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Is enabled
   Future<ElementHandleIsEnabledResult> channel_isEnabled() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -11005,6 +12036,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Is hidden
   Future<ElementHandleIsHiddenResult> channel_isHidden() async {
     final response = await connection.sendMessageToServer(guid, 'isHidden', {});
     return ElementHandleIsHiddenResult.fromJson(
@@ -11013,6 +12045,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Is visible
   Future<ElementHandleIsVisibleResult> channel_isVisible() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -11025,6 +12058,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Get owner frame
   Future<ElementHandleOwnerFrameResult> channel_ownerFrame() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -11037,6 +12071,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Press "{key}"
   Future<void> channel_press({
     double? delay,
     required String key,
@@ -11056,12 +12091,13 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Query selector
   Future<ElementHandleQuerySelectorResult> channel_querySelector({
-    required String selector,
+    required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
@@ -11074,11 +12110,12 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Query selector all
   Future<ElementHandleQuerySelectorAllResult> channel_querySelectorAll({
-    required String selector,
+    required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'querySelectorAll',
@@ -11090,6 +12127,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Screenshot
   Future<ElementHandleScreenshotResult> channel_screenshot({
     required CommonScreenshotOptions commonScreenshotOptions,
     int? quality,
@@ -11112,6 +12150,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Scroll into view
   Future<void> channel_scrollIntoViewIfNeeded({required double timeout}) async {
     final payload = <String, dynamic>{};
     payload['timeout'] = timeout;
@@ -11123,6 +12162,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Select option
   Future<ElementHandleSelectOptionResult> channel_selectOption({
     List<ElementHandleBase>? elements,
     bool? force,
@@ -11145,6 +12185,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Select text
   Future<void> channel_selectText({
     bool? force,
     required double timeout,
@@ -11160,6 +12201,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Set input files
   Future<void> channel_setInputFiles({
     WritableStreamBase? directoryStream,
     String? localDirectory,
@@ -11184,6 +12226,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Tap
   Future<void> channel_tap({
     bool? force,
     List<ElementHandleTapModifiersEnum>? modifiers,
@@ -11201,6 +12244,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Get text content
   Future<ElementHandleTextContentResult> channel_textContent() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -11213,6 +12257,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     );
   }
 
+  /// Type
   Future<void> channel_type({
     double? delay,
     required String text,
@@ -11230,6 +12275,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Uncheck
   Future<void> channel_uncheck({
     bool? force,
     Point? position,
@@ -11249,6 +12295,7 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Wait for state
   Future<void> channel_waitForElementState({
     required ElementHandleWaitForElementStateStateEnum state,
     required double timeout,
@@ -11264,14 +12311,15 @@ abstract class ElementHandleBase extends JSHandleBase {
     return;
   }
 
+  /// Wait for selector
   Future<ElementHandleWaitForSelectorResult> channel_waitForSelector({
-    required String selector,
+    required Pattern selector,
     ElementHandleWaitForSelectorStateEnum? state,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (state != null) payload['state'] = state?.value;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
@@ -11296,6 +12344,10 @@ abstract class FrameBase extends ChannelOwner {
     super.parent,
   ]);
 
+  FrameInitializer get typedInitializer =>
+      FrameInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Add script tag
   Future<FrameAddScriptTagResult> channel_addScriptTag({
     String? content,
     String? type,
@@ -11313,6 +12365,7 @@ abstract class FrameBase extends ChannelOwner {
     return FrameAddScriptTagResult.fromJson(response, connection: connection);
   }
 
+  /// Add style tag
   Future<FrameAddStyleTagResult> channel_addStyleTag({
     String? content,
     String? url,
@@ -11328,11 +12381,12 @@ abstract class FrameBase extends ChannelOwner {
     return FrameAddStyleTagResult.fromJson(response, connection: connection);
   }
 
+  /// Aria snapshot
   Future<FrameAriaSnapshotResult> channel_ariaSnapshot({
     bool? boxes,
     int? depth,
     FrameAriaSnapshotModeEnum? mode,
-    String? selector,
+    Pattern? selector,
     required double timeout,
     String? track,
   }) async {
@@ -11340,7 +12394,7 @@ abstract class FrameBase extends ChannelOwner {
     if (boxes != null) payload['boxes'] = boxes;
     if (depth != null) payload['depth'] = depth;
     if (mode != null) payload['mode'] = mode?.value;
-    if (selector != null) payload['selector'] = selector;
+    if (selector != null) payload['selector'] = selector?.toString();
     payload['timeout'] = timeout;
     if (track != null) payload['track'] = track;
     final response = await connection.sendMessageToServer(
@@ -11351,13 +12405,14 @@ abstract class FrameBase extends ChannelOwner {
     return FrameAriaSnapshotResult.fromJson(response, connection: connection);
   }
 
+  /// Blur
   Future<void> channel_blur({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11368,10 +12423,11 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Check
   Future<void> channel_check({
     bool? force,
     Point? position,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
     bool? trial,
@@ -11379,7 +12435,7 @@ abstract class FrameBase extends ChannelOwner {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (position != null) payload['position'] = position?.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
@@ -11391,6 +12447,7 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Click
   Future<void> channel_click({
     FrameClickButtonEnum? button,
     int? clickCount,
@@ -11399,7 +12456,7 @@ abstract class FrameBase extends ChannelOwner {
     List<FrameClickModifiersEnum>? modifiers,
     bool? noWaitAfter,
     Point? position,
-    required String selector,
+    required Pattern selector,
     int? steps,
     bool? strict,
     required double timeout,
@@ -11413,7 +12470,7 @@ abstract class FrameBase extends ChannelOwner {
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
     if (position != null) payload['position'] = position?.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (steps != null) payload['steps'] = steps;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
@@ -11426,18 +12483,20 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Get content
   Future<FrameContentResult> channel_content() async {
     final response = await connection.sendMessageToServer(guid, 'content', {});
     return FrameContentResult.fromJson(response, connection: connection);
   }
 
+  /// Double click
   Future<void> channel_dblclick({
     FrameDblclickButtonEnum? button,
     double? delay,
     bool? force,
     List<FrameDblclickModifiersEnum>? modifiers,
     Point? position,
-    required String selector,
+    required Pattern selector,
     int? steps,
     bool? strict,
     required double timeout,
@@ -11449,7 +12508,7 @@ abstract class FrameBase extends ChannelOwner {
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (steps != null) payload['steps'] = steps;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
@@ -11462,16 +12521,17 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Dispatch "{type}"
   Future<void> channel_dispatchEvent({
     required SerializedArgument eventInit,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
     required String type,
   }) async {
     final payload = <String, dynamic>{};
     payload['eventInit'] = eventInit.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     payload['type'] = type;
@@ -11483,6 +12543,7 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Drag and drop
   Future<void> channel_dragAndDrop({
     bool? force,
     required String source,
@@ -11514,12 +12575,13 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Drop files or data onto an element
   Future<void> channel_drop({
     List<FrameDropDataItems>? data,
     List<String>? localPaths,
     List<FrameDropPayloadsItems>? payloads,
     Point? position,
-    required String selector,
+    required Pattern selector,
     List<WritableStreamBase>? streams,
     bool? strict,
     required double timeout,
@@ -11529,7 +12591,7 @@ abstract class FrameBase extends ChannelOwner {
     if (localPaths != null) payload['localPaths'] = localPaths;
     if (payloads != null) payload['payloads'] = payloads;
     if (position != null) payload['position'] = position?.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (streams != null) payload['streams'] = streams;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
@@ -11541,18 +12603,19 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Evaluate
   Future<FrameEvalOnSelectorResult> channel_evalOnSelector({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
-    required String selector,
+    required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
@@ -11562,17 +12625,18 @@ abstract class FrameBase extends ChannelOwner {
     return FrameEvalOnSelectorResult.fromJson(response, connection: connection);
   }
 
+  /// Evaluate
   Future<FrameEvalOnSelectorAllResult> channel_evalOnSelectorAll({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
-    required String selector,
+    required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'evalOnSelectorAll',
@@ -11584,6 +12648,7 @@ abstract class FrameBase extends ChannelOwner {
     );
   }
 
+  /// Evaluate
   Future<FrameEvaluateExpressionResult> channel_evaluateExpression({
     required SerializedArgument arg,
     required String expression,
@@ -11604,6 +12669,7 @@ abstract class FrameBase extends ChannelOwner {
     );
   }
 
+  /// Evaluate
   Future<FrameEvaluateExpressionHandleResult> channel_evaluateExpressionHandle({
     required SerializedArgument arg,
     required String expression,
@@ -11624,6 +12690,7 @@ abstract class FrameBase extends ChannelOwner {
     );
   }
 
+  /// Expect "{expression}"
   Future<void> channel_expect({
     double? expectedNumber,
     List<ExpectedTextValue>? expectedText,
@@ -11632,7 +12699,7 @@ abstract class FrameBase extends ChannelOwner {
     JsonValue expressionArg,
     required bool isNot,
     FrameExpectPseudoEnum? pseudo,
-    String? selector,
+    Pattern? selector,
     required double timeout,
     bool? useInnerText,
   }) async {
@@ -11645,7 +12712,7 @@ abstract class FrameBase extends ChannelOwner {
     if (expressionArg != null) payload['expressionArg'] = expressionArg;
     payload['isNot'] = isNot;
     if (pseudo != null) payload['pseudo'] = pseudo?.value;
-    if (selector != null) payload['selector'] = selector;
+    if (selector != null) payload['selector'] = selector?.toString();
     payload['timeout'] = timeout;
     if (useInnerText != null) payload['useInnerText'] = useInnerText;
     final response = await connection.sendMessageToServer(
@@ -11656,16 +12723,17 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Fill "{value}"
   Future<void> channel_fill({
     bool? force,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
     required String value,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     payload['value'] = value;
@@ -11677,13 +12745,14 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Focus
   Future<void> channel_focus({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11694,6 +12763,7 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Get frame element
   Future<FrameFrameElementResult> channel_frameElement() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -11703,15 +12773,16 @@ abstract class FrameBase extends ChannelOwner {
     return FrameFrameElementResult.fromJson(response, connection: connection);
   }
 
+  /// Get attribute "{name}"
   Future<FrameGetAttributeResult> channel_getAttribute({
     required String name,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11722,6 +12793,7 @@ abstract class FrameBase extends ChannelOwner {
     return FrameGetAttributeResult.fromJson(response, connection: connection);
   }
 
+  /// Navigate to "{url}"
   Future<FrameGotoResult> channel_goto({
     String? referer,
     required double timeout,
@@ -11741,9 +12813,9 @@ abstract class FrameBase extends ChannelOwner {
     return FrameGotoResult.fromJson(response, connection: connection);
   }
 
-  Future<void> channel_hideHighlight({required String selector}) async {
+  Future<void> channel_hideHighlight({required Pattern selector}) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'hideHighlight',
@@ -11753,11 +12825,11 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   Future<void> channel_highlight({
-    required String selector,
+    required Pattern selector,
     String? style,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (style != null) payload['style'] = style;
     final response = await connection.sendMessageToServer(
       guid,
@@ -11767,11 +12839,12 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Hover
   Future<void> channel_hover({
     bool? force,
     List<FrameHoverModifiersEnum>? modifiers,
     Point? position,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
     bool? trial,
@@ -11780,7 +12853,7 @@ abstract class FrameBase extends ChannelOwner {
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
@@ -11792,13 +12865,14 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Get HTML
   Future<FrameInnerHTMLResult> channel_innerHTML({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11809,13 +12883,14 @@ abstract class FrameBase extends ChannelOwner {
     return FrameInnerHTMLResult.fromJson(response, connection: connection);
   }
 
+  /// Get inner text
   Future<FrameInnerTextResult> channel_innerText({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11826,13 +12901,14 @@ abstract class FrameBase extends ChannelOwner {
     return FrameInnerTextResult.fromJson(response, connection: connection);
   }
 
+  /// Get input value
   Future<FrameInputValueResult> channel_inputValue({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11843,13 +12919,14 @@ abstract class FrameBase extends ChannelOwner {
     return FrameInputValueResult.fromJson(response, connection: connection);
   }
 
+  /// Is checked
   Future<FrameIsCheckedResult> channel_isChecked({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11860,13 +12937,14 @@ abstract class FrameBase extends ChannelOwner {
     return FrameIsCheckedResult.fromJson(response, connection: connection);
   }
 
+  /// Is disabled
   Future<FrameIsDisabledResult> channel_isDisabled({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11877,13 +12955,14 @@ abstract class FrameBase extends ChannelOwner {
     return FrameIsDisabledResult.fromJson(response, connection: connection);
   }
 
+  /// Is editable
   Future<FrameIsEditableResult> channel_isEditable({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11894,13 +12973,14 @@ abstract class FrameBase extends ChannelOwner {
     return FrameIsEditableResult.fromJson(response, connection: connection);
   }
 
+  /// Is enabled
   Future<FrameIsEnabledResult> channel_isEnabled({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11911,12 +12991,13 @@ abstract class FrameBase extends ChannelOwner {
     return FrameIsEnabledResult.fromJson(response, connection: connection);
   }
 
+  /// Is hidden
   Future<FrameIsHiddenResult> channel_isHidden({
-    required String selector,
+    required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
@@ -11926,12 +13007,13 @@ abstract class FrameBase extends ChannelOwner {
     return FrameIsHiddenResult.fromJson(response, connection: connection);
   }
 
+  /// Is visible
   Future<FrameIsVisibleResult> channel_isVisible({
-    required String selector,
+    required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
@@ -11941,11 +13023,12 @@ abstract class FrameBase extends ChannelOwner {
     return FrameIsVisibleResult.fromJson(response, connection: connection);
   }
 
+  /// Press "{key}"
   Future<void> channel_press({
     double? delay,
     required String key,
     bool? noWaitAfter,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
@@ -11953,7 +13036,7 @@ abstract class FrameBase extends ChannelOwner {
     if (delay != null) payload['delay'] = delay;
     payload['key'] = key;
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -11964,11 +13047,12 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Query count
   Future<FrameQueryCountResult> channel_queryCount({
-    required String selector,
+    required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'queryCount',
@@ -11977,12 +13061,13 @@ abstract class FrameBase extends ChannelOwner {
     return FrameQueryCountResult.fromJson(response, connection: connection);
   }
 
+  /// Query selector
   Future<FrameQuerySelectorResult> channel_querySelector({
-    required String selector,
+    required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     final response = await connection.sendMessageToServer(
       guid,
@@ -11992,11 +13077,12 @@ abstract class FrameBase extends ChannelOwner {
     return FrameQuerySelectorResult.fromJson(response, connection: connection);
   }
 
+  /// Query selector all
   Future<FrameQuerySelectorAllResult> channel_querySelectorAll({
-    required String selector,
+    required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'querySelectorAll',
@@ -12009,10 +13095,10 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   Future<FrameResolveSelectorResult> channel_resolveSelector({
-    required String selector,
+    required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'resolveSelector',
@@ -12024,11 +13110,12 @@ abstract class FrameBase extends ChannelOwner {
     );
   }
 
+  /// Select option
   Future<FrameSelectOptionResult> channel_selectOption({
     List<ElementHandleBase>? elements,
     bool? force,
     List<FrameSelectOptionOptionsItems>? options,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
@@ -12036,7 +13123,7 @@ abstract class FrameBase extends ChannelOwner {
     if (elements != null) payload['elements'] = elements;
     if (force != null) payload['force'] = force;
     if (options != null) payload['options'] = options;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -12047,6 +13134,7 @@ abstract class FrameBase extends ChannelOwner {
     return FrameSelectOptionResult.fromJson(response, connection: connection);
   }
 
+  /// Set content
   Future<void> channel_setContent({
     required String html,
     required double timeout,
@@ -12064,12 +13152,13 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Set input files
   Future<void> channel_setInputFiles({
     WritableStreamBase? directoryStream,
     String? localDirectory,
     List<String>? localPaths,
     List<FrameSetInputFilesPayloadsItems>? payloads,
-    required String selector,
+    required Pattern selector,
     List<WritableStreamBase>? streams,
     bool? strict,
     required double timeout,
@@ -12080,7 +13169,7 @@ abstract class FrameBase extends ChannelOwner {
     if (localDirectory != null) payload['localDirectory'] = localDirectory;
     if (localPaths != null) payload['localPaths'] = localPaths;
     if (payloads != null) payload['payloads'] = payloads;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (streams != null) payload['streams'] = streams;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
@@ -12092,11 +13181,12 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Tap
   Future<void> channel_tap({
     bool? force,
     List<FrameTapModifiersEnum>? modifiers,
     Point? position,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
     bool? trial,
@@ -12105,7 +13195,7 @@ abstract class FrameBase extends ChannelOwner {
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
@@ -12113,13 +13203,14 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Get text content
   Future<FrameTextContentResult> channel_textContent({
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     final response = await connection.sendMessageToServer(
@@ -12130,21 +13221,23 @@ abstract class FrameBase extends ChannelOwner {
     return FrameTextContentResult.fromJson(response, connection: connection);
   }
 
+  /// Get page title
   Future<FrameTitleResult> channel_title() async {
     final response = await connection.sendMessageToServer(guid, 'title', {});
     return FrameTitleResult.fromJson(response, connection: connection);
   }
 
+  /// Type "{text}"
   Future<void> channel_type({
     double? delay,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required String text,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['text'] = text;
     payload['timeout'] = timeout;
@@ -12156,10 +13249,11 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Uncheck
   Future<void> channel_uncheck({
     bool? force,
     Point? position,
-    required String selector,
+    required Pattern selector,
     bool? strict,
     required double timeout,
     bool? trial,
@@ -12167,7 +13261,7 @@ abstract class FrameBase extends ChannelOwner {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (position != null) payload['position'] = position?.toJson();
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
@@ -12179,6 +13273,7 @@ abstract class FrameBase extends ChannelOwner {
     return;
   }
 
+  /// Wait for function
   Future<FrameWaitForFunctionResult> channel_waitForFunction({
     required SerializedArgument arg,
     required String expression,
@@ -12203,16 +13298,17 @@ abstract class FrameBase extends ChannelOwner {
     );
   }
 
+  /// Wait for selector
   Future<FrameWaitForSelectorResult> channel_waitForSelector({
     bool? omitReturnValue,
-    required String selector,
+    required Pattern selector,
     FrameWaitForSelectorStateEnum? state,
     bool? strict,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (omitReturnValue != null) payload['omitReturnValue'] = omitReturnValue;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     if (state != null) payload['state'] = state?.value;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
@@ -12227,6 +13323,7 @@ abstract class FrameBase extends ChannelOwner {
     );
   }
 
+  /// Wait for timeout
   Future<void> channel_waitForTimeout({required double waitTimeout}) async {
     final payload = <String, dynamic>{};
     payload['waitTimeout'] = waitTimeout;
@@ -12248,11 +13345,15 @@ abstract class JSHandleBase extends ChannelOwner {
     super.parent,
   ]);
 
+  JSHandleInitializer get typedInitializer =>
+      JSHandleInitializer.fromJson(super.initializer, connection: connection);
+
   Future<void> channel_dispose() async {
     final response = await connection.sendMessageToServer(guid, 'dispose', {});
     return;
   }
 
+  /// Evaluate
   Future<JSHandleEvaluateExpressionResult> channel_evaluateExpression({
     required SerializedArgument arg,
     required String expression,
@@ -12273,6 +13374,7 @@ abstract class JSHandleBase extends ChannelOwner {
     );
   }
 
+  /// Evaluate
   Future<JSHandleEvaluateExpressionHandleResult>
   channel_evaluateExpressionHandle({
     required SerializedArgument arg,
@@ -12294,6 +13396,7 @@ abstract class JSHandleBase extends ChannelOwner {
     );
   }
 
+  /// Get JS property
   Future<JSHandleGetPropertyResult> channel_getProperty({
     required String name,
   }) async {
@@ -12307,6 +13410,7 @@ abstract class JSHandleBase extends ChannelOwner {
     return JSHandleGetPropertyResult.fromJson(response, connection: connection);
   }
 
+  /// Get property list
   Future<JSHandleGetPropertyListResult> channel_getPropertyList() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12319,6 +13423,7 @@ abstract class JSHandleBase extends ChannelOwner {
     );
   }
 
+  /// Get JSON value
   Future<JSHandleJsonValueResult> channel_jsonValue() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12363,6 +13468,9 @@ abstract class LocalUtilsBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+
+  LocalUtilsInitializer get typedInitializer =>
+      LocalUtilsInitializer.fromJson(super.initializer, connection: connection);
 
   Future<void> channel_addStackToTracingNoReply({
     required ClientSideCallMetadata callData,
@@ -12546,6 +13654,10 @@ abstract class PageBase extends ChannelOwner {
     super.parent,
   ]);
 
+  PageInitializer get typedInitializer =>
+      PageInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Add init script
   Future<PageAddInitScriptResult> channel_addInitScript({
     required String source,
   }) async {
@@ -12559,6 +13671,7 @@ abstract class PageBase extends ChannelOwner {
     return PageAddInitScriptResult.fromJson(response, connection: connection);
   }
 
+  /// Bring to front
   Future<void> channel_bringToFront() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12568,6 +13681,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Cancel pick locator
   Future<void> channel_cancelPickLocator() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12577,6 +13691,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Clear console messages
   Future<void> channel_clearConsoleMessages() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12586,6 +13701,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Clear page errors
   Future<void> channel_clearPageErrors() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12595,6 +13711,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Close page
   Future<void> channel_close({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
@@ -12606,6 +13723,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Get console messages
   Future<PageConsoleMessagesResult> channel_consoleMessages({
     ConsoleMessagesFilter? filter,
   }) async {
@@ -12619,6 +13737,7 @@ abstract class PageBase extends ChannelOwner {
     return PageConsoleMessagesResult.fromJson(response, connection: connection);
   }
 
+  /// Emulate media
   Future<void> channel_emulateMedia({
     PageEmulateMediaColorSchemeEnum? colorScheme,
     PageEmulateMediaContrastEnum? contrast,
@@ -12640,6 +13759,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Expect screenshot
   Future<PageExpectScreenshotResult> channel_expectScreenshot({
     required CommonScreenshotOptions commonScreenshotOptions,
     Rect? clip,
@@ -12677,6 +13797,7 @@ abstract class PageBase extends ChannelOwner {
     );
   }
 
+  /// Expose binding
   Future<PageExposeBindingResult> channel_exposeBinding({
     required String name,
   }) async {
@@ -12690,6 +13811,7 @@ abstract class PageBase extends ChannelOwner {
     return PageExposeBindingResult.fromJson(response, connection: connection);
   }
 
+  /// Go back
   Future<PageGoBackResult> channel_goBack({
     required double timeout,
     LifecycleEvent? waitUntil,
@@ -12705,6 +13827,7 @@ abstract class PageBase extends ChannelOwner {
     return PageGoBackResult.fromJson(response, connection: connection);
   }
 
+  /// Go forward
   Future<PageGoForwardResult> channel_goForward({
     required double timeout,
     LifecycleEvent? waitUntil,
@@ -12720,6 +13843,7 @@ abstract class PageBase extends ChannelOwner {
     return PageGoForwardResult.fromJson(response, connection: connection);
   }
 
+  /// Hide all element highlights
   Future<void> channel_hideHighlight() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12729,6 +13853,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Key down "{key}"
   Future<void> channel_keyboardDown({required String key}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
@@ -12740,6 +13865,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Insert "{text}"
   Future<void> channel_keyboardInsertText({required String text}) async {
     final payload = <String, dynamic>{};
     payload['text'] = text;
@@ -12751,6 +13877,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Press "{key}"
   Future<void> channel_keyboardPress({
     double? delay,
     required String key,
@@ -12766,6 +13893,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Type "{text}"
   Future<void> channel_keyboardType({
     double? delay,
     required String text,
@@ -12781,6 +13909,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Key up "{key}"
   Future<void> channel_keyboardUp({required String key}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
@@ -12792,6 +13921,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Click
   Future<void> channel_mouseClick({
     PageMouseClickButtonEnum? button,
     int? clickCount,
@@ -12813,6 +13943,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Mouse down
   Future<void> channel_mouseDown({
     PageMouseDownButtonEnum? button,
     int? clickCount,
@@ -12828,6 +13959,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Mouse move
   Future<void> channel_mouseMove({
     int? steps,
     required double x,
@@ -12845,6 +13977,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Mouse up
   Future<void> channel_mouseUp({
     PageMouseUpButtonEnum? button,
     int? clickCount,
@@ -12860,6 +13993,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Mouse wheel
   Future<void> channel_mouseWheel({
     required double deltaX,
     required double deltaY,
@@ -12875,6 +14009,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Get page errors
   Future<PagePageErrorsResult> channel_pageErrors({
     ConsoleMessagesFilter? filter,
   }) async {
@@ -12888,6 +14023,7 @@ abstract class PageBase extends ChannelOwner {
     return PagePageErrorsResult.fromJson(response, connection: connection);
   }
 
+  /// PDF
   Future<PagePdfResult> channel_pdf({
     bool? displayHeaderFooter,
     String? footerTemplate,
@@ -12925,6 +14061,7 @@ abstract class PageBase extends ChannelOwner {
     return PagePdfResult.fromJson(response, connection: connection);
   }
 
+  /// Pick locator
   Future<PagePickLocatorResult> channel_pickLocator() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12934,13 +14071,14 @@ abstract class PageBase extends ChannelOwner {
     return PagePickLocatorResult.fromJson(response, connection: connection);
   }
 
+  /// Register locator handler
   Future<PageRegisterLocatorHandlerResult> channel_registerLocatorHandler({
     bool? noWaitAfter,
-    required String selector,
+    required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
-    payload['selector'] = selector;
+    payload['selector'] = selector.toString();
     final response = await connection.sendMessageToServer(
       guid,
       'registerLocatorHandler',
@@ -12952,6 +14090,7 @@ abstract class PageBase extends ChannelOwner {
     );
   }
 
+  /// Reload
   Future<PageReloadResult> channel_reload({
     required double timeout,
     LifecycleEvent? waitUntil,
@@ -12967,6 +14106,7 @@ abstract class PageBase extends ChannelOwner {
     return PageReloadResult.fromJson(response, connection: connection);
   }
 
+  /// Request garbage collection
   Future<void> channel_requestGC() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -12976,6 +14116,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Get network requests
   Future<PageRequestsResult> channel_requests() async {
     final response = await connection.sendMessageToServer(guid, 'requests', {});
     return PageRequestsResult.fromJson(response, connection: connection);
@@ -12996,6 +14137,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Run beforeunload
   Future<void> channel_runBeforeUnload() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13005,6 +14147,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Show chapter overlay
   Future<void> channel_screencastChapter({
     String? description,
     double? duration,
@@ -13022,6 +14165,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Remove actions
   Future<void> channel_screencastHideActions() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13031,6 +14175,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Remove overlay
   Future<void> channel_screencastRemoveOverlay({required String id}) async {
     final payload = <String, dynamic>{};
     payload['id'] = id;
@@ -13042,6 +14187,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Set overlay visibility
   Future<void> channel_screencastSetOverlayVisible({
     required bool visible,
   }) async {
@@ -13055,6 +14201,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Show actions
   Future<void> channel_screencastShowActions({
     required ShowActionsOptions showActionsOptions,
   }) async {
@@ -13068,6 +14215,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Show overlay
   Future<PageScreencastShowOverlayResult> channel_screencastShowOverlay({
     double? duration,
     required String html,
@@ -13086,6 +14234,7 @@ abstract class PageBase extends ChannelOwner {
     );
   }
 
+  /// Start screencast
   Future<PageScreencastStartResult> channel_screencastStart({
     int? quality,
     bool? record,
@@ -13105,6 +14254,7 @@ abstract class PageBase extends ChannelOwner {
     return PageScreencastStartResult.fromJson(response, connection: connection);
   }
 
+  /// Stop screencast
   Future<void> channel_screencastStop() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13114,6 +14264,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Screenshot
   Future<PageScreenshotResult> channel_screenshot({
     required CommonScreenshotOptions commonScreenshotOptions,
     Rect? clip,
@@ -13148,6 +14299,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Set extra HTTP headers
   Future<void> channel_setExtraHTTPHeaders({
     required List<NameValue> headers,
   }) async {
@@ -13161,6 +14313,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Route requests
   Future<void> channel_setNetworkInterceptionPatterns({
     required List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
   }) async {
@@ -13174,6 +14327,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Set viewport size
   Future<void> channel_setViewportSize({
     required PageSetViewportSizeViewportSize viewportSize,
   }) async {
@@ -13187,6 +14341,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Route WebSockets
   Future<void> channel_setWebSocketInterceptionPatterns({
     required List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
   }) async {
@@ -13200,6 +14355,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Start CSS coverage
   Future<void> channel_startCSSCoverage({bool? resetOnNavigation}) async {
     final payload = <String, dynamic>{};
     if (resetOnNavigation != null)
@@ -13212,6 +14368,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Start JS coverage
   Future<void> channel_startJSCoverage({
     bool? reportAnonymousScripts,
     bool? resetOnNavigation,
@@ -13229,6 +14386,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Stop CSS coverage
   Future<PageStopCSSCoverageResult> channel_stopCSSCoverage() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13238,6 +14396,7 @@ abstract class PageBase extends ChannelOwner {
     return PageStopCSSCoverageResult.fromJson(response, connection: connection);
   }
 
+  /// Stop JS coverage
   Future<PageStopJSCoverageResult> channel_stopJSCoverage() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13247,6 +14406,7 @@ abstract class PageBase extends ChannelOwner {
     return PageStopJSCoverageResult.fromJson(response, connection: connection);
   }
 
+  /// Tap
   Future<void> channel_touchscreenTap({
     required double x,
     required double y,
@@ -13262,6 +14422,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Unregister locator handler
   Future<void> channel_unregisterLocatorHandler({required int uid}) async {
     final payload = <String, dynamic>{};
     payload['uid'] = uid;
@@ -13288,6 +14449,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Clear WebStorage
   Future<void> channel_webStorageClear({
     required PageWebStorageClearKindEnum kind,
   }) async {
@@ -13301,6 +14463,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Get WebStorage item
   Future<PageWebStorageGetItemResult> channel_webStorageGetItem({
     required PageWebStorageGetItemKindEnum kind,
     required String name,
@@ -13319,6 +14482,7 @@ abstract class PageBase extends ChannelOwner {
     );
   }
 
+  /// Get WebStorage items
   Future<PageWebStorageItemsResult> channel_webStorageItems({
     required PageWebStorageItemsKindEnum kind,
   }) async {
@@ -13332,6 +14496,7 @@ abstract class PageBase extends ChannelOwner {
     return PageWebStorageItemsResult.fromJson(response, connection: connection);
   }
 
+  /// Remove WebStorage item
   Future<void> channel_webStorageRemoveItem({
     required PageWebStorageRemoveItemKindEnum kind,
     required String name,
@@ -13347,6 +14512,7 @@ abstract class PageBase extends ChannelOwner {
     return;
   }
 
+  /// Set WebStorage item
   Future<void> channel_webStorageSetItem({
     required PageWebStorageSetItemKindEnum kind,
     required String name,
@@ -13374,6 +14540,10 @@ abstract class PlaywrightBase extends ChannelOwner {
     super.parent,
   ]);
 
+  PlaywrightInitializer get typedInitializer =>
+      PlaywrightInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Create request context
   Future<PlaywrightNewRequestResult> channel_newRequest({
     String? baseURL,
     List<PlaywrightNewRequestClientCertificatesItems>? clientCertificates,
@@ -13425,6 +14595,9 @@ abstract class RequestBase extends ChannelOwner {
     super.parent,
   ]);
 
+  RequestInitializer get typedInitializer =>
+      RequestInitializer.fromJson(super.initializer, connection: connection);
+
   Future<RequestRawRequestHeadersResult> channel_rawRequestHeaders() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13452,6 +14625,10 @@ abstract class ResponseBase extends ChannelOwner {
     super.parent,
   ]);
 
+  ResponseInitializer get typedInitializer =>
+      ResponseInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Get response body
   Future<ResponseBodyResult> channel_body() async {
     final response = await connection.sendMessageToServer(guid, 'body', {});
     return ResponseBodyResult.fromJson(response, connection: connection);
@@ -13537,6 +14714,10 @@ abstract class RouteBase extends ChannelOwner {
     super.parent,
   ]);
 
+  RouteInitializer get typedInitializer =>
+      RouteInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Abort request
   Future<void> channel_abort({String? errorCode}) async {
     final payload = <String, dynamic>{};
     if (errorCode != null) payload['errorCode'] = errorCode;
@@ -13548,6 +14729,7 @@ abstract class RouteBase extends ChannelOwner {
     return;
   }
 
+  /// Continue request
   Future<void> channel_continueValue({
     List<NameValue>? headers,
     required bool isFallback,
@@ -13569,6 +14751,7 @@ abstract class RouteBase extends ChannelOwner {
     return;
   }
 
+  /// Fulfill request
   Future<void> channel_fulfill({
     String? body,
     String? fetchResponseUid,
@@ -13751,6 +14934,7 @@ abstract class TracingBase extends ChannelOwner {
     return TracingHarStartResult.fromJson(response, connection: connection);
   }
 
+  /// Trace "{name}"
   Future<void> channel_tracingGroup({
     TracingTracingGroupLocation? location,
     required String name,
@@ -13766,6 +14950,7 @@ abstract class TracingBase extends ChannelOwner {
     return;
   }
 
+  /// Group end
   Future<void> channel_tracingGroupEnd() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13775,6 +14960,7 @@ abstract class TracingBase extends ChannelOwner {
     return;
   }
 
+  /// Start tracing
   Future<void> channel_tracingStart({
     bool? live,
     String? name,
@@ -13794,6 +14980,7 @@ abstract class TracingBase extends ChannelOwner {
     return;
   }
 
+  /// Start tracing
   Future<TracingTracingStartChunkResult> channel_tracingStartChunk({
     String? name,
     String? title,
@@ -13812,6 +14999,7 @@ abstract class TracingBase extends ChannelOwner {
     );
   }
 
+  /// Stop tracing
   Future<void> channel_tracingStop() async {
     final response = await connection.sendMessageToServer(
       guid,
@@ -13821,6 +15009,7 @@ abstract class TracingBase extends ChannelOwner {
     return;
   }
 
+  /// Stop tracing
   Future<TracingTracingStopChunkResult> channel_tracingStopChunk({
     required TracingTracingStopChunkModeEnum mode,
   }) async {
@@ -13846,6 +15035,9 @@ abstract class WebSocketBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+
+  WebSocketInitializer get typedInitializer =>
+      WebSocketInitializer.fromJson(super.initializer, connection: connection);
 }
 
 abstract class WebSocketRouteBase extends ChannelOwner {
@@ -13856,6 +15048,12 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+
+  WebSocketRouteInitializer get typedInitializer =>
+      WebSocketRouteInitializer.fromJson(
+        super.initializer,
+        connection: connection,
+      );
 
   Future<void> channel_closePage({
     int? code,
@@ -13891,6 +15089,7 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     return;
   }
 
+  /// Connect WebSocket to server
   Future<void> channel_connect() async {
     final response = await connection.sendMessageToServer(guid, 'connect', {});
     return;
@@ -13905,6 +15104,7 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     return;
   }
 
+  /// Send WebSocket message
   Future<void> channel_sendToPage({
     required bool isBase64,
     required String message,
@@ -13920,6 +15120,7 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     return;
   }
 
+  /// Send WebSocket message
   Future<void> channel_sendToServer({
     required bool isBase64,
     required String message,
@@ -13945,6 +15146,10 @@ abstract class WorkerBase extends ChannelOwner {
     super.parent,
   ]);
 
+  WorkerInitializer get typedInitializer =>
+      WorkerInitializer.fromJson(super.initializer, connection: connection);
+
+  /// Disconnect from worker
   Future<void> channel_disconnect({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
@@ -13956,6 +15161,7 @@ abstract class WorkerBase extends ChannelOwner {
     return;
   }
 
+  /// Evaluate
   Future<WorkerEvaluateExpressionResult> channel_evaluateExpression({
     required SerializedArgument arg,
     required String expression,
@@ -13976,6 +15182,7 @@ abstract class WorkerBase extends ChannelOwner {
     );
   }
 
+  /// Evaluate
   Future<WorkerEvaluateExpressionHandleResult>
   channel_evaluateExpressionHandle({
     required SerializedArgument arg,

@@ -5,19 +5,21 @@
 [![Test Coverage](https://img.shields.io/badge/Coverage-35.7%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
 [![AI Assisted](https://img.shields.io/badge/AI-Assisted-purple.svg)](https://github.com/devsdocs/playwright-dart)
 
-A complete Dart port of [Playwright](https://playwright.dev) — fast, reliable browser automation for Chromium, Firefox, and WebKit.
+A Dart port of [Playwright](https://playwright.dev) — browser automation for Chromium, Firefox, and WebKit.
 
-**Compatible API** with Node.js Playwright, including network interception, tracing, CDP sessions, and the full Locator API.
+This is an actively developed port that covers the core Playwright surface area used in most real-world automation and testing workflows. It targets Playwright protocol v1.61.0 and keeps up with the upstream API as development continues.
 
 ## Features
 
 - 🚀 **Launch & control** Chromium, Firefox, and WebKit
-- 🎯 **Locator API** with `getByRole`, `getByText`, `getByLabel`, and more
+- 🎯 **Locator API** with `getByRole`, `getByText`, `getByLabel`, and more — accepting both strings and `RegExp`
+- ✅ **Locator assertions** — 15+ assertions including `toBeVisible`, `toHaveText`, `toBeEditable`, `toHaveCSS`, and more
 - 🌐 **Network interception** — abort, mock, and modify requests
+- 🔐 **WebAuthn support** — virtual authenticators and credential management
 - 📸 **Screenshots & PDFs** — capture pages in any format
 - 🔍 **Tracing** — record and view traces in the Playwright Trace Viewer
 - ⚡ **Auto-downloads** Playwright driver and browser binaries
-- 📦 **No Node.js Required** — Node is bundled automatically!
+- 📦 **No Node.js required** — Node is bundled automatically!
 
 ## 📦 Seamless Experience (No Node.js Required!)
 
@@ -31,7 +33,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.3.0
+  playwright_dart: ^3.4.0
 ```
 
 ## Quick Start
@@ -54,14 +56,17 @@ void main() async {
 
 ## Remote Browser Connection (Skip Browser Download)
 
-For Playwright WebSocket endpoints, use `PlaywrightDart.connect()` to connect
+For Playwright WebSocket endpoints, use `BrowserType.connect()` to connect
 directly without local setup or browser installation:
 
 ```dart
 import 'package:playwright_dart/playwright_dart.dart';
 
 void main() async {
-  final browser = await PlaywrightDart.connect('ws://127.0.0.1:3000/ws');
+  final playwright = await PlaywrightDart.create();
+  final browser = await playwright.chromium.connect(
+    'ws://127.0.0.1:3000/ws',
+  );
   final context = await browser.newContext();
   final page = await context.newPage();
   print(await page.title());
@@ -90,14 +95,15 @@ void main() async {
 
 ## Locators
 
-Playwright's robust [Locator API](https://playwright.dev/docs/locators) is fully supported:
+Playwright's [Locator API](https://playwright.dev/docs/locators) is well supported, including string and `RegExp` matching:
 
 ```dart
 // By role
 await page.getByRole('button', name: 'Submit').click();
 
-// By text
+// By text (string or RegExp)
 await page.getByText('Welcome').isVisible();
+await page.getByText(RegExp(r'welcom', caseSensitive: false)).isVisible();
 
 // By label
 await page.getByLabel('Email').fill('user@example.com');

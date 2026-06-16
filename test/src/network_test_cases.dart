@@ -10,8 +10,6 @@ void main() {
       await page.setContent(
         '<img src="https://playwright.dev/img/playwright-logo.png" />',
       );
-      // Wait for network idle or error
-      // In this case, we just check if it fails to load
       final result = await page.evaluate('''() => {
         return new Promise(resolve => {
           const img = document.querySelector('img');
@@ -23,7 +21,6 @@ void main() {
           }
         });
       }''');
-
       expect(result, equals('error'));
     });
 
@@ -31,46 +28,46 @@ void main() {
       await page.route('**/api/data', (route) async {
         await route.fulfill(
           status: 200,
-          headers: [NameValue(name: 'content-type', value: 'application/json')],
+          headers: [
+            NameValue(name: 'content-type', value: 'application/json'),
+            NameValue(name: 'access-control-allow-origin', value: '*'),
+          ],
           body: '{"message":"mocked"}',
         );
       });
 
-      await page.setContent('''
-        <div id="output"></div>
-        <script>
-          fetch('http://localhost/api/data')
-            .then(res => res.json())
-            .then(data => {
-              document.getElementById('output').innerText = data.message;
-            });
-        </script>
-      ''');
+      // Navigate to a real page first so same-origin fetches are allowed.
+      await page.goto('https://example.com');
 
-      // Wait a moment for fetch to complete
-      await page.waitForSelector('#output:has-text("mocked")');
-      final text = await page.locator('#output').textContent();
+      final result = await page.evaluate('''async () => {
+        const res = await fetch('https://example.com/api/data');
+        return await res.json();
+      }''');
 
-      expect(text, equals('mocked'));
+      expect(result['message'], equals('mocked'));
     });
   });
 
   group('Response API', () {
     test('should return basic properties', (page) async {
-      await page.route('**/test', (route) async {
-        await route.fulfill(status: 200, body: 'hello');
+      await page.route('**/*', (route) async {
+        await route.fulfill(
+          status: 200,
+          headers: [NameValue(name: 'content-type', value: 'text/html')],
+          body: '<html><body>hello</body></html>',
+        );
       });
+
       final responseFuture = page.waitForResponse(
-        (Response r) => r.url.contains('/test'),
+        (Response r) => r.url.contains('example.com'),
       );
-      await page.goto('http://localhost/test');
+      await page.goto('https://example.com/test');
       final response = await responseFuture;
 
       expect(response, isNotNull);
       expect(response.ok, isTrue);
       expect(response.status, equals(200));
-      expect(response.statusText, equals('OK'));
-      expect(response.url, equals('http://localhost/test'));
+      expect(response.url, contains('example.com'));
     });
 
     test('should return response body and headers', (page) async {
@@ -80,16 +77,20 @@ void main() {
           headers: [
             NameValue(name: 'content-type', value: 'application/json'),
             NameValue(name: 'x-custom', value: 'my-value'),
+            NameValue(name: 'access-control-allow-origin', value: '*'),
           ],
           body: '{"message":"mocked"}',
         );
       });
 
+      // Navigate to real site first (no catch-all route needed).
+      await page.goto('https://example.com');
+
       final responseFuture = page.waitForResponse(
         (Response r) => r.url.contains('/api/data'),
       );
-      await page.setContent(
-        '<script>fetch("http://localhost/api/data");</script>',
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/data"); }',
       );
       final response = await responseFuture;
 

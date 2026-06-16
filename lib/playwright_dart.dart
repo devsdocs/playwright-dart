@@ -67,6 +67,10 @@ export 'src/platform/android.dart';
 export 'src/platform/android_device.dart';
 export 'src/platform/android_socket.dart';
 export 'src/platform/electron.dart';
+
+// Utilities (additional)
+export 'src/utils/clock.dart';
+export 'src/network/route_handler.dart';
 export 'src/platform/electron_application.dart';
 
 // Infrastructure

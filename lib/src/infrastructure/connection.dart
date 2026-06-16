@@ -278,7 +278,7 @@ class Connection {
         }
       } else {
         // Fallback for objects we haven't mapped yet
-        print('Warning: No factory registered for type $type');
+        Logger.warn('Warning: No factory registered for type $type');
         // create a dummy owner
         // ignore: unused_local_variable
         final dummy = _DummyChannelOwner(
@@ -302,11 +302,14 @@ class Connection {
     final object = objects[guid];
     if (object != null) {
       if (method == 'console' || method == 'request' || method == 'response') {
-        print('RCV EVENT on $guid: $method -> $params');
+        Logger.debug(
+          'RCV EVENT on $guid: $method',
+          name: 'playwright.connection',
+        );
       }
       object.emitEvent(method, params);
     } else {
-      print('Warning: Received event $method for unknown object $guid');
+      Logger.warn('Warning: Received event $method for unknown object $guid');
     }
   }
 

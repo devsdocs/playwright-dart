@@ -1,3 +1,19 @@
+## 3.4.0
+
+- **Feature**: Added RegExp serialization/deserialization support in `serialization.dart`, enabling `Pattern` types to be properly converted to/from strings when communicating with the Playwright server.
+- **Feature**: Enhanced `Locator` with new utility methods: `count()`, `all()`, `allInnerTexts()`, `allTextContents()`, `elementHandle()`, `elementHandles()`, `boundingBox()`, `scrollIntoViewIfNeeded()`, `selectText()`, and `screenshot()`.
+- **Feature**: Added `fallback()` method to `Route` for continuing route requests to the next handler in the chain.
+- **Feature**: Added web storage methods to `Page`: `webStorageGetItem()`, `webStorageSetItem()`, `webStorageRemoveItem()`, `webStorageClear()`, and `webStorageItems()`.
+- **Feature**: Added virtual credential methods to `BrowserContext`: `credentialsCreate()`, `credentialsDelete()`, `credentialsGet()`, and `credentialsInstall()` for WebAuthn testing support.
+- **Feature**: Enhanced `LocatorAssertions` with 2 new assertion methods: `toBeChecked()` and `toHaveCount()`.
+- **Feature**: Added `Clock` property to `BrowserContext` interface.
+- **Feature**: Added `RouteHandler` for improved network route management in `BrowserContext`.
+- **Refactor**: Improved `ChannelOwner` with enhanced EventEmitter integration and comprehensive documentation.
+- **Refactor**: Added `timeout`, `strict`, and other optional parameters to many `Frame` and `Locator` methods for better control over element interactions.
+- **Refactor**: Enhanced `RouteFromHAR` with improved logging and error handling for HAR file routing.
+- **Refactor**: Improved network routing in `BrowserContext` with `RouteHandler` for better pattern matching and handler management.
+- **Fix**: Fixed network test cases to use proper CORS headers and navigate to real pages before making fetch requests.
+
 ## 3.3.0
 
 - **Feature**: Introduced `EventEmitter` into `ChannelOwner` for named event management. Added methods for event registration, deregistration, and emitting, with lifecycle cleanup in `dispose`.
@@ -32,16 +48,16 @@
 - **Feature**: Completed full isolation of internal implementation classes (e.g. `ElementHandleImpl`, `PageImpl`), exclusively exposing pure interface types across the entire public API boundary. This vastly improves the developer experience by preventing unintentional access to underlying channel mechanisms.
 - **Feature**: Added advanced `Locator` query combinators including `.and()`, `.or()`, and `.filter()`, empowering complex semantic queries.
 - **Feature**: Enhanced `Locator` with utility selection methods `.first()`, `.last()`, and `.nth()`.
-- **Feature**: Exposed complete `timing` properties (e.g., `startTime`, `responseEnd`) and `failure` message text mapping on intercepted network `Request` objects, exactly matching the Playwright spec.
+- **Feature**: Exposed `timing` properties (e.g., `startTime`, `responseEnd`) and `failure` message text mapping on intercepted network `Request` objects, aligning with the Playwright protocol spec.
 - **Bug Fix**: Fixed unclosed `Connection` leaks in skipped WebSocket and CDP connection environments which previously orphaned Node.js background driver processes.
 - **Bug Fix**: Addressed null timing object assignments in advanced network events during `fetch` and isolated `BrowserContext` dispatches.
 
 ## 3.0.0
 
-- **Breaking**: Fully migrated the entire public API to use strongly-typed data structures and Enums for method parameters rather than untyped `Map<String, dynamic>` and `String` inputs. This enforces 100% compile-time parameter parity with the underlying Playwright channel protocol and unlocks full IDE type-checking for users.
+- **Breaking**: Migrated the public API to use strongly-typed data structures and enums for method parameters rather than untyped `Map<String, dynamic>` and `String` inputs. This aligns parameter types with the underlying Playwright channel protocol and enables IDE type-checking for users.
   - E.g., `page.setViewportSize({'width': 800, 'height': 600})` is now strictly `page.setViewportSize(PageSetViewportSizeViewportSize(width: 800, height: 600))`.
   - All pointer event parameters like `click`, `hover`, and `dblclick` now require their specific enum types (e.g., `FrameClickModifiersEnum` instead of raw strings).
-- **Tooling**: Extended `tool/cross_check_types.dart` to strictly validate strongly-typed inputs, guaranteeing that there are 0 parameter type mismatches between the generated protocol schemas and our public Dart wrappers.
+- **Tooling**: Extended `tool/cross_check_types.dart` to validate strongly-typed inputs against generated protocol schemas, reducing the risk of parameter type mismatches.
 
 ## 2.3.1
 
@@ -50,7 +66,7 @@
 
 ## 2.3.0
 
-- **Feature**: Achieved 100% parameter parity with Playwright Node.js `v1.60.0`. Added over 200 missing parameters across core classes (`Page`, `Frame`, `ElementHandle`, `BrowserContext`, `APIRequestContext`, `Electron`, `Worker`, `DebugController`, `Tracing`, and `AndroidDevice`) to fully align with the underlying protocol.
+- **Feature**: Expanded parameter coverage for Playwright Node.js `v1.60.0`. Added over 200 missing parameters across core classes (`Page`, `Frame`, `ElementHandle`, `BrowserContext`, `APIRequestContext`, `Electron`, `Worker`, `DebugController`, `Tracing`, and `AndroidDevice`) to better align with the underlying protocol.
 - **Tooling**: Added `tool/cross_check_types.dart` to automatically verify API parameter and method parity between Dart wrapper classes and generated protocol channels.
 - **Bug Fix**: Addressed various missing enum mappings and type mappings in method signatures.
 
@@ -93,7 +109,7 @@ Dependencies bump
 
 ## 0.1.0
 
-Initial release — complete Dart SDK for Playwright with full API parity to Node.js `v1.60.0`.
+Initial release — a Dart port of Playwright targeting Node.js `v1.60.0`.
 
 ### Features
 
@@ -105,7 +121,7 @@ Initial release — complete Dart SDK for Playwright with full API parity to Nod
 - **Tracing**: Record and export traces for debugging with the Playwright Trace Viewer
 - **CDP Session**: Direct Chrome DevTools Protocol access for advanced manipulation
 
-- **35 wrapper classes** covering 100% of the Playwright protocol (308 channel methods)
+- **35 wrapper classes** covering a broad range of the Playwright protocol (308 channel methods)
 - **Auto-download**: Automatic Playwright driver and browser binary management
 
 ### Platform Support

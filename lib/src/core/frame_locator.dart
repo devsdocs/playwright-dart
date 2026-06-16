@@ -1,68 +1,92 @@
 import 'frame.dart';
+
 import 'locator.dart';
+
 import '../utils/locator_utils.dart';
 
 /// FrameLocator represents a view to the `iframe` on the page.
+
 class FrameLocator {
   final Frame frame;
+
   final String frameSelector;
 
   FrameLocator(this.frame, this.frameSelector);
 
+  /// Creates a locator for the given selector within this frame.
   Locator locator(String selector) {
     return Locator(
       frame,
+
       '$frameSelector >> internal:control=enter-frame >> $selector',
     );
   }
 
+  /// Creates a frame locator for the given selector within this frame.
   FrameLocator frameLocator(String selector) {
     return FrameLocator(
       frame,
+
       '$frameSelector >> internal:control=enter-frame >> $selector',
     );
   }
 
+  /// Returns the first matching locator.
   Locator first() => locator('nth=0');
+
+  /// Returns the last matching locator.
   Locator last() => locator('nth=-1');
+
+  /// Returns the nth matching locator.
   Locator nth(int index) => locator('nth=$index');
 
-  Locator getByText(String text, {bool exact = false}) {
-    return exact
-        ? locator('internal:text="$text"')
-        : locator('internal:text=$text');
+  /// Locates element by text content.
+  Locator getByText(Pattern text, {bool exact = false}) {
+    return locator(
+      'internal:text=${encodePatternForTextSelector(text, exact: exact)}',
+    );
   }
 
-  Locator getByRole(String role, {String? name}) {
+  /// Locates element by ARIA role.
+  Locator getByRole(String role, {Pattern? name, bool exact = false}) {
     var sel = 'internal:role=$role';
-    if (name != null) sel += '[name="$name"i]';
+
+    if (name != null) {
+      sel += '[name=${encodePatternForRoleName(name, exact: exact)}]';
+    }
+
     return locator(sel);
   }
 
-  Locator getByLabel(String text, {bool exact = false}) {
-    return exact
-        ? locator('internal:label="$text"')
-        : locator('internal:label=$text');
+  /// Locates element by associated label.
+  Locator getByLabel(Pattern text, {bool exact = false}) {
+    return locator(
+      'internal:label=${encodePatternForLabelSelector(text, exact: exact)}',
+    );
   }
 
-  Locator getByPlaceholder(String text, {bool exact = false}) {
-    return exact
-        ? locator('internal:attr=[placeholder="$text"]')
-        : locator('internal:attr=[placeholder="$text"i]');
+  /// Locates element by placeholder text.
+  Locator getByPlaceholder(Pattern text, {bool exact = false}) {
+    return locator(
+      'internal:attr=[placeholder=${encodePatternForAttrSelector(text, exact: exact)}]',
+    );
   }
 
-  Locator getByAltText(String text, {bool exact = false}) {
-    return exact
-        ? locator('internal:attr=[alt="$text"]')
-        : locator('internal:attr=[alt="$text"i]');
+  /// Locates element by alt text.
+  Locator getByAltText(Pattern text, {bool exact = false}) {
+    return locator(
+      'internal:attr=[alt=${encodePatternForAttrSelector(text, exact: exact)}]',
+    );
   }
 
-  Locator getByTitle(String text, {bool exact = false}) {
-    return exact
-        ? locator('internal:attr=[title="$text"]')
-        : locator('internal:attr=[title="$text"i]');
+  /// Locates element by title attribute.
+  Locator getByTitle(Pattern text, {bool exact = false}) {
+    return locator(
+      'internal:attr=[title=${encodePatternForAttrSelector(text, exact: exact)}]',
+    );
   }
 
+  /// Locates element by test ID.
   Locator getByTestId(String testId) {
     return locator(getByTestIdSelector(testId));
   }

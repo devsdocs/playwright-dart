@@ -129,4 +129,23 @@ class LocatorAssertions {
       timeout: timeout ?? _timeout ?? 5000.0,
     );
   }
+
+  Future<void> toBeChecked({double? timeout}) async {
+    await (_locator.frame as FrameImpl).channel_expect(
+      selector: _locator.selector,
+      expression: 'to.be.checked',
+      isNot: _isNot,
+      timeout: timeout ?? _timeout ?? 5000.0,
+    );
+  }
+
+  Future<void> toHaveCount(int count, {double? timeout}) async {
+    await (_locator.frame as FrameImpl).channel_expect(
+      selector: _locator.selector,
+      expression: 'to.have.count',
+      expectedNumber: count.toDouble(),
+      isNot: _isNot,
+      timeout: timeout ?? _timeout ?? 5000.0,
+    );
+  }
 }

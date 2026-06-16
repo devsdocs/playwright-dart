@@ -1,14 +1,22 @@
 import '../generated/channels.dart';
 
 /// Represents a WebSocket connection created by the page.
+
 /// Interface for PlaywrightWebSocket
+
 abstract interface class PlaywrightWebSocket {
   Stream<PlaywrightWebSocket> get onClose;
+
   Stream<dynamic> get onSocketError;
+
   Stream<Map<String, dynamic>> get onFrameReceived;
+
   Stream<Map<String, dynamic>> get onFrameSent;
+
   Stream<PlaywrightWebSocket> get onOpen;
+
   String get url;
+
   bool get isClosed;
 }
 
@@ -52,14 +60,18 @@ class PlaywrightWebSocketImpl extends WebSocketBase
 
   PlaywrightWebSocketImpl(
     super.connection,
+
     super.channelType,
+
     super.guid,
+
     super.initializer, [
+
     super.parent,
   ]) {
     onEvent.where((e) => e['event'] == 'close').listen((_) => _isClosed = true);
   }
 
   @override
-  String get url => initializer['url'] as String;
+  String get url => typedInitializer.url;
 }

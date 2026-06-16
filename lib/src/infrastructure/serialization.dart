@@ -13,6 +13,22 @@ dynamic parseSerializedValue(SerializedValue value) {
     if (v == '-Infinity') return double.negativeInfinity;
     if (v == '-0') return -0.0;
   }
+  if (value.r != null) {
+    // Parse regex: {p: pattern, f: flags}
+    final pattern = value.r!.p;
+    final flags = value.r!.f;
+    try {
+      return RegExp(
+        pattern,
+        multiLine: flags.contains('m'),
+        caseSensitive: !flags.contains('i'),
+        dotAll: flags.contains('s'),
+        unicode: flags.contains('u'),
+      );
+    } catch (_) {
+      return pattern; // Fallback to string if regex parsing fails
+    }
+  }
   if (value.a != null) {
     return value.a!.map((e) => parseSerializedValue(e)).toList();
   }
@@ -48,6 +64,17 @@ SerializedValue serializeValue(dynamic value) {
   }
   if (value is bool) return SerializedValue(b: value);
   if (value is String) return SerializedValue(s: value);
+  if (value is RegExp) {
+    // Serialize regex: {p: pattern, f: flags}
+    final flags = <String>[];
+    if (!value.isCaseSensitive) flags.add('i');
+    if (value.isMultiLine) flags.add('m');
+    if (value.isDotAll) flags.add('s');
+    if (value.isUnicode) flags.add('u');
+    return SerializedValue(
+      r: SerializedValueR(p: value.pattern, f: flags.join()),
+    );
+  }
   if (value is List) {
     return SerializedValue(a: value.map((e) => serializeValue(e)).toList());
   }

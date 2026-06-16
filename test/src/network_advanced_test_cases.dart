@@ -53,21 +53,24 @@ void main() {
         postData = route.request.postData;
         await route.fulfill(
           status: 200,
-          headers: [NameValue(name: 'content-type', value: 'text/plain')],
+          headers: [
+            NameValue(name: 'content-type', value: 'text/plain'),
+            NameValue(name: 'access-control-allow-origin', value: '*'),
+          ],
           body: 'OK',
         );
       });
 
-      await page.evaluate('''() => {
-        fetch("https://example.com/submit", {
+      // Navigate to real site first so same-origin fetches work.
+      await page.goto('https://example.com');
+
+      await page.evaluate('''async () => {
+        await fetch("https://example.com/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ key: "value" })
         });
       }''');
-
-      // Wait for the request to be intercepted
-      await page.waitForTimeout(1000);
 
       expect(method, equals('POST'));
       expect(postData, contains('"key":"value"'));
@@ -79,10 +82,15 @@ void main() {
       await page.route('**/api/data', (route) async {
         await route.fulfill(
           status: 200,
-          headers: [NameValue(name: 'content-type', value: 'application/json')],
+          headers: [
+            NameValue(name: 'content-type', value: 'application/json'),
+            NameValue(name: 'access-control-allow-origin', value: '*'),
+          ],
           body: '{"result": "mocked"}',
         );
       });
+
+      await page.goto('https://example.com');
 
       final result = await page.evaluate('''async () => {
         const res = await fetch("https://example.com/api/data");
@@ -96,10 +104,15 @@ void main() {
       await page.route('**/api/error', (route) async {
         await route.fulfill(
           status: 404,
-          headers: [NameValue(name: 'content-type', value: 'text/plain')],
+          headers: [
+            NameValue(name: 'content-type', value: 'text/plain'),
+            NameValue(name: 'access-control-allow-origin', value: '*'),
+          ],
           body: 'Not Found',
         );
       });
+
+      await page.goto('https://example.com');
 
       final status = await page.evaluate('''async () => {
         const res = await fetch("https://example.com/api/error");
@@ -135,18 +148,23 @@ void main() {
       await page.route('**/submit-json', (route) async {
         postDataJson = route.request.postDataJSON;
         jsonMethod = route.request.method;
-        await route.fulfill(status: 200, body: 'OK');
+        await route.fulfill(
+          status: 200,
+          headers: [NameValue(name: 'access-control-allow-origin', value: '*')],
+          body: 'OK',
+        );
       });
 
-      await page.evaluate('''() => {
-        fetch("https://example.com/submit-json", {
+      await page.goto('https://example.com');
+
+      await page.evaluate('''async () => {
+        await fetch("https://example.com/submit-json", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ "foo": "bar" })
         });
       }''');
 
-      await page.waitForTimeout(1000);
       expect(jsonMethod, equals('POST'));
       expect(postDataJson, isNotNull);
       expect(postDataJson['foo'], equals('bar'));
