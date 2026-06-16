@@ -6,6 +6,43 @@ import '../interaction/jshandle.dart';
 import 'locator.dart';
 import '../infrastructure/serialization.dart';
 import 'page.dart';
+import '../utils/locator_utils.dart';
+
+/// The received value from a failed assertion (mirrors `ExpectReceived` in the
+/// Playwright TypeScript client).
+class ExpectReceived {
+  /// The JavaScript value received from the page, deserialised.
+  final dynamic value;
+
+  /// ARIA snapshot of the received element, if applicable.
+  final String? ariaSnapshot;
+
+  const ExpectReceived({this.value, this.ariaSnapshot});
+}
+
+/// Result returned by [Frame.expect] / [Page.expect].
+///
+/// Mirrors the TypeScript `ExpectResult` type from `frame.ts`:
+/// `{ matches: boolean, received?: ExpectReceived, log?: string[],
+///   timedOut?: boolean, errorMessage?: string }`
+///
+/// When [matches] is `true` the assertion passed.  When `false`, [received]
+/// and [errorMessage] carry the failure details.
+class ExpectResult {
+  final bool matches;
+  final ExpectReceived? received;
+  final List<String>? log;
+  final bool? timedOut;
+  final String? errorMessage;
+
+  const ExpectResult({
+    required this.matches,
+    this.received,
+    this.log,
+    this.timedOut,
+    this.errorMessage,
+  });
+}
 
 /// Interface for Frame
 abstract interface class Frame {
@@ -234,7 +271,7 @@ abstract interface class Frame {
     dynamic arg,
   });
   Future<ElementHandle> frameElement();
-  Future<FrameExpectResult> expect(
+  Future<ExpectResult> expect(
     String selector,
     String expression, {
     SerializedArgument? expectedValue,
@@ -377,7 +414,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Locator getByTestId(String testId) {
-    return locator('internal:testid=[data-testid="$testId"]');
+    return locator(getByTestIdSelector(testId));
   }
 
   /// Goto URL
@@ -1100,7 +1137,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<FrameExpectResult> expect(
+  Future<ExpectResult> expect(
     String selector,
     String expression, {
     SerializedArgument? expectedValue,
@@ -1112,18 +1149,31 @@ class FrameImpl extends FrameBase implements Frame {
     dynamic expressionArg,
     FrameExpectPseudoEnum? pseudo,
   }) async {
-    return await channel_expect(
-      selector: selector,
-      expression: expression,
-      expectedValue: expectedValue,
-      expectedText: expectedText,
-      expectedNumber: expectedNumber,
-      useInnerText: useInnerText,
-      isNot: isNot,
-      timeout: timeout ?? 30000.0,
-      expressionArg: serializeArgument(expressionArg),
-      pseudo: pseudo,
-    );
+    // channel_expect now returns void (protocol change in v1.61+).
+    // Success means assertion passed → matches = !isNot.
+    // Failure is thrown as an exception carrying the detail payload.
+    try {
+      await channel_expect(
+        selector: selector,
+        expression: expression,
+        expectedValue: expectedValue,
+        expectedText: expectedText,
+        expectedNumber: expectedNumber,
+        useInnerText: useInnerText,
+        isNot: isNot,
+        timeout: timeout ?? 30000.0,
+        expressionArg: expressionArg,
+        pseudo: pseudo,
+      );
+      return ExpectResult(matches: !isNot);
+    } catch (e) {
+      final msg = e.toString();
+      return ExpectResult(
+        matches: isNot,
+        errorMessage: msg,
+        timedOut: msg.contains('Timeout') || msg.contains('TimeoutError'),
+      );
+    }
   }
 
   @override

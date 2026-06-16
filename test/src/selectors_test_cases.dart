@@ -21,7 +21,7 @@ void main() {
     });
 
     test('should set testIdAttribute globally', (page) async {
-      playwright.selectors.setTestIdAttribute('data-my-custom-id');
+      await playwright.selectors.setTestIdAttribute('data-my-custom-id');
 
       // Create a new context to inherit the testIdAttribute
       final newContext = await browser.newContext();

@@ -1,11 +1,17 @@
-import '../generated/channels.dart';
+import '../infrastructure/channel_owner.dart';
 
-/// Interface for EventTarget
+/// Interface for EventTarget.
+///
+/// NOTE: The `EventTarget` protocol channel was removed in Playwright v1.61+.
+/// The class is retained as a stub so that the object factory in [Connection]
+/// can still handle any legacy `__create__` messages without crashing.
 abstract interface class EventTarget {
-  Future<void> waitForEventInfo(EventTargetWaitForEventInfoInfo info);
+  // No protocol methods remain — the EventTarget channel was removed.
 }
 
-class EventTargetImpl extends EventTargetBase implements EventTarget {
+/// Minimal ChannelOwner that satisfies the [EventTarget] interface and
+/// can be registered in [Connection]'s object factory map.
+class EventTargetImpl extends ChannelOwner implements EventTarget {
   EventTargetImpl(
     super.connection,
     super.channelType,
@@ -13,9 +19,4 @@ class EventTargetImpl extends EventTargetBase implements EventTarget {
     super.initializer, [
     super.parent,
   ]);
-
-  @override
-  Future<void> waitForEventInfo(EventTargetWaitForEventInfoInfo info) async {
-    await channel_waitForEventInfo(info: info);
-  }
 }

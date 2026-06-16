@@ -23,7 +23,7 @@ export 'src/core/browser_type.dart';
 export 'src/core/browser.dart';
 export 'src/core/browser_context.dart';
 export 'src/core/page.dart';
-export 'src/core/frame.dart';
+export 'src/core/frame.dart'; // also exports ExpectResult, ExpectReceived
 export 'src/core/locator.dart';
 export 'src/core/selectors.dart';
 export 'src/generated/channels.dart' hide Channel, ConsoleMessage;
@@ -76,6 +76,12 @@ export 'src/infrastructure/driver.dart';
 export 'src/infrastructure/transport.dart';
 export 'src/infrastructure/file_payload.dart';
 export 'src/infrastructure/serialization.dart';
+export 'src/infrastructure/event_emitter.dart';
+export 'src/infrastructure/playwright_errors.dart';
+// DOM node types from package:html — exports Node, Element, Document, Text, etc.
+// Use these as type parameters for ElementHandle<T> and JSHandle<T>.
+export 'src/infrastructure/html_node.dart';
+export 'src/infrastructure/waiter.dart';
 
 // Internal (needed for advanced usage)
 export 'src/infrastructure/root.dart';

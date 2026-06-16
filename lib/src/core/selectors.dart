@@ -1,6 +1,7 @@
 import 'playwright.dart';
 import 'browser_context.dart';
 import '../generated/channels.dart';
+import '../utils/locator_utils.dart';
 
 /// Selectors can be used to install custom selector engines.
 class Selectors {
@@ -31,22 +32,34 @@ class Selectors {
     }
   }
 
-  /// Sets the test-id attribute name.
-  void setTestIdAttribute(String name) {
+  /// Sets the test-id attribute name globally.
+  ///
+  /// This persists the name so that any future [BrowserContext] created via
+  /// [Browser.newContext] automatically inherits it through [addContext].
+  /// Existing contexts are updated immediately.
+  Future<void> setTestIdAttribute(String name) async {
     _testIdAttributeName = name;
+    setTestIdAttributeName(name);
     for (final context
         in (_playwright as PlaywrightImpl).connection.objects.values
             .whereType<BrowserContext>()) {
-      (context as BrowserContextImpl).channel_setTestIdAttributeName(
+      await (context as BrowserContextImpl).channel_setTestIdAttributeName(
         testIdAttributeName: name,
       );
     }
   }
 
-  /// Internal method called when a new BrowserContext is created.
+  /// Internal method called by [Browser.newContext] when a new [BrowserContext]
+  /// is created.
+  ///
+  /// Applies any pending testId attribute name and registered selector engines
+  /// to the freshly-created context **before** it is returned to the caller,
+  /// so that every operation on the new context already uses the correct
+  /// configuration.
   Future<void> addContext(BrowserContext context) async {
     if (_testIdAttributeName != 'data-testid') {
-      (context as BrowserContextImpl).channel_setTestIdAttributeName(
+      // Must be awaited so the attribute is in effect before the context is used.
+      await (context as BrowserContextImpl).channel_setTestIdAttributeName(
         testIdAttributeName: _testIdAttributeName,
       );
     }

@@ -5,6 +5,7 @@ import 'page.dart';
 import '../generated/channels.dart';
 import '../infrastructure/serialization.dart';
 import '../interaction/locator_assertions.dart';
+import '../utils/locator_utils.dart';
 
 /// Locators are the central piece of Playwright's auto-waiting and retry-ability.
 ///
@@ -113,7 +114,7 @@ class Locator {
   }
 
   Locator getByTestId(String testId) {
-    return locator('internal:testid=[data-testid="$testId"]');
+    return locator(getByTestIdSelector(testId));
   }
 
   /// Click an element.

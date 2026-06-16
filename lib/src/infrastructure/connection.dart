@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'transport.dart';
 import '../utils/logger.dart';
 import 'channel_owner.dart';
+import 'playwright_errors.dart';
 import '../core/playwright.dart';
 import '../core/browser_type.dart';
 import '../core/browser.dart';
@@ -240,12 +241,12 @@ class Connection {
       if (callback != null) {
         if (message.containsKey('error')) {
           final errorStr = _parseError(message['error']);
-          if (errorStr.contains('TargetClosedError') ||
-              errorStr.contains('Target closed') ||
-              errorStr.contains('Browser has been closed')) {
+          final parsed = parseServerError(errorStr);
+          if (parsed is TargetClosedError) {
+            // Silently complete with an empty result — the target is gone.
             callback.complete(<String, dynamic>{});
           } else {
-            callback.completeError(Exception(errorStr));
+            callback.completeError(parsed);
           }
         } else {
           callback.complete((message['result'] as Map<String, dynamic>?) ?? {});
@@ -312,7 +313,7 @@ class Connection {
   void _onClose() {
     _isClosed = true;
     for (final callback in _callbacks.values) {
-      callback.completeError(Exception('Connection closed'));
+      callback.completeError(const TargetClosedError());
     }
     _callbacks.clear();
   }

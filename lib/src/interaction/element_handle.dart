@@ -2,11 +2,33 @@ import '../infrastructure/channel_owner.dart';
 import '../generated/channels.dart';
 import 'jshandle.dart';
 import '../infrastructure/serialization.dart';
+// Re-exports Node, Element, etc. from package:html/dom.dart
+import '../infrastructure/html_node.dart';
 import '../core/frame.dart';
 import 'dart:convert';
 
-/// Interface for ElementHandle
-abstract interface class ElementHandle {
+/// A handle to a DOM element in the browser page.
+///
+/// The optional type parameter [T] mirrors the TypeScript SDK's
+/// `ElementHandle<T extends Node = Node>` generic, where [Node] is
+/// `package:html`'s DOM [Node] class.  It carries type information about
+/// the underlying DOM element kind without impacting runtime behaviour.
+///
+/// [ElementHandle] extends [JSHandle] because every DOM element is also a
+/// JavaScript value — the same relationship as in the TypeScript SDK where
+/// `ElementHandle<T extends Node> extends JSHandle<T>`.
+///
+/// ```dart
+/// import 'package:html/dom.dart' show Element;
+///
+/// // Default: any DOM node
+/// final ElementHandle<Node> handle = await page.querySelector('div');
+///
+/// // Narrowed to Element (any HTML element):
+/// final ElementHandle<Element> el = handle as ElementHandle<Element>;
+/// await el.click();
+/// ```
+abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   Future<dynamic> evalOnSelector(
     String selector,
     String expression, [
@@ -131,9 +153,9 @@ abstract interface class ElementHandle {
 }
 
 class ElementHandleImpl extends ElementHandleBase
-    implements ElementHandle, JSHandle {
+    implements ElementHandle<Node>, JSHandle<Node> {
   @override
-  ElementHandle? asElement() => this;
+  ElementHandle<Node>? asElement() => this;
 
   @override
   Stream<dynamic> get onPreviewUpdated {
@@ -165,7 +187,7 @@ class ElementHandleImpl extends ElementHandleBase
   }
 
   @override
-  Future<JSHandle> evaluateHandle(
+  Future<JSHandle<Object?>> evaluateHandle(
     String expression, [
     dynamic arg,
     bool? isFunction,
@@ -175,7 +197,7 @@ class ElementHandleImpl extends ElementHandleBase
       arg: serializeArgument(arg),
       isFunction: isFunction,
     );
-    return result.handle as JSHandle;
+    return result.handle as JSHandle<Object?>;
   }
 
   @override
@@ -186,14 +208,14 @@ class ElementHandleImpl extends ElementHandleBase
   ]) => evaluate(expression, arg, isFunction);
 
   @override
-  Future<JSHandle> evaluateExpressionHandle(
+  Future<JSHandle<Object?>> evaluateExpressionHandle(
     String expression, [
     dynamic arg,
     bool? isFunction,
   ]) => evaluateHandle(expression, arg, isFunction);
 
   @override
-  Future<JSHandle> getProperty(String name) async {
+  Future<JSHandle<Object?>> getProperty(String name) async {
     final result = await channel_getProperty(name: name);
     return ChannelOwner.from<JSHandleImpl>(
       connection,
@@ -202,9 +224,9 @@ class ElementHandleImpl extends ElementHandleBase
   }
 
   @override
-  Future<Map<String, JSHandle>> getProperties() async {
+  Future<Map<String, JSHandle<Object?>>> getProperties() async {
     final result = await channel_getPropertyList();
-    final map = <String, JSHandle>{};
+    final map = <String, JSHandle<Object?>>{};
     for (final property in result.properties as List) {
       map[property['name'] as String] = ChannelOwner.from<JSHandleImpl>(
         connection,
@@ -215,7 +237,7 @@ class ElementHandleImpl extends ElementHandleBase
   }
 
   @override
-  Future<Map<String, JSHandle>> getPropertyList() => getProperties();
+  Future<Map<String, JSHandle<Object?>>> getPropertyList() => getProperties();
 
   @override
   Future<dynamic> jsonValue() async {

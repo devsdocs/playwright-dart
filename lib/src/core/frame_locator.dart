@@ -1,5 +1,6 @@
 import 'frame.dart';
 import 'locator.dart';
+import '../utils/locator_utils.dart';
 
 /// FrameLocator represents a view to the `iframe` on the page.
 class FrameLocator {
@@ -63,6 +64,6 @@ class FrameLocator {
   }
 
   Locator getByTestId(String testId) {
-    return locator('internal:testid=[data-testid="$testId"]');
+    return locator(getByTestIdSelector(testId));
   }
 }

@@ -27,6 +27,7 @@ import '../network/route_from_har.dart';
 import '../network/request.dart';
 import '../network/response.dart';
 import '../interaction/element_handle.dart';
+import '../utils/locator_utils.dart';
 
 /// Page provides methods to interact with a single tab or extension background page in a browser.
 ///
@@ -245,7 +246,7 @@ abstract interface class Page {
     bool? boxes,
     double? timeout,
   });
-  Future<FrameExpectResult> expect(
+  Future<ExpectResult> expect(
     String selector,
     String expression, {
     SerializedArgument? expectedValue,
@@ -961,7 +962,7 @@ class PageImpl extends PageBase implements Page {
   /// Locate element by the test id.
   @override
   Locator getByTestId(String testId) {
-    return locator('internal:testid=[data-testid="$testId"]');
+    return locator(getByTestIdSelector(testId));
   }
 
   /// In the case of multiple pages in a single browser, each page can have its
@@ -1083,10 +1084,16 @@ class PageImpl extends PageBase implements Page {
 
   /// Closes the page.
   ///
-  /// If `runBeforeUnload` is `true`, a `beforeunload` dialog might be summoned and should be handled manually via `page.onDialog`.
+  /// If [runBeforeUnload] is `true`, a `beforeunload` dialog might be summoned
+  /// and should be handled manually via `page.onDialog`.
+  /// In that case [channel_runBeforeUnload] is called instead of a plain close.
   @override
   Future<void> close({bool? runBeforeUnload, String? reason}) async {
-    await channel_close(runBeforeUnload: runBeforeUnload, reason: reason);
+    if (runBeforeUnload == true) {
+      await channel_runBeforeUnload();
+    } else {
+      await channel_close(reason: reason);
+    }
   }
 
   /// This method changes the CSS `media` type through the `media` argument, and/or
@@ -1447,7 +1454,7 @@ class PageImpl extends PageBase implements Page {
 
   /// Performs an assertion against the element matching [selector].
   @override
-  Future<FrameExpectResult> expect(
+  Future<ExpectResult> expect(
     String selector,
     String expression, {
     SerializedArgument? expectedValue,
