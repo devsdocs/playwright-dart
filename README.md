@@ -31,7 +31,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.2.2
+  playwright_dart: ^3.3.0
 ```
 
 ## Quick Start
@@ -161,7 +161,8 @@ await session.send('Performance.enable');
 | **Core** | `Playwright`, `Browser`, `BrowserType`, `BrowserContext`, `Page`, `Frame` |
 | **Interaction** | `Locator`, `ElementHandle`, `JSHandle`, `Keyboard`, `Mouse` |
 | **Network** | `Request`, `Response`, `Route`, `APIRequestContext`, `WebSocket`, `WebSocketRoute` |
-| **Utilities** | `Tracing`, `CDPSession`, `Dialog`, `Worker`, `Artifact` |
+| **Utilities** | `Tracing`, `CDPSession`, `Dialog`, `Worker`, `Artifact`, `Waiter` |
+| **Errors** | `PlaywrightError`, `TimeoutError`, `TargetClosedError` |
 | **Debugging** | `Debugger`, `DebugController`, `BindingCall`, `EventTarget` |
 | **Platform** | `Android`, `AndroidDevice`, `Electron`, `ElectronApplication` |
 

@@ -1,3 +1,14 @@
+## 3.3.0
+
+- **Feature**: Introduced `EventEmitter` into `ChannelOwner` for named event management. Added methods for event registration, deregistration, and emitting, with lifecycle cleanup in `dispose`.
+- **Feature**: Added a Playwright error hierarchy — `PlaywrightError`, `TimeoutError`, and `TargetClosedError` — with an error parsing utility for server-side error messages.
+- **Feature**: Implemented `Waiter` utility class for managing event waiting with configurable timeouts and rejection conditions.
+- **Feature**: Added locator utilities for test ID attribute handling, including encoding and escaping helpers used by `getByTestId`.
+- **Refactor**: Improved error handling in `Connection` to use typed `PlaywrightError` subclasses; connection closure now throws `TargetClosedError`.
+- **Refactor**: Enhanced `ElementHandle` and `JSHandle` interfaces with generic type parameters for improved type safety in `evaluateHandle` and related methods.
+- **Refactor**: Updated download test cases to use temporary file paths with automatic artifact cleanup.
+- **Chore**: Added `html` package dependency for DOM manipulation support.
+
 ## 3.2.2
 
 - **Documentation**: Fix README
