@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:playwright_dart/playwright_dart.dart';
 import 'package:test/test.dart';
 
@@ -41,14 +43,18 @@ void main() {
       final path = await download.path();
       expect(path, isNotNull);
 
-      // Save it locally
-      final tempFile = 'test_download.txt';
-      await download.saveAs(tempFile);
+      // Save it locally to a temp path
+      final tempFile = File(
+        '${Directory.systemTemp.path}/test_download_${DateTime.now().millisecondsSinceEpoch}.txt',
+      );
+      await download.saveAs(tempFile.path);
 
       final error = await download.failure();
       expect(error, isEmpty);
 
+      // Clean up both the browser artifact and the saved copy
       await download.delete();
+      if (await tempFile.exists()) await tempFile.delete();
       await page.close();
     });
   });
