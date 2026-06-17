@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Locator API', () {
     test('should click and fill', (page) async {
       await page.setContent('''

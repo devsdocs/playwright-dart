@@ -3,6 +3,14 @@ import 'dart:io';
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Persistent Context & Storage State API', () {
     test('should save and restore storage state', (page) async {
       final context = await browser.newContext();

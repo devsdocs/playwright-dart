@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('ElementHandle API', () {
     test('should query bounding box', (page) async {
       await page.setContent('''

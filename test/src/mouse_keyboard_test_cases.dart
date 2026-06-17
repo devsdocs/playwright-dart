@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Mouse & Keyboard API', () {
     test('should click and type', (page) async {
       await page.setContent('''

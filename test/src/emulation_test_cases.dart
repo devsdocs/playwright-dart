@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Emulation API', () {
     test('should emulate viewport size', (page) async {
       // Test emulation via page.setViewportSize to keep single browser context simplicity

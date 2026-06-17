@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Locator.filter({ visible })', () {
     test('filter visible=true returns only visible elements', (page) async {
       await page.setContent('''

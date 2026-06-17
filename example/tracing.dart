@@ -7,14 +7,8 @@ void main() async {
   final context = await browser.newContext();
 
   print('Starting tracing...');
-  await context.tracing.start(
-    screenshots: true,
-    snapshots: true,
-  );
-  await context.tracing.startChunk(
-    name: 'trace',
-    title: 'Playwright Trace',
-  );
+  await context.tracing.start(screenshots: true, snapshots: true);
+  await context.tracing.startChunk(name: 'trace', title: 'Playwright Trace');
 
   final page = await context.newPage();
   print('Navigating to website...');

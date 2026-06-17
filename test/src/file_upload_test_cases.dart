@@ -2,6 +2,14 @@ import 'dart:convert';
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('File Upload API', () {
     test('should set input files via FilePayload', (page) async {
       await page.setContent('''

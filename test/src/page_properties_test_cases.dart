@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Page.request property', () {
     test('page.request is the same as context.request', (page) async {
       // Just verify the property is accessible and non-null

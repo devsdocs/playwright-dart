@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Response API', () {
     test('should get response status and headers', (page) async {
       await page.mainFrame.goto('https://example.com', timeout: 30000.0);

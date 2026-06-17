@@ -2,6 +2,14 @@ import 'dart:async';
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Dialog API', () {
     test('should handle alert dialog', (page) async {
       final dialogCompleter = Completer<Dialog>();

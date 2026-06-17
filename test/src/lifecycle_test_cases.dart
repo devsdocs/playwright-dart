@@ -2,6 +2,14 @@ import 'package:playwright_dart/playwright_dart.dart';
 import 'package:test/test.dart';
 
 void main() {
+  setUpAll(() async {
+    // No setup needed - each test creates its own playwright instance
+  });
+
+  tearDownAll(() async {
+    // No teardown needed - each test manages its own playwright instance
+  });
+
   group('Playwright Lifecycle API', () {
     test('Node.js pattern (auto shutdown)', () async {
       final playwright = await PlaywrightDart.create(autoClose: true);

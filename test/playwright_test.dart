@@ -1,3 +1,7 @@
+@TestOn('vm')
+@Timeout(Duration(minutes: 30))
+library;
+
 import 'test_helper.dart';
 
 import 'src/locator_test_cases.dart' as locator_test_cases;

@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('PageAssertions', () {
     test('toHaveTitle should pass when title matches exactly', (page) async {
       await page.setContent('<title>My Page Title</title><body></body>');

@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Real World Scenarios', () {
     test('TodoMVC: End-to-End interaction', (page) async {
       await page.goto('https://demo.playwright.dev/todomvc/');

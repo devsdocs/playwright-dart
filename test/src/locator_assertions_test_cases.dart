@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('LocatorAssertions', () {
     test('LocatorAssertions should wait for visibility', (page) async {
       await page.setContent('<div id="box" style="display: none;">Hello</div>');

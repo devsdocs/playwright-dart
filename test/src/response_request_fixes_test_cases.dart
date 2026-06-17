@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Response.fromServiceWorker type fix', () {
     test('fromServiceWorker returns false for regular responses', (page) async {
       await page.goto('about:blank');

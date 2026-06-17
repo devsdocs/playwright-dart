@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Evaluate API', () {
     test('should evaluate with arguments', (page) async {
       final result = await page.evaluate('(a) => a * 2', 21);

@@ -2,6 +2,14 @@ import 'dart:io';
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Route from HAR API', () {
     test('should route from HAR file', (page) async {
       final harPath = '${Directory.current.path}/test_network.har';

@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('CDPSession API', () {
     test('should create and communicate with CDP session', (page) async {
       final context = (page as PageImpl).parent as BrowserContext;

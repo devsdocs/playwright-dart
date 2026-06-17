@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('JSHandle API', () {
     test('should return jsonValue', (page) async {
       final handle = await page.waitForFunction('() => ({a: 1, b: "hello"})');

@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Init Scripts API', () {
     test('should add init script to page', (page) async {
       await page.addInitScript('window.injectedVar = "hello page";');

@@ -3,6 +3,14 @@ import 'package:playwright_dart/playwright_dart.dart';
 import 'dart:io';
 
 void main() {
+  setUpAll(() async {
+    // No setup needed - this test creates its own playwright instance
+  });
+
+  tearDownAll(() async {
+    // No teardown needed - each test manages its own playwright instance
+  });
+
   group('WebSocket Connect API', () {
     test('should connect to remote browser and navigate', () async {
       // Connect to the remote browserless instance using the provided token

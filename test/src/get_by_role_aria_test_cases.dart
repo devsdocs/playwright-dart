@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('getByRole ARIA filter options', () {
     test('getByRole with checked filter finds checked checkbox', (page) async {
       await page.setContent('''

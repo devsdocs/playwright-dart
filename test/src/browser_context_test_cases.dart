@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('BrowserContext API', () {
     test('should add and clear cookies', (page) async {
       // In Dart test wrapper, we only get page. Let's create our own context.

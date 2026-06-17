@@ -1,6 +1,14 @@
 import '../test_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await setupBrowser();
+  });
+
+  tearDownAll(() async {
+    await teardownBrowser();
+  });
+
   group('Page Script/Style Injection', () {
     test('should add script tag with content', (page) async {
       await page.setContent('<div id="target"></div>');
