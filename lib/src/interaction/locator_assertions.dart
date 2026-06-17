@@ -138,8 +138,9 @@ class LocatorAssertions {
   }) async {
     final Map<String, dynamic> expectedValueMap = {};
     if (checked != null) expectedValueMap['checked'] = checked;
-    if (indeterminate != null)
+    if (indeterminate != null) {
       expectedValueMap['indeterminate'] = indeterminate;
+    }
 
     await (_locator.frame as FrameImpl).channel_expect(
       selector: _locator.selector,
