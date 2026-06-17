@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const String fallbackPlaywrightVersion = '1.60.0';
+const String fallbackPlaywrightVersion = '1.61.0';
 
 /// Fetches the latest playwright-core version from the official NPM registry,
 /// falling back to the hardcoded [fallbackPlaywrightVersion] if it fails.

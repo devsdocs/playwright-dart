@@ -120,5 +120,169 @@ void main() {
       final allHeaders = await response.allHeaders();
       expect(allHeaders['content-type'], equals('application/json'));
     });
+
+    test('should handle response status text', (page) async {
+      await page.route('**/api/test', (route) async {
+        await route.fulfill(
+          status: 404,
+          headers: [NameValue(name: 'content-type', value: 'text/plain')],
+          body: 'Not Found',
+        );
+      });
+
+      await page.goto('https://example.com');
+      final responseFuture = page.waitForResponse(
+        (Response r) => r.url.contains('/api/test'),
+      );
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/test"); }',
+      );
+      final response = await responseFuture;
+
+      expect(response.status, equals(404));
+      expect(response.ok, isFalse);
+    });
+
+    test('should handle response from request', (page) async {
+      await page.route('**/api/from-request', (route) async {
+        await route.fulfill(
+          status: 200,
+          headers: [NameValue(name: 'content-type', value: 'application/json')],
+          body: '{"result":"success"}',
+        );
+      });
+
+      await page.goto('https://example.com');
+      final responseFuture = page.waitForResponse(
+        (Response r) => r.url.contains('/api/from-request'),
+      );
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/from-request"); }',
+      );
+      final response = await responseFuture;
+
+      expect(response.request, isNotNull);
+      expect(response.request.url, contains('/api/from-request'));
+    });
+  });
+
+  group('Request API', () {
+    test('should handle request properties', (page) async {
+      Request? capturedRequest;
+      await page.route('**/api/props', (route) async {
+        capturedRequest = route.request;
+        await route.fulfill(
+          status: 200,
+          headers: [NameValue(name: 'content-type', value: 'application/json')],
+          body: '{}',
+        );
+      });
+
+      await page.goto('https://example.com');
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/props", { method: "POST" }); }',
+      );
+
+      expect(capturedRequest, isNotNull);
+      expect(capturedRequest?.method, equals('POST'));
+      expect(capturedRequest?.url, contains('/api/props'));
+    });
+
+    test('should handle request headers', (page) async {
+      Request? capturedRequest;
+      await page.route('**/api/headers', (route) async {
+        capturedRequest = route.request;
+        await route.fulfill(
+          status: 200,
+          headers: [NameValue(name: 'content-type', value: 'application/json')],
+          body: '{}',
+        );
+      });
+
+      await page.goto('https://example.com');
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/headers", { headers: { "X-Custom": "test" } }); }',
+      );
+
+      expect(capturedRequest, isNotNull);
+      expect(capturedRequest?.headers, isNotNull);
+    });
+
+    test('should handle request postData', (page) async {
+      Request? capturedRequest;
+      await page.route('**/api/post', (route) async {
+        capturedRequest = route.request;
+        await route.fulfill(
+          status: 200,
+          headers: [NameValue(name: 'content-type', value: 'application/json')],
+          body: '{}',
+        );
+      });
+
+      await page.goto('https://example.com');
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/post", { method: "POST", body: JSON.stringify({ key: "value" }) }); }',
+      );
+
+      expect(capturedRequest, isNotNull);
+      expect(capturedRequest?.postData, isNotNull);
+    });
+
+    test('should handle request resource type', (page) async {
+      Request? capturedRequest;
+      await page.route('**/*', (route) async {
+        capturedRequest = route.request;
+        await route.continueRoute();
+      });
+
+      await page.goto('https://example.com');
+
+      expect(capturedRequest, isNotNull);
+      expect(capturedRequest?.resourceType, isNotNull);
+    });
+  });
+
+  group('Route API', () {
+    test('should continue route', (page) async {
+      await page.route('**/api/continue', (route) async {
+        await route.continueRoute();
+      });
+
+      await page.goto('https://example.com');
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/continue"); }',
+      );
+    });
+
+    test('should handle route request', (page) async {
+      Route? capturedRoute;
+      await page.route('**/api/route-req', (route) async {
+        capturedRoute = route;
+        await route.fulfill(
+          status: 200,
+          headers: [NameValue(name: 'content-type', value: 'application/json')],
+          body: '{}',
+        );
+      });
+
+      await page.goto('https://example.com');
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/route-req"); }',
+      );
+
+      expect(capturedRoute, isNotNull);
+      expect(capturedRoute?.request, isNotNull);
+    });
+
+    test('should handle route fallback', (page) async {
+      await page.route('**/api/fallback', (route) async {
+        await route.fallback();
+      });
+
+      await page.goto('https://example.com');
+      await page.evaluate(
+        'async () => { await fetch("https://example.com/api/fallback"); }',
+      );
+    });
   });
 }

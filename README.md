@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/playwright_dart.svg)](https://pub.dev/packages/playwright_dart)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Test Coverage](https://img.shields.io/badge/Coverage-35.7%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
+[![Test Coverage](https://img.shields.io/badge/Coverage-36.1%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
 [![AI Assisted](https://img.shields.io/badge/AI-Assisted-purple.svg)](https://github.com/devsdocs/playwright-dart)
 
 A Dart port of [Playwright](https://playwright.dev) — browser automation for Chromium, Firefox, and WebKit.
@@ -33,7 +33,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.5.0
+  playwright_dart: ^3.6.0
 ```
 
 ## Quick Start

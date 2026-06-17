@@ -5,4 +5,3 @@ bin/
 .protocol_cache/
 .protocol_cache.json
 coverage/
-scratch/

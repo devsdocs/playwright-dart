@@ -3,8 +3,32 @@
 This document provides a complete analysis of gaps between the playwright-dart implementation and the official Playwright Node.js API. It focuses on features that are **possible to implement** given the architecture where the Dart SDK communicates with the Playwright Node.js driver via JSON-RPC protocol.
 
 **Last Updated**: June 17, 2026  
-**Protocol Version**: 1.61.0  
-**Package Version**: 3.4.0
+**Protocol Version**: 1.61.0 (Official repo at 1.62.0-next)  
+**Package Version**: 3.5.0
+
+---
+
+## Gap Detection Rules
+
+When analyzing gaps, consider these rules:
+
+1. **Principles**: This is Dart port of Playwright Node.js API, not a re-implementation from scratch. It interacting with Node.js driver via JSON-RPC protocol, so all protocol-based features are implementable in Dart.
+2. **Protocol-based features**: Can be implemented in Dart if they exist in the JSON-RPC protocol
+3. **Node.js-specific tools**: Cannot be ported to Dart (CLI tools, test runners, UI apps)
+4. **Dart-native features**: Can be added as enhancements but aren't part of the official API
+5. **Official Playwright repo status**: Check the official Node.js Playwright repo to see what features are available in the latest published version and also check for new features that might be in the next version
+6. **User-facing features**: Check for missing features in official Node JS API that not yet implemented in this Dart port
+7. **Documentation check**: Check for missing features in official documentation that not yet implemented in this Dart port
+8. **Output**: Generate a comprehensive report of all gaps found in priorities manners that can be used to prioritize implementation tasks. Priority should be given to features that are most used by users or have the most impact on user experience.
+
+---
+
+## Tools
+
+1. Use ripgrep command (`rg`) to search for features in the local fork of the official Node.js Playwright repo
+2. Use json query command (`jq`) to query JSON files
+3. Use web features to visit official Playwright documentation and GitHub repository and check for missing features
+4. Run git pull at local-fork to get the latest changes from the official Node.js Playwright repo
 
 ---
 
@@ -23,16 +47,20 @@ The playwright-dart SDK uses a **client/server architecture**:
 
 ## Executive Summary
 
-The playwright-dart repository provides a **complete port of the core Playwright automation library** with 35 wrapper classes and 308 channel methods. The core automation API is 100% complete (verified by `tool/find_missing.dart`).
+The playwright-dart repository provides a **complete port of the core Playwright automation library** with 35 wrapper classes and 308 channel methods. The core automation API is 100% complete for protocol v1.61.0 (verified by `tool/find_missing.dart`).
 
-**All API-Level Gaps Have Been Addressed**: All previously identified missing methods, assertions, and classes have been implemented:
+**All API-Level Gaps Have Been Addressed (v1.61.0)**: All previously identified missing methods, assertions, and classes have been implemented:
 - ✅ Priority 1 (High Impact): LocatorAssertions, PageAssertions, getByRole ARIA filters, addLocatorHandler
 - ✅ Priority 2 (Medium Impact): page.request, page.clock, page.routeWebSocket, FrameLocator.owner(), Locator.description(), Locator.filter({ visible? })
 - ✅ Priority 3 (Low Impact/Bug Fixes): Request.redirectedTo, Response.fromServiceWorker
 
-The only remaining gaps are:
+**New Gap Identified (v1.62.0-next)**:
+- ❌ **AbortSignal Support**: The official Playwright v1.62.0-next adds `AbortSignal` support to wait operations (waitForRequest, waitForResponse, waitForEvent). This is a protocol-based feature that can be implemented in Dart.
 
-1. **Dart-Native Features**: Features that could be implemented in Dart but don't exist in Node.js Playwright (e.g., HTML reports, config file parser) - These are optional enhancements
+The remaining gaps are:
+
+1. **New Protocol Features (v1.62.0-next)**: AbortSignal support for wait operations - This is a protocol feature that should be implemented
+2. **Dart-Native Features**: Features that could be implemented in Dart but don't exist in Node.js Playwright (e.g., HTML reports, config file parser) - These are optional enhancements
 
 **Excluded from this analysis**: Node.js-specific tools like `@playwright/test`, `playwright codegen`, UI mode, component testing, and AI integration. These cannot be ported to Dart as they are separate Node.js applications, not protocol features.
 
@@ -378,11 +406,122 @@ These were previously listed as missing (Priority 2.3) but are already implement
 
 ---
 
-## Part 3: Dart-Native Features (Optional Enhancements)
+## Part 3: New Protocol Features (v1.62.0-next)
+
+These are features added in the official Playwright v1.62.0-next that are not yet implemented in the Dart port. These are protocol-based features that can be implemented.
+
+### 3.1 AbortSignal Support for Wait Operations
+
+**Status**: ❌ Not Implemented
+
+**Description**: Add support for `AbortSignal` to allow cancellation of wait operations. This feature was added in Playwright v1.62.0 and allows passing an `AbortSignal` to timeout options to cancel waiting operations.
+
+**Files to modify**:
+- `lib/src/infrastructure/waiter.dart` - Add `rejectOnSignal` method
+- `lib/src/core/page.dart` - Add `signal` parameter to `waitForRequest`, `waitForResponse`, `waitForEvent`
+- `lib/src/utils/worker.dart` - Add `signal` parameter to `waitForEvent`
+- Add type definition for `AbortSignal` equivalent (Dart's `AbortController`/`AbortSignal` from `dart:async`)
+
+**Implementation**:
+```dart
+// In waiter.dart, add:
+void rejectOnSignal(AbortSignal? signal) {
+  if (signal == null) return;
+  if (signal.aborted) {
+    rejectImmediately(_signalToError(signal));
+    return;
+  }
+  final completer = Completer<T>();
+  final listener = () {
+    if (!completer.isCompleted) {
+      completer.completeError(_signalToError(signal));
+    }
+  };
+  signal.addEventListener('abort', listener);
+  _rejectFutures.add(completer.future);
+  _disposeCallbacks.add(() => signal.removeEventListener('abort', listener));
+}
+
+Error _signalToError(AbortSignal signal) {
+  final reason = signal.reason;
+  if (reason is Error) return reason;
+  return Exception(reason?.toString() ?? 'The operation was aborted');
+}
+```
+
+**Added in**: v1.62.0  
+**Implementation Effort**: Medium  
+**Impact**: Medium - Important for cancellation of long-running wait operations
+
+---
+
+### 3.2 removeAllListeners with behavior Option
+
+**Status**: ❌ Not Implemented
+
+**Description**: Add `behavior` option to `removeAllListeners` method to control listener removal behavior. This feature allows waiting for already running listeners to complete or ignoring errors from listeners after removal.
+
+**Current Implementation**: The Dart port has `removeAllListeners([String? event])` in `lib/src/infrastructure/event_emitter.dart` (line 62) but lacks the `behavior` option.
+
+**Missing Overload**:
+```typescript
+// Node.js version has:
+removeAllListeners(type?: string): this;
+removeAllListeners(type: string | undefined, options: {
+  behavior?: 'wait'|'ignoreErrors'|'default'
+}): Promise<void>;
+```
+
+**Behavior Options**:
+- `'default'` - do not wait for current listener calls (if any) to finish, if the listener throws, it may result in unhandled error
+- `'wait'` - wait for current listener calls (if any) to finish
+- `'ignoreErrors'` - do not wait for current listener calls (if any) to finish, all errors thrown by the listeners after removal are silently caught
+
+**Files to modify**:
+- `lib/src/infrastructure/event_emitter.dart` - Add overload with `behavior` option
+- `lib/src/core/page.dart` - Add to interface
+- `lib/src/core/browser_context.dart` - Add to interface
+
+**Implementation**:
+```dart
+// In event_emitter.dart, add overload:
+Future<void> removeAllListeners(String? event, {String? behavior}) async {
+  if (behavior == null) {
+    removeAllListeners(event);
+    return;
+  }
+  
+  // Wait for running listeners if behavior is 'wait'
+  if (behavior == 'wait') {
+    // Implementation to wait for running listeners
+    await Future.delayed(Duration.zero); // Placeholder for actual implementation
+  }
+  
+  // Remove listeners
+  if (event == null) {
+    _events.clear();
+  } else {
+    _events.remove(event);
+  }
+  
+  // Handle error suppression if behavior is 'ignoreErrors'
+  if (behavior == 'ignoreErrors') {
+    // Implementation to suppress errors
+  }
+}
+```
+
+**Added in**: v1.62.0 (user-facing API enhancement)  
+**Implementation Effort**: Medium  
+**Impact**: Low - Useful for advanced listener management scenarios
+
+---
+
+## Part 4: Dart-Native Features (Optional Enhancements)
 
 These are features that could be implemented in Dart to improve the developer experience, even though they don't exist in the official Node.js Playwright. These are NOT protocol features but could be built as Dart-specific enhancements.
 
-### 3.1 HTML Test Reports
+### 4.1 HTML Test Reports
 
 **Status**: ❌ Not Implemented (Optional)
 
@@ -399,7 +538,7 @@ These are features that could be implemented in Dart to improve the developer ex
 
 ---
 
-### 3.2 Configuration File (playwright.config.dart)
+### 4.2 Configuration File (playwright.config.dart)
 
 **Status**: ❌ Not Implemented (Optional)
 
@@ -416,7 +555,7 @@ These are features that could be implemented in Dart to improve the developer ex
 
 ---
 
-### 3.3 APIResponseAssertions
+### 4.3 APIResponseAssertions
 
 **Status**: ❌ Not Implemented (Optional)
 
@@ -489,13 +628,20 @@ All previously identified API-level gaps have been addressed:
 11. ✅ **Request.redirectedTo fix (Priority 3.1)** - Redirect chain tracking - Already implemented
 12. ✅ **Response.fromServiceWorker type fix (Priority 3.2)** - Protocol accuracy - Already implemented
 
+### New Protocol Features (v1.62.0-next)
+
+These are features added in the official Playwright v1.62.0-next that are protocol-based and should be implemented:
+
+13. **AbortSignal Support (Part 3.1)** - Add AbortSignal support to wait operations
+14. **removeAllListeners behavior Option (Part 3.2)** - Add behavior option to removeAllListeners for advanced listener management
+
 ### Optional Dart-Native Features
 
 These are NOT part of the official Playwright API but could be implemented as Dart-specific enhancements:
 
-13. **HTML Test Reports (Part 3.1)** - Dart-native feature for test visualization
-14. **Configuration File (Part 3.2)** - Dart-native configuration system
-15. **APIResponseAssertions (Part 3.3)** - Pure Dart assertion helper
+14. **HTML Test Reports (Part 4.1)** - Dart-native feature for test visualization
+15. **Configuration File (Part 4.2)** - Dart-native configuration system
+16. **APIResponseAssertions (Part 4.3)** - Pure Dart assertion helper
 
 ---
 
@@ -506,6 +652,7 @@ These are NOT part of the official Playwright API but could be implemented as Da
 | Priority 1 API Gaps | 4 | Medium |
 | Priority 2 API Gaps | 6 | Low-Medium |
 | Priority 3 Bug Fixes | 2 | Trivial-Low |
+| New Protocol Features (v1.62.0) | 2 | Medium |
 | Optional Dart-Native Features | 3 | Medium |
 
 **Total Estimated Effort**: Medium (all features are protocol-based and implementable)
@@ -531,25 +678,33 @@ These are NOT part of the official Playwright API but could be implemented as Da
 
 ---
 
+## New Protocol Features Summary Table (v1.62.0-next)
+
+| # | Feature | Status | Effort | Impact | Priority |
+|---|---|---|---|---|---|
+| 3.1 | AbortSignal Support for Wait Operations | ❌ Not Implemented | Medium | Medium | Medium |
+| 3.2 | removeAllListeners behavior Option | ❌ Not Implemented | Medium | Low | Low |
+
 ## Optional Dart-Native Features Summary Table
 
 | # | Feature | Status | Effort | Impact | Priority |
 |---|---|---|---|---|---|
-| 3.1 | HTML Test Reports | ❌ Not Implemented | Medium | High | Medium |
-| 3.2 | Configuration File (playwright.config.dart) | ❌ Not Implemented | Medium | High | Medium |
-| 3.3 | APIResponseAssertions | ❌ Not Implemented | Low | Low | Low |
+| 4.1 | HTML Test Reports | ❌ Not Implemented | Medium | High | Medium |
+| 4.2 | Configuration File (playwright.config.dart) | ❌ Not Implemented | Medium | High | Medium |
+| 4.3 | APIResponseAssertions | ❌ Not Implemented | Low | Low | Low |
 
 ---
 
 ## Notes
 
-- The current playwright-dart implementation is **production-ready for browser automation and scripting**
+- The current playwright-dart implementation is **production-ready for browser automation and scripting** at protocol v1.61.0
 - All gaps identified in this document are **implementable** via the protocol or as Dart-native features
 - Node.js-specific tools (@playwright/test, codegen, UI mode, component testing, AI integration) are **excluded** from this analysis as they cannot be ported to Dart
-- The core automation API is 100% complete (verified by `tool/find_missing.dart`)
+- The core automation API is 100% complete for protocol v1.61.0 (verified by `tool/find_missing.dart`)
 - API-level gaps are relatively low effort to implement
 - Several features previously listed as missing (WebStorage, Screencast, Coverage, consoleMessages, pageErrors, requests) are **already implemented**
 - Optional Dart-native features could be implemented to improve the developer experience beyond what the official Playwright provides
+- **New in v1.62.0-next**: AbortSignal support for wait operations and removeAllListeners behavior option have been added to the official Playwright and should be implemented in the Dart port
 
 ---
 
@@ -567,3 +722,4 @@ These are NOT part of the official Playwright API but could be implemented as Da
 - **June 17, 2026**: Initial comprehensive gaps analysis created by combining gaps.md and missing_features.md
 - **June 17, 2026**: Updated to filter out Node.js-specific tools and cross-check with actual code implementation. Removed ecosystem gaps section (test framework, codegen, UI mode, etc.) as these are not implementable via protocol. Added "Already Implemented" section for features that were incorrectly listed as missing. Added "Dart-Native Features" section for optional enhancements.
 - **June 17, 2026**: Verified that ALL API-level gaps have been addressed. All Priority 1, 2, and 3 tasks are already implemented. Updated Executive Summary and Implementation Priority Recommendations to reflect completion status.
+- **June 17, 2026**: Added analysis of official Playwright repo v1.62.0-next. Identified new AbortSignal support feature and removeAllListeners behavior option that should be implemented. Updated protocol version to reflect official repo status.

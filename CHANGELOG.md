@@ -1,3 +1,11 @@
+## 3.6.0
+
+- **Feature**: Added typesafe function parameters and shorthand command in `Keyboard` and `Mouse` functionalities.
+- **Documentation**: Added comprehensive analysis of official Playwright v1.62.0-next protocol changes in `comprehensive_gaps_analysis.md`.
+- **Documentation**: Identified new protocol features available in v1.62.0-next: AbortSignal support for wait operations and removeAllListeners behavior option.
+- **Documentation**: Updated protocol version references to reflect official Playwright repo status (v1.61.0 with official at v1.62.0-next).
+- **Documentation**: Added implementation guidance for new v1.62.0 features including file locations and code examples.
+
 ## 3.5.0
 
 - **Feature**: Added `page.routeWebSocket()` method for WebSocket connection interception and routing. Supports both glob patterns and RegExp for URL matching.

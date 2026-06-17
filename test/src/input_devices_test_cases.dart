@@ -1,4 +1,5 @@
 import '../test_helper.dart';
+import 'package:playwright_dart/src/interaction/keyboard_key.dart';
 
 void main() {
   setUpAll(() async {
@@ -32,9 +33,9 @@ void main() {
       ''');
 
       await page.focus('#inp');
-      await page.keyboard.down('Shift');
+      await page.keyboard.downKey(KeyboardKey.shift);
       expect(await page.evaluate('() => shiftDown'), isTrue);
-      await page.keyboard.up('Shift');
+      await page.keyboard.upKey(KeyboardKey.shift);
       expect(await page.evaluate('() => shiftDown'), isFalse);
     });
 
@@ -60,7 +61,7 @@ void main() {
       ''');
 
       await page.focus('#inp');
-      await page.keyboard.press('Enter');
+      await page.keyboard.pressKey(KeyboardKey.enter);
       expect(await page.evaluate('() => enterPressed'), isTrue);
     });
   });
@@ -132,6 +133,87 @@ void main() {
       expect(await page.evaluate('() => mouseIsDown'), isTrue);
       await page.mouse.up();
       expect(await page.evaluate('() => mouseIsDown'), isFalse);
+    });
+
+    test('should click with button options', (page) async {
+      await page.setContent('''
+        <div style="width:200px;height:200px;"></div>
+        <script>
+          let rightClicked = false;
+          document.addEventListener("contextmenu", () => { rightClicked = true; });
+        </script>
+      ''');
+
+      await page.mouse.click(50, 50, button: PageMouseClickButtonEnum.right);
+      expect(await page.evaluate('() => rightClicked'), isTrue);
+    });
+
+    test('should click with delay', (page) async {
+      await page.setContent('''
+        <div style="width:200px;height:200px;"></div>
+        <script>
+          let clickCount = 0;
+          document.addEventListener("click", () => { clickCount++; });
+        </script>
+      ''');
+
+      await page.mouse.click(50, 50, delay: 100);
+      expect(await page.evaluate('() => clickCount'), equals(1));
+    });
+  });
+
+  group('Touchscreen API', () {
+    test('should tap at coordinates', (page) async {
+      // Create a new context with hasTouch enabled
+      final context = await browser.newContext(
+        options: ContextOptions(hasTouch: true),
+      );
+      final touchPage = await context.newPage();
+
+      try {
+        await touchPage.setContent('''
+          <div style="width:200px;height:200px;"></div>
+          <script>
+            let tapped = false;
+            document.addEventListener("click", () => { tapped = true; });
+          </script>
+        ''');
+
+        await touchPage.touchscreen.tap(50, 50);
+        expect(await touchPage.evaluate('() => tapped'), isTrue);
+      } finally {
+        await touchPage.close();
+        await context.close();
+      }
+    });
+  });
+
+  group('Advanced Keyboard', () {
+    test('should handle multiple key presses', (page) async {
+      await page.setContent('<input id="inp" />');
+      await page.focus('#inp');
+      await page.keyboard.pressKey(KeyboardKey.keyA);
+      await page.keyboard.pressKey(KeyboardKey.keyB);
+      await page.keyboard.pressKey(KeyboardKey.keyC);
+      expect(await page.inputValue('#inp'), equals('abc'));
+    });
+
+    test('should handle modifier keys', (page) async {
+      await page.setContent('<input id="inp" />');
+      await page.focus('#inp');
+      await page.keyboard.downKey(KeyboardKey.shift);
+      await page.keyboard.pressKey(KeyboardKey.keyA);
+      await page.keyboard.upKey(KeyboardKey.shift);
+      expect(await page.inputValue('#inp'), equals('A'));
+    });
+
+    test('should handle backspace', (page) async {
+      await page.setContent('<input id="inp" value="hello" />');
+      await page.focus('#inp');
+      // Move cursor to end and press backspace
+      await page.keyboard.pressKey(KeyboardKey.end);
+      await page.keyboard.pressKey(KeyboardKey.backspace);
+      expect(await page.inputValue('#inp'), equals('hell'));
     });
   });
 }
