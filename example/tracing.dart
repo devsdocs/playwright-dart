@@ -4,14 +4,19 @@ import 'dart:io';
 void main() async {
   final playwright = await PlaywrightDart.create();
   final browser = await playwright.chromium.launch();
+  final context = await browser.newContext();
 
   print('Starting tracing...');
-  await browser.startTracing(
+  await context.tracing.start(
     screenshots: true,
-    categories: ['devtools.timeline'],
+    snapshots: true,
+  );
+  await context.tracing.startChunk(
+    name: 'trace',
+    title: 'Playwright Trace',
   );
 
-  final page = await browser.newPage();
+  final page = await context.newPage();
   print('Navigating to website...');
   await page.goto('https://playwright.dev');
 
@@ -19,12 +24,31 @@ void main() async {
   await page.getByRole('link', name: 'Get started').click();
 
   print('Stopping tracing and saving to trace.zip...');
-  final traceBytes = await browser.stopTracing();
+  final result = await context.tracing.stopChunk(
+    mode: TracingTracingStopChunkModeEnum.archive,
+  );
 
-  final file = File('trace.json');
-  await file.writeAsBytes(traceBytes);
+  if (result.artifact != null) {
+    final artifact = result.artifact! as Artifact;
+    final streamResult = await artifact.stream();
+    final stream = streamResult.stream as PlaywrightStream;
 
-  print('Trace saved! You can view it at https://trace.playwright.dev');
+    final buffer = <int>[];
+    while (true) {
+      final chunk = await stream.read();
+      if (chunk.isEmpty) break;
+      buffer.addAll(chunk);
+    }
 
+    final file = File('trace.zip');
+    await file.writeAsBytes(buffer);
+    await artifact.delete();
+
+    print('Trace saved! You can view it at https://trace.playwright.dev');
+  } else {
+    print('No artifact returned from tracing stop');
+  }
+
+  await context.close();
   await browser.close();
 }
