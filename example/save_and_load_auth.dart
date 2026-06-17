@@ -33,7 +33,9 @@ void main() async {
   final savedStateJson = jsonDecode(await file.readAsString());
 
   final context2 = await browser.newContext();
-  await context2.setStorageState(savedStateJson);
+  await context2.setStorageState(
+    BrowserContextSetStorageStateStorageState.fromJson(savedStateJson),
+  );
 
   final page2 = await context2.newPage();
   await page2.goto('https://example.com');

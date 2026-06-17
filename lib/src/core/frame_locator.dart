@@ -13,6 +13,12 @@ class FrameLocator {
 
   FrameLocator(this.frame, this.frameSelector);
 
+  /// Returns a [Locator] for the `<iframe>` element itself.
+  ///
+  /// This is the reverse of [Locator.contentFrame].
+  /// Available since Playwright v1.43.
+  Locator owner() => Locator(frame, frameSelector);
+
   /// Creates a locator for the given selector within this frame.
   Locator locator(String selector) {
     return Locator(
@@ -48,14 +54,34 @@ class FrameLocator {
   }
 
   /// Locates element by ARIA role.
-  Locator getByRole(String role, {Pattern? name, bool exact = false}) {
-    var sel = 'internal:role=$role';
-
-    if (name != null) {
-      sel += '[name=${encodePatternForRoleName(name, exact: exact)}]';
-    }
-
-    return locator(sel);
+  Locator getByRole(
+    String role, {
+    Pattern? name,
+    bool exact = false,
+    bool? checked,
+    bool? disabled,
+    bool? expanded,
+    bool? includeHidden,
+    int? level,
+    bool? pressed,
+    bool? selected,
+    Pattern? description,
+  }) {
+    return locator(
+      buildRoleSelector(
+        role,
+        name: name,
+        exact: exact,
+        checked: checked,
+        disabled: disabled,
+        expanded: expanded,
+        includeHidden: includeHidden,
+        level: level,
+        pressed: pressed,
+        selected: selected,
+        description: description,
+      ),
+    );
   }
 
   /// Locates element by associated label.

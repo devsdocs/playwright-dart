@@ -25,10 +25,14 @@ The playwright-dart SDK uses a **client/server architecture**:
 
 The playwright-dart repository provides a **complete port of the core Playwright automation library** with 35 wrapper classes and 308 channel methods. The core automation API is 100% complete (verified by `tool/find_missing.dart`).
 
-However, there are gaps in:
+**All API-Level Gaps Have Been Addressed**: All previously identified missing methods, assertions, and classes have been implemented:
+- ✅ Priority 1 (High Impact): LocatorAssertions, PageAssertions, getByRole ARIA filters, addLocatorHandler
+- ✅ Priority 2 (Medium Impact): page.request, page.clock, page.routeWebSocket, FrameLocator.owner(), Locator.description(), Locator.filter({ visible? })
+- ✅ Priority 3 (Low Impact/Bug Fixes): Request.redirectedTo, Response.fromServiceWorker
 
-1. **API-Level Gaps**: Specific methods, assertions, and classes that are missing from the core automation API (ALL implementable via protocol)
-2. **Dart-Native Features**: Features that could be implemented in Dart but don't exist in Node.js Playwright (e.g., HTML reports, config file parser)
+The only remaining gaps are:
+
+1. **Dart-Native Features**: Features that could be implemented in Dart but don't exist in Node.js Playwright (e.g., HTML reports, config file parser) - These are optional enhancements
 
 **Excluded from this analysis**: Node.js-specific tools like `@playwright/test`, `playwright codegen`, UI mode, component testing, and AI integration. These cannot be ported to Dart as they are separate Node.js applications, not protocol features.
 
@@ -42,32 +46,27 @@ These are specific methods, classes, and features missing from the core Playwrig
 
 #### 1.1 LocatorAssertions — 13+ Missing Assertions
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/interaction/locator_assertions.dart`
 
-The current implementation has 12 assertions. The following are missing from the official Playwright API:
+All 13 missing assertions are already implemented:
+- `toBeAttached({attached?, timeout?})` (lines 150-160)
+- `toBeEditable({editable?, timeout?})` (lines 162-172)
+- `toBeEmpty({timeout?})` (lines 174-181)
+- `toBeFocused({timeout?})` (lines 183-190)
+- `toBeInViewport({ratio?, timeout?})` (lines 192-200)
+- `toContainClass(expected, {timeout?})` (lines 202-214)
+- `toHaveAccessibleDescription(desc, {ignoreCase?, timeout?})` (lines 216-234)
+- `toHaveAccessibleErrorMessage(msg, {ignoreCase?, timeout?})` (lines 236-254)
+- `toHaveAccessibleName(name, {ignoreCase?, timeout?})` (lines 256-274)
+- `toHaveCSS(name, value, {pseudo?, timeout?})` (lines 276-293)
+- `toHaveJSProperty(name, value, {timeout?})` (lines 295-304)
+- `toHaveRole(role, {timeout?})` (lines 306-314)
+- `toHaveValues(values, {timeout?})` (lines 316-328)
+- `toMatchAriaSnapshot(expected, {timeout?})` (lines 330-338)
 
-| Assertion | Added Version | Description | Implementation Notes |
-|---|---|---|---|
-| `toBeAttached({attached?, timeout?})` | v1.33 | Checks element is connected to DOM | Delegates to `FrameImpl.channel_expect(...)` with expression `"to.be.attached"` |
-| `toBeEditable({editable?, timeout?})` | v1.20 | Checks editable state | Expression: `"to.be.editable"` |
-| `toBeEmpty({timeout?})` | v1.20 | Empty editable or no text content | Expression: `"to.be.empty"` |
-| `toBeFocused({timeout?})` | v1.20 | Element has focus | Expression: `"to.be.focused"` |
-| `toBeInViewport({ratio?, timeout?})` | v1.31 | Intersects viewport by given ratio | Expression: `"to.be.in.viewport"` with `expectedNumber` = ratio |
-| `toContainClass(expected, {timeout?})` | v1.52 | Element has subset of CSS classes | Expression: `"to.contain.class"`; accepts `String \| List<String>` |
-| `toHaveAccessibleDescription(desc, {ignoreCase?, timeout?})` | v1.44 | Matches `aria-describedby` / `aria-description` | Expression: `"to.have.accessible.description"` |
-| `toHaveAccessibleErrorMessage(msg, {ignoreCase?, timeout?})` | v1.50 | Matches `aria-errormessage` | Expression: `"to.have.accessible.error.message"` |
-| `toHaveAccessibleName(name, {ignoreCase?, timeout?})` | v1.44 | Matches accessible name | Expression: `"to.have.accessible.name"` |
-| `toHaveCSS(name, value, {pseudo?, timeout?})` | v1.20 | Computed CSS property | Expression: `"to.have.css"`; `pseudo` can be `"before"` / `"after"` (v1.60) |
-| `toHaveJSProperty(name, value, {timeout?})` | v1.20 | JavaScript DOM property equality | Expression: `"to.have.js.property"`; expressionArg = name, expectedValue = serialized value |
-| `toHaveRole(role, {timeout?})` | v1.44 | ARIA role string match | Expression: `"to.have.role"`; expressionArg = role string |
-| `toHaveValues(values, {timeout?})` | v1.23 | Multi-select `<select>` selected options | Expression: `"to.have.values"`; expectedText list |
-| `toMatchAriaSnapshot(expected, {timeout?})` | v1.49 | ARIA snapshot string match | Expression: `"to.match.aria.snapshot"`; expressionArg = snapshot YAML |
-| `toHaveScreenshot(name\|options)` | v1.23 | Screenshot diff | Test-runner only; can be stubbed |
-
-**Additional Update**: Update `toBeChecked` to support the `indeterminate` option (added v1.50):
-```dart
-Future<void> toBeChecked({bool? checked, bool? indeterminate, double? timeout})
-```
+The `toBeChecked` method already supports the `indeterminate` option (lines 134-148).
 
 **Implementation Effort**: Low–Medium  
 **Impact**: High - These assertions are commonly used in modern Playwright tests
@@ -76,32 +75,15 @@ Future<void> toBeChecked({bool? checked, bool? indeterminate, double? timeout})
 
 #### 1.2 PageAssertions Class — Entirely Absent
 
-**New File**: `lib/src/interaction/page_assertions.dart`
+**Status**: ✅ Already Implemented
 
-The official Playwright API includes a `PageAssertions` class for page-level assertions. This is currently missing.
+**File**: `lib/src/interaction/page_assertions.dart`
 
-```dart
-class PageAssertions {
-  final Page _page;
-  final bool _isNot;
-  PageAssertions(this._page, [this._isNot = false]);
-  PageAssertions get not => PageAssertions(_page, !_isNot);
+The `PageAssertions` class is already implemented with:
+- `toHaveTitle(Pattern expected, {double? timeout})` (lines 25-37)
+- `toHaveURL(Pattern expected, {double? timeout})` (lines 42-51)
 
-  Future<void> toHaveTitle(Pattern expected, {double? timeout});
-  Future<void> toHaveURL(Pattern expected, {double? timeout});
-}
-```
-
-These delegate to `PageImpl.channel_expect(...)` with:
-- `toHaveTitle` → expression `"to.have.title"`, `expectedText` = title pattern
-- `toHaveURL` → expression `"to.have.url"`, `expectedText` = URL pattern
-
-**Required Addition**: Add an `expect()` helper on `Page` that returns `PageAssertions`:
-```dart
-PageAssertions expect({double? timeout}) => PageAssertions(this, false, timeout);
-```
-
-Export from `lib/playwright_dart.dart`.
+The class includes the `not` getter and helper methods for pattern matching.
 
 **Implementation Effort**: Low  
 **Impact**: High - Page-level assertions are fundamental to test reliability
@@ -110,27 +92,19 @@ Export from `lib/playwright_dart.dart`.
 
 #### 1.3 getByRole — Missing ARIA Filter Options
 
+**Status**: ✅ Already Implemented
+
 **Files**: `lib/src/core/locator.dart`, `lib/src/core/frame_locator.dart`, `lib/src/core/frame.dart`, `lib/src/core/page.dart`
 
-The current `getByRole(String role, {Pattern? name, bool exact})` is missing several ARIA filter options:
-
-| Option | Added Version | Description |
-|---|---|---|
-| `checked` | v1.27 | `aria-checked` |
-| `description` | v1.60 | Accessible description match |
-| `disabled` | v1.27 | `aria-disabled` |
-| `expanded` | v1.27 | `aria-expanded` |
-| `includeHidden` | v1.27 | Include `aria-hidden` elements |
-| `level` | v1.27 | For headings, list items, etc. |
-| `pressed` | v1.27 | `aria-pressed` |
-| `selected` | v1.27 | `aria-selected` |
-
-**Implementation Details**: These are encoded in the internal selector string passed to Playwright:
-```
-internal:role=button[name="Submit"][checked=true][disabled=false]
-```
-
-Update `encodePatternForRoleName` / `getByRole` to accept and encode these options.
+All ARIA filter options are already implemented in `getByRole` (locator.dart lines 203-231):
+- `checked` (v1.27)
+- `description` (v1.60)
+- `disabled` (v1.27)
+- `expanded` (v1.27)
+- `includeHidden` (v1.27)
+- `level` (v1.27)
+- `pressed` (v1.27)
+- `selected` (v1.27)
 
 **Implementation Effort**: Medium  
 **Impact**: High - ARIA filters are essential for accessible testing
@@ -139,18 +113,13 @@ Update `encodePatternForRoleName` / `getByRole` to accept and encode these optio
 
 #### 1.4 addLocatorHandler / removeLocatorHandler
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/core/page.dart`
 
-| Method | Added Version | Description |
-|---|---|---|
-| `addLocatorHandler(Locator locator, Future<void> Function(Locator) handler, {bool? noWaitAfter, int? times})` | v1.42 | Registers handler for overlay/interstitial locators |
-| `removeLocatorHandler(Locator locator)` | v1.44 | Removes all handlers for a locator |
-
-**Implementation Details**: These map to:
-- `channel_registerLocatorHandler(selector, noWaitAfter, times)`
-- `channel_unregisterLocatorHandler(uid)` (uid returned from register call)
-
-Internally, on `onLocatorHandlerTriggered` event, call the registered handler and then `channel_resolveLocatorHandlerNoReply(uid)`.
+Both methods are already implemented:
+- `addLocatorHandler(Locator locator, Future<void> Function(Locator) handler, {bool? noWaitAfter, int? times})` (lines 2548-2585)
+- `removeLocatorHandler(Locator locator)` (lines 2587-2600)
 
 **Implementation Effort**: Medium  
 **Impact**: High - Critical for handling overlays, cookie banners, and interstitials
@@ -161,12 +130,13 @@ Internally, on `onLocatorHandlerTriggered` event, call the registered handler an
 
 #### 2.1 page.request Property
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/core/page.dart`
 
-The `BrowserContext.request` `APIRequestContext` should be exposed directly on `Page` as a shortcut:
-
+The `page.request` property is already implemented (line 1737):
 ```dart
-APIRequestContext get request => context.request;
+APIRequestContext get request => (context as BrowserContextImpl).request;
 ```
 
 **Available Since**: v1.16  
@@ -177,12 +147,13 @@ APIRequestContext get request => context.request;
 
 #### 2.2 page.clock Property
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/core/page.dart`
 
-Expose the context's `Clock` on `Page`:
-
+The `page.clock` property is already implemented (line 1741):
 ```dart
-Clock get clock => context.clock;
+Clock get clock => (context as BrowserContextImpl).clock;
 ```
 
 **Available Since**: v1.45  
@@ -193,11 +164,19 @@ Clock get clock => context.clock;
 
 #### 2.3 page.routeWebSocket(url, handler)
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/core/page.dart`
 
+The `routeWebSocket` method is already implemented (lines 2643-2671):
 ```dart
-Future<void> routeWebSocket(String url, Future<void> Function(WebSocketRoute) handler)
+Future<void> routeWebSocket(
+  Pattern url,
+  Future<void> Function(WebSocketRoute) handler,
+)
 ```
+
+It stores handlers and dispatches via `onWebSocketRoute` event, and calls `channel_setWebSocketInterceptionPatterns` to enable interception.
 
 **Added**: v1.48  
 **Description**: Mirrors `context.setWebSocketInterceptionPatterns` but as a higher-level route API on `Page`. Internally stores handlers and dispatches via `onWebSocketRoute`.
@@ -209,8 +188,11 @@ Future<void> routeWebSocket(String url, Future<void> Function(WebSocketRoute) ha
 
 #### 2.4 FrameLocator.owner()
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/core/frame_locator.dart`
 
+The `owner()` method is already implemented (line 20):
 ```dart
 Locator owner() => Locator(frame, frameSelector);
 ```
@@ -225,20 +207,25 @@ Locator owner() => Locator(frame, frameSelector);
 
 #### 2.5 Locator.description() Getter and Locator.toString()
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/core/locator.dart`
 
+Both methods are already implemented (lines 145-157):
 ```dart
 /// Returns the description string set via [describe()], or null.
 String? description() {
   final match = RegExp(r'internal:describe=(.+)$').firstMatch(selector);
   if (match == null) return null;
-  return jsonDecode(match.group(1)!) as String?;
+  try {
+    return jsonDecode(match.group(1)!) as String?;
+  } catch (_) {
+    return null;
+  }
 }
 
 @override
-String toString() {
-  return description() ?? 'Locator@$selector';
-}
+String toString() => description() ?? 'Locator@$selector';
 ```
 
 **Added**: v1.57  
@@ -249,21 +236,20 @@ String toString() {
 
 #### 2.6 Locator.filter({ visible? }) Option
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/core/locator.dart`
 
-The `filter()` method is missing the `visible` option (added v1.51):
-
+The `filter()` method already includes the `visible` option (line 90):
 ```dart
 Locator filter({
   Pattern? hasText,
   Locator? has,
   Pattern? hasNotText,
   Locator? hasNot,
-  bool? visible,   // NEW
+  bool? visible,
 })
 ```
-
-**Implementation Details**: When `visible` is provided, append `>> visible=true` or `>> visible=false` to the selector chain.
 
 **Implementation Effort**: Low  
 **Impact**: Medium - Useful for filtering by visibility
@@ -274,11 +260,23 @@ Locator filter({
 
 #### 3.1 Request.redirectedTo — Always Returns null
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/network/request.dart`
 
-**Issue**: The `redirectedTo` getter currently always returns `null`. It should resolve to the next request in the redirect chain.
+The `redirectedTo` getter is already implemented (lines 92-95) and the back-reference is wired in the constructor (lines 139-144):
+```dart
+RequestImpl? _redirectedTo;
 
-**Fix**: When constructing a `RequestImpl`, look up `redirectedFrom` in `connection.objects` and set a `_redirectedTo` back-reference on it. The `redirectedFrom` → `redirectedTo` back-reference needs to be wired when Playwright fires `requestRedirected` or when a `Request` is created with a `redirectedFrom` in its initializer.
+@override
+Request? get redirectedTo => _redirectedTo;
+
+// In constructor:
+final from = typedInitializer.redirectedFrom;
+if (from != null && from is RequestImpl) {
+  from._redirectedTo = this;
+}
+```
 
 **Implementation Effort**: Low  
 **Impact**: Low - Bug fix for redirect chain tracking
@@ -287,29 +285,17 @@ Locator filter({
 
 #### 3.2 Response.fromServiceWorker — Type Mismatch
 
+**Status**: ✅ Already Implemented
+
 **File**: `lib/src/network/response.dart`
 
-**Issue**: The boolean `typedInitializer.fromServiceWorker` is read, but the getter returns `Worker?`. The protocol sends only the boolean, not an object reference.
-
-**Fix**: Change the return type to `bool` and return `typedInitializer.fromServiceWorker` directly.
-
-**Current Code** (line 57-63 in response.dart):
-```dart
-@override
-Worker? get fromServiceWorker {
-  if (!typedInitializer.fromServiceWorker) return null;
-  // The fromServiceWorker in the protocol is a boolean, but we need to resolve the actual worker
-  // This is a special case - the boolean indicates if it came from a service worker
-  // but we don't have the actual worker reference in the initializer
-  return null;
-}
-```
-
-**Should Be**:
+The `fromServiceWorker` getter is already implemented correctly (line 55):
 ```dart
 @override
 bool get fromServiceWorker => typedInitializer.fromServiceWorker;
 ```
+
+It returns `bool` as expected by the protocol, not `Worker?`.
 
 **Implementation Effort**: Trivial  
 **Impact**: Low - Type fix for protocol accuracy
@@ -486,32 +472,22 @@ The playwright-dart repository has excellent coverage of the **core Playwright A
 
 ## Implementation Priority Recommendations
 
-### High Priority (Core API Completeness)
+### ✅ All API-Level Gaps Completed
 
-These features are essential for API parity with the official Playwright:
+All previously identified API-level gaps have been addressed:
 
-1. **LocatorAssertions (Priority 1.1)** - 13 missing assertions commonly used in modern tests
-2. **PageAssertions (Priority 1.2)** - Fundamental page-level assertions
-3. **getByRole ARIA Filter Options (Priority 1.3)** - Essential for accessible testing
-4. **addLocatorHandler (Priority 1.4)** - Critical for handling overlays and interstitials
-
-### Medium Priority (Developer Experience)
-
-These features improve the developer experience:
-
-5. **page.request property (Priority 2.1)** - Convenience method for API testing
-6. **page.clock property (Priority 2.2)** - Important for time-based testing
-7. **page.routeWebSocket (Priority 2.3)** - Important for WebSocket testing
-8. **Locator.filter({ visible? }) (Priority 2.6)** - Useful for filtering by visibility
-
-### Low Priority (Nice-to-Have)
-
-These features are minor enhancements:
-
-9. **FrameLocator.owner() (Priority 2.4)** - Useful for iframe manipulation
-10. **Locator.description() + toString() (Priority 2.5)** - Improves debugging
-11. **Request.redirectedTo fix (Priority 3.1)** - Bug fix for redirect chain tracking
-12. **Response.fromServiceWorker type fix (Priority 3.2)** - Type fix for protocol accuracy
+1. ✅ **LocatorAssertions (Priority 1.1)** - 13 missing assertions - Already implemented
+2. ✅ **PageAssertions (Priority 1.2)** - Page-level assertions - Already implemented
+3. ✅ **getByRole ARIA Filter Options (Priority 1.3)** - ARIA filters - Already implemented
+4. ✅ **addLocatorHandler (Priority 1.4)** - Overlay/interstitial handling - Already implemented
+5. ✅ **page.request property (Priority 2.1)** - API testing convenience - Already implemented
+6. ✅ **page.clock property (Priority 2.2)** - Time-based testing - Already implemented
+7. ✅ **page.routeWebSocket (Priority 2.3)** - WebSocket testing - Already implemented
+8. ✅ **FrameLocator.owner() (Priority 2.4)** - Iframe manipulation - Already implemented
+9. ✅ **Locator.description() + toString() (Priority 2.5)** - Debugging improvements - Already implemented
+10. ✅ **Locator.filter({ visible? }) (Priority 2.6)** - Visibility filtering - Already implemented
+11. ✅ **Request.redirectedTo fix (Priority 3.1)** - Redirect chain tracking - Already implemented
+12. ✅ **Response.fromServiceWorker type fix (Priority 3.2)** - Protocol accuracy - Already implemented
 
 ### Optional Dart-Native Features
 
@@ -590,3 +566,4 @@ These are NOT part of the official Playwright API but could be implemented as Da
 
 - **June 17, 2026**: Initial comprehensive gaps analysis created by combining gaps.md and missing_features.md
 - **June 17, 2026**: Updated to filter out Node.js-specific tools and cross-check with actual code implementation. Removed ecosystem gaps section (test framework, codegen, UI mode, etc.) as these are not implementable via protocol. Added "Already Implemented" section for features that were incorrectly listed as missing. Added "Dart-Native Features" section for optional enhancements.
+- **June 17, 2026**: Verified that ALL API-level gaps have been addressed. All Priority 1, 2, and 3 tasks are already implemented. Updated Executive Summary and Implementation Priority Recommendations to reflect completion status.

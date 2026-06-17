@@ -86,6 +86,8 @@ class Locator {
     Pattern? hasNotText,
 
     Locator? hasNot,
+
+    bool? visible,
   }) {
     var sel = selector;
 
@@ -113,6 +115,10 @@ class Locator {
       sel += ' >> internal:has-not=${jsonEncode(hasNot.selector)}';
     }
 
+    if (visible != null) {
+      sel += ' >> visible=${visible ? 'true' : 'false'}';
+    }
+
     return Locator(frame, sel);
   }
 
@@ -133,8 +139,25 @@ class Locator {
     '$selector >> internal:describe=${jsonEncode(description)}',
   );
 
+  /// Returns the description string set via [describe], or `null` if none.
+  ///
+  /// Available since Playwright v1.57.
+  String? description() {
+    final match = RegExp(r'internal:describe=(.+)$').firstMatch(selector);
+    if (match == null) return null;
+    try {
+      final raw = match.group(1)!;
+      return jsonDecode(raw) as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  String toString() => description() ?? 'Locator@$selector';
+
   Future<Locator> normalize() async {
-    final result = await resolveSelector();
+    final result = await frame.resolveSelector(selector);
 
     return Locator(frame, result.resolvedSelector);
   }
@@ -177,14 +200,34 @@ class Locator {
     );
   }
 
-  Locator getByRole(String role, {Pattern? name, bool exact = false}) {
-    var sel = 'internal:role=$role';
-
-    if (name != null) {
-      sel += '[name=${encodePatternForRoleName(name, exact: exact)}]';
-    }
-
-    return locator(sel);
+  Locator getByRole(
+    String role, {
+    Pattern? name,
+    bool exact = false,
+    bool? checked,
+    bool? disabled,
+    bool? expanded,
+    bool? includeHidden,
+    int? level,
+    bool? pressed,
+    bool? selected,
+    Pattern? description,
+  }) {
+    return locator(
+      buildRoleSelector(
+        role,
+        name: name,
+        exact: exact,
+        checked: checked,
+        disabled: disabled,
+        expanded: expanded,
+        includeHidden: includeHidden,
+        level: level,
+        pressed: pressed,
+        selected: selected,
+        description: description,
+      ),
+    );
   }
 
   Locator getByLabel(Pattern text, {bool exact = false}) {

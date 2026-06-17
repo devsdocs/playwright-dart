@@ -21,7 +21,7 @@ void main() async {
   print('Stopping tracing and saving to trace.zip...');
   final traceBytes = await browser.stopTracing();
 
-  final file = File('trace.zip');
+  final file = File('trace.json');
   await file.writeAsBytes(traceBytes);
 
   print('Trace saved! You can view it at https://trace.playwright.dev');

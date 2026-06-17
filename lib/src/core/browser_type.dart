@@ -1,6 +1,6 @@
-import '../infrastructure/channel_owner.dart';
-
 import 'browser.dart';
+
+import '../infrastructure/channel_owner.dart';
 
 import '../infrastructure/local_utils.dart';
 
@@ -219,6 +219,14 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
 
   /// Typically used when connecting to an instance launched via `BrowserTypeImpl.launchServer`.
 
+  ///
+
+  /// **Note:** This method is designed for connecting to Playwright servers launched with
+
+  /// `launchServer()`. For remote browser connections via WebSocket (e.g., cloud-hosted browsers),
+
+  /// use [connectOverCDP] instead, as they may not support the Playwright WebSocket protocol.
+
   @override
   Future<Browser> connect(
     String wsEndpoint, {
@@ -277,7 +285,8 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
 
     if (preLaunchedBrowser == null) {
       throw Exception(
-        'Malformed endpoint. Did you use BrowserTypeImpl.launchServer method?',
+        'Malformed endpoint. Did you use BrowserTypeImpl.launchServer method? '
+        'For remote browser connections via WebSocket, use connectOverCDP() instead.',
       );
     }
 

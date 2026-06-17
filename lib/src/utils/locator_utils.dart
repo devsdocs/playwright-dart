@@ -82,3 +82,46 @@ String encodePatternForRoleName(Pattern name, {bool exact = false}) {
   if (name is RegExp) return regExpToString(name);
   return escapeForAttributeSelector(name as String, exact: exact);
 }
+
+/// Builds the `internal:role=...` selector string with optional ARIA filter
+/// attributes.
+///
+/// Encodes all ARIA filter options supported since Playwright v1.27+.
+String buildRoleSelector(
+  String role, {
+  Pattern? name,
+  bool exact = false,
+  bool? checked,
+  bool? disabled,
+  bool? expanded,
+  bool? includeHidden,
+  int? level,
+  bool? pressed,
+  bool? selected,
+  Pattern? description,
+}) {
+  final buf = StringBuffer('internal:role=$role');
+
+  if (name != null) {
+    buf.write('[name=${encodePatternForRoleName(name, exact: exact)}]');
+  }
+  if (checked != null) buf.write('[checked=${checked ? 'true' : 'false'}]');
+  if (disabled != null) buf.write('[disabled=${disabled ? 'true' : 'false'}]');
+  if (expanded != null) buf.write('[expanded=${expanded ? 'true' : 'false'}]');
+  if (includeHidden != null) {
+    buf.write('[include-hidden=${includeHidden ? 'true' : 'false'}]');
+  }
+  if (level != null) buf.write('[level=$level]');
+  if (pressed != null) {
+    // aria-pressed can be true/false/mixed (mixed is treated as a bool here)
+    buf.write('[pressed=${pressed ? 'true' : 'false'}]');
+  }
+  if (selected != null) buf.write('[selected=${selected ? 'true' : 'false'}]');
+  if (description != null) {
+    buf.write(
+      '[description=${encodePatternForRoleName(description, exact: exact)}]',
+    );
+  }
+
+  return buf.toString();
+}

@@ -89,11 +89,10 @@ class RequestImpl extends RequestBase implements Request {
   @override
   Request? get redirectedFrom => typedInitializer.redirectedFrom as Request?;
 
+  RequestImpl? _redirectedTo;
+
   @override
-  Request? get redirectedTo {
-    // redirectedTo is not in the initializer, need to handle this differently
-    return null;
-  }
+  Request? get redirectedTo => _redirectedTo;
 
   String? _failureText;
 
@@ -136,7 +135,14 @@ class RequestImpl extends RequestBase implements Request {
     super.initializer, [
 
     super.parent,
-  ]);
+  ]) {
+    // Wire the redirectedFrom → redirectedTo back-reference so that
+    // request.redirectedTo returns the redirect chain correctly.
+    final from = typedInitializer.redirectedFrom;
+    if (from != null && from is RequestImpl) {
+      from._redirectedTo = this;
+    }
+  }
 
   /// URL of the request.
 

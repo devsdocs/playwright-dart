@@ -32,6 +32,7 @@ export 'src/generated/channels.dart' hide Channel, ConsoleMessage;
 export 'src/interaction/element_handle.dart';
 export 'src/interaction/jshandle.dart';
 export 'src/interaction/locator_assertions.dart';
+export 'src/interaction/page_assertions.dart';
 export 'src/interaction/keyboard.dart';
 export 'src/interaction/mouse.dart';
 export 'src/interaction/file_chooser.dart';

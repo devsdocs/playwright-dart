@@ -1,3 +1,11 @@
+## 3.5.0
+
+- **Feature**: Added `page.routeWebSocket()` method for WebSocket connection interception and routing. Supports both glob patterns and RegExp for URL matching.
+- **Documentation**: Updated `connect()` method documentation to clarify it's for Playwright servers launched with `launchServer()`, while `connectOverCDP()` should be used for remote browser connections via WebSocket (cloud-hosted browsers).
+- **Documentation**: Updated README with clearer guidance on when to use `connect()` vs `connectOverCDP()` for different connection scenarios.
+- **Documentation**: Verified and documented that all API-level gaps have been addressed in `comprehensive_gaps_analysis.md`. All Priority 1, 2, and 3 tasks are now implemented.
+- **Documentation**: Updated `comprehensive_gaps_analysis.md` to reflect completion status of all API-level gaps.
+
 ## 3.4.0
 
 - **Feature**: Added RegExp serialization/deserialization support in `serialization.dart`, enabling `Pattern` types to be properly converted to/from strings when communicating with the Playwright server.

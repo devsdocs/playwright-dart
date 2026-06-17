@@ -1,5 +1,3 @@
-import '../utils/worker.dart';
-
 import 'dart:convert';
 
 import '../generated/channels.dart';
@@ -29,7 +27,7 @@ abstract interface class Response {
 
   Future<List<int>> body();
 
-  Worker? get fromServiceWorker;
+  bool get fromServiceWorker;
 
   Future<String> text();
 
@@ -54,13 +52,7 @@ abstract interface class Response {
 
 class ResponseImpl extends ResponseBase implements Response {
   @override
-  Worker? get fromServiceWorker {
-    if (!typedInitializer.fromServiceWorker) return null;
-    // The fromServiceWorker in the protocol is a boolean, but we need to resolve the actual worker
-    // This is a special case - the boolean indicates if it came from a service worker
-    // but we don't have the actual worker reference in the initializer
-    return null;
-  }
+  bool get fromServiceWorker => typedInitializer.fromServiceWorker;
 
   @override
   Request get request => typedInitializer.request as Request;

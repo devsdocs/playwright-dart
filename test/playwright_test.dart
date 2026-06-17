@@ -39,6 +39,13 @@ import 'src/route_from_har_test_cases.dart' as route_from_har_test_cases;
 import 'src/selectors_test_cases.dart' as selectors_test_cases;
 import 'src/jshandle_test_cases.dart' as jshandle_test_cases;
 import 'src/element_handle_test_cases.dart' as element_handle_test_cases;
+import 'src/page_assertions_test_cases.dart' as page_assertions_test_cases;
+import 'src/get_by_role_aria_test_cases.dart' as get_by_role_aria_test_cases;
+import 'src/locator_filter_visible_test_cases.dart'
+    as locator_filter_visible_test_cases;
+import 'src/page_properties_test_cases.dart' as page_properties_test_cases;
+import 'src/response_request_fixes_test_cases.dart'
+    as response_request_fixes_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -85,4 +92,9 @@ void main() {
   selectors_test_cases.main();
   jshandle_test_cases.main();
   element_handle_test_cases.main();
+  page_assertions_test_cases.main();
+  get_by_role_aria_test_cases.main();
+  locator_filter_visible_test_cases.main();
+  page_properties_test_cases.main();
+  response_request_fixes_test_cases.main();
 }

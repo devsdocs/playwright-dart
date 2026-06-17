@@ -6,6 +6,8 @@ import '../debugging/binding_call.dart';
 
 import '../network/websocket_route.dart';
 
+import '../interaction/page_assertions.dart';
+
 import 'dart:async';
 
 import 'dart:convert';
@@ -60,6 +62,10 @@ import '../utils/locator_utils.dart';
 
 import '../utils/logger.dart';
 
+import '../utils/clock.dart';
+
+import '../network/api_request_context.dart';
+
 /// Page provides methods to interact with a single tab or extension background page in a browser.
 
 ///
@@ -110,6 +116,14 @@ abstract interface class Page {
 
   /// The browser context this page belongs to.
   BrowserContext get context;
+
+  /// Shortcut for `context.request`. API request context for this page.
+  /// Available since Playwright v1.16.
+  APIRequestContext get request;
+
+  /// Shortcut for `context.clock`. Clock API for this page.
+  /// Available since Playwright v1.45.
+  Clock get clock;
 
   /// The main frame of the page.
   Frame get mainFrame;
@@ -262,7 +276,19 @@ abstract interface class Page {
   Locator getByText(Pattern text, {bool exact});
 
   /// Locates element by ARIA role.
-  Locator getByRole(String role, {Pattern? name, bool exact});
+  Locator getByRole(
+    String role, {
+    Pattern? name,
+    bool exact,
+    bool? checked,
+    bool? disabled,
+    bool? expanded,
+    bool? includeHidden,
+    int? level,
+    bool? pressed,
+    bool? selected,
+    Pattern? description,
+  });
 
   /// Locates element by associated label.
   Locator getByLabel(Pattern text, {bool exact});
@@ -278,6 +304,15 @@ abstract interface class Page {
 
   /// Locates element by test ID.
   Locator getByTestId(String testId);
+
+  /// Returns web-first page-level assertions for this page.
+  ///
+  /// Usage:
+  /// ```dart
+  /// await page.pageExpect().toHaveTitle('My Title');
+  /// await page.pageExpect().not.toHaveURL('/login');
+  /// ```
+  PageAssertions pageExpect({double? timeout});
 
   /// Sets the viewport size of the page.
   Future<void> setViewportSize(PageSetViewportSizeViewportSize viewportSize);
@@ -619,12 +654,46 @@ abstract interface class Page {
   /// Unregisters a locator handler.
   Future<void> unregisterLocatorHandler(int uid);
 
+  /// Registers a handler that will be called every time the given locator
+  /// appears in the page (e.g., a cookie banner).
+  ///
+  /// The [handler] is called with the matching [Locator]. After the handler
+  /// returns, Playwright automatically retries the action that triggered it.
+  ///
+  /// Optional [noWaitAfter] (default `false`) — skips the post-handler
+  /// stability wait. Use [times] to limit how many times the handler fires
+  /// (omit or pass `null` for unlimited).
+  ///
+  /// Available since Playwright v1.42.
+  Future<void> addLocatorHandler(
+    Locator locator,
+    Future<void> Function(Locator) handler, {
+    bool? noWaitAfter,
+    int? times,
+  });
+
+  /// Removes all handlers registered for [locator] via [addLocatorHandler].
+  ///
+  /// Available since Playwright v1.44.
+  Future<void> removeLocatorHandler(Locator locator);
+
   /// Sets extra HTTP headers for the page.
   Future<void> setExtraHTTPHeaders(List<NameValue> headers);
 
   /// Sets network interception patterns for the page.
   Future<void> setNetworkInterceptionPatterns(
     List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
+  );
+
+  /// Routes WebSocket connections matching the given URL pattern.
+  ///
+  /// [url] can be a string (glob pattern) or a RegExp.
+  /// The [handler] is called with the WebSocketRoute when a matching WebSocket is created.
+  ///
+  /// Available since Playwright v1.48.
+  Future<void> routeWebSocket(
+    Pattern url,
+    Future<void> Function(WebSocketRoute) handler,
   );
 
   /// Taps the touchscreen at the given coordinates.
@@ -1594,14 +1663,34 @@ class PageImpl extends PageBase implements Page {
   /// Allows locating elements by their ARIA role, ARIA attributes and accessible name.
 
   @override
-  Locator getByRole(String role, {Pattern? name, bool exact = false}) {
-    var selector = 'internal:role=$role';
-
-    if (name != null) {
-      selector += '[name=${encodePatternForRoleName(name, exact: exact)}]';
-    }
-
-    return locator(selector);
+  Locator getByRole(
+    String role, {
+    Pattern? name,
+    bool exact = false,
+    bool? checked,
+    bool? disabled,
+    bool? expanded,
+    bool? includeHidden,
+    int? level,
+    bool? pressed,
+    bool? selected,
+    Pattern? description,
+  }) {
+    return locator(
+      buildRoleSelector(
+        role,
+        name: name,
+        exact: exact,
+        checked: checked,
+        disabled: disabled,
+        expanded: expanded,
+        includeHidden: includeHidden,
+        level: level,
+        pressed: pressed,
+        selected: selected,
+        description: description,
+      ),
+    );
   }
 
   /// Allows locating input elements by the text of the associated `<label>` or
@@ -1648,6 +1737,19 @@ class PageImpl extends PageBase implements Page {
   Locator getByTestId(String testId) {
     return locator(getByTestIdSelector(testId));
   }
+
+  /// Returns web-first page-level assertions for this page.
+  @override
+  PageAssertions pageExpect({double? timeout}) =>
+      PageAssertions(this, false, timeout);
+
+  /// Shortcut for `context.request`.
+  @override
+  APIRequestContext get request => (context as BrowserContextImpl).request;
+
+  /// Shortcut for `context.clock`.
+  @override
+  Clock get clock => (context as BrowserContextImpl).clock;
 
   /// In the case of multiple pages in a single browser, each page can have its
 
@@ -2447,6 +2549,158 @@ class PageImpl extends PageBase implements Page {
     await channel_unregisterLocatorHandler(uid: uid);
   }
 
+  // ── High-level locator handler API ────────────────────────────────────────
+
+  /// Maps locator selector → (uid, handler) for active handlers.
+  final Map<String, List<_LocatorHandlerEntry>> _locatorHandlers = {};
+  StreamSubscription<dynamic>? _locatorHandlerSub;
+
+  // ── WebSocket routing API ───────────────────────────────────────────────────
+
+  /// Maps URL pattern → handler for WebSocket routes.
+  final Map<Pattern, Future<void> Function(WebSocketRoute)> _webSocketHandlers =
+      {};
+  StreamSubscription<dynamic>? _webSocketRouteSub;
+
+  @override
+  Future<void> addLocatorHandler(
+    Locator locator,
+    Future<void> Function(Locator) handler, {
+    bool? noWaitAfter,
+    int? times,
+  }) async {
+    final result = await registerLocatorHandler(
+      locator,
+      noWaitAfter: noWaitAfter,
+    );
+    final uid = result.uid;
+    final entry = _LocatorHandlerEntry(
+      uid: uid,
+      locator: locator,
+      handler: handler,
+      times: times,
+    );
+    _locatorHandlers.putIfAbsent(locator.selector, () => []).add(entry);
+
+    // Subscribe once to the triggered event.
+    _locatorHandlerSub ??= onLocatorHandlerTriggered.listen((
+      dynamic uidValue,
+    ) async {
+      final triggeredUid = uidValue as int;
+      // Find and call the matching handler.
+      for (final entries in _locatorHandlers.values) {
+        for (final e in entries) {
+          if (e.uid == triggeredUid) {
+            try {
+              await e.handler(e.locator);
+            } catch (_) {
+              // Ignore handler errors — Playwright will see a timeout instead.
+            }
+            // Decrement times if limited.
+            if (e.times != null) {
+              e.remainingTimes = (e.remainingTimes ?? e.times!) - 1;
+              final shouldRemove = e.remainingTimes! <= 0;
+              await channel_resolveLocatorHandlerNoReply(
+                uid: triggeredUid,
+                remove: shouldRemove,
+              );
+              if (shouldRemove) {
+                for (final list in _locatorHandlers.values) {
+                  list.removeWhere((x) => x.uid == triggeredUid);
+                }
+              }
+            } else {
+              await channel_resolveLocatorHandlerNoReply(
+                uid: triggeredUid,
+                remove: false,
+              );
+            }
+            return;
+          }
+        }
+      }
+      // Unknown uid — just resolve without remove.
+      await channel_resolveLocatorHandlerNoReply(
+        uid: triggeredUid,
+        remove: false,
+      );
+    });
+  }
+
+  @override
+  Future<void> removeLocatorHandler(Locator locator) async {
+    final entries = _locatorHandlers.remove(locator.selector);
+    if (entries != null) {
+      for (final e in entries) {
+        try {
+          await unregisterLocatorHandler(e.uid);
+        } catch (_) {
+          // Ignore if already removed.
+        }
+      }
+    }
+  }
+
+  @override
+  Future<void> routeWebSocket(
+    Pattern url,
+    Future<void> Function(WebSocketRoute) handler,
+  ) async {
+    _webSocketHandlers[url] = handler;
+
+    // Subscribe once to the WebSocket route event.
+    _webSocketRouteSub ??= onWebSocketRoute.listen((dynamic wsRoute) async {
+      final route = wsRoute as WebSocketRoute;
+      final routeUrl = (route as dynamic).typedInitializer.url as String;
+
+      // Find a matching handler.
+      for (final entry in _webSocketHandlers.entries) {
+        if (_matchesPattern(routeUrl, entry.key)) {
+          try {
+            await entry.value(route);
+          } catch (_) {
+            // Ignore handler errors
+          }
+          return;
+        }
+      }
+    });
+
+    // Enable WebSocket interception for this pattern.
+    final pattern = _urlToPattern(url);
+    await channel_setWebSocketInterceptionPatterns(patterns: [pattern]);
+  }
+
+  bool _matchesPattern(String url, Pattern pattern) {
+    if (pattern is RegExp) {
+      return pattern.hasMatch(url);
+    } else {
+      return url.contains(pattern as String);
+    }
+  }
+
+  PageSetWebSocketInterceptionPatternsPatternsItems _urlToPattern(Pattern url) {
+    if (url is RegExp) {
+      return PageSetWebSocketInterceptionPatternsPatternsItems(
+        regexSource: url.pattern,
+        regexFlags: _regexFlags(url),
+      );
+    } else {
+      return PageSetWebSocketInterceptionPatternsPatternsItems(
+        glob: url as String,
+      );
+    }
+  }
+
+  String _regexFlags(RegExp re) {
+    final flags = StringBuffer();
+    if (!re.isCaseSensitive) flags.write('i');
+    if (re.isMultiLine) flags.write('m');
+    if (re.isDotAll) flags.write('s');
+    if (re.isUnicode) flags.write('u');
+    return flags.toString();
+  }
+
   /// Sets extra HTTP headers that will be sent with every request the page initiates.
 
   @override
@@ -2855,4 +3109,20 @@ class PageImpl extends PageBase implements Page {
   }) async {
     await channel_webStorageSetItem(kind: kind, name: name, value: value);
   }
+}
+
+/// Internal helper that tracks an active locator handler registration.
+class _LocatorHandlerEntry {
+  final int uid;
+  final Locator locator;
+  final Future<void> Function(Locator) handler;
+  final int? times;
+  int? remainingTimes;
+
+  _LocatorHandlerEntry({
+    required this.uid,
+    required this.locator,
+    required this.handler,
+    this.times,
+  }) : remainingTimes = times;
 }

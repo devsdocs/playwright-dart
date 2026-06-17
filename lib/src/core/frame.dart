@@ -108,7 +108,19 @@ abstract interface class Frame {
   Locator getByText(Pattern text, {bool exact});
 
   /// Locates element by ARIA role.
-  Locator getByRole(String role, {Pattern? name, bool exact});
+  Locator getByRole(
+    String role, {
+    Pattern? name,
+    bool exact,
+    bool? checked,
+    bool? disabled,
+    bool? expanded,
+    bool? includeHidden,
+    int? level,
+    bool? pressed,
+    bool? selected,
+    Pattern? description,
+  });
 
   /// Locates element by associated label.
   Locator getByLabel(Pattern text, {bool exact});
@@ -701,14 +713,34 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Locator getByRole(String role, {Pattern? name, bool exact = false}) {
-    var sel = 'internal:role=$role';
-
-    if (name != null) {
-      sel += '[name=${encodePatternForRoleName(name, exact: exact)}]';
-    }
-
-    return locator(sel);
+  Locator getByRole(
+    String role, {
+    Pattern? name,
+    bool exact = false,
+    bool? checked,
+    bool? disabled,
+    bool? expanded,
+    bool? includeHidden,
+    int? level,
+    bool? pressed,
+    bool? selected,
+    Pattern? description,
+  }) {
+    return locator(
+      buildRoleSelector(
+        role,
+        name: name,
+        exact: exact,
+        checked: checked,
+        disabled: disabled,
+        expanded: expanded,
+        includeHidden: includeHidden,
+        level: level,
+        pressed: pressed,
+        selected: selected,
+        description: description,
+      ),
+    );
   }
 
   @override

@@ -33,7 +33,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.4.0
+  playwright_dart: ^3.5.0
 ```
 
 ## Quick Start
@@ -56,7 +56,7 @@ void main() async {
 
 ## Remote Browser Connection (Skip Browser Download)
 
-For Playwright WebSocket endpoints, use `BrowserType.connect()` to connect
+For Playwright servers launched with `launchServer()`, use `BrowserType.connect()` to connect
 directly without local setup or browser installation:
 
 ```dart
@@ -74,7 +74,7 @@ void main() async {
 }
 ```
 
-For CDP endpoints, use Chromium `connectOverCDP`:
+For remote browser connections via WebSocket (cloud-hosted browsers), use `connectOverCDP()`:
 
 ```dart
 import 'package:playwright_dart/playwright_dart.dart';
