@@ -82,7 +82,7 @@ import 'package:playwright_dart/playwright_dart.dart';
 void main() async {
   final playwright = await PlaywrightDart.create();
   final browser = await playwright.chromium.connectOverCDP(
-    endpointURL: 'http://127.0.0.1:9222',
+    endpointURL: 'ws://your.remote-browser.com:9222',
   );
 
   final context = browser.contexts.first;
