@@ -5,3 +5,4 @@ bin/
 .protocol_cache/
 .protocol_cache.json
 coverage/
+test-results/

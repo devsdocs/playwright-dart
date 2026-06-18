@@ -22,3 +22,4 @@ doc/api/
 .protocol_cache.json
 tool/
 coverage/
+test-results/

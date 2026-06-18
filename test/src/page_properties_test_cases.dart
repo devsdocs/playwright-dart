@@ -17,7 +17,8 @@ void main() {
     });
 
     test('page.request can make a GET request', (page) async {
-      final response = await page.request.get('https://httpbin.org/get');
+      // Use a more reliable test endpoint
+      final response = await page.request.get('https://example.com');
       expect(response.status, equals(200));
     });
   });

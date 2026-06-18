@@ -18,6 +18,8 @@ This is an actively developed port that covers the core Playwright surface area 
 - 🔐 **WebAuthn support** — virtual authenticators and credential management
 - 📸 **Screenshots & PDFs** — capture pages in any format
 - 🔍 **Tracing** — record and view traces in the Playwright Trace Viewer
+- 📊 **HTML Reporter** — comprehensive test reporting with asset copying support
+- ⚙️ **Configuration** — YAML and JSON configuration file support
 - ⚡ **Auto-downloads** Playwright driver and browser binaries
 - 📦 **No Node.js required** — Node is bundled automatically!
 
@@ -33,7 +35,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.6.0
+  playwright_dart: ^3.7.0
 ```
 
 ## Quick Start
@@ -158,6 +160,74 @@ Access the Chrome DevTools Protocol directly:
 final session = await context.newCDPSession(page);
 await session.send('Network.enable');
 await session.send('Performance.enable');
+```
+
+## HTML Reporter
+
+Generate comprehensive HTML test reports with asset copying support:
+
+```dart
+import 'package:playwright_dart/playwright_dart.dart';
+
+void main() async {
+  final reporter = HtmlReporter(
+    outputDir: 'test-results/html-report',
+    metadata: ReportMetadata(
+      title: 'My Test Suite',
+      projectName: 'My Project',
+      startTime: DateTime.now(),
+    ),
+  );
+
+  reporter.addTestResult(TestResult(
+    name: 'User can login',
+    file: 'test/auth_test.dart',
+    status: TestStatus.passed,
+    duration: 2340,
+    steps: [
+      TestStep(title: 'Navigate to login', duration: 450, status: 'passed'),
+      TestStep(title: 'Enter credentials', duration: 890, status: 'passed'),
+    ],
+    screenshotPath: 'test-results/screenshots/login.png',
+  ));
+
+  await reporter.generate();
+  // Opens test-results/html-report/index.html
+}
+```
+
+## Configuration
+
+Configure Playwright using YAML or JSON files:
+
+**playwright.config.yaml**
+```yaml
+launchOptions:
+  headless: true
+  channel: chrome
+contextOptions:
+  viewport:
+    width: 1280
+    height: 720
+test:
+  testDir: "test"
+timeout:
+  defaultTimeout: 30000
+outputDir: "test-results"
+workers: 4
+```
+
+```dart
+import 'package:playwright_dart/playwright_dart.dart';
+
+void main() async {
+  // Load from file
+  final config = await PlaywrightConfig.load();
+  
+  // Or parse directly
+  final config = PlaywrightConfig.fromYaml(yamlString);
+  final config = PlaywrightConfig.fromJson(jsonString);
+}
 ```
 
 ## API Coverage

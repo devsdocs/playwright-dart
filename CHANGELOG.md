@@ -1,3 +1,13 @@
+## 3.7.0
+
+- **Feature**: Added comprehensive HTML test reporter with asset copying support. Generates interactive HTML reports with embedded CSS/JavaScript and dynamic data loading.
+- **Feature**: Added PlaywrightConfig with YAML and JSON configuration file support. Supports loading config from `playwright.config.yaml` and `playwright.config.json` files.
+- **Feature**: Added PlaywrightConfig using pre-existing `LaunchOptions` and `ContextOptions` classes from the protocol.
+- **Feature**: Added HTML reporter asset copying for screenshots, videos, traces, and attachments to organized subdirectories.
+- **Refactor**: Simplified PlaywrightConfig to use YAML and JSON parsing instead of complex Dart file parsing.
+- **Test**: Added comprehensive test suite for PlaywrightConfig with YAML and JSON file loading.
+- **Test**: Added comprehensive test suite for HTML reporter with meaningful test results.
+
 ## 3.6.0
 
 - **Feature**: Added typesafe function parameters and shorthand command in `Keyboard` and `Mouse` functionalities.

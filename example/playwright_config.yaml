@@ -1,0 +1,58 @@
+# Example Playwright configuration file in YAML format
+# This demonstrates the YAML parsing feature of PlaywrightConfig
+
+# Browser launch options (uses pre-existing LaunchOptions from protocol)
+launchOptions:
+  headless: true
+  channel: chrome
+  timeout: 30000
+  args:
+    - --no-sandbox
+    - --disable-setuid-sandbox
+
+# Context options (uses pre-existing ContextOptions from protocol)
+contextOptions:
+  viewport:
+    width: 1280
+    height: 720
+  userAgent: "Custom User Agent"
+  locale: "en-US"
+  timezoneId: "America/New_York"
+  geolocation:
+    latitude: 40.7128
+    longitude: -74.0060
+    accuracy: 100
+  permissions:
+    - geolocation
+    - notifications
+  colorScheme: dark
+  deviceScaleFactor: 2.0
+  ignoreHTTPSErrors: true
+  offline: false
+
+# Test configuration
+test:
+  testDir: "tests"
+  testMatch: "*.test.dart"
+  timeout: 60000
+  expectTimeout: 5000
+
+# Timeout configuration
+timeout:
+  defaultTimeout: 30000
+  navigationTimeout: 30000
+  actionTimeout: 10000
+
+# Retry configuration
+retry:
+  retries: 2
+
+# Output directory for artifacts
+outputDir: "test-results"
+
+# Parallel execution settings
+fullyParallel: true
+workers: 4
+
+# Test execution options
+forbidOnly: false
