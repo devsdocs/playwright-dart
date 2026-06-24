@@ -18,77 +18,56 @@ void main() async {
   );
 
   // Add test results with assets
-  reporter.addTestResult(TestResult(
-    name: 'Example Test 1',
-    file: 'tests/example_test.dart',
-    status: TestStatus.passed,
-    duration: 1500,
-    screenshotPath: 'test-results/screenshots/test1.png',
-    videoPath: 'test-results/videos/test1.webm',
-    tracePath: 'test-results/traces/test1.zip',
-    steps: [
-      TestStep(
-        title: 'Navigate to page',
-        duration: 500,
-        status: 'passed',
-      ),
-      TestStep(
-        title: 'Click button',
-        duration: 300,
-        status: 'passed',
-      ),
-      TestStep(
-        title: 'Verify text',
-        duration: 700,
-        status: 'passed',
-      ),
-    ],
-    attachments: [
-      TestAttachment(
-        name: 'screenshot.png',
-        path: 'test-results/screenshots/test1.png',
-        contentType: 'image/png',
-      ),
-    ],
-    metadata: {
-      'browser': 'chromium',
-      'viewport': '1280x720',
-    },
-  ));
+  reporter.addTestResult(
+    TestResult(
+      name: 'Example Test 1',
+      file: 'tests/example_test.dart',
+      status: TestStatus.passed,
+      duration: 1500,
+      screenshotPath: 'test-results/screenshots/test1.png',
+      videoPath: 'test-results/videos/test1.webm',
+      tracePath: 'test-results/traces/test1.zip',
+      steps: [
+        TestStep(title: 'Navigate to page', duration: 500, status: 'passed'),
+        TestStep(title: 'Click button', duration: 300, status: 'passed'),
+        TestStep(title: 'Verify text', duration: 700, status: 'passed'),
+      ],
+      attachments: [
+        TestAttachment(
+          name: 'screenshot.png',
+          path: 'test-results/screenshots/test1.png',
+          contentType: 'image/png',
+        ),
+      ],
+      metadata: {'browser': 'chromium', 'viewport': '1280x720'},
+    ),
+  );
 
-  reporter.addTestResult(TestResult(
-    name: 'Example Test 2',
-    file: 'tests/example_test.dart',
-    status: TestStatus.failed,
-    duration: 2300,
-    error: 'Expected element to be visible',
-    stackTrace: 'at Object.<anonymous> (tests/example_test.dart:15:10)\n'
-        'at processTicksAndRejections (node:internal/process/task_queues:96:5)',
-    screenshotPath: 'test-results/screenshots/test2-failure.png',
-    steps: [
-      TestStep(
-        title: 'Navigate to page',
-        duration: 500,
-        status: 'passed',
-      ),
-      TestStep(
-        title: 'Click button',
-        duration: 300,
-        status: 'passed',
-      ),
-      TestStep(
-        title: 'Verify text',
-        duration: 1500,
-        status: 'failed',
-        error: 'Expected element to be visible',
-      ),
-    ],
-    retryCount: 1,
-    metadata: {
-      'browser': 'chromium',
-      'viewport': '1280x720',
-    },
-  ));
+  reporter.addTestResult(
+    TestResult(
+      name: 'Example Test 2',
+      file: 'tests/example_test.dart',
+      status: TestStatus.failed,
+      duration: 2300,
+      error: 'Expected element to be visible',
+      stackTrace:
+          'at Object.<anonymous> (tests/example_test.dart:15:10)\n'
+          'at processTicksAndRejections (node:internal/process/task_queues:96:5)',
+      screenshotPath: 'test-results/screenshots/test2-failure.png',
+      steps: [
+        TestStep(title: 'Navigate to page', duration: 500, status: 'passed'),
+        TestStep(title: 'Click button', duration: 300, status: 'passed'),
+        TestStep(
+          title: 'Verify text',
+          duration: 1500,
+          status: 'failed',
+          error: 'Expected element to be visible',
+        ),
+      ],
+      retryCount: 1,
+      metadata: {'browser': 'chromium', 'viewport': '1280x720'},
+    ),
+  );
 
   // Generate the report
   // This will:

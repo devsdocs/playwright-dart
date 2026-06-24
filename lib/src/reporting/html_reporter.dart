@@ -70,7 +70,9 @@ class HtmlReporter {
   String _generateHtml() {
     final passed = _results.where((r) => r.status == TestStatus.passed).length;
     final failed = _results.where((r) => r.status == TestStatus.failed).length;
-    final skipped = _results.where((r) => r.status == TestStatus.skipped).length;
+    final skipped = _results
+        .where((r) => r.status == TestStatus.skipped)
+        .length;
     final total = _results.length;
     final duration = _results.fold<int>(0, (sum, r) => sum + r.duration);
 
@@ -931,10 +933,12 @@ class ReportMetadata {
     this.projectName = 'Default Project',
     this.startTime,
     Map<String, dynamic>? environment,
-  }) : environment = environment ?? {
-    'platform': Platform.operatingSystem,
-    'dartVersion': Platform.version,
-  };
+  }) : environment =
+           environment ??
+           {
+             'platform': Platform.operatingSystem,
+             'dartVersion': Platform.version,
+           };
 
   Map<String, dynamic> toJson() {
     return {
@@ -1010,12 +1014,16 @@ class TestResult {
       screenshotPath: json['screenshotPath'] as String?,
       videoPath: json['videoPath'] as String?,
       tracePath: json['tracePath'] as String?,
-      steps: (json['steps'] as List?)
-          ?.map((s) => TestStep.fromJson(s as Map<String, dynamic>))
-          .toList() ?? [],
-      attachments: (json['attachments'] as List?)
-          ?.map((a) => TestAttachment.fromJson(a as Map<String, dynamic>))
-          .toList() ?? [],
+      steps:
+          (json['steps'] as List?)
+              ?.map((s) => TestStep.fromJson(s as Map<String, dynamic>))
+              .toList() ??
+          [],
+      attachments:
+          (json['attachments'] as List?)
+              ?.map((a) => TestAttachment.fromJson(a as Map<String, dynamic>))
+              .toList() ??
+          [],
       retryCount: json['retryCount'] as int? ?? 0,
       metadata: (json['metadata'] as Map<String, dynamic>?) ?? {},
     );
@@ -1068,11 +1076,7 @@ class TestAttachment {
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'path': path,
-      'contentType': contentType,
-    };
+    return {'name': name, 'path': path, 'contentType': contentType};
   }
 
   factory TestAttachment.fromJson(Map<String, dynamic> json) {
@@ -1085,10 +1089,4 @@ class TestAttachment {
 }
 
 /// Test status enum.
-enum TestStatus {
-  passed,
-  failed,
-  skipped,
-  timedOut,
-  interrupted,
-}
+enum TestStatus { passed, failed, skipped, timedOut, interrupted }

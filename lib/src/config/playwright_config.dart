@@ -71,7 +71,9 @@ class PlaywrightConfig {
           ? LaunchOptions.fromJson(map['launchOptions'] as Map<String, dynamic>)
           : null,
       contextOptions: map['contextOptions'] != null
-          ? ContextOptions.fromJson(map['contextOptions'] as Map<String, dynamic>)
+          ? ContextOptions.fromJson(
+              map['contextOptions'] as Map<String, dynamic>,
+            )
           : null,
       test: map['test'] != null
           ? TestConfig.fromMap(map['test'] as Map<String, dynamic>)
@@ -107,7 +109,7 @@ class PlaywrightConfig {
   /// Validates the configuration.
   List<String> validate() {
     final errors = <String>[];
-    
+
     errors.addAll(test.validate());
     errors.addAll(timeout.validate());
     errors.addAll(retry.validate());
@@ -373,4 +375,3 @@ PlaywrightConfig definePlaywrightConfig({
     forbidOnly: forbidOnly,
   );
 }
-

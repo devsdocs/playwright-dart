@@ -10,7 +10,7 @@ void main() {
     test('should load config from YAML file', () async {
       final configFile = File('test/playwright.config.yaml');
       expect(await configFile.exists(), isTrue);
-      
+
       final content = await configFile.readAsString();
       final config = PlaywrightConfig.fromYaml(content);
 
@@ -30,7 +30,7 @@ void main() {
     test('should load config from JSON file', () async {
       final configFile = File('test/playwright.config.json');
       expect(await configFile.exists(), isTrue);
-      
+
       final content = await configFile.readAsString();
       final config = PlaywrightConfig.fromJson(content);
 
@@ -94,7 +94,7 @@ void main() {
 
     test('should handle empty YAML config', () {
       final config = PlaywrightConfig.fromYaml('');
-      
+
       expect(config.launchOptions, isNull);
       expect(config.contextOptions, isNull);
       expect(config.workers, isNull);
@@ -103,7 +103,7 @@ void main() {
 
     test('should handle empty JSON config', () {
       final config = PlaywrightConfig.fromJson('{}');
-      
+
       expect(config.launchOptions, isNull);
       expect(config.contextOptions, isNull);
       expect(config.workers, isNull);

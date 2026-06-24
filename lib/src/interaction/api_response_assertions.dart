@@ -173,8 +173,7 @@ class APIResponseAssertions {
 
   /// Checks that the response is a client error (status code 4xx).
   Future<void> toBeClientError() async {
-    final clientError =
-        _response.status >= 400 && _response.status <= 499;
+    final clientError = _response.status >= 400 && _response.status <= 499;
     if (_isNot) {
       if (clientError) {
         throw AssertionError(
@@ -192,8 +191,7 @@ class APIResponseAssertions {
 
   /// Checks that the response is a server error (status code 5xx).
   Future<void> toBeServerError() async {
-    final serverError =
-        _response.status >= 500 && _response.status <= 599;
+    final serverError = _response.status >= 500 && _response.status <= 599;
     if (_isNot) {
       if (serverError) {
         throw AssertionError(
