@@ -32,6 +32,37 @@ To guarantee compatibility across operating systems without forcing users to man
 
 This means your users and CI pipelines can run browser automation seamlessly out-of-the-box using only Dart. No `npm install`, no global node requirements!
 
+### 🐧 Linux System Dependencies
+
+While Node.js is not required, Playwright still requires certain system-level dependencies to run browsers on Linux. If these dependencies are missing, you may encounter an error similar to this:
+
+```text
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo npx playwright install-deps                 ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libatk1.0-0t64\             ║
+║         libxcomposite1\                              ║
+║         libxdamage1\                                 ║
+║         libxfixes3\                                  ║
+║         libxrandr2\                                  ║
+║         libgbm1\                                     ║
+║         libasound2t64\                               ║
+║         libatspi2.0-0t64                             ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+```
+
+To resolve this, you can install the required dependencies using the suggested command:
+```bash
+sudo npx playwright install-deps
+```
+Or by manually installing the packages via `apt-get` as indicated in the error message.
+
 ## Installation
 
 ```yaml
