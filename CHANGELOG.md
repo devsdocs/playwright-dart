@@ -1,3 +1,7 @@
+## 3.7.1
+
+- **Fix**: Replaced platform-specific shell extraction commands (`powershell Expand-Archive` on Windows, `unzip` on Linux/macOS) with the cross-platform `extractFileToDisk` API from the `archive` package in `driver_downloader.dart`. This removes external process dependencies and makes driver extraction more reliable and portable.
+
 ## 3.7.0
 
 - **Feature**: Added comprehensive HTML test reporter with asset copying support. Generates interactive HTML reports with embedded CSS/JavaScript and dynamic data loading.
