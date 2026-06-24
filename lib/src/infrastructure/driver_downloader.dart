@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 import 'package:http/http.dart' as http;
 import '../utils/logger.dart';
 import 'package:path/path.dart' as p;
@@ -63,25 +64,7 @@ Future<String> downloadDriver() async {
   File(zipPath).writeAsBytesSync(response.bodyBytes);
 
   Logger.info('Extracting driver...');
-  if (Platform.isWindows) {
-    final result = Process.runSync('powershell', [
-      '-Command',
-      'Expand-Archive -Path "$zipPath" -DestinationPath "${driverDir.path}" -Force',
-    ]);
-    if (result.exitCode != 0) {
-      throw StateError('Failed to extract driver: ${result.stderr}');
-    }
-  } else {
-    final result = Process.runSync('unzip', [
-      '-o',
-      zipPath,
-      '-d',
-      driverDir.path,
-    ]);
-    if (result.exitCode != 0) {
-      throw StateError('Failed to extract driver: ${result.stderr}');
-    }
-  }
+  await extractFileToDisk(zipPath, driverDir.path);
 
   File(zipPath).deleteSync();
 
