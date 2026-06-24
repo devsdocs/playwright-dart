@@ -60,9 +60,7 @@ Future<String> downloadDriver() async {
     );
   }
 
-  File(zipPath)
-    ..createSync(recursive: true)
-    ..writeAsBytesSync(response.bodyBytes);
+  File(zipPath).writeAsBytesSync(response.bodyBytes);
 
   Logger.info('Extracting driver...');
   if (Platform.isWindows) {
