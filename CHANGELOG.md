@@ -1,3 +1,7 @@
+## 3.7.2
+
+- **Fix**: Automatically install Linux OS-level browser dependencies (`install-deps`) during the initial browser download step in `driver_downloader.dart`. This removes the need to manually run `install-deps` on Linux machines.
+
 ## 3.7.1
 
 - **Fix**: Replaced platform-specific shell extraction commands (`powershell Expand-Archive` on Windows, `unzip` on Linux/macOS) with the cross-platform `extractFileToDisk` API from the `archive` package in `driver_downloader.dart`. This removes external process dependencies and makes driver extraction more reliable and portable.

@@ -98,6 +98,49 @@ Future<void> ensureBrowsersInstalled() async {
     throw StateError('Failed to install browsers: ${installProcess.exitCode}');
   }
 
+  // Linux requires OS-level shared libraries (libglib, libnss, etc.) that are
+  // not bundled with the browser binaries. Windows and macOS bundle their own
+  // dependencies, so this step is skipped on those platforms.
+  if (Platform.isLinux) {
+    await _installLinuxDeps(nodePath, cliPath);
+  }
+
   File(browserMarkerPath).writeAsStringSync('done');
   Logger.info('Browsers installed successfully.');
+}
+
+/// Installs OS-level browser dependencies on Linux via `install-deps`.
+///
+/// Tries without elevated privileges first (succeeds when running as root,
+/// e.g. most Docker/CI containers). Falls back to `sudo` for user-space
+/// environments. Throws a [StateError] with actionable instructions if both
+/// attempts fail.
+Future<void> _installLinuxDeps(String nodePath, String cliPath) async {
+  Logger.info('Installing Linux browser dependencies...');
+
+  // Attempt 1: without sudo (works in Docker/root CI).
+  final direct = Process.runSync(nodePath, [cliPath, 'install-deps']);
+  if (direct.exitCode == 0) {
+    Logger.info('Linux browser dependencies installed.');
+    return;
+  }
+
+  Logger.debug(
+    'install-deps without sudo failed (exit ${direct.exitCode}), retrying with sudo...',
+    name: 'playwright.driver',
+  );
+
+  // Attempt 2: with sudo (works in user-space Linux).
+  final withSudo = Process.runSync('sudo', [nodePath, cliPath, 'install-deps']);
+  if (withSudo.exitCode == 0) {
+    Logger.info('Linux browser dependencies installed (via sudo).');
+    return;
+  }
+
+  Logger.error(withSudo.stderr.toString());
+  throw StateError(
+    'Failed to install Linux browser dependencies.\n'
+    'Please run the following command manually and try again:\n\n'
+    '  sudo $nodePath $cliPath install-deps\n',
+  );
 }

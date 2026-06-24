@@ -22,6 +22,7 @@ This is an actively developed port that covers the core Playwright surface area 
 - ⚙️ **Configuration** — YAML and JSON configuration file support
 - ⚡ **Auto-downloads** Playwright driver and browser binaries
 - 📦 **No Node.js required** — Node is bundled automatically!
+- 🐧 **Linux-ready** — Automatically handles OS-level browser dependencies during setup
 
 ## 📦 Seamless Experience (No Node.js Required!)
 
@@ -35,7 +36,7 @@ This means your users and CI pipelines can run browser automation seamlessly out
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.7.1
+  playwright_dart: ^3.7.2
 ```
 
 ## Quick Start
