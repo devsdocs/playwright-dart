@@ -1,3 +1,12 @@
+## 3.7.3
+
+- **Documentation**: Overhauled the API documentation injection script to automatically detect and translate NodeJS-specific syntax patterns into native Dart equivalents.
+- **Documentation**: Translated JS `Promise` references to `Future`, `Buffer` types to `List<int>`, and `===` to `==`.
+- **Documentation**: Seamlessly converted JS arrow functions (e.g. `async route => { ... }`) to native Dart lambda syntax (e.g. `(route) async { ... }`).
+- **Documentation**: Mapped Playwright JS event handlers like `page.on('requestfailed', ...)` to native Dart streams `page.onRequestFailed.listen(...)`, and `page.waitForEvent('popup')` to `page.onPopup.first`.
+- **Documentation**: Correctly formatted Dart property getters in usage examples by stripping method call parentheses.
+- **Documentation**: Filtered out dead MDN/NodeJS documentation reference links, and corrected angle brackets formatting preventing `unintended_html_in_doc_comment` warnings.
+
 ## 3.7.2
 
 - **Fix**: Automatically install Linux OS-level browser dependencies (`install-deps`) during the initial browser download step in `driver_downloader.dart`. This removes the need to manually run `install-deps` on Linux machines.

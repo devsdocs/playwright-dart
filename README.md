@@ -67,7 +67,7 @@ Or by manually installing the packages via `apt-get` as indicated in the error m
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.7.2
+  playwright_dart: ^3.7.3
 ```
 
 ## Quick Start
