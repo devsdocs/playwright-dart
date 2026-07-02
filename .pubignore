@@ -6,3 +6,4 @@ bin/
 .protocol_cache.json
 coverage/
 test-results/
+scratch/
