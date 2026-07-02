@@ -78,41 +78,26 @@ abstract interface class Playwright {
 }
 
 class PlaywrightImpl extends PlaywrightBase implements Playwright {
-  /// Provides access to the Chromium browser type.
-
   @override
   late final BrowserType chromium;
-
-  /// Provides access to the Firefox browser type.
 
   @override
   late final BrowserType firefox;
 
-  /// Provides access to the WebKit browser type.
-
   @override
   late final BrowserType webkit;
 
-  /// Utilities related to local file paths and connections.
-
   late final LocalUtils utils;
-
-  /// Custom selectors API.
 
   @override
   late final Selectors selectors;
 
-  /// Android automation API.
-
   @override
   late final Android android;
-
-  /// Electron automation API.
 
   @override
   late final Electron electron;
 
-  /// Creates a new Playwright instance.
   PlaywrightImpl(
     super.connection,
 
@@ -159,8 +144,6 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
     );
   }
 
-  /// Device descriptor presets (viewport, user agent, etc.).
-
   @override
   Map<String, Map<String, dynamic>> get devices {
     final utilsImpl = utils as LocalUtilsImpl;
@@ -172,10 +155,6 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
         item.name: Map<String, dynamic>.from(item.descriptor.toJson()),
     };
   }
-
-  /// Creates an APIRequestContext to send network requests directly from the
-
-  /// Playwright runner without requiring a browser instance.
 
   @override
   Future<APIRequestContext> newRequest({
@@ -232,8 +211,6 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
     return result.request as APIRequestContext;
   }
 
-  /// Closes the playwright connection and terminates the driver.
-
   @override
   Future<void> stop() async {
     Logger.info('Stopping Playwright...');
@@ -241,8 +218,6 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
     Logger.info('Playwright stopped.');
   }
 }
-
-/// The entrypoint for Playwright Dart.
 
 class PlaywrightDart {
   /// Launches the background Playwright driver and connects to it, returning the

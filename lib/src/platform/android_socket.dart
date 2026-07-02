@@ -4,7 +4,34 @@ import '../generated/channels.dart';
 abstract interface class AndroidSocket {
   Stream<AndroidSocket> get onClose;
   Stream<AndroidSocketDataEvent> get onData;
+
+  /// Writes some [data] to the socket.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await androidSocket.write(data);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `data` String
+  ///
+  ///   Data to write.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> write(String data);
+
+  /// Closes the socket.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await androidSocket.close();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> close();
 }
 

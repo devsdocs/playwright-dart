@@ -6,6 +6,22 @@ import '../infrastructure/serialization.dart';
 abstract interface class ElectronApplication {
   Stream<ConsoleMessage> get onConsole;
   Stream<ElectronApplication> get onClose;
+
+  /// Returns the BrowserWindow object that corresponds to the given Playwright page.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await electronApplication.browserWindow(page);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `page` PageBase
+  ///
+  ///   Page to retrieve the window for.
+  ///
+  /// **Returns**
+  /// - Future&lt;[JSHandle]&gt;
   Future<ElectronApplicationBrowserWindowResult> browserWindow(PageBase page);
   Future<dynamic> evaluateExpression(
     String expression, {

@@ -77,13 +77,42 @@ class ExpectResult {
 /// Interface for Frame
 
 abstract interface class Frame {
-  /// The parent frame, if this is an iframe.
+  /// Parent frame, if any. Detached frames and main frames return `null`.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// frame.parentFrame;
+  /// ```
+  ///
+  /// **Returns**
+  /// - [Frame]?
   Frame? get parentFrame;
 
-  /// Child frames of this frame.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// frame.childFrames;
+  /// ```
+  ///
+  /// **Returns**
+  /// - List&lt;[Frame]&gt;
   List<Frame> get childFrames;
 
-  /// The frame name.
+  /// Returns frame's name attribute as specified in the tag.
+  ///
+  /// If the name is empty, returns the id attribute instead.
+  ///
+  /// **NOTE**
+  /// This value is calculated once when the frame is created, and will not update if the attribute is changed later.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// frame.name;
+  /// ```
+  ///
+  /// **Returns**
+  /// - String
   String get name;
 
   /// Stream that emits when the frame navigates.
@@ -92,22 +121,230 @@ abstract interface class Frame {
   /// Stream that emits when the frame load state changes.
   Stream<Map<String, dynamic>> get onLoadstate;
 
-  /// Returns the frame URL.
+  /// Returns frame's url.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// frame.url();
+  /// ```
+  ///
+  /// **Returns**
+  /// - String
   String url();
 
-  /// The page this frame belongs to.
+  /// Returns the page containing this frame.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// frame.page;
+  /// ```
+  ///
+  /// **Returns**
+  /// - [Page]
   Page get page;
 
-  /// Creates a frame locator for the given selector.
+  /// When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in that iframe.
+  ///
+  /// **Usage**
+  ///
+  /// Following snippet locates element with text "Submit" in the iframe with id `my-frame`, like `<iframe id="my-frame">`:
+  ///
+  /// ```dart
+  /// final locator = frame.frameLocator('#my-iframe').getByText('Submit');
+  /// await locator.click();
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to use when resolving DOM element.
+  ///
+  /// **Returns**
+  /// - [FrameLocator]
   FrameLocator frameLocator(String selector);
 
-  /// Creates a locator for the given selector.
+  /// The method returns an element locator that can be used to perform actions on this page / frame. Locator is resolved to the element immediately before performing an action, so a series of actions on the same locator can in fact be performed on different DOM elements. That would happen if the DOM structure between those actions has changed.
+  ///
+  /// [Learn more about locators].
+  ///
+  /// [Learn more about locators].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// frame.locator(selector);
+  /// frame.locator(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to use when resolving DOM element.
+  /// - `options` Map *(optional)*
+  ///   - `has` [Locator] *(optional)*
+  ///
+  ///     Narrows down the results of the method to those which contain elements matching this relative locator. For example, `article` that has `text=Playwright` matches `<article><div>Playwright</div></article>`.
+  ///
+  ///     Inner locator **must be relative** to the outer locator and is queried starting with the outer locator match, not the document root. For example, you can find `content` that has `div` in `<article><content><div>Playwright</div></content></article>`. However, looking for `content` that has `article div` will fail, because the inner locator must be relative and should not use any elements outside the `content`.
+  ///
+  ///     Note that outer and inner locators must belong to the same frame. Inner locator must not contain [FrameLocator]s.
+  ///   - `hasNot` [Locator] *(optional)*
+  ///
+  ///     Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the outer one. For example, `article` that does not have `div` matches `<article><span>Playwright</span></article>`.
+  ///
+  ///     Note that outer and inner locators must belong to the same frame. Inner locator must not contain [FrameLocator]s.
+  ///   - `hasNotText` String | [RegExp] *(optional)*
+  ///
+  ///     Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When passed a String, matching is case-insensitive and searches for a substring.
+  ///   - `hasText` String | [RegExp] *(optional)*
+  ///
+  ///     Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a String, matching is case-insensitive and searches for a substring. For example, `"Playwright"` matches `<article><div>Playwright</div></article>`.
+  ///
+  /// **Returns**
+  /// - [Locator]
   Locator locator(String selector);
 
-  /// Locates element by text content.
+  /// Allows locating elements that contain given text.
+  ///
+  /// See also [locator.filter()] that allows to match by another criteria, like an accessible role, and then filter by the text content.
+  ///
+  /// **Usage**
+  ///
+  /// Consider the following DOM structure:
+  ///
+  /// ```html
+  /// <div>Hello <span>world</span></div>
+  /// <div>Hello</div>
+  /// ```
+  ///
+  /// You can locate by text substring, exact string, or a regular expression:
+  ///
+  /// ```dart
+  /// // Matches <span>
+  /// page.getByText('world');
+  ///
+  /// // Matches first <div>
+  /// page.getByText('Hello world');
+  ///
+  /// // Matches second <div>
+  /// page.getByText('Hello', { exact: true );
+  ///
+  /// // Matches both <div>s
+  /// page.getByText(/Hello/);
+  ///
+  /// // Matches second <div>
+  /// page.getByText(/^hello$/i);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `text` Pattern
+  ///
+  ///   Text to locate the element for.
+  /// - `options` Map *(optional)*
+  ///   - `exact` bool *(optional)*
+  ///
+  ///     Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular expression. Note that exact match still trims whitespace.
+  ///
+  /// **Returns**
+  /// - [Locator]
+  ///
+  /// **Details**
+  ///
+  /// Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one, turns line breaks into spaces and ignores leading and trailing whitespace.
+  ///
+  /// Input elements of the type `button` and `submit` are matched by their `value` instead of the text content. For example, locating by text `"Log in"` matches `<input type=button value="Log in">`.
   Locator getByText(Pattern text, {bool exact});
 
-  /// Locates element by ARIA role.
+  /// Allows locating elements by their [ARIA role], [ARIA attributes] and [accessible name].
+  ///
+  /// **Usage**
+  ///
+  /// Consider the following DOM structure.
+  ///
+  /// ```html
+  /// <h3>Sign up</h3>
+  /// <label>
+  ///   <input type="checkbox" /> Subscribe
+  /// </label>
+  /// <br/>
+  /// <button>Submit</button>
+  /// ```
+  ///
+  /// You can locate each element by its implicit role:
+  ///
+  /// ```dart
+  /// await expect(page.getByRole('heading', { name: 'Sign up' )).toBeVisible();
+  ///
+  /// await page.getByRole('checkbox', { name: 'Subscribe' ).check();
+  ///
+  /// await page.getByRole('button', { name: /submit/i ).click();
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `role` String
+  ///
+  ///   Required aria role.
+  /// - `options` Map *(optional)*
+  ///   - `checked` bool *(optional)*
+  ///
+  ///     An attribute that is usually set by `aria-checked` or native `<input type=checkbox>` controls.
+  ///
+  ///     Learn more about [`aria-checked`].
+  ///   - `description` Pattern *(optional)*
+  ///
+  ///     Option to match the [accessible description]. By default, matching is case-insensitive and searches for a substring, use [exact] to control this behavior.
+  ///
+  ///     Learn more about [accessible description].
+  ///   - `disabled` bool *(optional)*
+  ///
+  ///     An attribute that is usually set by `aria-disabled` or `disabled`.
+  ///
+  ///     **NOTE**
+  /// Unlike most other attributes, `disabled` is inherited through the DOM hierarchy. Learn more about [`aria-disabled`].
+  ///     - `exact` bool *(optional)*
+  ///
+  ///     Whether [name] and [description] are matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when the value is a regular expression. Note that exact match still trims whitespace.
+  ///   - `expanded` bool *(optional)*
+  ///
+  ///     An attribute that is usually set by `aria-expanded`.
+  ///
+  ///     Learn more about [`aria-expanded`].
+  ///   - `includeHidden` bool *(optional)*
+  ///
+  ///     Option that controls whether hidden elements are matched. By default, only non-hidden elements, as [defined by ARIA], are matched by role selector.
+  ///
+  ///     Learn more about [`aria-hidden`].
+  ///   - `level` int *(optional)*
+  ///
+  ///     A number attribute that is usually present for roles `heading`, `listitem`, `row`, `treeitem`, with default values for `<h1>-<h6>` elements.
+  ///
+  ///     Learn more about [`aria-level`].
+  ///   - `name` Pattern *(optional)*
+  ///
+  ///     Option to match the [accessible name]. By default, matching is case-insensitive and searches for a substring, use [exact] to control this behavior.
+  ///
+  ///     Learn more about [accessible name].
+  ///   - `pressed` bool *(optional)*
+  ///
+  ///     An attribute that is usually set by `aria-pressed`.
+  ///
+  ///     Learn more about [`aria-pressed`].
+  ///   - `selected` bool *(optional)*
+  ///
+  ///     An attribute that is usually set by `aria-selected`.
+  ///
+  ///     Learn more about [`aria-selected`].
+  ///
+  /// **Returns**
+  /// - [Locator]
+  ///
+  /// **Details**
+  ///
+  /// Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+  ///
+  /// Many html elements have an implicitly [defined role] that is recognized by the role selector. You can find all the [supported roles here]. ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting `role` and/or `aria-*` attributes to default values.
   Locator getByRole(
     String role, {
     Pattern? name,
@@ -122,22 +359,205 @@ abstract interface class Frame {
     Pattern? description,
   });
 
-  /// Locates element by associated label.
+  /// Allows locating input elements by the text of the associated `<label>` or `aria-labelledby` element, or by the `aria-label` attribute.
+  ///
+  /// **Usage**
+  ///
+  /// For example, this method will find inputs by label "Username" and "Password" in the following DOM:
+  ///
+  /// ```html
+  /// <input aria-label="Username">
+  /// <label for="password-input">Password:</label>
+  /// <input id="password-input">
+  /// ```
+  ///
+  /// ```dart
+  /// await page.getByLabel('Username').fill('john');
+  /// await page.getByLabel('Password').fill('secret');
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `text` Pattern
+  ///
+  ///   Text to locate the element for.
+  /// - `options` Map *(optional)*
+  ///   - `exact` bool *(optional)*
+  ///
+  ///     Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular expression. Note that exact match still trims whitespace.
+  ///
+  /// **Returns**
+  /// - [Locator]
   Locator getByLabel(Pattern text, {bool exact});
 
-  /// Locates element by placeholder text.
+  /// Allows locating input elements by the placeholder text.
+  ///
+  /// **Usage**
+  ///
+  /// For example, consider the following DOM structure.
+  ///
+  /// ```html
+  /// <input type="email" placeholder="name@example.com" />
+  /// ```
+  ///
+  /// You can fill the input after locating it by the placeholder text:
+  ///
+  /// ```dart
+  /// await page
+  ///     .getByPlaceholder('name@example.com')
+  ///     .fill('playwright@microsoft.com');
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `text` Pattern
+  ///
+  ///   Text to locate the element for.
+  /// - `options` Map *(optional)*
+  ///   - `exact` bool *(optional)*
+  ///
+  ///     Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular expression. Note that exact match still trims whitespace.
+  ///
+  /// **Returns**
+  /// - [Locator]
   Locator getByPlaceholder(Pattern text, {bool exact});
 
-  /// Locates element by alt text.
+  /// Allows locating elements by their alt text.
+  ///
+  /// **Usage**
+  ///
+  /// For example, this method will find the image by alt text "Playwright logo":
+  ///
+  /// ```html
+  /// <img alt='Playwright logo'>
+  /// ```
+  ///
+  /// ```dart
+  /// await page.getByAltText('Playwright logo').click();
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `text` Pattern
+  ///
+  ///   Text to locate the element for.
+  /// - `options` Map *(optional)*
+  ///   - `exact` bool *(optional)*
+  ///
+  ///     Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular expression. Note that exact match still trims whitespace.
+  ///
+  /// **Returns**
+  /// - [Locator]
   Locator getByAltText(Pattern text, {bool exact});
 
-  /// Locates element by title attribute.
+  /// Allows locating elements by their title attribute.
+  ///
+  /// **Usage**
+  ///
+  /// Consider the following DOM structure.
+  ///
+  /// ```html
+  /// <span title='Issues count'>25 issues</span>
+  /// ```
+  ///
+  /// You can check the issues count after locating it by the title text:
+  ///
+  /// ```dart
+  /// await expect(page.getByTitle('Issues count')).toHaveText('25 issues');
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `text` Pattern
+  ///
+  ///   Text to locate the element for.
+  /// - `options` Map *(optional)*
+  ///   - `exact` bool *(optional)*
+  ///
+  ///     Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular expression. Note that exact match still trims whitespace.
+  ///
+  /// **Returns**
+  /// - [Locator]
   Locator getByTitle(Pattern text, {bool exact});
 
-  /// Locates element by test ID.
+  /// Locate element by the test id.
+  ///
+  /// **Usage**
+  ///
+  /// Consider the following DOM structure.
+  ///
+  /// ```html
+  /// <button data-testid="directions">Itinéraire</button>
+  /// ```
+  ///
+  /// You can locate the element by its test id:
+  ///
+  /// ```dart
+  /// await page.getByTestId('directions').click();
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `testId` String
+  ///
+  ///   Id to locate the element by.
+  ///
+  /// **Returns**
+  /// - [Locator]
+  ///
+  /// **Details**
+  ///
+  /// By default, the `data-testid` attribute is used as a test id. Use [selectors.setTestIdAttribute()] to configure a different test id attribute if necessary.
+  ///
+  /// ```dart
+  /// // Set custom test id attribute from @playwright/test config:
+  ///
+  /// export default defineConfig(
+  ///   use: {
+  ///     testIdAttribute: 'data-pw'
+  ///   },
+  /// );
+  /// ```
   Locator getByTestId(String testId);
 
-  /// Navigates the frame to the given URL.
+  /// Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
+  ///
+  /// The method will throw an error if:
+  /// * there's an SSL error (e.g. in case of self-signed certificates).
+  /// * target URL is invalid.
+  /// * the [timeout] is exceeded during navigation.
+  /// * the remote server does not respond or is unreachable.
+  /// * the main resource failed to load.
+  ///
+  /// The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling [response.status()].
+  ///
+  /// **NOTE**
+  /// The method either throws an error or returns a main resource response. The only exceptions are navigation to `about:blank` or navigation to the same URL with a different hash, which would succeed and return `null`.
+  /// **NOTE**
+  /// Headless mode doesn't support navigation to a PDF document. See the [upstream issue].
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.goto(url);
+  /// await frame.goto(url, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `url` String
+  ///
+  ///   URL to navigate frame to. The url should include scheme, e.g. `https://`.
+  /// - `options` Map *(optional)*
+  ///   - `referer` String *(optional)*
+  ///
+  ///     Referer header value. If provided it will take preference over the referer header value set by [page.setExtraHTTPHeaders()].
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `waitUntil` LifecycleEvent *(optional)*
+  ///
+  ///     When to consider operation succeeded, defaults to `load`. Events can be either:
+  ///     * `'domcontentloaded'` - consider operation to be finished when the `DOMContentLoaded` event is fired.
+  ///     * `'load'` - consider operation to be finished when the `load` event is fired.
+  ///     * `'networkidle'` - **DISCOURAGED** consider operation to be finished when there are no network connections for at least `500` ms. Don't use this method for testing, rely on web assertions to assess readiness instead.
+  ///     * `'commit'` - consider operation to be finished when network response is received and the document started loading.
+  ///
+  /// **Returns**
+  /// - Future&lt;[Response]?&gt;
   Future<void> goto(
     String url, {
 
@@ -148,7 +568,34 @@ abstract interface class Frame {
     String? referer,
   });
 
-  /// Returns the text content of the element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.textContent()] instead. Read more about [locators].
+  ///
+  /// Returns `element.textContent`.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.textContent(selector);
+  /// await frame.textContent(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;[String&gt;]?
   Future<String> textContent({
     required String selector,
 
@@ -157,10 +604,100 @@ abstract interface class Frame {
     bool? strict,
   });
 
-  /// Evaluates JavaScript in the frame.
+  /// Returns the return value of [pageFunction].
+  ///
+  /// If the function passed to the [frame.evaluate()] returns a Future, then [frame.evaluate()] would wait for the future to complete and return its value.
+  ///
+  /// If the function passed to the [frame.evaluate()] returns a non-[Serializable] value, then [frame.evaluate()] returns `undefined`. Playwright also supports transferring some additional values that are not serializable by `JSON`: `-0`, `NaN`, `Infinity`, `-Infinity`.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// final result = await frame.evaluate(([x, y]) {
+  ///   return Future.value(x * y);
+  /// }, [7, 8]);
+  /// print(result); // prints "56"
+  /// ```
+  ///
+  /// A string can also be passed in instead of a function.
+  ///
+  /// ```dart
+  /// print(await frame.evaluate('1 + 2')); // prints "3"
+  /// ```
+  ///
+  /// [ElementHandle] instances can be passed as an argument to the [frame.evaluate()]:
+  ///
+  /// ```dart
+  /// final bodyHandle = await frame.evaluateHandle('document.body');
+  /// final html = await frame.evaluate(([body, suffix]) =>
+  ///   body.innerHTML + suffix, [bodyHandle, 'hello'],
+  /// );
+  /// await bodyHandle.dispose();
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `pageFunction` Function | String
+  ///
+  ///   Function to be evaluated in the page context.
+  /// - `arg` dynamic *(optional)*
+  ///
+  ///   Optional argument to pass to [pageFunction].
+  ///
+  /// **Returns**
+  /// - Future&lt;[Serializable]&gt;
   Future<dynamic> evaluate(String expression, [dynamic arg]);
 
-  /// Waits for the element matching the selector to satisfy the state.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use web assertions that assert visibility or a locator-based [locator.waitFor()] instead. Read more about [locators].
+  ///
+  /// Returns when element specified by selector satisfies [state] option. Returns `null` if waiting for `hidden` or `detached`.
+  ///
+  /// **NOTE**
+  /// Playwright automatically waits for element to be ready before performing an action. Using [Locator] objects and web-first assertions make the code wait-for-selector-free.
+  /// Wait for the [selector] to satisfy [state] option (either appear/disappear from dom, or become visible/hidden). If at the moment of calling the method [selector] already satisfies the condition, the method will return immediately. If the selector doesn't satisfy the condition for the [timeout] milliseconds, the function will throw.
+  ///
+  /// **Usage**
+  ///
+  /// This method works across navigations:
+  ///
+  /// ```dart
+  ///   // Or 'firefox' or 'webkit'.
+  ///
+  /// (() async {
+  ///   final browser = await chromium.launch();
+  ///   final page = await browser.newPage();
+  ///   for (final currentURL of ['https://google.com', 'https://bbc.com']) {
+  ///     await page.goto(currentURL);
+  ///     final element = await page.mainFrame().waitForSelector('img');
+  ///     print('Loaded image: ' + await element.getAttribute('src'));
+  ///   }
+  ///   await browser.close();
+  /// }
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to query for.
+  /// - `options` Map *(optional)*
+  ///   - `state` FrameWaitForSelectorStateEnum *(optional)*
+  ///
+  ///     Defaults to `'visible'`. Can be either:
+  ///     * `'attached'` - wait for element to be present in DOM.
+  ///     * `'detached'` - wait for element to not be present in DOM.
+  ///     * `'visible'` - wait for element to have non-empty bounding box and no `visibility:hidden`. Note that element without any content or with `display:none` has an empty bounding box and is not considered visible.
+  ///     * `'hidden'` - wait for element to be either detached from DOM, or have an empty bounding box or `visibility:hidden`. This is opposite to the `'visible'` option.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;[ElementHandle]?&gt;
   Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
 
@@ -173,10 +710,68 @@ abstract interface class Frame {
     bool? omitReturnValue,
   });
 
-  /// Waits for the frame to reach the given load state.
+  /// Waits for the required load state to be reached.
+  ///
+  /// This returns when the frame reaches a required load state, `load` by default. The navigation must have been committed when this method is called. If current document has already reached the required state, resolves immediately.
+  ///
+  /// **NOTE**
+  /// Most of the time, this method is not needed because Playwright [auto-waits before every action].
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.click('button'); // Click triggers navigation.
+  /// await frame.waitForLoadState(); // Waits for 'load' state by default.
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `state` LifecycleEvent *(optional)*
+  ///
+  ///   Optional load state to wait for, defaults to `load`. If the state has been already reached while loading current document, the method resolves immediately. Can be one of:
+  ///   * `'load'` - wait for the `load` event to be fired.
+  ///   * `'domcontentloaded'` - wait for the `DOMContentLoaded` event to be fired.
+  ///   * `'networkidle'` - **DISCOURAGED** wait until there are no network connections for at least `500` ms. Don't use this method for testing, rely on web assertions to assess readiness instead.
+  /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> waitForLoadState({LifecycleEvent? state, double? timeout});
 
   /// Waits for the frame to navigate to the given URL.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.click('a.delayed-navigation'); // Clicking the link will indirectly cause a navigation
+  /// await frame.waitForURL('**/target.html');
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `url` String | [RegExp] | [URLPattern] | Function\([URL]\):bool
+  ///
+  ///   A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to the string.
+  /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `waitUntil` LifecycleEvent *(optional)*
+  ///
+  ///     When to consider operation succeeded, defaults to `load`. Events can be either:
+  ///     * `'domcontentloaded'` - consider operation to be finished when the `DOMContentLoaded` event is fired.
+  ///     * `'load'` - consider operation to be finished when the `load` event is fired.
+  ///     * `'networkidle'` - **DISCOURAGED** consider operation to be finished when there are no network connections for at least `500` ms. Don't use this method for testing, rely on web assertions to assess readiness instead.
+  ///     * `'commit'` - consider operation to be finished when network response is received and the document started loading.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> waitForURL(
     dynamic urlOrPredicate, {
 
@@ -185,7 +780,47 @@ abstract interface class Frame {
     LifecycleEvent? waitUntil,
   });
 
-  /// Waits for navigation to complete.
+  /// **WARNING**
+  /// [Deprecated]
+  ///
+  /// This method is inherently racy, please use [frame.waitForURL()] instead.
+  ///
+  /// Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will resolve with `null`.
+  ///
+  /// **Usage**
+  ///
+  /// This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause the frame to navigate. Consider this example:
+  ///
+  /// ```dart
+  /// // Start waiting for navigation before clicking. Note no await.
+  /// final navigationFuture = page.waitForNavigation();
+  /// await page.getByText('Navigate after timeout').click();
+  /// await navigationFuture;
+  /// ```
+  ///
+  /// **NOTE**
+  /// Usage of the [History API] to change the URL is considered a navigation.
+  /// **Arguments**
+  /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `url` String *(optional)*
+  ///
+  ///     A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to the string.
+  ///   - `waitUntil` LifecycleEvent *(optional)*
+  ///
+  ///     When to consider operation succeeded, defaults to `load`. Events can be either:
+  ///     * `'domcontentloaded'` - consider operation to be finished when the `DOMContentLoaded` event is fired.
+  ///     * `'load'` - consider operation to be finished when the `load` event is fired.
+  ///     * `'networkidle'` - **DISCOURAGED** consider operation to be finished when there are no network connections for at least `500` ms. Don't use this method for testing, rely on web assertions to assess readiness instead.
+  ///     * `'commit'` - consider operation to be finished when network response is received and the document started loading.
+  ///
+  /// **Returns**
+  /// - Future&lt;[Response]?&gt;
   Future<void> waitForNavigation({
     String? url,
 
@@ -194,7 +829,61 @@ abstract interface class Frame {
     double? timeout,
   });
 
-  /// Drags and drops an element from source to target.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.dragAndDrop(source, target);
+  /// await frame.dragAndDrop(source, target, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `source` String
+  ///
+  ///   A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `target` String
+  ///
+  ///   A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `sourcePosition` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not specified, some visible point of the element is used.
+  ///   - `steps` int *(optional)*
+  ///
+  ///     Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between the `mousedown` and `mouseup` of the drag. When set to 1, emits a single `mousemove` event at the destination location.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `targetPosition` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     Drops on the target element at this point relative to the top-left corner of the element's padding box. If not specified, some visible point of the element is used.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> dragAndDrop(
     String source,
 
@@ -215,7 +904,73 @@ abstract interface class Frame {
     int? steps,
   });
 
-  /// Clicks an element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.click()] instead. Read more about [locators].
+  ///
+  /// This method clicks an element matching [selector] by performing the following steps:
+  /// 1. Find an element matching [selector]. If there is none, wait until a matching element is attached to the DOM.
+  /// 1. Wait for [actionability] checks on the matched element, unless [force] option is set. If the element is detached during the checks, the whole action is retried.
+  /// 1. Scroll the element into view if needed.
+  /// 1. Use [page.mouse] to click in the center of the element, or the specified [position].
+  /// 1. Wait for initiated navigations to either succeed or fail, unless [noWaitAfter] option is set.
+  ///
+  /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.click(selector);
+  /// await frame.click(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `button` FrameClickButtonEnum *(optional)*
+  ///
+  ///     Defaults to `left`.
+  ///   - `clickCount` int *(optional)*
+  ///
+  ///     defaults to 1. See [UIEvent.detail].
+  ///   - `delay` double *(optional)*
+  ///
+  ///     Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `modifiers` List&lt;FrameClickModifiersEnum&gt; *(optional)*
+  ///
+  ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option will default to `true` in the future.
+  ///     Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+  ///   - `position` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it. Note that keyboard `modifiers` will be pressed regardless of `trial` to allow testing elements which are only visible when those keys are pressed.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> click(
     String selector, {
 
@@ -242,7 +997,50 @@ abstract interface class Frame {
     int? steps,
   });
 
-  /// Fills an element with the given value.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.fill()] instead. Read more about [locators].
+  ///
+  /// This method waits for an element matching [selector], waits for [actionability] checks, focuses the element, fills it and triggers an `input` event after filling. Note that you can pass an empty string to clear the input field.
+  ///
+  /// If the target element is not an `<input>`, `<textarea>` or `[contenteditable]` element, this method throws an error. However, if the element is inside the `<label>` element that has an associated [control], the control will be filled instead.
+  ///
+  /// To send fine-grained keyboard events, use [locator.pressSequentially()].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.fill(selector, value);
+  /// await frame.fill(selector, value, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `value` String
+  ///
+  ///   Value to fill for the `<input>`, `<textarea>` or `[contenteditable]` element.
+  /// - `options` Map *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> fill(
     String selector,
 
@@ -255,7 +1053,62 @@ abstract interface class Frame {
     bool? strict,
   });
 
-  /// Checks a checkbox or radio button.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.check()] instead. Read more about [locators].
+  ///
+  /// This method checks an element matching [selector] by performing the following steps:
+  /// 1. Find an element matching [selector]. If there is none, wait until a matching element is attached to the DOM.
+  /// 1. Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this method returns immediately.
+  /// 1. Wait for [actionability] checks on the matched element, unless [force] option is set. If the element is detached during the checks, the whole action is retried.
+  /// 1. Scroll the element into view if needed.
+  /// 1. Use [page.mouse] to click in the center of the element.
+  /// 1. Ensure that the element is now checked. If not, this method throws.
+  ///
+  /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.check(selector);
+  /// await frame.check(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `position` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> check(
     String selector, {
 
@@ -270,7 +1123,62 @@ abstract interface class Frame {
     Point? position,
   });
 
-  /// Unchecks a checkbox.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.uncheck()] instead. Read more about [locators].
+  ///
+  /// This method checks an element matching [selector] by performing the following steps:
+  /// 1. Find an element matching [selector]. If there is none, wait until a matching element is attached to the DOM.
+  /// 1. Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked, this method returns immediately.
+  /// 1. Wait for [actionability] checks on the matched element, unless [force] option is set. If the element is detached during the checks, the whole action is retried.
+  /// 1. Scroll the element into view if needed.
+  /// 1. Use [page.mouse] to click in the center of the element.
+  /// 1. Ensure that the element is now unchecked. If not, this method throws.
+  ///
+  /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.uncheck(selector);
+  /// await frame.uncheck(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `position` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> uncheck(
     String selector, {
 
@@ -285,7 +1193,66 @@ abstract interface class Frame {
     Point? position,
   });
 
-  /// Sets the checked state of a checkbox or radio button.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.setChecked()] instead. Read more about [locators].
+  ///
+  /// This method checks or unchecks an element matching [selector] by performing the following steps:
+  /// 1. Find an element matching [selector]. If there is none, wait until a matching element is attached to the DOM.
+  /// 1. Ensure that matched element is a checkbox or a radio input. If not, this method throws.
+  /// 1. If the element already has the right checked state, this method returns immediately.
+  /// 1. Wait for [actionability] checks on the matched element, unless [force] option is set. If the element is detached during the checks, the whole action is retried.
+  /// 1. Scroll the element into view if needed.
+  /// 1. Use [page.mouse] to click in the center of the element.
+  /// 1. Ensure that the element is now checked or unchecked. If not, this method throws.
+  ///
+  /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.setChecked(selector, checked);
+  /// await frame.setChecked(selector, checked, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `checked` bool
+  ///
+  ///   Whether to check or uncheck the checkbox.
+  /// - `options` Map *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `position` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> setChecked(
     String selector,
 
@@ -302,7 +1269,63 @@ abstract interface class Frame {
     Point? position,
   });
 
-  /// Hovers over an element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.hover()] instead. Read more about [locators].
+  ///
+  /// This method hovers over an element matching [selector] by performing the following steps:
+  /// 1. Find an element matching [selector]. If there is none, wait until a matching element is attached to the DOM.
+  /// 1. Wait for [actionability] checks on the matched element, unless [force] option is set. If the element is detached during the checks, the whole action is retried.
+  /// 1. Scroll the element into view if needed.
+  /// 1. Use [page.mouse] to hover over the center of the element, or the specified [position].
+  ///
+  /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.hover(selector);
+  /// await frame.hover(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `modifiers` List&lt;FrameHoverModifiersEnum&gt; *(optional)*
+  ///
+  ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `position` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it. Note that keyboard `modifiers` will be pressed regardless of `trial` to allow testing elements which are only visible when those keys are pressed.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> hover(
     String selector, {
 
@@ -319,13 +1342,104 @@ abstract interface class Frame {
     Point? position,
   });
 
-  /// Focuses an element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.focus()] instead. Read more about [locators].
+  ///
+  /// This method fetches an element with [selector] and focuses it. If there's no element matching [selector], the method waits until a matching element appears in the DOM.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.focus(selector);
+  /// await frame.focus(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> focus(String selector, {double? timeout, bool? strict});
 
   /// Removes focus from an element matching the selector.
   Future<void> blur(String selector, {double? timeout, bool? strict});
 
-  /// Double-clicks an element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.dblclick()] instead. Read more about [locators].
+  ///
+  /// This method double clicks an element matching [selector] by performing the following steps:
+  /// 1. Find an element matching [selector]. If there is none, wait until a matching element is attached to the DOM.
+  /// 1. Wait for [actionability] checks on the matched element, unless [force] option is set. If the element is detached during the checks, the whole action is retried.
+  /// 1. Scroll the element into view if needed.
+  /// 1. Use [page.mouse] to double click in the center of the element, or the specified [position]. if the first click of the `dblclick()` triggers a navigation event, this method will throw.
+  ///
+  /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
+  ///
+  /// **NOTE**
+  /// `frame.dblclick()` dispatches two `click` events and a single `dblclick` event.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.dblclick(selector);
+  /// await frame.dblclick(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `button` FrameDblclickButtonEnum *(optional)*
+  ///
+  ///     Defaults to `left`.
+  ///   - `delay` double *(optional)*
+  ///
+  ///     Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `modifiers` List&lt;FrameDblclickModifiersEnum&gt; *(optional)*
+  ///
+  ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `position` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it. Note that keyboard `modifiers` will be pressed regardless of `trial` to allow testing elements which are only visible when those keys are pressed.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> dblclick(
     String selector, {
 
@@ -348,7 +1462,43 @@ abstract interface class Frame {
     int? steps,
   });
 
-  /// Types text into an element matching the selector.
+  /// **WARNING**
+  /// [Deprecated]
+  ///
+  /// In most cases, you should use [locator.fill()] instead. You only need to press keys one by one if there is special keyboard handling on the page - in this case use [locator.pressSequentially()].
+  ///
+  /// Sends a `keydown`, `keypress`/`input`, and `keyup` event for each character in the text. `frame.type` can be used to send fine-grained keyboard events. To fill values in form fields, use [frame.fill()].
+  ///
+  /// To press a special key, like `Control` or `ArrowDown`, use [keyboard.press()].
+  ///
+  /// **Usage**
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `text` String
+  ///
+  ///   A text to type into a focused element.
+  /// - `options` Map *(optional)*
+  ///   - `delay` double *(optional)*
+  ///
+  ///     Time to wait between key presses in milliseconds. Defaults to 0.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> type(
     String selector,
 
@@ -361,7 +1511,56 @@ abstract interface class Frame {
     bool? strict,
   });
 
-  /// Presses a key while focused on an element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.press()] instead. Read more about [locators].
+  ///
+  /// [key] can specify the intended [keyboardEvent.key] value or a single character to generate the text for. A superset of the [key] values can be found [here]. Examples of the keys are:
+  ///
+  /// `F1` - `F12`, `Digit0`- `Digit9`, `KeyA`- `KeyZ`, `Backquote`, `Minus`, `Equal`, `Backslash`, `Backspace`, `Tab`, `Delete`, `Escape`, `ArrowDown`, `End`, `Enter`, `Home`, `Insert`, `PageDown`, `PageUp`, `ArrowRight`, `ArrowUp`, etc.
+  ///
+  /// Following modification shortcuts are also supported: `Shift`, `Control`, `Alt`, `Meta`, `ShiftLeft`, `ControlOrMeta`. `ControlOrMeta` resolves to `Control` on Windows and Linux and to `Meta` on macOS.
+  ///
+  /// Holding down `Shift` will type the text that corresponds to the [key] in the upper case.
+  ///
+  /// If [key] is a single character, it is case-sensitive, so the values `a` and `A` will generate different respective texts.
+  ///
+  /// Shortcuts such as `key: "Control+o"`, `key: "Control++` or `key: "Control+Shift+T"` are supported as well. When specified with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.press(selector, key);
+  /// await frame.press(selector, key, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `key` String
+  ///
+  ///   Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
+  /// - `options` Map *(optional)*
+  ///   - `delay` double *(optional)*
+  ///
+  ///     Time to wait between `keydown` and `keyup` in milliseconds. Defaults to 0.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option will default to `true` in the future.
+  ///     Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> press(
     String selector,
 
@@ -376,7 +1575,65 @@ abstract interface class Frame {
     bool? noWaitAfter,
   });
 
-  /// Taps an element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.tap()] instead. Read more about [locators].
+  ///
+  /// This method taps an element matching [selector] by performing the following steps:
+  /// 1. Find an element matching [selector]. If there is none, wait until a matching element is attached to the DOM.
+  /// 1. Wait for [actionability] checks on the matched element, unless [force] option is set. If the element is detached during the checks, the whole action is retried.
+  /// 1. Scroll the element into view if needed.
+  /// 1. Use [page.touchscreen] to tap the center of the element, or the specified [position].
+  ///
+  /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
+  ///
+  /// **NOTE**
+  /// `frame.tap()` requires that the `hasTouch` option of the browser context be set to true.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.tap(selector);
+  /// await frame.tap(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `modifiers` List&lt;FrameTapModifiersEnum&gt; *(optional)*
+  ///
+  ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `position` Point *(optional)*
+  ///     - `x` num
+  ///
+  ///
+  ///     - `y` num
+  ///
+  ///
+  ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `trial` bool *(optional)*
+  ///
+  ///     When set, this method only performs the [actionability] checks and skips the action. Defaults to `false`. Useful to wait until the element is ready for the action without performing it. Note that keyboard `modifiers` will be pressed regardless of `trial` to allow testing elements which are only visible when those keys are pressed.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> tap(
     String selector, {
 
@@ -393,10 +1650,45 @@ abstract interface class Frame {
     Point? position,
   });
 
-  /// Returns the HTML content of the frame.
+  /// Gets the full HTML contents of the frame, including the doctype.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.content();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;String&gt;
   Future<String> content();
 
-  /// Sets the HTML content of the frame.
+  /// This method internally calls [document.write()], inheriting all its specific characteristics and behaviors.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.setContent(html);
+  /// await frame.setContent(html, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `html` String
+  ///
+  ///   HTML markup to assign to the page.
+  /// - `options` Map *(optional)*
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
+  ///   - `waitUntil` LifecycleEvent *(optional)*
+  ///
+  ///     When to consider operation succeeded, defaults to `load`. Events can be either:
+  ///     * `'domcontentloaded'` - consider operation to be finished when the `DOMContentLoaded` event is fired.
+  ///     * `'load'` - consider operation to be finished when the `load` event is fired.
+  ///     * `'networkidle'` - **DISCOURAGED** consider operation to be finished when there are no network connections for at least `500` ms. Don't use this method for testing, rely on web assertions to assess readiness instead.
+  ///     * `'commit'` - consider operation to be finished when network response is received and the document started loading.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> setContent(
     String html, {
 
@@ -429,7 +1721,37 @@ abstract interface class Frame {
     bool? isFunction,
   ]);
 
-  /// Returns the attribute value of the element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.getAttribute()] instead. Read more about [locators].
+  ///
+  /// Returns element attribute value.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.getAttribute(selector, name);
+  /// await frame.getAttribute(selector, name, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `name` String
+  ///
+  ///   Attribute name to get the value for.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;[String&gt;]?
   Future<String?> getAttribute(
     String selector,
 
@@ -440,46 +1762,492 @@ abstract interface class Frame {
     bool? strict,
   });
 
-  /// Returns the inner HTML of the element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.innerHTML()] instead. Read more about [locators].
+  ///
+  /// Returns `element.innerHTML`.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.innerHTML(selector);
+  /// await frame.innerHTML(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;String&gt;
   Future<String> innerHTML(String selector, {double? timeout, bool? strict});
 
-  /// Returns the inner text of the element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.innerText()] instead. Read more about [locators].
+  ///
+  /// Returns `element.innerText`.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.innerText(selector);
+  /// await frame.innerText(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;String&gt;
   Future<String> innerText(String selector, {double? timeout, bool? strict});
 
-  /// Returns the input value of the element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.inputValue()] instead. Read more about [locators].
+  ///
+  /// Returns `input.value` for the selected `<input>` or `<textarea>` or `<select>` element.
+  ///
+  /// Throws for non-input elements. However, if the element is inside the `<label>` element that has an associated [control], returns the value of the control.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.inputValue(selector);
+  /// await frame.inputValue(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;String&gt;
   Future<String> inputValue(String selector, {double? timeout, bool? strict});
 
-  /// Returns the frame title.
+  /// Returns the page title.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.title();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;String&gt;
   Future<String> title();
 
-  /// Returns whether the element matching the selector is checked.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.isChecked()] instead. Read more about [locators].
+  ///
+  /// Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.isChecked(selector);
+  /// await frame.isChecked(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;bool&gt;
   Future<bool> isChecked(String selector, {double? timeout, bool? strict});
 
-  /// Returns whether the element matching the selector is disabled.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.isDisabled()] instead. Read more about [locators].
+  ///
+  /// Returns whether the element is disabled, the opposite of [enabled].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.isDisabled(selector);
+  /// await frame.isDisabled(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;bool&gt;
   Future<bool> isDisabled(String selector, {double? timeout, bool? strict});
 
-  /// Returns whether the element matching the selector is enabled.
+  /// Returns whether the element is [enabled].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.isEnabled(selector);
+  /// await frame.isEnabled(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;bool&gt;
   Future<bool> isEnabled(String selector, {double? timeout, bool? strict});
 
-  /// Returns whether the element matching the selector is hidden.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.isHidden()] instead. Read more about [locators].
+  ///
+  /// Returns whether the element is hidden, the opposite of [visible].  [selector] that does not match any elements is considered hidden.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.isHidden(selector);
+  /// await frame.isHidden(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` num *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option is ignored. [frame.isHidden()] does not wait for the element to become hidden and returns immediately.
+  ///     **Returns**
+  /// - Future&lt;bool&gt;
   Future<bool> isHidden(String selector, {bool? strict});
 
-  /// Returns whether the element matching the selector is visible.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.isVisible()] instead. Read more about [locators].
+  ///
+  /// Returns whether the element is [visible]. [selector] that does not match any elements is considered not visible.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.isVisible(selector);
+  /// await frame.isVisible(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` num *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option is ignored. [frame.isVisible()] does not wait for the element to become visible and returns immediately.
+  ///     **Returns**
+  /// - Future&lt;bool&gt;
   Future<bool> isVisible(String selector, {bool? strict});
 
-  /// Returns whether the element matching the selector is editable.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.isEditable()] instead. Read more about [locators].
+  ///
+  /// Returns whether the element is [editable].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.isEditable(selector);
+  /// await frame.isEditable(selector, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;bool&gt;
   Future<bool> isEditable(String selector, {double? timeout, bool? strict});
 
-  /// Adds a script tag to the frame.
+  /// Returns the added tag when the script's onload fires or when the script content was injected into frame.
+  ///
+  /// Adds a `<script>` tag into the page with the desired url or content.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.addScriptTag();
+  /// await frame.addScriptTag(options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `options` Map *(optional)*
+  ///   - `content` String *(optional)*
+  ///
+  ///     Raw JavaScript content to be injected into frame.
+  ///   - `path` String *(optional)*
+  ///
+  ///     Path to the JavaScript file to be injected into frame. If `path` is a relative path, then it is resolved relative to the current working directory.
+  ///   - `type` String *(optional)*
+  ///
+  ///     Script type. Use 'module' in order to load a JavaScript ES6 module. See [script] for more details.
+  ///   - `url` String *(optional)*
+  ///
+  ///     URL of a script to be added.
+  ///
+  /// **Returns**
+  /// - Future&lt;[ElementHandle]&gt;
   Future<void> addScriptTag({String? url, String? content, String? type});
 
-  /// Adds a style tag to the frame.
+  /// Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
+  ///
+  /// Adds a `<link rel="stylesheet">` tag into the page with the desired url or a `<style type="text/css">` tag with the content.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.addStyleTag();
+  /// await frame.addStyleTag(options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `options` Map *(optional)*
+  ///   - `content` String *(optional)*
+  ///
+  ///     Raw CSS content to be injected into frame.
+  ///   - `path` String *(optional)*
+  ///
+  ///     Path to the CSS file to be injected into frame. If `path` is a relative path, then it is resolved relative to the current working directory.
+  ///   - `url` String *(optional)*
+  ///
+  ///     URL of the `<link>` tag.
+  ///
+  /// **Returns**
+  /// - Future&lt;[ElementHandle]&gt;
   Future<void> addStyleTag({String? url, String? content});
 
-  /// Waits for the given timeout.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Never wait for timeout in production. Tests that wait for time are inherently flaky. Use [Locator] actions and web assertions that wait automatically.
+  ///
+  /// Waits for the given [timeout] in milliseconds.
+  ///
+  /// Note that `frame.waitForTimeout()` should only be used for debugging. Tests using the timer in production are going to be flaky. Use signals such as network events, selectors becoming visible and others instead.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.waitForTimeout(timeout);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `timeout` num
+  ///
+  ///   A timeout to wait for
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
+  ///
+  ///
+  /// [APIRequest]: /api/class-apirequest.mdx "APIRequest"
+  /// [APIRequestContext]: /api/class-apirequestcontext.mdx "APIRequestContext"
+  /// [APIResponse]: /api/class-apiresponse.mdx "APIResponse"
+  /// [APIResponseAssertions]: /api/class-apiresponseassertions.mdx "APIResponseAssertions"
+  /// [Browser]: /api/class-browser.mdx "Browser"
+  /// [BrowserContext]: /api/class-browsercontext.mdx "BrowserContext"
+  /// [BrowserServer]: /api/class-browserserver.mdx "BrowserServer"
+  /// [BrowserType]: /api/class-browsertype.mdx "BrowserType"
+  /// [CDPSession]: /api/class-cdpsession.mdx "CDPSession"
+  /// [Clock]: /api/class-clock.mdx "Clock"
+  /// [ConsoleMessage]: /api/class-consolemessage.mdx "ConsoleMessage"
+  /// [Coverage]: /api/class-coverage.mdx "Coverage"
+  /// [Credentials]: /api/class-credentials.mdx "Credentials"
+  /// [Debugger]: /api/class-debugger.mdx "Debugger"
+  /// [Dialog]: /api/class-dialog.mdx "Dialog"
+  /// [Disposable]: /api/class-disposable.mdx "Disposable"
+  /// [Download]: /api/class-download.mdx "Download"
+  /// [ElementHandle]: /api/class-elementhandle.mdx "ElementHandle"
+  /// [FileChooser]: /api/class-filechooser.mdx "FileChooser"
+  /// [Frame]: /api/class-frame.mdx "Frame"
+  /// [FrameLocator]: /api/class-framelocator.mdx "FrameLocator"
+  /// [GenericAssertions]: /api/class-genericassertions.mdx "GenericAssertions"
+  /// [JSHandle]: /api/class-jshandle.mdx "JSHandle"
+  /// [Keyboard]: /api/class-keyboard.mdx "Keyboard"
+  /// [Locator]: /api/class-locator.mdx "Locator"
+  /// [LocatorAssertions]: /api/class-locatorassertions.mdx "LocatorAssertions"
+  /// [Logger]: /api/class-logger.mdx "Logger"
+  /// [Mouse]: /api/class-mouse.mdx "Mouse"
+  /// [Page]: /api/class-page.mdx "Page"
+  /// [PageAssertions]: /api/class-pageassertions.mdx "PageAssertions"
+  /// [Playwright]: /api/class-playwright.mdx "Playwright"
+  /// [PlaywrightAssertions]: /api/class-playwrightassertions.mdx "PlaywrightAssertions"
+  /// [Request]: /api/class-request.mdx "Request"
+  /// [Response]: /api/class-response.mdx "Response"
+  /// [Route]: /api/class-route.mdx "Route"
+  /// [Screencast]: /api/class-screencast.mdx "Screencast"
+  /// [Selectors]: /api/class-selectors.mdx "Selectors"
+  /// [SnapshotAssertions]: /api/class-snapshotassertions.mdx "SnapshotAssertions"
+  /// [TimeoutError]: /api/class-timeouterror.mdx "TimeoutError"
+  /// [Touchscreen]: /api/class-touchscreen.mdx "Touchscreen"
+  /// [Tracing]: /api/class-tracing.mdx "Tracing"
+  /// [Video]: /api/class-video.mdx "Video"
+  /// [WebError]: /api/class-weberror.mdx "WebError"
+  /// [WebSocket]: /api/class-websocket.mdx "WebSocket"
+  /// [WebSocketRoute]: /api/class-websocketroute.mdx "WebSocketRoute"
+  /// [WebStorage]: /api/class-webstorage.mdx "WebStorage"
+  /// [Worker]: /api/class-worker.mdx "Worker"
+  /// [Electron]: /api/class-electron.mdx "Electron"
+  /// [ElectronApplication]: /api/class-electronapplication.mdx "ElectronApplication"
+  /// [Android]: /api/class-android.mdx "Android"
+  /// [AndroidDevice]: /api/class-androiddevice.mdx "AndroidDevice"
+  /// [AndroidInput]: /api/class-androidinput.mdx "AndroidInput"
+  /// [AndroidSocket]: /api/class-androidsocket.mdx "AndroidSocket"
+  /// [AndroidWebView]: /api/class-androidwebview.mdx "AndroidWebView"
+  /// [Fixtures]: /api/class-fixtures.mdx "Fixtures"
+  /// [FullConfig]: /api/class-fullconfig.mdx "FullConfig"
+  /// [FullProject]: /api/class-fullproject.mdx "FullProject"
+  /// [Location]: /api/class-location.mdx "Location"
+  /// [Test]: /api/class-test.mdx "Test"
+  /// [TestConfig]: /api/class-testconfig.mdx "TestConfig"
+  /// [TestInfo]: /api/class-testinfo.mdx "TestInfo"
+  /// [TestInfoError]: /api/class-testinfoerror.mdx "TestInfoError"
+  /// [TestOptions]: /api/class-testoptions.mdx "TestOptions"
+  /// [TestProject]: /api/class-testproject.mdx "TestProject"
+  /// [TestStepInfo]: /api/class-teststepinfo.mdx "TestStepInfo"
+  /// [WorkerInfo]: /api/class-workerinfo.mdx "WorkerInfo"
+  /// [Reporter]: /api/class-reporter.mdx "Reporter"
+  /// [Suite]: /api/class-suite.mdx "Suite"
+  /// [TestCase]: /api/class-testcase.mdx "TestCase"
+  /// [TestError]: /api/class-testerror.mdx "TestError"
+  /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestStep]: /api/class-teststep.mdx "TestStep"
+  /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
+  /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
+  ///
+  ///
+  /// [all available image tags]: https://mcr.microsoft.com/en-us/product/playwright/about "all available image tags"
+  /// [Microsoft Artifact Registry]: https://mcr.microsoft.com/en-us/product/playwright/about "Microsoft Artifact Registry"
+  /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<void> waitForTimeout(double waitTimeout);
 
-  /// Waits for the function to return a truthy value.
+  /// Returns when the [pageFunction] returns a truthy value, returns that value.
+  ///
+  /// **Usage**
+  ///
+  /// The [frame.waitForFunction()] can be used to observe viewport size change:
+  ///
+  /// ```dart
+  ///   // Or 'chromium' or 'webkit'.
+  ///
+  /// (() async {
+  ///   final browser = await firefox.launch();
+  ///   final page = await browser.newPage();
+  ///   final watchDog = page.mainFrame().waitForFunction('window.innerWidth < 100');
+  ///   await page.setViewportSize( width: 50, height: 50 );
+  ///   await watchDog;
+  ///   await browser.close();
+  /// }
+  /// ```
+  ///
+  /// To pass an argument to the predicate of `frame.waitForFunction` function:
+  ///
+  /// ```dart
+  /// final selector = '.foo';
+  /// await frame.waitForFunction((selector) => !!document.querySelector(selector), selector);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `pageFunction` Function | String
+  ///
+  ///   Function to be evaluated in the page context.
+  /// - `arg` dynamic *(optional)*
+  ///
+  ///   Optional argument to pass to [pageFunction].
+  /// - `options` Map *(optional)*
+  ///   - `polling` num | "raf" *(optional)*
+  ///
+  ///     If [polling] is `'raf'`, then [pageFunction] is constantly executed in `requestAnimationFrame` callback. If [polling] is a number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to `raf`.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time to wait for in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;[JSHandle]&gt;
   Future<JSHandle> waitForFunction(
     String expression, {
 
@@ -492,7 +2260,61 @@ abstract interface class Frame {
     bool? isFunction,
   });
 
-  /// Dispatches an event on the element matching the selector.
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.dispatchEvent()] instead. Read more about [locators].
+  ///
+  /// The snippet below dispatches the `click` event on the element. Regardless of the visibility state of the element, `click` is dispatched. This is equivalent to calling [element.click()].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.dispatchEvent('button#submit', 'click');
+  /// ```
+  ///
+  /// Under the hood, it creates an instance of an event based on the given [type], initializes it with [eventInit] properties and dispatches it on the element. Events are `composed`, `cancelable` and bubble by default.
+  ///
+  /// Since [eventInit] is event-specific, please refer to the events documentation for the lists of initial properties:
+  /// * [DeviceMotionEvent]
+  /// * [DeviceOrientationEvent]
+  /// * [DragEvent]
+  /// * [Event]
+  /// * [FocusEvent]
+  /// * [KeyboardEvent]
+  /// * [MouseEvent]
+  /// * [PointerEvent]
+  /// * [TouchEvent]
+  /// * [WheelEvent]
+  ///
+  /// You can also specify `JSHandle` as the property value if you want live objects to be passed into the event:
+  ///
+  /// ```dart
+  /// // Note you can only create DataTransfer in Chromium and Firefox
+  /// final dataTransfer = await frame.evaluateHandle(() => new DataTransfer());
+  /// await frame.dispatchEvent('#source', 'dragstart', { dataTransfer );
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `type` String
+  ///
+  ///   DOM event type: `"click"`, `"dragstart"`, etc.
+  /// - `eventInit` dynamic *(optional)*
+  ///
+  ///   Optional event-specific initialization properties.
+  /// - `options` Map *(optional)*
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> dispatchEvent(
     String selector,
 
@@ -562,6 +2384,22 @@ abstract interface class Frame {
     dynamic arg,
   });
 
+  /// Returns the `frame` or `iframe` element handle which corresponds to this frame.
+  ///
+  /// This is an inverse of [elementHandle.contentFrame()]. Note that returned handle actually belongs to the parent frame.
+  ///
+  /// This method throws an error if the frame has been detached before `frameElement()` returns.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// final frameElement = await frame.frameElement();
+  /// final contentFrame = await frameElement.contentFrame();
+  /// print(frame == contentFrame);  // -> true
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;[ElementHandle]&gt;
   Future<ElementHandle> frameElement();
 
   Future<ExpectResult> expect(
@@ -592,6 +2430,67 @@ abstract interface class Frame {
 
   Future<int> queryCount(String selector);
 
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.selectOption()] instead. Read more about [locators].
+  ///
+  /// This method waits for an element matching [selector], waits for [actionability] checks, waits until all specified options are present in the `<select>` element and selects these options.
+  ///
+  /// If the target element is not a `<select>` element, this method throws an error. However, if the element is inside the `<label>` element that has an associated [control], the control will be used instead.
+  ///
+  /// Returns the array of option values that have been successfully selected.
+  ///
+  /// Triggers a `change` and `input` event once all the provided options have been selected.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// // Single selection matching the value or label
+  /// frame.selectOption('select#colors', 'blue');
+  ///
+  /// // single selection matching both the value and the label
+  /// frame.selectOption('select#colors', { label: 'Blue' );
+  ///
+  /// // multiple selection
+  /// frame.selectOption('select#colors', 'red', 'green', 'blue');
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to query for.
+  /// - `values` dynamic
+  ///   - `value` String *(optional)*
+  ///
+  ///     Matches by `option.value`. Optional.
+  ///   - `label` String *(optional)*
+  ///
+  ///     Matches by `option.label`. Optional.
+  ///   - `index` num *(optional)*
+  ///
+  ///     Matches by the index. Optional.
+  ///
+  ///   Options to select. If the `<select>` has the `multiple` attribute, all matching options are selected, otherwise only the first option matching one of the passed options is selected. String values are matching both values and labels. Option is considered matching if all specified properties match.
+  /// - `options` List&lt;ElementHandleSelectOptionOptionsItems&gt; *(optional)*
+  ///   - `force` bool *(optional)*
+  ///
+  ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;List&lt;String&gt;&gt;
   Future<List<String>> selectOption(
     String selector,
 
@@ -608,6 +2507,52 @@ abstract interface class Frame {
     List<ElementHandleSelectOptionOptionsItems>? options,
   });
 
+  /// **WARNING**
+  /// [Discouraged]
+  ///
+  /// Use locator-based [locator.setInputFiles()] instead. Read more about [locators].
+  ///
+  /// Sets the value of the file input to these file paths or files. If some of the `filePaths` are relative paths, then they are resolved relative to the current working directory. For empty array, clears the selected files.
+  ///
+  /// This method expects [selector] to point to an [input element]. However, if the element is inside the `<label>` element that has an associated [control], targets the control instead.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.setInputFiles(selector, files);
+  /// await frame.setInputFiles(selector, files, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `selector` String
+  ///
+  ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+  /// - `files` dynamic
+  ///   - `name` String
+  ///
+  ///     File name
+  ///   - `mimeType` String
+  ///
+  ///     File type
+  ///   - `buffer` List&lt;int&gt;
+  ///
+  ///     File content
+  /// - `options` Map *(optional)*
+  ///   - `noWaitAfter` bool *(optional)*
+  ///
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option has no effect.
+  ///     This option has no effect.
+  ///   - `strict` bool *(optional)*
+  ///
+  ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
+  ///   - `timeout` double *(optional)*
+  ///
+  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> setInputFiles(
     String selector,
 
@@ -667,16 +2612,12 @@ class FrameImpl extends FrameBase implements Frame {
     super.parent,
   ]);
 
-  /// Returns the frame's URL.
-
   @override
   String url() => typedInitializer.url;
 
   PageImpl? _page;
 
   void internalSetPage(PageImpl p) => _page = p;
-
-  /// Returns the page containing this frame.
 
   @override
   Page get page {
@@ -694,8 +2635,6 @@ class FrameImpl extends FrameBase implements Frame {
 
     throw StateError('Frame does not have a Page ancestor');
   }
-
-  /// Returns a locator for the given selector.
 
   @override
   Locator locator(String selector) {
@@ -776,8 +2715,6 @@ class FrameImpl extends FrameBase implements Frame {
     return locator(getByTestIdSelector(testId));
   }
 
-  /// Goto URL
-
   @override
   Future<void> goto(
     String url, {
@@ -857,8 +2794,6 @@ class FrameImpl extends FrameBase implements Frame {
     );
   }
 
-  /// Waits for the required load state to be reached.
-
   @override
   Future<void> waitForLoadState({
     LifecycleEvent? state = LifecycleEvent.load,
@@ -886,8 +2821,6 @@ class FrameImpl extends FrameBase implements Frame {
           ),
         );
   }
-
-  /// Waits for the main frame to navigate to the given URL.
 
   @override
   Future<void> waitForURL(
@@ -952,8 +2885,6 @@ class FrameImpl extends FrameBase implements Frame {
     );
     await waitForLoadState(state: waitUntil, timeout: timeout);
   }
-
-  /// Waits for navigation to complete.
 
   @override
   Future<void> waitForNavigation({

@@ -1,7 +1,7 @@
 # Playwright Protocol API Reference
 
-> Auto-generated from Playwright protocol **v1.61.0**.
-> Source: `.protocol_cache/1.61.0/*.yml`
+> Auto-generated from Playwright protocol **v1.61.1**.
+> Source: `.protocol_cache/1.61.1/*.yml`
 > Regenerate: `dart tool/generate_protocol_docs.dart`
 
 ## Contents

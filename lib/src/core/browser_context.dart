@@ -43,16 +43,50 @@ import '../utils/logger.dart';
 /// Interface for BrowserContext
 
 abstract interface class BrowserContext {
-  /// The browser that this context belongs to.
+  /// Gets the browser instance that owns the context. Returns `null` if the context is created outside of normal browser, e.g. Android or Electron.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.browser;
+  /// ```
+  ///
+  /// **Returns**
+  /// - [Browser]?
   Browser? get browser;
 
-  /// Tracing API for this context.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.tracing
+  /// ```
+  ///
+  /// **Type**
+  /// - [Tracing]
   Tracing get tracing;
 
-  /// API request context for this context.
+  /// API testing helper associated with this context. Requests made with this API will use context cookies.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.request
+  /// ```
+  ///
+  /// **Type**
+  /// - [APIRequestContext]
   APIRequestContext get request;
 
-  /// Clock API for this context.
+  /// Playwright has ability to mock clock and passage of time.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.clock
+  /// ```
+  ///
+  /// **Type**
+  /// - [Clock]
   Clock get clock;
 
   /// Stream that emits recorder events.
@@ -97,16 +131,102 @@ abstract interface class BrowserContext {
   /// Stream that emits when a binding call is made.
   Stream<BindingCall> get onBindingCall;
 
-  /// All pages in this context.
+  /// Returns all open pages in the context.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.pages;
+  /// ```
+  ///
+  /// **Returns**
+  /// - List&lt;[Page]&gt;
   List<Page> get pages;
 
-  /// Creates a new page in this context.
+  /// Creates a new page in the browser context.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.newPage();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;[Page]&gt;
   Future<Page> newPage();
 
-  /// Adds cookies to this context.
+  /// Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be obtained via [browserContext.cookies()].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.addCookies([cookieObject1, cookieObject2]);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `cookies` List&lt;SetNetworkCookie&gt;
+  ///   - `name` String
+  ///
+  ///
+  ///   - `value` String
+  ///
+  ///
+  ///   - `url` String *(optional)*
+  ///
+  ///     Either `url` or both `domain` and `path` are required. Optional.
+  ///   - `domain` String *(optional)*
+  ///
+  ///     For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either `url` or both `domain` and `path` are required. Optional.
+  ///   - `path` String *(optional)*
+  ///
+  ///     Either `url` or both `domain` and `path` are required. Optional.
+  ///   - `expires` num *(optional)*
+  ///
+  ///     Unix time in seconds. Optional.
+  ///   - `httpOnly` bool *(optional)*
+  ///
+  ///     Optional.
+  ///   - `secure` bool *(optional)*
+  ///
+  ///     Optional.
+  ///   - `sameSite` "Strict" | "Lax" | "None" *(optional)*
+  ///
+  ///     Optional.
+  ///   - `partitionKey` String *(optional)*
+  ///
+  ///     For partitioned third-party cookies (aka [CHIPS]), the partition key. Optional.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> addCookies(List<SetNetworkCookie> cookies);
 
-  /// Clears cookies from this context.
+  /// Removes cookies from context. Accepts optional filter.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await context.clearCookies();
+  /// await context.clearCookies( name: 'session-id' );
+  /// await context.clearCookies( domain: 'my-origin.com' );
+  /// await context.clearCookies( domain: /.*my-origin\.com/ );
+  /// await context.clearCookies( path: '/api/v1' );
+  /// await context.clearCookies( name: 'session-id', domain: 'my-origin.com' );
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `options` Map *(optional)*
+  ///   - `domain` String *(optional)*
+  ///
+  ///     Only removes cookies with the given domain.
+  ///   - `name` String *(optional)*
+  ///
+  ///     Only removes cookies with the given name.
+  ///   - `path` String *(optional)*
+  ///
+  ///     Only removes cookies with the given path.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> clearCookies({
     String? name,
 
@@ -127,58 +247,537 @@ abstract interface class BrowserContext {
     String? pathRegexFlags,
   });
 
-  /// Returns cookies from this context.
+  /// If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs are returned.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.cookies();
+  /// await browserContext.cookies(urls);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `urls` List&lt;String&gt; *(optional)*
+  ///
+  ///   Optional list of URLs.
+  ///
+  /// **Returns**
+  /// - Future&lt;List&lt;Map&gt;&gt;
+  ///   - `name` String
+  ///
+  ///
+  ///   - `value` String
+  ///
+  ///
+  ///   - `domain` String
+  ///
+  ///
+  ///   - `path` String
+  ///
+  ///
+  ///   - `expires` num
+  ///
+  ///     Unix time in seconds.
+  ///   - `httpOnly` bool
+  ///
+  ///
+  ///   - `secure` bool
+  ///
+  ///
+  ///   - `sameSite` "Strict" | "Lax" | "None"
+  ///
+  ///
+  ///   - `partitionKey` String *(optional)*
   Future<List<NetworkCookie>> cookies({List<String>? urls});
 
-  /// Grants permissions to this context.
+  /// Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if specified.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.grantPermissions(permissions);
+  /// await browserContext.grantPermissions(permissions, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `permissions` List&lt;String&gt;
+  ///
+  ///   A list of permissions to grant.
+  ///
+  ///   **DANGER**
+  /// Supported permissions differ between browsers, and even between different versions of the same browser. Any permission may stop working after an update.
+  ///   Here are some permissions that may be supported by some browsers:
+  ///   * `'accelerometer'`
+  ///   * `'ambient-light-sensor'`
+  ///   * `'background-sync'`
+  ///   * `'camera'`
+  ///   * `'clipboard-read'`
+  ///   * `'clipboard-write'`
+  ///   * `'geolocation'`
+  ///   * `'gyroscope'`
+  ///   * `'local-fonts'`
+  ///   * `'local-network-access'`
+  ///   * `'magnetometer'`
+  ///   * `'microphone'`
+  ///   * `'midi-sysex'` (system-exclusive midi)
+  ///   * `'midi'`
+  ///   * `'notifications'`
+  ///   * `'payment-handler'`
+  ///   * `'storage-access'`
+  ///   * `'screen-wake-lock'`
+  /// - `options` Map *(optional)*
+  ///   - `origin` String *(optional)*
+  ///
+  ///     The [origin] to grant permissions to, e.g. "https://example.com".
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> grantPermissions(List<String> permissions, {String? origin});
 
-  /// Sets extra HTTP headers for this context.
+  /// The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are merged with page-specific extra HTTP headers set with [page.setExtraHTTPHeaders()]. If page overrides a particular header, page-specific header value will be used instead of the browser context header value.
+  ///
+  /// **NOTE**
+  /// [browserContext.setExtraHTTPHeaders()] does not guarantee the order of headers in the outgoing requests.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.setExtraHTTPHeaders(headers);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `headers` List&lt;NameValue&gt;
+  ///
+  ///   An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> setExtraHTTPHeaders(List<NameValue> headers);
 
-  /// Clears all permission overrides for this context.
+  /// Clears all permission overrides for the browser context.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// final context = await browser.newContext();
+  /// await context.grantPermissions(['clipboard-read']);
+  /// // do stuff ..
+  /// context.clearPermissions();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> clearPermissions();
 
-  /// Sets the geolocation for this context.
+  /// Sets the context's geolocation. Passing `null` or `undefined` emulates position unavailable.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.setGeolocation( latitude: 59.95, longitude: 30.31667 );
+  /// ```
+  ///
+  /// **NOTE**
+  /// Consider using [browserContext.grantPermissions()] to grant permissions for the browser context pages to read its geolocation.
+  /// **Arguments**
+  /// - `geolocation` BrowserContextSetGeolocationGeolocation
+  ///   - `latitude` num
+  ///
+  ///     Latitude between -90 and 90.
+  ///   - `longitude` num
+  ///
+  ///     Longitude between -180 and 180.
+  ///   - `accuracy` num *(optional)*
+  ///
+  ///     Non-negative accuracy value. Defaults to `0`.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> setGeolocation(
     BrowserContextSetGeolocationGeolocation? geolocation,
   );
 
-  /// Sets HTTP credentials for this context.
+  /// **WARNING**
+  /// [Deprecated]
+  ///
+  /// Browsers may cache credentials after successful authentication. Create a new browser context instead.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.setHTTPCredentials(httpCredentials);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `httpCredentials` BrowserContextSetHTTPCredentialsHttpCredentials
+  ///   - `username` String
+  ///
+  ///
+  ///   - `password` String
+  ///
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
+  ///
+  ///
+  /// [APIRequest]: /api/class-apirequest.mdx "APIRequest"
+  /// [APIRequestContext]: /api/class-apirequestcontext.mdx "APIRequestContext"
+  /// [APIResponse]: /api/class-apiresponse.mdx "APIResponse"
+  /// [APIResponseAssertions]: /api/class-apiresponseassertions.mdx "APIResponseAssertions"
+  /// [Browser]: /api/class-browser.mdx "Browser"
+  /// [BrowserContext]: /api/class-browsercontext.mdx "BrowserContext"
+  /// [BrowserServer]: /api/class-browserserver.mdx "BrowserServer"
+  /// [BrowserType]: /api/class-browsertype.mdx "BrowserType"
+  /// [CDPSession]: /api/class-cdpsession.mdx "CDPSession"
+  /// [Clock]: /api/class-clock.mdx "Clock"
+  /// [ConsoleMessage]: /api/class-consolemessage.mdx "ConsoleMessage"
+  /// [Coverage]: /api/class-coverage.mdx "Coverage"
+  /// [Credentials]: /api/class-credentials.mdx "Credentials"
+  /// [Debugger]: /api/class-debugger.mdx "Debugger"
+  /// [Dialog]: /api/class-dialog.mdx "Dialog"
+  /// [Disposable]: /api/class-disposable.mdx "Disposable"
+  /// [Download]: /api/class-download.mdx "Download"
+  /// [ElementHandle]: /api/class-elementhandle.mdx "ElementHandle"
+  /// [FileChooser]: /api/class-filechooser.mdx "FileChooser"
+  /// [Frame]: /api/class-frame.mdx "Frame"
+  /// [FrameLocator]: /api/class-framelocator.mdx "FrameLocator"
+  /// [GenericAssertions]: /api/class-genericassertions.mdx "GenericAssertions"
+  /// [JSHandle]: /api/class-jshandle.mdx "JSHandle"
+  /// [Keyboard]: /api/class-keyboard.mdx "Keyboard"
+  /// [Locator]: /api/class-locator.mdx "Locator"
+  /// [LocatorAssertions]: /api/class-locatorassertions.mdx "LocatorAssertions"
+  /// [Logger]: /api/class-logger.mdx "Logger"
+  /// [Mouse]: /api/class-mouse.mdx "Mouse"
+  /// [Page]: /api/class-page.mdx "Page"
+  /// [PageAssertions]: /api/class-pageassertions.mdx "PageAssertions"
+  /// [Playwright]: /api/class-playwright.mdx "Playwright"
+  /// [PlaywrightAssertions]: /api/class-playwrightassertions.mdx "PlaywrightAssertions"
+  /// [Request]: /api/class-request.mdx "Request"
+  /// [Response]: /api/class-response.mdx "Response"
+  /// [Route]: /api/class-route.mdx "Route"
+  /// [Screencast]: /api/class-screencast.mdx "Screencast"
+  /// [Selectors]: /api/class-selectors.mdx "Selectors"
+  /// [SnapshotAssertions]: /api/class-snapshotassertions.mdx "SnapshotAssertions"
+  /// [TimeoutError]: /api/class-timeouterror.mdx "TimeoutError"
+  /// [Touchscreen]: /api/class-touchscreen.mdx "Touchscreen"
+  /// [Tracing]: /api/class-tracing.mdx "Tracing"
+  /// [Video]: /api/class-video.mdx "Video"
+  /// [WebError]: /api/class-weberror.mdx "WebError"
+  /// [WebSocket]: /api/class-websocket.mdx "WebSocket"
+  /// [WebSocketRoute]: /api/class-websocketroute.mdx "WebSocketRoute"
+  /// [WebStorage]: /api/class-webstorage.mdx "WebStorage"
+  /// [Worker]: /api/class-worker.mdx "Worker"
+  /// [Electron]: /api/class-electron.mdx "Electron"
+  /// [ElectronApplication]: /api/class-electronapplication.mdx "ElectronApplication"
+  /// [Android]: /api/class-android.mdx "Android"
+  /// [AndroidDevice]: /api/class-androiddevice.mdx "AndroidDevice"
+  /// [AndroidInput]: /api/class-androidinput.mdx "AndroidInput"
+  /// [AndroidSocket]: /api/class-androidsocket.mdx "AndroidSocket"
+  /// [AndroidWebView]: /api/class-androidwebview.mdx "AndroidWebView"
+  /// [Fixtures]: /api/class-fixtures.mdx "Fixtures"
+  /// [FullConfig]: /api/class-fullconfig.mdx "FullConfig"
+  /// [FullProject]: /api/class-fullproject.mdx "FullProject"
+  /// [Location]: /api/class-location.mdx "Location"
+  /// [Test]: /api/class-test.mdx "Test"
+  /// [TestConfig]: /api/class-testconfig.mdx "TestConfig"
+  /// [TestInfo]: /api/class-testinfo.mdx "TestInfo"
+  /// [TestInfoError]: /api/class-testinfoerror.mdx "TestInfoError"
+  /// [TestOptions]: /api/class-testoptions.mdx "TestOptions"
+  /// [TestProject]: /api/class-testproject.mdx "TestProject"
+  /// [TestStepInfo]: /api/class-teststepinfo.mdx "TestStepInfo"
+  /// [WorkerInfo]: /api/class-workerinfo.mdx "WorkerInfo"
+  /// [Reporter]: /api/class-reporter.mdx "Reporter"
+  /// [Suite]: /api/class-suite.mdx "Suite"
+  /// [TestCase]: /api/class-testcase.mdx "TestCase"
+  /// [TestError]: /api/class-testerror.mdx "TestError"
+  /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestStep]: /api/class-teststep.mdx "TestStep"
+  /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
+  /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
+  ///
+  ///
+  /// [all available image tags]: https://mcr.microsoft.com/en-us/product/playwright/about "all available image tags"
+  /// [Microsoft Artifact Registry]: https://mcr.microsoft.com/en-us/product/playwright/about "Microsoft Artifact Registry"
+  /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<void> setHTTPCredentials(
     BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
   );
 
-  /// Sets the offline mode for this context.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.setOffline(offline);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `offline` bool
+  ///
+  ///   Whether to emulate network being offline for the browser context.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> setOffline(bool offline);
 
-  /// Returns the storage state for this context.
+  /// Returns storage state for this browser context, contains current cookies, local storage snapshot and IndexedDB snapshot.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.storageState();
+  /// await browserContext.storageState(options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `options` Map *(optional)*
+  ///   - `indexedDB` bool *(optional)*
+  ///
+  ///     Set to `true` to include [IndexedDB] in the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase Authentication, enable this.
+  ///   - `path` String *(optional)*
+  ///
+  ///     The file path to save the storage state to. If [path] is a relative path, then it is resolved relative to current working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
+  ///
+  /// **Returns**
+  /// - Future&lt;Map&gt;
+  ///   - `cookies` List&lt;Map&gt;
+  ///     - `name` String
+  ///
+  ///
+  ///     - `value` String
+  ///
+  ///
+  ///     - `domain` String
+  ///
+  ///
+  ///     - `path` String
+  ///
+  ///
+  ///     - `expires` num
+  ///
+  ///       Unix time in seconds.
+  ///     - `httpOnly` bool
+  ///
+  ///
+  ///     - `secure` bool
+  ///
+  ///
+  ///     - `sameSite` "Strict" | "Lax" | "None"
+  ///
+  ///
+  ///
+  ///   - `origins` List&lt;Map&gt;
+  ///     - `origin` String
+  ///
+  ///
+  ///     - `localStorage` List&lt;Map&gt;
+  ///       - `name` String
+  ///
+  ///
+  ///       - `value` String
   Future<BrowserContextStorageStateResult> storageState({bool? indexedDB});
 
-  /// Sets the storage state for this context.
+  /// Clears the existing cookies, local storage and IndexedDB entries for all origins and sets the new storage state.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// // Load storage state from a file and apply it to the context.
+  /// await context.setStorageState('state.json');
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `storageState` BrowserContextSetStorageStateStorageState
+  ///   - `cookies` List&lt;Map&gt;
+  ///     - `name` String
+  ///
+  ///
+  ///     - `value` String
+  ///
+  ///
+  ///     - `domain` String
+  ///
+  ///       Domain and path are required. For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com"
+  ///     - `path` String
+  ///
+  ///       Domain and path are required
+  ///     - `expires` num
+  ///
+  ///       Unix time in seconds.
+  ///     - `httpOnly` bool
+  ///
+  ///
+  ///     - `secure` bool
+  ///
+  ///
+  ///     - `sameSite` "Strict" | "Lax" | "None"
+  ///
+  ///       sameSite flag
+  ///
+  ///     Cookies to set for context
+  ///   - `origins` List&lt;Map&gt;
+  ///     - `origin` String
+  ///
+  ///
+  ///     - `localStorage` List&lt;Map&gt;
+  ///       - `name` String
+  ///
+  ///
+  ///       - `value` String
+  ///
+  ///
+  ///       localStorage to set for context
+  ///
+  ///
+  ///   Learn more about [storage state and auth].
+  ///
+  ///   Populates context with given storage state. This option can be used to initialize context with logged-in information obtained via [browserContext.storageState()].
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> setStorageState(
     BrowserContextSetStorageStateStorageState storageState,
   );
 
-  /// Adds an initialization script to this context.
+  /// Adds a script which would be evaluated in one of the following scenarios:
+  /// * Whenever a page is created in the browser context or is navigated.
+  /// * Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is evaluated in the context of the newly attached frame.
+  ///
+  /// The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend the JavaScript environment, e.g. to seed `Math.random`.
+  ///
+  /// **Usage**
+  ///
+  /// An example of overriding `Math.random` before the page loads:
+  ///
+  /// ```dart
+  /// // preload.js
+  /// Math.random = () => 42;
+  /// ```
+  ///
+  /// ```dart
+  /// // In your playwright script, assuming the preload.js file is in same directory.
+  /// await browserContext.addInitScript(
+  ///   path: 'preload.js'
+  /// );
+  /// ```
+  ///
+  /// **NOTE**
+  /// The order of evaluation of multiple scripts installed via [browserContext.addInitScript()] and [page.addInitScript()] is not defined.
+  /// **Arguments**
+  /// - `script` Function | String | Map
+  ///   - `path` String *(optional)*
+  ///
+  ///     Path to the JavaScript file. If `path` is a relative path, then it is resolved relative to the current working directory. Optional.
+  ///   - `content` String *(optional)*
+  ///
+  ///     Raw script content. Optional.
+  ///
+  ///   Script to be evaluated in all pages in the browser context.
+  /// - `arg` [Serializable] *(optional)*
+  ///
+  ///   Optional argument to pass to [script] (only supported when passing a function).
+  ///
+  /// **Returns**
+  /// - Future&lt;[Disposable]&gt;
   Future<void> addInitScript(String source);
 
-  /// Whether the context is closed.
+  /// Indicates that the browser context is in the process of closing or has already been closed.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.isClosed;
+  /// ```
+  ///
+  /// **Returns**
+  /// - bool
   bool get isClosed;
 
-  /// Background pages in this context.
+  /// **WARNING**
+  /// [Deprecated]
+  ///
+  /// Background pages have been removed from Chromium together with Manifest V2 extensions.
+  ///
+  /// Returns an empty list.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.backgroundPages;
+  /// ```
+  ///
+  /// **Returns**
+  /// - List&lt;[Page]&gt;
   List<Page> get backgroundPages;
 
-  /// Service workers in this context.
+  /// **NOTE**
+  /// Service workers are only supported on Chromium-based browsers.
+  /// All existing service workers in the context.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.serviceWorkers;
+  /// ```
+  ///
+  /// **Returns**
+  /// - List&lt;[Worker]&gt;
   List<Worker> get serviceWorkers;
 
-  /// Sets the default timeout for this context.
+  /// This setting will change the default maximum time for all the methods accepting [timeout] option.
+  ///
+  /// **NOTE**
+  /// [page.setDefaultNavigationTimeout()], [page.setDefaultTimeout()] and [browserContext.setDefaultNavigationTimeout()] take priority over [browserContext.setDefaultTimeout()].
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.setDefaultTimeout(timeout);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `timeout` double
+  ///
+  ///   Maximum time in milliseconds. Pass `0` to disable timeout.
   void setDefaultTimeout(double timeout);
 
-  /// Sets the default navigation timeout for this context.
+  /// This setting will change the default maximum navigation time for the following methods and related shortcuts:
+  /// * [page.goBack()]
+  /// * [page.goForward()]
+  /// * [page.goto()]
+  /// * [page.reload()]
+  /// * [page.setContent()]
+  /// * [page.waitForNavigation()]
+  ///
+  /// **NOTE**
+  /// [page.setDefaultNavigationTimeout()] and [page.setDefaultTimeout()] take priority over [browserContext.setDefaultNavigationTimeout()].
+  /// **Usage**
+  ///
+  /// ```dart
+  /// browserContext.setDefaultNavigationTimeout(timeout);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `timeout` double
+  ///
+  ///   Maximum navigation time in milliseconds
   void setDefaultNavigationTimeout(double timeout);
 
-  /// Closes this context.
+  /// Closes the browser context. All the pages that belong to the browser context will be closed.
+  ///
+  /// **NOTE**
+  /// The default browser context cannot be closed.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.close();
+  /// await browserContext.close(options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `options` Map *(optional)*
+  ///   - `reason` String *(optional)*
+  ///
+  ///     The reason to be reported to the operations interrupted by the context closure.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> close({String? reason});
 
   /// Sets network interception patterns for this context.
@@ -210,10 +809,92 @@ abstract interface class BrowserContext {
   /// Sets the system time for the clock.
   Future<void> clockSetSystemTime({double? timeNumber, String? timeString});
 
-  /// Exposes a binding to the page.
+  /// The method adds a function called [name] on the `window` object of every frame in every page in the context. When called, the function executes [callback] and returns a Future which resolves to the return value of [callback]. If the [callback] returns a Future, it will be awaited.
+  ///
+  /// The first argument of the [callback] function contains information about the caller: `{ browserContext: BrowserContext, page: Page, frame: Frame }`.
+  ///
+  /// See [page.exposeBinding()] for page-only version.
+  ///
+  /// **Usage**
+  ///
+  /// An example of exposing page URL to all frames in all pages in the context:
+  ///
+  /// ```dart
+  ///   // Or 'chromium' or 'firefox'.
+  ///
+  /// (() async {
+  ///   final browser = await webkit.launch( headless: false );
+  ///   final context = await browser.newContext();
+  ///   await context.exposeBinding('pageURL', ( page ) => page.url());
+  ///   final page = await context.newPage();
+  ///   await page.setContent(`
+  ///     <script>
+  ///       async function onClick() {
+  ///         document.querySelector('div').textContent = await window.pageURL();
+  ///       }
+  ///     </script>
+  ///     <button onclick="onClick()">Click me</button>
+  ///     <div></div>
+  ///   `);
+  ///   await page.getByRole('button').click();
+  /// }
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `name` String
+  ///
+  ///   Name of the function on the window object.
+  /// - `callback` Function
+  ///
+  ///   Callback function that will be called in the Playwright's context.
+  ///
+  /// **Returns**
+  /// - Future&lt;[Disposable]&gt;
   Future<void> exposeBinding(String name);
 
-  /// Exposes a function to the page.
+  /// The method adds a function called [name] on the `window` object of every frame in every page in the context. When called, the function executes [callback] and returns a Future which resolves to the return value of [callback].
+  ///
+  /// If the [callback] returns a Future, it will be awaited.
+  ///
+  /// See [page.exposeFunction()] for page-only version.
+  ///
+  /// **Usage**
+  ///
+  /// An example of adding a `sha256` function to all pages in the context:
+  ///
+  /// ```dart
+  ///   // Or 'chromium' or 'firefox'.
+  ///
+  /// (() async {
+  ///   final browser = await webkit.launch( headless: false );
+  ///   final context = await browser.newContext();
+  ///   await context.exposeFunction('sha256', (text) =>
+  ///     crypto.createHash('sha256').update(text).digest('hex'),
+  ///   );
+  ///   final page = await context.newPage();
+  ///   await page.setContent(`
+  ///     <script>
+  ///       async function onClick() {
+  ///         document.querySelector('div').textContent = await window.sha256('PLAYWRIGHT');
+  ///       }
+  ///     </script>
+  ///     <button onclick="onClick()">Click me</button>
+  ///     <div></div>
+  ///   `);
+  ///   await page.getByRole('button').click();
+  /// }
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `name` String
+  ///
+  ///   Name of the function on the window object.
+  /// - `callback` Function
+  ///
+  ///   Callback function that will be called in the Playwright's context.
+  ///
+  /// **Returns**
+  /// - Future&lt;[Disposable]&gt;
   Future<void> exposeFunction(String name);
 
   // ── WebAuthn / Virtual Authenticator ─────────────────────────────────────
@@ -340,7 +1021,23 @@ abstract interface class BrowserContext {
   /// Exposes the console API to the page.
   Future<void> exposeConsoleApi();
 
-  /// Creates a new Chrome DevTools Protocol session.
+  /// **NOTE**
+  /// CDP sessions are only supported on Chromium-based browsers.
+  /// Returns the newly created session.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.newCDPSession(page);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `page` Page
+  ///
+  ///   Target to create new session for. For backwards-compatibility, this parameter is named `page`, but it can be a `Page` or `Frame` type.
+  ///
+  /// **Returns**
+  /// - Future&lt;[CDPSession]&gt;
   Future<CDPSession> newCDPSession({Page? page, Frame? frame});
 
   /// Creates temporary files.
@@ -357,20 +1054,148 @@ abstract interface class BrowserContext {
     required bool enabled,
   });
 
-  /// Routes network requests matching the given URL.
+  /// Routing provides the capability to modify network requests that are made by any page in the browser context. Once route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+  ///
+  /// **NOTE**
+  /// [browserContext.route()] will not intercept requests intercepted by Service Worker. See [this] issue. We recommend disabling Service Workers when using request interception by setting [serviceWorkers] to `'block'`.
+  /// **Usage**
+  ///
+  /// An example of a naive handler that aborts all image requests:
+  ///
+  /// ```dart
+  /// final context = await browser.newContext();
+  /// await context.route('**/*.{png,jpg,jpeg}', (route) => route.abort());
+  /// final page = await context.newPage();
+  /// await page.goto('https://example.com');
+  /// await browser.close();
+  /// ```
+  ///
+  /// or the same snippet using a regex pattern instead:
+  ///
+  /// ```dart
+  /// final context = await browser.newContext();
+  /// await context.route(/(\.png$)|(\.jpg$)/, (route) => route.abort());
+  /// final page = await context.newPage();
+  /// await page.goto('https://example.com');
+  /// await browser.close();
+  /// ```
+  ///
+  /// It is possible to examine the request to decide the route action. For example, mocking all requests that contain some post data, and leaving all other requests as is:
+  ///
+  /// ```dart
+  /// await context.route('/api/**', (route) async {
+  ///   if (route.request().postData().includes('my-string'))
+  ///     await route.fulfill( body: 'mocked-data' );
+  ///   else
+  ///     await route.continue();
+  /// );
+  /// ```
+  ///
+  /// Page routes (set up with [page.route()]) take precedence over browser context routes when request matches both handlers.
+  ///
+  /// To remove a route with its handler you can use [browserContext.unroute()].
+  ///
+  /// **NOTE**
+  /// Enabling routing disables http cache.
+  /// **Arguments**
+  /// - `url` String
+  ///
+  ///   A glob pattern, regex pattern, URL pattern, or predicate that receives a [URL] to match during routing. If [baseURL] is set in the context options and the provided URL is a string that does not start with `*`, it is resolved using the [`new URL()`] constructor.
+  /// - `handler` Future&lt;void&gt; Function(Route)
+  ///
+  ///   handler function to route the request.
+  /// - `options` Map *(optional)*
+  ///   - `times` num *(optional)*
+  ///
+  ///     How often a route should be used. By default it will be used every time.
+  ///
+  /// **Returns**
+  /// - Future&lt;[Disposable]&gt;
   Future<void> route(String url, Future<void> Function(Route) handler);
 
-  /// Removes a route for the given URL.
+  /// Removes a route created with [browserContext.route()]. When [handler] is not specified, removes all routes for the [url].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.unroute(url);
+  /// await browserContext.unroute(url, handler);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `url` String
+  ///
+  ///   A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] used to register a routing with [browserContext.route()].
+  /// - `handler` Future&lt;void&gt; Function(Route route) *(optional)*
+  ///
+  ///   Optional handler function used to register a routing with [browserContext.route()].
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> unroute(
     String url, {
 
     Future<void> Function(Route route)? handler,
   });
 
-  /// Removes all routes.
+  /// Removes all routes created with [browserContext.route()] and [browserContext.routeFromHAR()].
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.unrouteAll();
+  /// await browserContext.unrouteAll(options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `options` Map *(optional)*
+  ///   - `behavior` "wait" | "ignoreErrors" | "default" *(optional)*
+  ///
+  ///     Specifies whether to wait for already running handlers and what to do if they throw errors:
+  ///     * `'default'` - do not wait for current handler calls (if any) to finish, if unrouted handler throws, it may result in unhandled error
+  ///     * `'wait'` - wait for current handler calls (if any) to finish
+  ///     * `'ignoreErrors'` - do not wait for current handler calls (if any) to finish, all errors thrown by the handlers after unrouting are silently caught
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> unrouteAll();
 
-  /// Routes network requests from a HAR file.
+  /// If specified the network requests that are made in the context will be served from the HAR file. Read more about [Replaying from HAR].
+  ///
+  /// Playwright will not serve requests intercepted by Service Worker from the HAR file. See [this] issue. We recommend disabling Service Workers when using request interception by setting [serviceWorkers] to `'block'`.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await browserContext.routeFromHAR(har);
+  /// await browserContext.routeFromHAR(har, options);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `har` String
+  ///
+  ///   Path to a [HAR] file with prerecorded network data. If `path` is a relative path, then it is resolved relative to the current working directory.
+  /// - `options` Map *(optional)*
+  ///   - `notFound` "abort" | "fallback" *(optional)*
+  ///     * If set to 'abort' any request not found in the HAR file will be aborted.
+  ///     * If set to 'fallback' falls through to the next route handler in the handler chain.
+  ///
+  ///     Defaults to abort.
+  ///   - `update` bool *(optional)*
+  ///
+  ///     If specified, updates the given HAR with the actual network information instead of serving from file. The file is written to disk when [browserContext.close()] is called.
+  ///   - `updateContent` "embed" | "attach" *(optional)*
+  ///
+  ///     Optional setting to control resource content management. If `attach` is specified, resources are persisted as separate files or entries in the ZIP archive. If `embed` is specified, content is stored inline the HAR file.
+  ///   - `updateMode` "full" | "minimal" *(optional)*
+  ///
+  ///     When set to `minimal`, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to `minimal`.
+  ///   - `url` String *(optional)*
+  ///
+  ///     A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern will be served from the HAR file. If not specified, all requests are served from the HAR file.
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> routeFromHAR(
     String harPath, {
 
@@ -603,8 +1428,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     });
   }
 
-  /// Creates a new page in the browser context.
-
   @override
   Future<Page> newPage() async {
     final result = await super.channel_newPage();
@@ -614,12 +1437,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     return page;
   }
 
-  /// Adds cookies into this browser context.
-
-  ///
-
-  /// All pages within this context will have these cookies installed.
-
   @override
   Future<void> addCookies(List<SetNetworkCookie> cookies) async {
     Logger.debug(
@@ -628,12 +1445,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
     await super.channel_addCookies(cookies: cookies);
   }
-
-  /// Clears context cookies.
-
-  ///
-
-  /// Optionally filter by [name], [domain], or [path] (exact strings or regex).
 
   @override
   Future<void> clearCookies({
@@ -676,24 +1487,12 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Returns the browser context cookies.
-
-  ///
-
-  /// If no [urls] are specified, this method returns cookies for all pages.
-
   @override
   Future<List<NetworkCookie>> cookies({List<String>? urls}) async {
     final result = await super.channel_cookies(urls: urls ?? []);
 
     return result.cookies;
   }
-
-  /// Grants specified permissions to the browser context.
-
-  ///
-
-  /// If [origin] is specified, the permissions are granted only for the given origin.
 
   @override
   Future<void> grantPermissions(
@@ -712,8 +1511,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// The extra HTTP headers will be sent with every request the context initiates.
-
   @override
   Future<void> setExtraHTTPHeaders(List<NameValue> headers) async {
     Logger.debug(
@@ -723,14 +1520,10 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     await super.channel_setExtraHTTPHeaders(headers: headers);
   }
 
-  /// Clears all permission overrides for the browser context.
-
   @override
   Future<void> clearPermissions() async {
     await channel_clearPermissions();
   }
-
-  /// Sets the context's geolocation. Passing `null` clears the geolocation override.
 
   @override
   Future<void> setGeolocation(
@@ -740,12 +1533,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     await channel_setGeolocation(geolocation: geolocation);
   }
 
-  /// Sets HTTP credentials for all requests in this context.
-
-  ///
-
-  /// Passing `null` disables authentication.
-
   @override
   Future<void> setHTTPCredentials(
     BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
@@ -754,15 +1541,11 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     await channel_setHTTPCredentials(httpCredentials: httpCredentials);
   }
 
-  /// Emulates network being offline or online.
-
   @override
   Future<void> setOffline(bool offline) async {
     Logger.debug('setOffline ($offline)', name: 'playwright.context');
     await channel_setOffline(offline: offline);
   }
-
-  /// Returns storage state for this browser context, contains current cookies and local storage snapshot.
 
   @override
   Future<BrowserContextStorageStateResult> storageState({
@@ -773,8 +1556,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     return result;
   }
 
-  /// Restores the storage state from a previously captured state object.
-
   @override
   Future<void> setStorageState(
     BrowserContextSetStorageStateStorageState storageState,
@@ -782,19 +1563,11 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     await channel_setStorageState(storageState: storageState);
   }
 
-  /// Adds a script which would be evaluated in one of the following scenarios:
-
-  /// - Whenever a page is created in the browser context.
-
-  /// - Whenever a child frame is attached or navigated in any page in the browser context.
-
   @override
   Future<void> addInitScript(String source) async {
     Logger.debug('addInitScript', name: 'playwright.context');
     await channel_addInitScript(source: source);
   }
-
-  /// Closes the browser context. All pages that belong to this context will be closed.
 
   @override
   Future<void> close({String? reason}) async {
@@ -805,8 +1578,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     await channel_close(reason: reason);
   }
 
-  /// Sets the network interception patterns for this context.
-
   @override
   Future<void> setNetworkInterceptionPatterns(
     List<BrowserContextSetNetworkInterceptionPatternsPatternsItems> patterns,
@@ -814,14 +1585,10 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     await channel_setNetworkInterceptionPatterns(patterns: patterns);
   }
 
-  /// Pauses the context for debugging.
-
   @override
   Future<void> pause() async {
     await channel_pause();
   }
-
-  /// Fast-forwards the clock by the specified amount of ticks.
 
   @override
   Future<void> clockFastForward({
@@ -836,28 +1603,20 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Installs fake timers and optionally sets the clock to the specified time.
-
   @override
   Future<void> clockInstall({double? timeNumber, String? timeString}) async {
     await channel_clockInstall(timeNumber: timeNumber, timeString: timeString);
   }
-
-  /// Pauses the clock at the specified time.
 
   @override
   Future<void> clockPauseAt({double? timeNumber, String? timeString}) async {
     await channel_clockPauseAt(timeNumber: timeNumber, timeString: timeString);
   }
 
-  /// Resumes the clock after being paused.
-
   @override
   Future<void> clockResume() async {
     await channel_clockResume();
   }
-
-  /// Advances the clock by the specified amount of ticks, firing any timers.
 
   @override
   Future<void> clockRunFor({double? ticksNumber, String? ticksString}) async {
@@ -867,8 +1626,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
       ticksString: ticksString,
     );
   }
-
-  /// Sets the clock to always return a fixed time.
 
   @override
   Future<void> clockSetFixedTime({
@@ -883,8 +1640,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Sets the system time but does not trigger any timers.
-
   @override
   Future<void> clockSetSystemTime({
     double? timeNumber,
@@ -898,20 +1653,10 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Exposes a binding with the given [name] to all pages in the context.
-
   @override
   Future<void> exposeBinding(String name) async {
     await channel_exposeBinding(name: name);
   }
-
-  /// Exposes a simple callback function with [name] to all pages in the context.
-
-  ///
-
-  /// Convenience alias for [exposeBinding]. Wire up a full callback by
-
-  /// listening to [onBindingCall] after calling this.
 
   @override
   Future<void> exposeFunction(String name) async {
@@ -1012,8 +1757,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     await channel_credentialsInstall();
   }
 
-  /// Registers a custom selector engine with the given [name] and [source].
-
   @override
   Future<void> registerSelectorEngine(
     String name,
@@ -1037,8 +1780,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Changes the default test ID attribute used by `getByTestId()` locators.
-
   @override
   Future<void> setTestIdAttributeName(String testIdAttributeName) async {
     await channel_setTestIdAttributeName(
@@ -1046,16 +1787,12 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Sets WebSocket interception patterns for this context.
-
   @override
   Future<void> setWebSocketInterceptionPatterns(
     List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems> patterns,
   ) async {
     await channel_setWebSocketInterceptionPatterns(patterns: patterns);
   }
-
-  /// Enables the Playwright recorder/codegen in the browser context.
 
   @override
   Future<void> enableRecorder({
@@ -1110,21 +1847,15 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Disables the Playwright recorder.
-
   @override
   Future<void> disableRecorder() async {
     await channel_disableRecorder();
   }
 
-  /// Exposes the Playwright console API into the browser context pages.
-
   @override
   Future<void> exposeConsoleApi() async {
     await channel_exposeConsoleApi();
   }
-
-  /// Creates a new Chrome DevTools Protocol session for the given [page] or [frame].
 
   @override
   Future<CDPSession> newCDPSession({Page? page, Frame? frame}) async {
@@ -1136,8 +1867,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     return result.session as CDPSession;
   }
-
-  /// Creates temporary files that can be used with file inputs.
 
   @override
   Future<BrowserContextCreateTempFilesResult> createTempFiles({
@@ -1152,8 +1881,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Updates the subscription state for a specific event type in this context.
-
   @override
   Future<void> updateSubscription({
     required BrowserContextUpdateSubscriptionEventEnum event,
@@ -1162,8 +1889,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   }) async {
     await channel_updateSubscription(event: event, enabled: enabled);
   }
-
-  /// Routing provides the capability to modify network requests that are made by a context.
 
   @override
   Future<void> route(String url, Future<void> Function(Route) handler) async {
@@ -1175,8 +1900,6 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
       patterns: _routeManager.prepareContextPatterns(),
     );
   }
-
-  /// Removes a route previously set with [route].
 
   @override
   Future<void> unroute(
@@ -1191,16 +1914,12 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     );
   }
 
-  /// Removes all routes previously set with [route].
-
   @override
   Future<void> unrouteAll() async {
     _routeManager.clear();
 
     await channel_setNetworkInterceptionPatterns(patterns: []);
   }
-
-  /// Serves all requests matching the given [url] from the HAR file.
 
   @override
   Future<void> routeFromHAR(

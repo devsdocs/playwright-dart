@@ -98,7 +98,6 @@ class EventEmitter {
   }
 }
 
-/// Internal wrapper around a listener function.
 class _Listener {
   final void Function(dynamic) handler;
   final bool once;

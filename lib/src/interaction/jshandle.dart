@@ -25,7 +25,59 @@ import '../infrastructure/html_node.dart';
 /// ```
 abstract interface class JSHandle<T extends Object?> {
   Stream<dynamic> get onPreviewUpdated;
+
+  /// Returns the return value of [pageFunction].
+  ///
+  /// This method passes this handle as the first argument to [pageFunction].
+  ///
+  /// If [pageFunction] returns a Future, then `handle.evaluate` would wait for the future to complete and return its value.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// final tweetHandle = await page.$('.tweet .retweets');
+  /// expect(await tweetHandle.evaluate((node) => node.innerText)).toBe('10 retweets');
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `pageFunction` Function | String
+  ///
+  ///   Function to be evaluated in the page context.
+  /// - `arg` dynamic *(optional)*
+  ///
+  ///   Optional argument to pass to [pageFunction].
+  ///
+  /// **Returns**
+  /// - Future&lt;[Serializable]&gt;
   Future<dynamic> evaluate(String expression, [dynamic arg, bool? isFunction]);
+
+  /// Returns the return value of [pageFunction] as a [JSHandle].
+  ///
+  /// This method passes this handle as the first argument to [pageFunction].
+  ///
+  /// The only difference between `jsHandle.evaluate` and `jsHandle.evaluateHandle` is that `jsHandle.evaluateHandle` returns [JSHandle].
+  ///
+  /// If the function passed to the `jsHandle.evaluateHandle` returns a Future, then `jsHandle.evaluateHandle` would wait for the future to complete and return its value.
+  ///
+  /// See [page.evaluateHandle()] for more details.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await jsHandle.evaluateHandle(pageFunction);
+  /// await jsHandle.evaluateHandle(pageFunction, arg);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `pageFunction` Function | String
+  ///
+  ///   Function to be evaluated in the page context.
+  /// - `arg` dynamic *(optional)*
+  ///
+  ///   Optional argument to pass to [pageFunction].
+  ///
+  /// **Returns**
+  /// - Future&lt;[JSHandle]&gt;
   Future<JSHandle<Object?>> evaluateHandle(
     String expression, [
     dynamic arg,
@@ -41,18 +93,158 @@ abstract interface class JSHandle<T extends Object?> {
     dynamic arg,
     bool? isFunction,
   ]);
+
+  /// Fetches a single property from the referenced object.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await jsHandle.getProperty(propertyName);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `propertyName` String
+  ///
+  ///   property to get
+  ///
+  /// **Returns**
+  /// - Future&lt;[JSHandle]&gt;
   Future<JSHandle<Object?>> getProperty(String name);
+
+  /// The method returns a map with **own property names** as keys and JSHandle instances for the property values.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// final handle = await page.evaluateHandle(() => ( window, document ));
+  /// final properties = await handle.getProperties();
+  /// final windowHandle = properties.get('window');
+  /// final documentHandle = properties.get('document');
+  /// await handle.dispose();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;[Map]&lt;String, [JSHandle]&gt;&gt;
   Future<Map<String, JSHandle<Object?>>> getProperties();
   Future<Map<String, JSHandle<Object?>>> getPropertyList();
+
+  /// Returns a JSON representation of the object. If the object has a `toJSON` function, it **will not be called**.
+  ///
+  /// **NOTE**
+  /// The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the object has circular references.
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await jsHandle.jsonValue();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;[Serializable]&gt;
+  ///
+  ///
+  /// [APIRequest]: /api/class-apirequest.mdx "APIRequest"
+  /// [APIRequestContext]: /api/class-apirequestcontext.mdx "APIRequestContext"
+  /// [APIResponse]: /api/class-apiresponse.mdx "APIResponse"
+  /// [APIResponseAssertions]: /api/class-apiresponseassertions.mdx "APIResponseAssertions"
+  /// [Browser]: /api/class-browser.mdx "Browser"
+  /// [BrowserContext]: /api/class-browsercontext.mdx "BrowserContext"
+  /// [BrowserServer]: /api/class-browserserver.mdx "BrowserServer"
+  /// [BrowserType]: /api/class-browsertype.mdx "BrowserType"
+  /// [CDPSession]: /api/class-cdpsession.mdx "CDPSession"
+  /// [Clock]: /api/class-clock.mdx "Clock"
+  /// [ConsoleMessage]: /api/class-consolemessage.mdx "ConsoleMessage"
+  /// [Coverage]: /api/class-coverage.mdx "Coverage"
+  /// [Credentials]: /api/class-credentials.mdx "Credentials"
+  /// [Debugger]: /api/class-debugger.mdx "Debugger"
+  /// [Dialog]: /api/class-dialog.mdx "Dialog"
+  /// [Disposable]: /api/class-disposable.mdx "Disposable"
+  /// [Download]: /api/class-download.mdx "Download"
+  /// [ElementHandle]: /api/class-elementhandle.mdx "ElementHandle"
+  /// [FileChooser]: /api/class-filechooser.mdx "FileChooser"
+  /// [Frame]: /api/class-frame.mdx "Frame"
+  /// [FrameLocator]: /api/class-framelocator.mdx "FrameLocator"
+  /// [GenericAssertions]: /api/class-genericassertions.mdx "GenericAssertions"
+  /// [JSHandle]: /api/class-jshandle.mdx "JSHandle"
+  /// [Keyboard]: /api/class-keyboard.mdx "Keyboard"
+  /// [Locator]: /api/class-locator.mdx "Locator"
+  /// [LocatorAssertions]: /api/class-locatorassertions.mdx "LocatorAssertions"
+  /// [Logger]: /api/class-logger.mdx "Logger"
+  /// [Mouse]: /api/class-mouse.mdx "Mouse"
+  /// [Page]: /api/class-page.mdx "Page"
+  /// [PageAssertions]: /api/class-pageassertions.mdx "PageAssertions"
+  /// [Playwright]: /api/class-playwright.mdx "Playwright"
+  /// [PlaywrightAssertions]: /api/class-playwrightassertions.mdx "PlaywrightAssertions"
+  /// [Request]: /api/class-request.mdx "Request"
+  /// [Response]: /api/class-response.mdx "Response"
+  /// [Route]: /api/class-route.mdx "Route"
+  /// [Screencast]: /api/class-screencast.mdx "Screencast"
+  /// [Selectors]: /api/class-selectors.mdx "Selectors"
+  /// [SnapshotAssertions]: /api/class-snapshotassertions.mdx "SnapshotAssertions"
+  /// [TimeoutError]: /api/class-timeouterror.mdx "TimeoutError"
+  /// [Touchscreen]: /api/class-touchscreen.mdx "Touchscreen"
+  /// [Tracing]: /api/class-tracing.mdx "Tracing"
+  /// [Video]: /api/class-video.mdx "Video"
+  /// [WebError]: /api/class-weberror.mdx "WebError"
+  /// [WebSocket]: /api/class-websocket.mdx "WebSocket"
+  /// [WebSocketRoute]: /api/class-websocketroute.mdx "WebSocketRoute"
+  /// [WebStorage]: /api/class-webstorage.mdx "WebStorage"
+  /// [Worker]: /api/class-worker.mdx "Worker"
+  /// [Electron]: /api/class-electron.mdx "Electron"
+  /// [ElectronApplication]: /api/class-electronapplication.mdx "ElectronApplication"
+  /// [Android]: /api/class-android.mdx "Android"
+  /// [AndroidDevice]: /api/class-androiddevice.mdx "AndroidDevice"
+  /// [AndroidInput]: /api/class-androidinput.mdx "AndroidInput"
+  /// [AndroidSocket]: /api/class-androidsocket.mdx "AndroidSocket"
+  /// [AndroidWebView]: /api/class-androidwebview.mdx "AndroidWebView"
+  /// [Fixtures]: /api/class-fixtures.mdx "Fixtures"
+  /// [FullConfig]: /api/class-fullconfig.mdx "FullConfig"
+  /// [FullProject]: /api/class-fullproject.mdx "FullProject"
+  /// [Location]: /api/class-location.mdx "Location"
+  /// [Test]: /api/class-test.mdx "Test"
+  /// [TestConfig]: /api/class-testconfig.mdx "TestConfig"
+  /// [TestInfo]: /api/class-testinfo.mdx "TestInfo"
+  /// [TestInfoError]: /api/class-testinfoerror.mdx "TestInfoError"
+  /// [TestOptions]: /api/class-testoptions.mdx "TestOptions"
+  /// [TestProject]: /api/class-testproject.mdx "TestProject"
+  /// [TestStepInfo]: /api/class-teststepinfo.mdx "TestStepInfo"
+  /// [WorkerInfo]: /api/class-workerinfo.mdx "WorkerInfo"
+  /// [Reporter]: /api/class-reporter.mdx "Reporter"
+  /// [Suite]: /api/class-suite.mdx "Suite"
+  /// [TestCase]: /api/class-testcase.mdx "TestCase"
+  /// [TestError]: /api/class-testerror.mdx "TestError"
+  /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestStep]: /api/class-teststep.mdx "TestStep"
+  /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
+  /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
+  ///
+  ///
+  /// [all available image tags]: https://mcr.microsoft.com/en-us/product/playwright/about "all available image tags"
+  /// [Microsoft Artifact Registry]: https://mcr.microsoft.com/en-us/product/playwright/about "Microsoft Artifact Registry"
+  /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<dynamic> jsonValue();
 
-  /// Returns `null` unless the underlying JavaScript value is a DOM [Node],
-  /// in which case it returns this handle narrowed to [ElementHandle].
+  /// Returns either `null` or the object handle itself, if the object handle is an instance of [ElementHandle].
   ///
-  /// Mirrors the TypeScript signature:
-  /// `asElement(): T extends Node ? ElementHandle<T> : null`
+  /// **Usage**
+  ///
+  /// ```dart
+  /// jsHandle.asElement();
+  /// ```
+  ///
+  /// **Returns**
+  /// - [ElementHandle]?
   ElementHandle<Node>? asElement();
 
+  /// The `jsHandle.dispose` method stops referencing the element handle.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await jsHandle.dispose();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
   Future<void> dispose();
 }
 

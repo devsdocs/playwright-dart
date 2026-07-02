@@ -9,8 +9,6 @@ abstract interface class EventTarget {
   // No protocol methods remain — the EventTarget channel was removed.
 }
 
-/// Minimal ChannelOwner that satisfies the [EventTarget] interface and
-/// can be registered in [Connection]'s object factory map.
 class EventTargetImpl extends ChannelOwner implements EventTarget {
   EventTargetImpl(
     super.connection,

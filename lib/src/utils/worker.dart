@@ -13,12 +13,66 @@ abstract interface class Worker {
 
   Stream<ConsoleMessage> get onConsole;
 
+  /// **Usage**
+  ///
+  /// ```dart
+  /// worker.url;
+  /// ```
+  ///
+  /// **Returns**
+  /// - String
   String get url;
 
   Future<void> disconnect({String? reason});
 
+  /// Returns the return value of [pageFunction].
+  ///
+  /// If the function passed to the [worker.evaluate()] returns a Future, then [worker.evaluate()] would wait for the future to complete and return its value.
+  ///
+  /// If the function passed to the [worker.evaluate()] returns a non-[Serializable] value, then [worker.evaluate()] returns `undefined`. Playwright also supports transferring some additional values that are not serializable by `JSON`: `-0`, `NaN`, `Infinity`, `-Infinity`.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await worker.evaluate(pageFunction);
+  /// await worker.evaluate(pageFunction, arg);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `pageFunction` Function | String
+  ///
+  ///   Function to be evaluated in the worker context.
+  /// - `arg` dynamic *(optional)*
+  ///
+  ///   Optional argument to pass to [pageFunction].
+  ///
+  /// **Returns**
+  /// - Future&lt;[Serializable]&gt;
   Future<dynamic> evaluate(String expression, [dynamic arg, bool? isFunction]);
 
+  /// Returns the return value of [pageFunction] as a [JSHandle].
+  ///
+  /// The only difference between [worker.evaluate()] and [worker.evaluateHandle()] is that [worker.evaluateHandle()] returns [JSHandle].
+  ///
+  /// If the function passed to the [worker.evaluateHandle()] returns a Future, then [worker.evaluateHandle()] would wait for the future to complete and return its value.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await worker.evaluateHandle(pageFunction);
+  /// await worker.evaluateHandle(pageFunction, arg);
+  /// ```
+  ///
+  /// **Arguments**
+  /// - `pageFunction` Function | String
+  ///
+  ///   Function to be evaluated in the worker context.
+  /// - `arg` dynamic *(optional)*
+  ///
+  ///   Optional argument to pass to [pageFunction].
+  ///
+  /// **Returns**
+  /// - Future&lt;[JSHandle]&gt;
   Future<JSHandle> evaluateHandle(
     String expression, [
 
