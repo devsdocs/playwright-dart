@@ -16,7 +16,7 @@ class Driver {
     final process = await Process.start(nodePath, [
       cliPath,
       'run-driver',
-    ], mode: ProcessStartMode.normal);
+    ]);
 
     Logger.debug(
       'Driver process started (pid ${process.pid}).',

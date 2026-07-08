@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:http/http.dart' as http;
@@ -6,24 +7,59 @@ import 'package:path/path.dart' as p;
 
 import '../utils/version.dart';
 
-String getPlatformName() {
+Future<String> _fetchNodeVersion(String driverVersion) async {
+  try {
+    final pkgUrl = 'https://registry.npmjs.org/playwright-core/$driverVersion';
+    final pkgRes = await http.get(Uri.parse(pkgUrl));
+    if (pkgRes.statusCode == 200) {
+      final json = jsonDecode(pkgRes.body);
+      final gitHead = json['gitHead'] as String?;
+      if (gitHead != null) {
+        final scriptUrl =
+            'https://raw.githubusercontent.com/microsoft/playwright/$gitHead/utils/build/build-playwright-driver.sh';
+        final scriptRes = await http.get(Uri.parse(scriptUrl));
+        if (scriptRes.statusCode == 200) {
+          final match =
+              RegExp(r'NODE_VERSION="([^"]+)"').firstMatch(scriptRes.body);
+          if (match != null && match.groupCount >= 1) {
+            return match.group(1)!;
+          }
+        }
+      }
+    }
+  } catch (e) {
+    Logger.debug(
+      'Failed to fetch dynamic Node.js version: $e',
+      name: 'playwright.driver',
+    );
+  }
+  return '20.14.0';
+}
+
+class NodePlatform {
+  final String suffix;
+  final String extension;
+  final bool isWindows;
+  NodePlatform(this.suffix, this.extension, this.isWindows);
+}
+
+NodePlatform _getNodePlatform() {
   if (Platform.isWindows) {
-    return 'win32_x64';
+    return NodePlatform('win-x64', 'zip', true);
   } else if (Platform.isMacOS) {
-    // Check for arm64
     final result = Process.runSync('uname', ['-m']);
     if (result.stdout.toString().trim() == 'arm64') {
-      return 'mac-arm64';
+      return NodePlatform('darwin-arm64', 'tar.gz', false);
     }
-    return 'mac';
+    return NodePlatform('darwin-x64', 'tar.gz', false);
   } else if (Platform.isLinux) {
     final result = Process.runSync('uname', ['-m']);
     if (result.stdout.toString().trim() == 'aarch64') {
-      return 'linux-arm64';
+      return NodePlatform('linux-arm64', 'tar.gz', false);
     }
-    return 'linux';
+    return NodePlatform('linux-x64', 'tar.gz', false);
   }
-  throw UnsupportedError('Unsupported platform: \${Platform.operatingSystem}');
+  throw UnsupportedError('Unsupported platform: ${Platform.operatingSystem}');
 }
 
 Future<String> downloadDriver() async {
@@ -43,37 +79,79 @@ Future<String> downloadDriver() async {
     return driverDir.path;
   }
 
-  Logger.info('Downloading Playwright driver $driverVersion...');
+  Logger.info('Assembling Playwright driver $driverVersion...');
 
   if (!driverDir.existsSync()) {
     driverDir.createSync(recursive: true);
   }
 
-  final platformName = getPlatformName();
-  final url =
-      'https://playwright.azureedge.net/builds/driver/playwright-$driverVersion-$platformName.zip';
-  final zipPath = p.join(driverDir.path, 'driver.zip');
-
-  final response = await http.get(Uri.parse(url));
-  if (response.statusCode != 200) {
+  // 1. Download and extract playwright-core
+  final coreUrl =
+      'https://registry.npmjs.org/playwright-core/-/playwright-core-$driverVersion.tgz';
+  Logger.info('Downloading playwright-core...');
+  final coreResponse = await http.get(Uri.parse(coreUrl));
+  if (coreResponse.statusCode != 200) {
     throw StateError(
-      'Failed to download driver: ${response.statusCode} ${response.body}',
+      'Failed to download playwright-core: ${coreResponse.statusCode}',
     );
   }
 
-  File(zipPath).writeAsBytesSync(response.bodyBytes);
+  Logger.info('Extracting playwright-core package...');
+  final coreArchive =
+      TarDecoder().decodeBytes(GZipDecoder().decodeBytes(coreResponse.bodyBytes));
+  for (final file in coreArchive) {
+    if (file.isFile) {
+      final outputPath = p.join(driverDir.path, p.normalize(file.name));
+      File(outputPath)
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(file.content as List<int>);
+    }
+  }
 
-  Logger.info('Extracting driver...');
-  await extractFileToDisk(zipPath, driverDir.path);
+  // 2. Download and extract Node.js binary
+  final platform = _getNodePlatform();
+  final nodeVersion = await _fetchNodeVersion(driverVersion);
+  final nodeDirName = 'node-v$nodeVersion-${platform.suffix}';
+  final nodeUrl =
+      'https://nodejs.org/dist/v$nodeVersion/$nodeDirName.${platform.extension}';
+  Logger.info('Downloading Node.js $nodeVersion...');
+  final nodeResponse = await http.get(Uri.parse(nodeUrl));
+  if (nodeResponse.statusCode != 200) {
+    throw StateError(
+      'Failed to download Node.js: ${nodeResponse.statusCode}',
+    );
+  }
 
-  File(zipPath).deleteSync();
+  Logger.info('Extracting Node.js binary...');
+  Archive nodeArchive;
+  if (platform.extension == 'zip') {
+    nodeArchive = ZipDecoder().decodeBytes(nodeResponse.bodyBytes);
+  } else {
+    nodeArchive =
+        TarDecoder().decodeBytes(GZipDecoder().decodeBytes(nodeResponse.bodyBytes));
+  }
 
-  if (!Platform.isWindows) {
-    Process.runSync('chmod', ['+x', p.join(driverDir.path, 'node')]);
+  for (final file in nodeArchive) {
+    if (file.isFile) {
+      final name = file.name;
+      if (name.endsWith('node.exe') || name.endsWith('bin/node')) {
+        final out =
+            File(p.join(driverDir.path, platform.isWindows ? 'node.exe' : 'node'));
+        out.createSync(recursive: true);
+        out.writeAsBytesSync(file.content as List<int>);
+        if (!platform.isWindows) {
+          Process.runSync('chmod', ['+x', out.path]);
+        }
+      } else if (name.endsWith('LICENSE')) {
+        final out = File(p.join(driverDir.path, 'LICENSE'));
+        out.createSync(recursive: true);
+        out.writeAsBytesSync(file.content as List<int>);
+      }
+    }
   }
 
   File(markerPath).writeAsStringSync('done');
-  Logger.info('Driver downloaded successfully.');
+  Logger.info('Driver assembled successfully.');
   return driverDir.path;
 }
 
@@ -98,9 +176,7 @@ Future<void> ensureBrowsersInstalled() async {
     throw StateError('Failed to install browsers: ${installProcess.exitCode}');
   }
 
-  // Linux requires OS-level shared libraries (libglib, libnss, etc.) that are
-  // not bundled with the browser binaries. Windows and macOS bundle their own
-  // dependencies, so this step is skipped on those platforms.
+  // Linux requires OS-level shared libraries
   if (Platform.isLinux) {
     await _installLinuxDeps(nodePath, cliPath);
   }
@@ -110,15 +186,9 @@ Future<void> ensureBrowsersInstalled() async {
 }
 
 /// Installs OS-level browser dependencies on Linux via `install-deps`.
-///
-/// Tries without elevated privileges first (succeeds when running as root,
-/// e.g. most Docker/CI containers). Falls back to `sudo` for user-space
-/// environments. Throws a [StateError] with actionable instructions if both
-/// attempts fail.
 Future<void> _installLinuxDeps(String nodePath, String cliPath) async {
   Logger.info('Installing Linux browser dependencies...');
 
-  // Attempt 1: without sudo (works in Docker/root CI).
   final direct = Process.runSync(nodePath, [cliPath, 'install-deps']);
   if (direct.exitCode == 0) {
     Logger.info('Linux browser dependencies installed.');
@@ -130,7 +200,6 @@ Future<void> _installLinuxDeps(String nodePath, String cliPath) async {
     name: 'playwright.driver',
   );
 
-  // Attempt 2: with sudo (works in user-space Linux).
   final withSudo = Process.runSync('sudo', [nodePath, cliPath, 'install-deps']);
   if (withSudo.exitCode == 0) {
     Logger.info('Linux browser dependencies installed (via sudo).');

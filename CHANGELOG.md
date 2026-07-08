@@ -1,5 +1,9 @@
-## 3.7.3
+## 3.7.4
 
+- **Feature**: Re-wrote driver downloader to natively fetch `playwright-core` from npmjs and Node.js directly from nodejs.org, completely removing the dependency on `npm install` and system `node`.
+- **Feature**: Added dynamic Node.js version resolution using upstream GitHub metadata, ensuring perfect compatibility with the bundled Playwright protocol version.
+
+## 3.7.3
 - **Documentation**: Overhauled the API documentation injection script to automatically detect and translate NodeJS-specific syntax patterns into native Dart equivalents.
 - **Documentation**: Translated JS `Promise` references to `Future`, `Buffer` types to `List<int>`, and `===` to `==`.
 - **Documentation**: Seamlessly converted JS arrow functions (e.g. `async route => { ... }`) to native Dart lambda syntax (e.g. `(route) async { ... }`).
