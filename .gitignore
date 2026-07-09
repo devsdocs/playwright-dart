@@ -20,7 +20,7 @@ build/
 doc/api/
 .protocol_cache/
 .protocol_cache.json
-
+tool/
 coverage/
 test-results/
 scratch/
