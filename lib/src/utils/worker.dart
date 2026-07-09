@@ -48,7 +48,7 @@ abstract interface class Worker {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [dynamic arg, bool? isFunction]);
+  Future<dynamic> evaluate(String expression, [Object? arg, bool? isFunction]);
 
   /// Returns the return value of [pageFunction] as a [JSHandle].
   ///
@@ -76,7 +76,7 @@ abstract interface class Worker {
   Future<JSHandle> evaluateHandle(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]);
@@ -84,7 +84,7 @@ abstract interface class Worker {
   Future<dynamic> evaluateExpression(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]);
@@ -92,7 +92,7 @@ abstract interface class Worker {
   Future<JSHandle> evaluateExpressionHandle(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]);
@@ -145,7 +145,7 @@ class WorkerImpl extends WorkerBase implements Worker {
   Future<dynamic> evaluate(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]) async {
@@ -164,7 +164,7 @@ class WorkerImpl extends WorkerBase implements Worker {
   Future<JSHandle> evaluateHandle(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]) async {
@@ -189,7 +189,7 @@ class WorkerImpl extends WorkerBase implements Worker {
   Future<dynamic> evaluateExpression(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]) => evaluate(expression, arg, isFunction);
@@ -198,7 +198,7 @@ class WorkerImpl extends WorkerBase implements Worker {
   Future<JSHandle> evaluateExpressionHandle(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]) => evaluateHandle(expression, arg, isFunction);

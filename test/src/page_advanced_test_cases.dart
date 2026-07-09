@@ -173,7 +173,9 @@ void main() {
         </select>
       ''');
 
-      final selected = await page.selectOption('#sel', 'y');
+      final selected = await page.selectOption('#sel', [
+        SelectOption.value('y'),
+      ]);
       expect(selected, contains('y'));
       expect(
         await page.evaluate('() => document.getElementById("sel").value'),

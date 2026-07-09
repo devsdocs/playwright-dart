@@ -13,7 +13,7 @@ void main() {
     test('should generate PDF', (page) async {
       await page.goto('https://example.com');
 
-      final pdfBytes = await page.pdf(format: 'A4', landscape: true);
+      final pdfBytes = await page.pdf(format: PdfFormat.a4, landscape: true);
 
       expect(pdfBytes, isNotEmpty);
       expect(pdfBytes.length, greaterThan(100));

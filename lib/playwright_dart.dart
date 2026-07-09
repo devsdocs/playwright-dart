@@ -37,11 +37,17 @@ export 'src/interaction/api_response_assertions.dart';
 export 'src/interaction/keyboard.dart';
 export 'src/interaction/mouse.dart';
 export 'src/interaction/file_chooser.dart';
+export 'src/interaction/interaction_types.dart';
+export 'src/core/route_matcher.dart';
+export 'src/core/pdf_dimension.dart';
+export 'src/core/pdf_format.dart';
+export 'src/core/browser_permission.dart';
 
 // Network
 export 'src/network/request.dart';
 export 'src/network/response.dart';
 export 'src/network/route.dart';
+export 'src/network/route_error_code.dart';
 export 'src/network/api_request_context.dart';
 export 'src/network/websocket.dart';
 export 'src/network/websocket_route.dart';

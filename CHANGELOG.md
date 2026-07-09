@@ -1,3 +1,12 @@
+## 3.8.0
+
+- **Breaking**: Refactored various string-based parameters in the public API into strongly-typed enums. 
+  - `BrowserContext.grantPermissions` now accepts `List<BrowserPermission>` instead of `List<String>`.
+  - `Route.abort` now accepts `RouteErrorCode?` instead of `String?`.
+  - `Page.pdf` now accepts `PdfFormat?` instead of `String?` for the `format` configuration.
+  - Dimension configurations (`width`, `height`, `margin`) for PDFs are now strongly typed with `PdfDimension` and `PdfUnit` instead of raw strings.
+- **Refactor**: Replaced generic `dynamic` arguments with `RouteMatcher` in API methods like `waitForRequest`, `waitForResponse`, and `waitForNavigation`.
+
 ## 3.7.4
 
 - **Feature**: Re-wrote driver downloader to natively fetch `playwright-core` from npmjs and Node.js directly from nodejs.org, completely removing the dependency on `npm install` and system `node`.

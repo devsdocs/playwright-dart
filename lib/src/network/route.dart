@@ -1,4 +1,5 @@
 import '../generated/channels.dart';
+import 'route_error_code.dart';
 
 import 'request.dart';
 
@@ -130,7 +131,7 @@ abstract interface class Route {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> abort({String? errorCode});
+  Future<void> abort({RouteErrorCode? errorCode});
 
   /// Fulfills route's request with given response.
   ///
@@ -326,8 +327,8 @@ class RouteImpl extends RouteBase implements Route {
   Request get request => typedInitializer.request as Request;
 
   @override
-  Future<void> abort({String? errorCode}) async {
-    await channel_abort(errorCode: errorCode);
+  Future<void> abort({RouteErrorCode? errorCode}) async {
+    await channel_abort(errorCode: errorCode?.value);
   }
 
   @override

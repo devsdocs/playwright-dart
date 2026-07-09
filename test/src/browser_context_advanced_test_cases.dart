@@ -36,7 +36,7 @@ void main() {
 
       // Grant geolocation permission
       await context.grantPermissions([
-        'geolocation',
+        BrowserPermission.geolocation,
       ], origin: 'https://example.com');
 
       final ctxPage = await context.newPage();

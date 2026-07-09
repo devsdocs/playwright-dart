@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../interaction/interaction_types.dart';
 import '../generated/channels.dart';
 
 dynamic parseSerializedValue(SerializedValue value) {
@@ -93,20 +94,17 @@ class SelectOptionParams {
   SelectOptionParams({this.elements, this.options});
 }
 
-SelectOptionParams parseSelectOptions(dynamic values) {
+SelectOptionParams parseSelectOptions(List<SelectOption>? values) {
   if (values == null) return SelectOptionParams();
 
   final elements = <ElementHandleBase>[];
   final options = <Map<String, dynamic>>[];
 
-  final list = values is List ? values : [values];
-  for (final item in list) {
-    if (item is ElementHandleBase) {
-      elements.add(item);
-    } else if (item is Map) {
-      options.add(item.cast<String, dynamic>());
-    } else if (item is String) {
-      options.add({'valueOrLabel': item});
+  for (final item in values) {
+    if (item.element != null) {
+      elements.add(item.element as ElementHandleBase);
+    } else if (item.value != null || item.label != null || item.index != null) {
+      options.add(item.toJson());
     }
   }
 
@@ -122,26 +120,21 @@ class InputFilesParams {
   InputFilesParams({this.payloads, this.localPaths});
 }
 
-InputFilesParams parseInputFiles(dynamic files) {
+InputFilesParams parseInputFiles(List<InputFile>? files) {
   if (files == null) return InputFilesParams();
 
   final payloads = <Map<String, dynamic>>[];
   final localPaths = <String>[];
 
-  final list = files is List ? files : [files];
-  for (final item in list) {
-    if (item is String) {
-      localPaths.add(item);
-    } else if (item is Map) {
-      final map = item.cast<String, dynamic>();
+  for (final item in files) {
+    if (item.path != null) {
+      localPaths.add(item.path!);
+    } else if (item.payload != null) {
+      final map = item.payload!.toJson();
       if (map['buffer'] is List<int>) {
         map['buffer'] = base64Encode(map['buffer'] as List<int>);
       }
       payloads.add(map);
-    } else {
-      try {
-        payloads.add(item.toJson() as Map<String, dynamic>);
-      } catch (_) {}
     }
   }
 

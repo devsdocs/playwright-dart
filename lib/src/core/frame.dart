@@ -1,3 +1,5 @@
+import '../interaction/interaction_types.dart';
+import 'route_matcher.dart';
 import '../interaction/element_handle.dart';
 
 import '../infrastructure/channel_owner.dart';
@@ -645,7 +647,7 @@ abstract interface class Frame {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [dynamic arg]);
+  Future<dynamic> evaluate(String expression, [Object? arg]);
 
   /// **WARNING**
   /// [Discouraged]
@@ -773,7 +775,7 @@ abstract interface class Frame {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> waitForURL(
-    dynamic urlOrPredicate, {
+    RouteMatcher urlOrPredicate, {
 
     double? timeout,
 
@@ -822,7 +824,7 @@ abstract interface class Frame {
   /// **Returns**
   /// - Future&lt;[Response]?&gt;
   Future<void> waitForNavigation({
-    String? url,
+    RouteMatcher? url,
 
     LifecycleEvent? waitUntil,
 
@@ -1703,7 +1705,7 @@ abstract interface class Frame {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? strict,
 
@@ -1716,7 +1718,7 @@ abstract interface class Frame {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]);
@@ -2251,7 +2253,7 @@ abstract interface class Frame {
   Future<JSHandle> waitForFunction(
     String expression, {
 
-    dynamic arg,
+    Object? arg,
 
     double? timeout,
 
@@ -2320,7 +2322,7 @@ abstract interface class Frame {
 
     String type, {
 
-    dynamic eventInit,
+    Map<String, dynamic>? eventInit,
 
     double? timeout,
 
@@ -2373,7 +2375,7 @@ abstract interface class Frame {
 
     bool? isFunction,
 
-    dynamic arg,
+    Object? arg,
   });
 
   Future<JSHandle> evaluateExpressionHandle(
@@ -2381,7 +2383,7 @@ abstract interface class Frame {
 
     bool? isFunction,
 
-    dynamic arg,
+    Object? arg,
   });
 
   /// Returns the `frame` or `iframe` element handle which corresponds to this frame.
@@ -2419,7 +2421,7 @@ abstract interface class Frame {
 
     double? timeout,
 
-    dynamic expressionArg,
+    Object? expressionArg,
 
     FrameExpectPseudoEnum? pseudo,
   });
@@ -2494,7 +2496,7 @@ abstract interface class Frame {
   Future<List<String>> selectOption(
     String selector,
 
-    dynamic values, {
+    List<SelectOption>? values, {
 
     bool? force,
 
@@ -2556,7 +2558,7 @@ abstract interface class Frame {
   Future<void> setInputFiles(
     String selector,
 
-    dynamic files, {
+    List<InputFile>? files, {
 
     bool? noWaitAfter,
 
@@ -2758,7 +2760,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<dynamic> evaluate(String expression, [dynamic arg]) async {
+  Future<dynamic> evaluate(String expression, [Object? arg]) async {
     Logger.debug('evaluate', name: 'playwright.frame');
     final result = await channel_evaluateExpression(
       expression: expression,
@@ -2824,7 +2826,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<void> waitForURL(
-    dynamic urlOrPredicate, {
+    RouteMatcher urlOrPredicate, {
 
     double? timeout,
 
@@ -2835,15 +2837,14 @@ class FrameImpl extends FrameBase implements Frame {
     );
 
     bool matches(String currentUrl) {
-      if (urlOrPredicate is String) {
-        return currentUrl.contains(urlOrPredicate) ||
-            RegExp(urlOrPredicate).hasMatch(currentUrl);
-      } else if (urlOrPredicate is RegExp) {
-        return urlOrPredicate.hasMatch(currentUrl);
-      } else if (urlOrPredicate is bool Function(String)) {
-        return urlOrPredicate(currentUrl);
+      if (urlOrPredicate is StringRouteMatcher) {
+        return currentUrl.contains(urlOrPredicate.glob) ||
+            RegExp(urlOrPredicate.glob).hasMatch(currentUrl);
+      } else if (urlOrPredicate is RegExpRouteMatcher) {
+        return urlOrPredicate.regex.hasMatch(currentUrl);
+      } else if (urlOrPredicate is FunctionRouteMatcher) {
+        return urlOrPredicate.predicate(currentUrl);
       }
-
       return false;
     }
 
@@ -2888,7 +2889,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<void> waitForNavigation({
-    String? url,
+    RouteMatcher? url,
 
     LifecycleEvent? waitUntil,
 
@@ -3354,7 +3355,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? strict,
 
@@ -3381,7 +3382,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     bool? isFunction,
   ]) async {
@@ -3600,7 +3601,7 @@ class FrameImpl extends FrameBase implements Frame {
   Future<JSHandle> waitForFunction(
     String expression, {
 
-    dynamic arg,
+    Object? arg,
 
     double? timeout,
 
@@ -3629,7 +3630,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     String type, {
 
-    dynamic eventInit,
+    Map<String, dynamic>? eventInit,
 
     double? timeout,
 
@@ -3735,7 +3736,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? isFunction,
 
-    dynamic arg,
+    Object? arg,
   }) async {
     final result = await channel_evaluateExpression(
       expression: expression,
@@ -3754,7 +3755,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? isFunction,
 
-    dynamic arg,
+    Object? arg,
   }) async {
     final result = await channel_evaluateExpressionHandle(
       expression: expression,
@@ -3796,7 +3797,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     double? timeout,
 
-    dynamic expressionArg,
+    Object? expressionArg,
 
     FrameExpectPseudoEnum? pseudo,
   }) async {
@@ -3870,7 +3871,7 @@ class FrameImpl extends FrameBase implements Frame {
   Future<List<String>> selectOption(
     String selector,
 
-    dynamic values, {
+    List<SelectOption>? values, {
 
     bool? force,
 
@@ -3927,7 +3928,7 @@ class FrameImpl extends FrameBase implements Frame {
   Future<void> setInputFiles(
     String selector,
 
-    dynamic files, {
+    List<InputFile>? files, {
 
     bool? noWaitAfter,
 

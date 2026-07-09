@@ -5,7 +5,7 @@ import '../generated/channels.dart';
 import '../utils/logger.dart';
 
 Future<void> sharedRouteFromHAR(
-  dynamic contextOrPage,
+  Object contextOrPage,
 
   String harPath, {
 
@@ -13,7 +13,7 @@ Future<void> sharedRouteFromHAR(
 
   bool notFoundFallback = false,
 }) async {
-  final connection = contextOrPage.connection;
+  final connection = (contextOrPage as dynamic).connection;
 
   final playwright =
       connection.objects.values.firstWhere((e) => e is PlaywrightBase)
@@ -23,7 +23,7 @@ Future<void> sharedRouteFromHAR(
 
   Logger.debug('HAR opened with id: $harId', name: 'playwright.har');
 
-  await contextOrPage.route(url ?? '**/*', (route) async {
+  await (contextOrPage as dynamic).route(url ?? '**/*', (route) async {
     final request = route.request;
 
     Logger.debug(

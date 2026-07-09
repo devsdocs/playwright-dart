@@ -180,7 +180,7 @@ void main() {
 
     test('should expose timing and failure properties', (page) async {
       await page.route('**/timeout', (route) async {
-        await route.abort(errorCode: 'failed');
+        await route.abort(errorCode: RouteErrorCode.failed);
       });
 
       final requestFuture = page.onRequestFailed.first;

@@ -758,7 +758,7 @@ class LocatorAssertions {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> toContainClass(dynamic expected, {double? timeout}) async {
+  Future<void> toContainClass(Object expected, {double? timeout}) async {
     final expectedText = expected is List
         ? expected
               .map(
@@ -981,7 +981,7 @@ class LocatorAssertions {
   /// - Future&lt;void&gt;
   Future<void> toHaveJSProperty(
     String name,
-    dynamic value, {
+    Object? value, {
     double? timeout,
   }) async {
     await (_locator.frame as FrameImpl).channel_expect(
@@ -1057,7 +1057,7 @@ class LocatorAssertions {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> toHaveValues(dynamic values, {double? timeout}) async {
+  Future<void> toHaveValues(Object values, {double? timeout}) async {
     final expectedText = values is List
         ? values
               .map(

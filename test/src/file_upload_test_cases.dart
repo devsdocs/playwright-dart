@@ -33,7 +33,7 @@ void main() {
         buffer: utf8.encode('Hello from Playwright Dart!'),
       );
 
-      await page.locator('#upload').setInputFiles([payload]);
+      await page.locator('#upload').setInputFiles([InputFile.payload(payload)]);
 
       // Wait for file reader to load
       await page.waitForFunction('() => fileContent !== ""');

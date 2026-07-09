@@ -32,7 +32,7 @@ void main() {
           longitude: 18.0686,
         ),
       );
-      await context.grantPermissions(['geolocation']);
+      await context.grantPermissions([BrowserPermission.geolocation]);
 
       // Geolocation requires a secure origin in Chromium (HTTPS or localhost)
       await page.goto('https://example.com');

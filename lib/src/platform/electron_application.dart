@@ -26,12 +26,12 @@ abstract interface class ElectronApplication {
   Future<dynamic> evaluateExpression(
     String expression, {
     bool? isFunction,
-    dynamic arg,
+    Object? arg,
   });
   Future<JSHandle> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
-    dynamic arg,
+    Object? arg,
   });
   Future<void> updateSubscription(
     ElectronApplicationUpdateSubscriptionEventEnum event,
@@ -76,7 +76,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
   Future<dynamic> evaluateExpression(
     String expression, {
     bool? isFunction,
-    dynamic arg,
+    Object? arg,
   }) async {
     final result = await channel_evaluateExpression(
       expression: expression,
@@ -90,7 +90,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
   Future<JSHandle> evaluateExpressionHandle(
     String expression, {
     bool? isFunction,
-    dynamic arg,
+    Object? arg,
   }) async {
     final result = await channel_evaluateExpressionHandle(
       expression: expression,

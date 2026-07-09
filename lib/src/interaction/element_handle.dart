@@ -5,6 +5,7 @@ import '../infrastructure/serialization.dart';
 // Re-exports Node, Element, etc. from package:html/dom.dart
 import '../infrastructure/html_node.dart';
 import '../core/frame.dart';
+import 'interaction_types.dart';
 import 'dart:convert';
 
 /// A handle to a DOM element in the browser page.
@@ -32,14 +33,14 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   Future<dynamic> evalOnSelector(
     String selector,
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? strict,
     bool? isFunction,
   ]);
   Future<dynamic> evalOnSelectorAll(
     String selector,
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]);
 
@@ -907,7 +908,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> dispatchEvent(String type, {dynamic eventInit});
+  Future<void> dispatchEvent(String type, {Map<String, dynamic>? eventInit});
 
   /// **WARNING**
   /// [Discouraged]
@@ -1034,7 +1035,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// **Returns**
   /// - Future&lt;List&lt;String&gt;&gt;
   Future<List<String>> selectOption({
-    dynamic values,
+    List<SelectOption>? values,
     bool? force,
     double? timeout,
     List<ElementHandle>? elements,
@@ -1308,7 +1309,7 @@ class ElementHandleImpl extends ElementHandleBase
   @override
   Future<dynamic> evaluate(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) async {
     final result = await channel_evaluateExpression(
@@ -1322,7 +1323,7 @@ class ElementHandleImpl extends ElementHandleBase
   @override
   Future<JSHandle<Object?>> evaluateHandle(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) async {
     final result = await channel_evaluateExpressionHandle(
@@ -1336,14 +1337,14 @@ class ElementHandleImpl extends ElementHandleBase
   @override
   Future<dynamic> evaluateExpression(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) => evaluate(expression, arg, isFunction);
 
   @override
   Future<JSHandle<Object?>> evaluateExpressionHandle(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) => evaluateHandle(expression, arg, isFunction);
 
@@ -1387,7 +1388,7 @@ class ElementHandleImpl extends ElementHandleBase
   Future<dynamic> evalOnSelector(
     String selector,
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? strict,
     bool? isFunction,
   ]) async {
@@ -1405,7 +1406,7 @@ class ElementHandleImpl extends ElementHandleBase
   Future<dynamic> evalOnSelectorAll(
     String selector,
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) async {
     final result = await channel_evalOnSelectorAll(
@@ -1669,7 +1670,10 @@ class ElementHandleImpl extends ElementHandleBase
   }
 
   @override
-  Future<void> dispatchEvent(String type, {dynamic eventInit}) async {
+  Future<void> dispatchEvent(
+    String type, {
+    Map<String, dynamic>? eventInit,
+  }) async {
     await channel_dispatchEvent(
       type: type,
       eventInit: serializeArgument(eventInit),
@@ -1698,7 +1702,7 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<List<String>> selectOption({
-    dynamic values,
+    List<SelectOption>? values,
     bool? force,
     double? timeout,
     List<ElementHandle>? elements,
@@ -1707,19 +1711,13 @@ class ElementHandleImpl extends ElementHandleBase
     List<ElementHandleSelectOptionOptionsItems>? finalOptions = options;
     if (finalOptions == null && values != null) {
       finalOptions = [];
-      if (values is String) {
-        finalOptions.add(
-          ElementHandleSelectOptionOptionsItems(valueOrLabel: values),
-        );
-      } else if (values is List) {
-        finalOptions.addAll(
-          values.map(
-            (v) => ElementHandleSelectOptionOptionsItems(
-              valueOrLabel: v.toString(),
-            ),
+      finalOptions.addAll(
+        values.map(
+          (v) => ElementHandleSelectOptionOptionsItems(
+            valueOrLabel: v.value ?? v.label ?? v.index?.toString() ?? '',
           ),
-        );
-      }
+        ),
+      );
     }
 
     final result = await channel_selectOption(

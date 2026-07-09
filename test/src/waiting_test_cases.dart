@@ -54,7 +54,7 @@ void main() {
       page.onRequest.listen((req) => print('REQ: \${req.url}'));
 
       final requestFuture = page.waitForRequest(
-        'http://localhost/dummy-endpoint',
+        RouteMatcher.string('http://localhost/dummy-endpoint'),
       );
 
       await Future.delayed(Duration(milliseconds: 100));

@@ -14,12 +14,15 @@ void main() {
       await page.goto('about:blank');
       // Listen for the first response and check the property type
       final response = await Future.any([
-        page.waitForResponse('about:blank', timeout: 5000).catchError((
-          _,
-        ) async {
-          await page.setContent('<p>hello</p>');
-          return page.waitForResponse((r) => true, timeout: 3000);
-        }),
+        page
+            .waitForResponse(RouteMatcher.string('about:blank'), timeout: 5000)
+            .catchError((_) async {
+              await page.setContent('<p>hello</p>');
+              return page.waitForResponse(
+                RouteMatcher.function((dynamic r) => true),
+                timeout: 3000,
+              );
+            }),
         Future.delayed(Duration(milliseconds: 2000), () => null),
       ]);
       if (response != null) {

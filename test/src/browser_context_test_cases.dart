@@ -63,7 +63,7 @@ void main() {
     test('should grant and clear permissions', (page) async {
       final ctx = await browser.newContext();
       try {
-        await ctx.grantPermissions(['geolocation']);
+        await ctx.grantPermissions([BrowserPermission.geolocation]);
         await ctx.clearPermissions();
       } finally {
         await ctx.close();

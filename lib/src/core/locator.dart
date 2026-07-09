@@ -1,3 +1,4 @@
+import '../interaction/interaction_types.dart';
 import 'dart:convert';
 
 import 'dart:typed_data';
@@ -2082,7 +2083,7 @@ class Locator {
   /// If [pageFunction] returns a Future, this method will wait for the future to complete and return its value.
   ///
   /// If [pageFunction] throws or rejects, this method throws.
-  Future<dynamic> evaluateAll(String expression, [dynamic arg]) async {
+  Future<dynamic> evaluateAll(String expression, [Object? arg]) async {
     return frame.evalOnSelectorAll(selector, expression, arg);
   }
 
@@ -2450,7 +2451,7 @@ class Locator {
   ///
   /// Triggers a `change` and `input` event once all the provided options have been selected.
   Future<List<String>> selectOption(
-    dynamic values, {
+    List<SelectOption>? values, {
 
     bool? force,
 
@@ -2518,7 +2519,7 @@ class Locator {
   ///
   /// This method expects [Locator] to point to an [input element]. However, if the element is inside the `<label>` element that has an associated [control], targets the control instead.
   Future<void> setInputFiles(
-    dynamic files, {
+    List<InputFile>? files, {
 
     bool? noWaitAfter,
 
@@ -2585,7 +2586,7 @@ class Locator {
   Future<void> dispatchEvent(
     String type, {
 
-    dynamic eventInit,
+    Map<String, dynamic>? eventInit,
 
     double? timeout,
   }) async {
@@ -2894,7 +2895,7 @@ class Locator {
   /// If [pageFunction] returns a Future, this method will wait for the future to complete and return its value.
   ///
   /// If [pageFunction] throws or rejects, this method throws.
-  Future<dynamic> evaluate(String expression, [dynamic arg]) async {
+  Future<dynamic> evaluate(String expression, [Object? arg]) async {
     // Locator evaluation in Playwright takes the element as the first arg.
 
     // For simplicity, we just use the frame evaluate and pass the selector,

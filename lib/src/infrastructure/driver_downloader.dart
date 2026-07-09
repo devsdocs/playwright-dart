@@ -19,8 +19,9 @@ Future<String> _fetchNodeVersion(String driverVersion) async {
             'https://raw.githubusercontent.com/microsoft/playwright/$gitHead/utils/build/build-playwright-driver.sh';
         final scriptRes = await http.get(Uri.parse(scriptUrl));
         if (scriptRes.statusCode == 200) {
-          final match =
-              RegExp(r'NODE_VERSION="([^"]+)"').firstMatch(scriptRes.body);
+          final match = RegExp(
+            r'NODE_VERSION="([^"]+)"',
+          ).firstMatch(scriptRes.body);
           if (match != null && match.groupCount >= 1) {
             return match.group(1)!;
           }
@@ -97,8 +98,9 @@ Future<String> downloadDriver() async {
   }
 
   Logger.info('Extracting playwright-core package...');
-  final coreArchive =
-      TarDecoder().decodeBytes(GZipDecoder().decodeBytes(coreResponse.bodyBytes));
+  final coreArchive = TarDecoder().decodeBytes(
+    GZipDecoder().decodeBytes(coreResponse.bodyBytes),
+  );
   for (final file in coreArchive) {
     if (file.isFile) {
       final outputPath = p.join(driverDir.path, p.normalize(file.name));
@@ -117,9 +119,7 @@ Future<String> downloadDriver() async {
   Logger.info('Downloading Node.js $nodeVersion...');
   final nodeResponse = await http.get(Uri.parse(nodeUrl));
   if (nodeResponse.statusCode != 200) {
-    throw StateError(
-      'Failed to download Node.js: ${nodeResponse.statusCode}',
-    );
+    throw StateError('Failed to download Node.js: ${nodeResponse.statusCode}');
   }
 
   Logger.info('Extracting Node.js binary...');
@@ -127,16 +127,18 @@ Future<String> downloadDriver() async {
   if (platform.extension == 'zip') {
     nodeArchive = ZipDecoder().decodeBytes(nodeResponse.bodyBytes);
   } else {
-    nodeArchive =
-        TarDecoder().decodeBytes(GZipDecoder().decodeBytes(nodeResponse.bodyBytes));
+    nodeArchive = TarDecoder().decodeBytes(
+      GZipDecoder().decodeBytes(nodeResponse.bodyBytes),
+    );
   }
 
   for (final file in nodeArchive) {
     if (file.isFile) {
       final name = file.name;
       if (name.endsWith('node.exe') || name.endsWith('bin/node')) {
-        final out =
-            File(p.join(driverDir.path, platform.isWindows ? 'node.exe' : 'node'));
+        final out = File(
+          p.join(driverDir.path, platform.isWindows ? 'node.exe' : 'node'),
+        );
         out.createSync(recursive: true);
         out.writeAsBytesSync(file.content as List<int>);
         if (!platform.isWindows) {

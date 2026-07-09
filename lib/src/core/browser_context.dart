@@ -32,6 +32,8 @@ import '../network/route_from_har.dart';
 
 import '../network/request.dart';
 
+import 'browser_permission.dart';
+
 import '../utils/logger.dart';
 
 /// BrowserContexts provide a way to operate multiple independent browser sessions.
@@ -332,7 +334,10 @@ abstract interface class BrowserContext {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> grantPermissions(List<String> permissions, {String? origin});
+  Future<void> grantPermissions(
+    List<BrowserPermission> permissions, {
+    String? origin,
+  });
 
   /// The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are merged with page-specific extra HTTP headers set with [page.setExtraHTTPHeaders()]. If page overrides a particular header, page-specific header value will be used instead of the browser context header value.
   ///
@@ -1496,17 +1501,15 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> grantPermissions(
-    List<String> permissions, {
-
+    List<BrowserPermission> permissions, {
     String? origin,
   }) async {
     Logger.debug(
-      'grantPermissions $permissions${origin != null ? ' (origin: $origin)' : ''}',
-      name: 'playwright.context',
+      'grantPermissions ${permissions.map((e) => e.value).toList()}${origin != null ? ' (origin: $origin)' : ''}',
+      name: 'playwright.browserContext',
     );
     await super.channel_grantPermissions(
-      permissions: permissions,
-
+      permissions: permissions.map((e) => e.value).toList(),
       origin: origin,
     );
   }

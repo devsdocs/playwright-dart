@@ -153,7 +153,9 @@ void main() {
         </select>
       ''');
 
-      final selected = await page.locator('#sel').selectOption('b');
+      final selected = await page.locator('#sel').selectOption([
+        SelectOption.value('b'),
+      ]);
       expect(selected, contains('b'));
 
       final value = await page.evaluate(

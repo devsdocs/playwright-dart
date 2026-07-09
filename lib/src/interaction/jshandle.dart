@@ -49,7 +49,7 @@ abstract interface class JSHandle<T extends Object?> {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [dynamic arg, bool? isFunction]);
+  Future<dynamic> evaluate(String expression, [Object? arg, bool? isFunction]);
 
   /// Returns the return value of [pageFunction] as a [JSHandle].
   ///
@@ -80,17 +80,17 @@ abstract interface class JSHandle<T extends Object?> {
   /// - Future&lt;[JSHandle]&gt;
   Future<JSHandle<Object?>> evaluateHandle(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]);
   Future<dynamic> evaluateExpression(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]);
   Future<JSHandle<Object?>> evaluateExpressionHandle(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]);
 
@@ -277,7 +277,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
   @override
   Future<dynamic> evaluate(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) async {
     final result = await channel_evaluateExpression(
@@ -291,7 +291,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
   @override
   Future<JSHandle<Object?>> evaluateHandle(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) async {
     final result = await channel_evaluateExpressionHandle(
@@ -305,14 +305,14 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
   @override
   Future<dynamic> evaluateExpression(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) => evaluate(expression, arg, isFunction);
 
   @override
   Future<JSHandle<Object?>> evaluateExpressionHandle(
     String expression, [
-    dynamic arg,
+    Object? arg,
     bool? isFunction,
   ]) => evaluateHandle(expression, arg, isFunction);
 

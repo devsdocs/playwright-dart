@@ -40,7 +40,9 @@ void main() async {
   await page.locator('#name').fill('Playwright Dart');
   print('Input filled!');
 
-  final selected = await page.locator('#dropdown').selectOption('opt2');
+  final selected = await page.locator('#dropdown').selectOption([
+    SelectOption.value('opt2'),
+  ]);
   print('Selected: $selected');
 
   // Evaluate JavaScript

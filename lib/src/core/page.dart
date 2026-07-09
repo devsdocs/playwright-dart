@@ -1,3 +1,6 @@
+import '../interaction/interaction_types.dart';
+import 'pdf_dimension.dart';
+import 'route_matcher.dart';
 import '../utils/download.dart';
 
 import '../interaction/jshandle.dart';
@@ -15,6 +18,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'dart:typed_data';
+
+import 'pdf_format.dart';
 
 import 'browser_context.dart';
 
@@ -286,7 +291,10 @@ abstract interface class Page {
   ///
   /// **Returns**
   /// - Future&lt;[Request]&gt;
-  Future<Request> waitForRequest(dynamic urlOrPredicate, {double? timeout});
+  Future<Request> waitForRequest(
+    RouteMatcher urlOrPredicate, {
+    double? timeout,
+  });
 
   /// Returns the matched response. See [waiting for event] for more details about events.
   ///
@@ -321,7 +329,10 @@ abstract interface class Page {
   ///
   /// **Returns**
   /// - Future&lt;[Response]&gt;
-  Future<Response> waitForResponse(dynamic urlOrPredicate, {double? timeout});
+  Future<Response> waitForResponse(
+    RouteMatcher urlOrPredicate, {
+    double? timeout,
+  });
 
   /// Indicates that the page has been closed.
   ///
@@ -527,7 +538,7 @@ abstract interface class Page {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> waitForURL(
-    dynamic urlOrPredicate, {
+    RouteMatcher urlOrPredicate, {
 
     double? timeout,
 
@@ -576,7 +587,7 @@ abstract interface class Page {
   /// **Returns**
   /// - Future&lt;[Response]?&gt;
   Future<void> waitForNavigation({
-    String? url,
+    RouteMatcher? url,
 
     LifecycleEvent? waitUntil,
 
@@ -699,7 +710,7 @@ abstract interface class Page {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [dynamic arg]);
+  Future<dynamic> evaluate(String expression, [Object? arg]);
 
   /// **WARNING**
   /// [Discouraged]
@@ -1486,7 +1497,7 @@ abstract interface class Page {
   Future<Uint8List> pdf({
     String? path,
 
-    String? format,
+    PdfFormat? format,
 
     bool? landscape,
 
@@ -1502,9 +1513,9 @@ abstract interface class Page {
 
     String? pageRanges,
 
-    dynamic width,
+    PdfDimension? width,
 
-    dynamic height,
+    PdfDimension? height,
 
     bool? preferCSSPageSize,
 
@@ -2424,7 +2435,7 @@ abstract interface class Page {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
   ]);
 
   /// Evaluates JavaScript on all elements matching the selector.
@@ -2433,7 +2444,7 @@ abstract interface class Page {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
   ]);
 
   /// **WARNING**
@@ -2948,7 +2959,7 @@ abstract interface class Page {
   Future<JSHandle> waitForFunction(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     double? timeout,
 
@@ -3015,7 +3026,7 @@ abstract interface class Page {
 
     String type, {
 
-    dynamic eventInit,
+    Map<String, dynamic>? eventInit,
 
     double? timeout,
   });
@@ -3124,7 +3135,7 @@ abstract interface class Page {
   Future<List<String>> selectOption(
     String selector,
 
-    dynamic values, {
+    List<SelectOption>? values, {
 
     bool? force,
 
@@ -3180,7 +3191,7 @@ abstract interface class Page {
   Future<void> setInputFiles(
     String selector,
 
-    dynamic files, {
+    List<InputFile>? files, {
 
     bool? noWaitAfter,
 
@@ -4228,7 +4239,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<Request> waitForRequest(
-    dynamic urlOrPredicate, {
+    RouteMatcher urlOrPredicate, {
 
     double? timeout,
   }) async {
@@ -4243,7 +4254,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<Response> waitForResponse(
-    dynamic urlOrPredicate, {
+    RouteMatcher urlOrPredicate, {
 
     double? timeout,
   }) async {
@@ -4258,34 +4269,25 @@ class PageImpl extends PageBase implements Page {
 
   Future<T> _waitForNetworkEvent<T>(
     Stream<T> stream,
-
-    dynamic urlOrPredicate, {
-
+    RouteMatcher urlOrPredicate, {
     double? timeout,
   }) async {
     final timeoutDuration = Duration(milliseconds: timeout?.toInt() ?? 30000);
 
     return await stream
         .firstWhere((event) {
-          if (urlOrPredicate is String) {
+          if (urlOrPredicate is StringRouteMatcher) {
             final url = (event as dynamic).url as String;
 
-            return url.contains(urlOrPredicate) ||
-                RegExp(urlOrPredicate).hasMatch(url);
-          } else if (urlOrPredicate is RegExp) {
+            return url.contains(urlOrPredicate.glob) ||
+                RegExp(urlOrPredicate.glob).hasMatch(url);
+          } else if (urlOrPredicate is RegExpRouteMatcher) {
             final url = (event as dynamic).url as String;
 
-            return urlOrPredicate.hasMatch(url);
-          } else if (urlOrPredicate is Function) {
-            // Support both typed (bool Function(T)) and untyped predicates.
-
-            // Dart type-checks on generic Function subtypes are not reliable
-
-            // at runtime, so we call dynamically and coerce to bool.
-
+            return urlOrPredicate.regex.hasMatch(url);
+          } else if (urlOrPredicate is FunctionRouteMatcher) {
             try {
-              final result = urlOrPredicate(event);
-
+              final result = urlOrPredicate.predicate(event);
               return result == true;
             } catch (_) {
               return false;
@@ -4296,7 +4298,6 @@ class PageImpl extends PageBase implements Page {
         })
         .timeout(
           timeoutDuration,
-
           onTimeout: () => throw Exception(
             'Timeout ${timeoutDuration.inMilliseconds}ms exceeded',
           ),
@@ -4351,7 +4352,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> waitForURL(
-    dynamic urlOrPredicate, {
+    RouteMatcher urlOrPredicate, {
 
     double? timeout,
 
@@ -4368,7 +4369,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> waitForNavigation({
-    String? url,
+    RouteMatcher? url,
 
     LifecycleEvent? waitUntil,
 
@@ -4406,7 +4407,7 @@ class PageImpl extends PageBase implements Page {
       mainFrame.frameLocator(selector);
 
   @override
-  Future<dynamic> evaluate(String expression, [dynamic arg]) async {
+  Future<dynamic> evaluate(String expression, [Object? arg]) async {
     return mainFrame.evaluate(expression, arg);
   }
 
@@ -4621,7 +4622,7 @@ class PageImpl extends PageBase implements Page {
   Future<Uint8List> pdf({
     String? path,
 
-    String? format,
+    PdfFormat? format,
 
     bool? landscape,
 
@@ -4637,9 +4638,9 @@ class PageImpl extends PageBase implements Page {
 
     String? pageRanges,
 
-    dynamic width,
+    PdfDimension? width,
 
-    dynamic height,
+    PdfDimension? height,
 
     bool? preferCSSPageSize,
 
@@ -4654,7 +4655,7 @@ class PageImpl extends PageBase implements Page {
       name: 'playwright.page',
     );
     final result = await channel_pdf(
-      format: format,
+      format: format?.value,
 
       landscape: landscape,
 
@@ -4670,9 +4671,9 @@ class PageImpl extends PageBase implements Page {
 
       pageRanges: pageRanges,
 
-      width: width,
+      width: width?.toString(),
 
-      height: height,
+      height: height?.toString(),
 
       preferCSSPageSize: preferCSSPageSize,
 
@@ -4884,7 +4885,7 @@ class PageImpl extends PageBase implements Page {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
   ]) {
     return mainFrame.evalOnSelector(selector, expression, arg);
   }
@@ -4895,7 +4896,7 @@ class PageImpl extends PageBase implements Page {
 
     String expression, [
 
-    dynamic arg,
+    Object? arg,
   ]) {
     return mainFrame.evalOnSelectorAll(selector, expression, arg);
   }
@@ -4975,7 +4976,7 @@ class PageImpl extends PageBase implements Page {
   Future<JSHandle> waitForFunction(
     String expression, [
 
-    dynamic arg,
+    Object? arg,
 
     double? timeout,
 
@@ -4998,7 +4999,7 @@ class PageImpl extends PageBase implements Page {
 
     String type, {
 
-    dynamic eventInit,
+    Map<String, dynamic>? eventInit,
 
     double? timeout,
   }) {
@@ -5071,7 +5072,7 @@ class PageImpl extends PageBase implements Page {
   Future<List<String>> selectOption(
     String selector,
 
-    dynamic values, {
+    List<SelectOption>? values, {
 
     bool? force,
 
@@ -5092,7 +5093,7 @@ class PageImpl extends PageBase implements Page {
   Future<void> setInputFiles(
     String selector,
 
-    dynamic files, {
+    List<InputFile>? files, {
 
     bool? noWaitAfter,
 
@@ -5246,7 +5247,7 @@ class PageImpl extends PageBase implements Page {
 
     // Subscribe once to the triggered event.
     _locatorHandlerSub ??= onLocatorHandlerTriggered.listen((
-      dynamic uidValue,
+      Object? uidValue,
     ) async {
       final triggeredUid = uidValue as int;
       // Find and call the matching handler.

@@ -30,7 +30,7 @@ void main() async {
     );
 
     print('Generating PDF...');
-    final pdfBytes = await page.pdf(format: 'A4', landscape: false);
+    final pdfBytes = await page.pdf(format: PdfFormat.a4, landscape: true);
 
     final file = File('dart_wiki.pdf');
     await file.writeAsBytes(pdfBytes);

@@ -67,7 +67,7 @@ void main() {
       });
 
       final responseFuture = page.waitForResponse(
-        (Response r) => r.url.contains('example.com'),
+        RouteMatcher.function((dynamic r) => r.url.contains('example.com')),
       );
       await page.goto('https://example.com/test');
       final response = await responseFuture;
@@ -95,7 +95,7 @@ void main() {
       await page.goto('https://example.com');
 
       final responseFuture = page.waitForResponse(
-        (Response r) => r.url.contains('/api/data'),
+        RouteMatcher.function((dynamic r) => r.url.contains('/api/data')),
       );
       await page.evaluate(
         'async () => { await fetch("https://example.com/api/data"); }',
@@ -132,7 +132,7 @@ void main() {
 
       await page.goto('https://example.com');
       final responseFuture = page.waitForResponse(
-        (Response r) => r.url.contains('/api/test'),
+        RouteMatcher.function((dynamic r) => r.url.contains('/api/test')),
       );
       await page.evaluate(
         'async () => { await fetch("https://example.com/api/test"); }',
@@ -154,7 +154,9 @@ void main() {
 
       await page.goto('https://example.com');
       final responseFuture = page.waitForResponse(
-        (Response r) => r.url.contains('/api/from-request'),
+        RouteMatcher.function(
+          (dynamic r) => r.url.contains('/api/from-request'),
+        ),
       );
       await page.evaluate(
         'async () => { await fetch("https://example.com/api/from-request"); }',

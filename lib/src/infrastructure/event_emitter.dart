@@ -12,7 +12,7 @@ import 'dart:async';
 /// ```dart
 /// final emitter = EventEmitter();
 ///
-/// void handler(dynamic args) => print('got: $args');
+/// void handler(Object? args) => print('got: $args');
 /// emitter.on('data', handler);
 /// emitter.emit('data', 'hello');   // prints "got: hello"
 /// emitter.off('data', handler);
@@ -70,7 +70,7 @@ class EventEmitter {
   /// Emits [event] synchronously, calling all registered listeners with [args].
   ///
   /// Returns `true` if any listeners were registered for this event.
-  bool emit(String event, [dynamic args]) {
+  bool emit(String event, [Object? args]) {
     final listeners = _events[event];
     if (listeners == null || listeners.isEmpty) return false;
     // Iterate over a snapshot to allow handlers to mutate the list.

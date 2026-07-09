@@ -13,10 +13,7 @@ class Driver {
     final cliPath = p.join(driverDirPath, 'package', 'cli.js');
 
     Logger.info('Starting Playwright driver...');
-    final process = await Process.start(nodePath, [
-      cliPath,
-      'run-driver',
-    ]);
+    final process = await Process.start(nodePath, [cliPath, 'run-driver']);
 
     Logger.debug(
       'Driver process started (pid ${process.pid}).',
