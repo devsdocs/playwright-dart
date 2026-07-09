@@ -58,11 +58,11 @@ class AndroidSocketImpl extends AndroidSocketBase implements AndroidSocket {
 
   @override
   Future<void> write(String data) async {
-    await channel_write(data: data);
+    await channel.write(data: data);
   }
 
   @override
   Future<void> close() async {
-    await channel_close();
+    await channel.close();
   }
 }

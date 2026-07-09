@@ -60,7 +60,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
     required bool includeSources,
     List<String>? additionalSources,
   }) async {
-    await channel_zip(
+    await channel.zip(
       zipFile: zipFile,
       entries: entries,
       stacksId: stacksId,
@@ -72,7 +72,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
 
   @override
   Future<String> harOpen(String file) async {
-    final result = await channel_harOpen(file: file);
+    final result = await channel.harOpen(file: file);
     return result.harId as String;
   }
 
@@ -85,7 +85,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
     bool isNavigationRequest, {
     String? postData,
   }) async {
-    return await channel_harLookup(
+    return await channel.harLookup(
       harId: harId,
       url: url,
       method: method,
@@ -97,7 +97,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
 
   @override
   Future<void> harClose(String harId) async {
-    await channel_harClose(harId: harId);
+    await channel.harClose(harId: harId);
   }
 
   @override
@@ -106,7 +106,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
     String harFile, {
     String? resourcesDir,
   }) async {
-    await channel_harUnzip(
+    await channel.harUnzip(
       zipFile: zipFile,
       harFile: harFile,
       resourcesDir: resourcesDir,
@@ -124,7 +124,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
     double? timeout,
     int? socksProxyRedirectPortForTest,
   }) async {
-    final result = await channel_connect(
+    final result = await channel.connect(
       endpoint: endpoint,
       headers: headers,
       exposeNetwork: exposeNetwork,
@@ -141,7 +141,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
     String? tracesDir,
     bool? live,
   }) async {
-    final result = await channel_tracingStarted(
+    final result = await channel.tracingStarted(
       traceName: traceName,
       tracesDir: tracesDir,
       live: live,
@@ -151,12 +151,12 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
 
   @override
   Future<void> addStackToTracingNoReply(ClientSideCallMetadata callData) async {
-    await channel_addStackToTracingNoReply(callData: callData);
+    await channel.addStackToTracingNoReply(callData: callData);
   }
 
   @override
   Future<void> traceDiscarded(String stacksId) async {
-    await channel_traceDiscarded(stacksId: stacksId);
+    await channel.traceDiscarded(stacksId: stacksId);
   }
 
   @override
@@ -165,7 +165,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
     String? baseURL,
     bool? webSocketUrl,
   }) async {
-    final result = await channel_globToRegex(
+    final result = await channel.globToRegex(
       glob: glob,
       baseURL: baseURL,
       webSocketUrl: webSocketUrl,

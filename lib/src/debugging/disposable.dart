@@ -107,6 +107,6 @@ class DisposableImpl extends DisposableBase implements Disposable {
 
   @override
   Future<void> dispose() async {
-    await channel_dispose();
+    await channel.dispose();
   }
 }

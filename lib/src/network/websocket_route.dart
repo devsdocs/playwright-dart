@@ -53,22 +53,22 @@ class WebSocketRouteImpl extends WebSocketRouteBase implements WebSocketRoute {
 
   @override
   Future<void> connect() async {
-    await channel_connect();
+    await channel.connect();
   }
 
   @override
   Future<void> ensureOpened() async {
-    await channel_ensureOpened();
+    await channel.ensureOpened();
   }
 
   @override
   Future<void> sendToPage(String message, {bool isBase64 = false}) async {
-    await channel_sendToPage(message: message, isBase64: isBase64);
+    await channel.sendToPage(message: message, isBase64: isBase64);
   }
 
   @override
   Future<void> sendToServer(String message, {bool isBase64 = false}) async {
-    await channel_sendToServer(message: message, isBase64: isBase64);
+    await channel.sendToServer(message: message, isBase64: isBase64);
   }
 
   @override
@@ -77,7 +77,7 @@ class WebSocketRouteImpl extends WebSocketRouteBase implements WebSocketRoute {
     String? reason,
     bool wasClean = true,
   }) async {
-    await channel_closePage(code: code, reason: reason, wasClean: wasClean);
+    await channel.closePage(code: code, reason: reason, wasClean: wasClean);
   }
 
   @override
@@ -86,6 +86,6 @@ class WebSocketRouteImpl extends WebSocketRouteBase implements WebSocketRoute {
     String? reason,
     bool wasClean = true,
   }) async {
-    await channel_closeServer(code: code, reason: reason, wasClean: wasClean);
+    await channel.closeServer(code: code, reason: reason, wasClean: wasClean);
   }
 }

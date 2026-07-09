@@ -30,7 +30,7 @@ class Mouse {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> move(double x, double y, {int? steps}) async {
-    await (page as PageImpl).channel_mouseMove(x: x, y: y, steps: steps);
+    await (page as PageImpl).channel.mouseMove(x: x, y: y, steps: steps);
   }
 
   /// Dispatches a `mousedown` event.
@@ -54,7 +54,7 @@ class Mouse {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> down({PageMouseDownButtonEnum? button, int? clickCount}) async {
-    await (page as PageImpl).channel_mouseDown(
+    await (page as PageImpl).channel.mouseDown(
       button: button,
       clickCount: clickCount,
     );
@@ -81,7 +81,7 @@ class Mouse {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> up({PageMouseUpButtonEnum? button, int? clickCount}) async {
-    await (page as PageImpl).channel_mouseUp(
+    await (page as PageImpl).channel.mouseUp(
       button: button,
       clickCount: clickCount,
     );
@@ -123,7 +123,7 @@ class Mouse {
     PageMouseClickButtonEnum? button,
     int? clickCount,
   }) async {
-    await (page as PageImpl).channel_mouseClick(
+    await (page as PageImpl).channel.mouseClick(
       x: x,
       y: y,
       delay: delay,
@@ -298,7 +298,7 @@ class Mouse {
   /// [Microsoft Artifact Registry]: https://mcr.microsoft.com/en-us/product/playwright/about "Microsoft Artifact Registry"
   /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<void> wheel(double deltaX, double deltaY) async {
-    await (page as PageImpl).channel_mouseWheel(deltaX: deltaX, deltaY: deltaY);
+    await (page as PageImpl).channel.mouseWheel(deltaX: deltaX, deltaY: deltaY);
   }
 
   // Shorthand convenience methods for common mouse operations

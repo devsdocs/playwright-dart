@@ -5,8 +5,6 @@
 import '../infrastructure/channel_owner.dart';
 import '../infrastructure/connection.dart';
 
-abstract class Channel {}
-
 /// Arbitrary JSON value (Playwright protocol type `json` / `any`).
 typedef JsonValue = Object?;
 
@@ -9763,6 +9761,7 @@ class WorkerInitializer {
 }
 
 abstract class APIRequestContextBase extends ChannelOwner {
+  late APIRequestContextChannel channel = APIRequestContextChannel(this);
   APIRequestContextBase(
     super.connection,
     super.channelType,
@@ -9776,23 +9775,27 @@ abstract class APIRequestContextBase extends ChannelOwner {
         super.initializer,
         connection: connection,
       );
+}
 
-  Future<void> channel_dispose({String? reason}) async {
+class APIRequestContextChannel extends Channel {
+  APIRequestContextChannel(super.owner);
+
+  Future<void> dispose({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'dispose',
       payload,
     );
     return;
   }
 
-  Future<void> channel_disposeAPIResponse({required String fetchUid}) async {
+  Future<void> disposeAPIResponse({required String fetchUid}) async {
     final payload = <String, dynamic>{};
     payload['fetchUid'] = fetchUid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'disposeAPIResponse',
       payload,
     );
@@ -9800,7 +9803,7 @@ abstract class APIRequestContextBase extends ChannelOwner {
   }
 
   /// {method} "{url}"
-  Future<APIRequestContextFetchResult> channel_fetch({
+  Future<APIRequestContextFetchResult> fetch({
     String? encodedParams,
     bool? failOnStatusCode,
     List<NameValue>? formData,
@@ -9833,69 +9836,70 @@ abstract class APIRequestContextBase extends ChannelOwner {
     if (postData != null) payload['postData'] = postData;
     payload['timeout'] = timeout;
     payload['url'] = url;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fetch',
       payload,
     );
     return APIRequestContextFetchResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<APIRequestContextFetchLogResult> channel_fetchLog({
+  Future<APIRequestContextFetchLogResult> fetchLog({
     required String fetchUid,
   }) async {
     final payload = <String, dynamic>{};
     payload['fetchUid'] = fetchUid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fetchLog',
       payload,
     );
     return APIRequestContextFetchLogResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get response body
-  Future<APIRequestContextFetchResponseBodyResult> channel_fetchResponseBody({
+  Future<APIRequestContextFetchResponseBodyResult> fetchResponseBody({
     required String fetchUid,
   }) async {
     final payload = <String, dynamic>{};
     payload['fetchUid'] = fetchUid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fetchResponseBody',
       payload,
     );
     return APIRequestContextFetchResponseBodyResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get storage state
-  Future<APIRequestContextStorageStateResult> channel_storageState({
+  Future<APIRequestContextStorageStateResult> storageState({
     bool? indexedDB,
   }) async {
     final payload = <String, dynamic>{};
     if (indexedDB != null) payload['indexedDB'] = indexedDB;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'storageState',
       payload,
     );
     return APIRequestContextStorageStateResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 }
 
 abstract class AndroidBase extends ChannelOwner {
+  late AndroidChannel channel = AndroidChannel(this);
   AndroidBase(
     super.connection,
     super.channelType,
@@ -9903,8 +9907,12 @@ abstract class AndroidBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<AndroidDevicesResult> channel_devices({
+class AndroidChannel extends Channel {
+  AndroidChannel(super.owner);
+
+  Future<AndroidDevicesResult> devices({
     String? host,
     bool? omitDriverInstall,
     int? port,
@@ -9914,16 +9922,20 @@ abstract class AndroidBase extends ChannelOwner {
     if (omitDriverInstall != null)
       payload['omitDriverInstall'] = omitDriverInstall;
     if (port != null) payload['port'] = port;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'devices',
       payload,
     );
-    return AndroidDevicesResult.fromJson(response, connection: connection);
+    return AndroidDevicesResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class AndroidDeviceBase extends ChannelOwner {
+  late AndroidDeviceChannel channel = AndroidDeviceChannel(this);
   AndroidDeviceBase(
     super.connection,
     super.channelType,
@@ -9937,31 +9949,39 @@ abstract class AndroidDeviceBase extends ChannelOwner {
         super.initializer,
         connection: connection,
       );
+}
 
-  Future<void> channel_close() async {
-    final response = await connection.sendMessageToServer(guid, 'close', {});
+class AndroidDeviceChannel extends Channel {
+  AndroidDeviceChannel(super.owner);
+
+  Future<void> close() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'close',
+      {},
+    );
     return;
   }
 
   /// Connect to Web View
-  Future<AndroidDeviceConnectToWebViewResult> channel_connectToWebView({
+  Future<AndroidDeviceConnectToWebViewResult> connectToWebView({
     required String socketName,
   }) async {
     final payload = <String, dynamic>{};
     payload['socketName'] = socketName;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'connectToWebView',
       payload,
     );
     return AndroidDeviceConnectToWebViewResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Drag
-  Future<void> channel_drag({
+  Future<void> drag({
     required AndroidSelector androidSelector,
     required Point dest,
     double? speed,
@@ -9972,8 +9992,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['dest'] = dest.toJson();
     if (speed != null) payload['speed'] = speed;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'drag',
       payload,
     );
@@ -9981,7 +10001,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Fill "{text}"
-  Future<void> channel_fill({
+  Future<void> fill({
     required AndroidSelector androidSelector,
     required String text,
     required double timeout,
@@ -9990,8 +10010,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['androidSelector'] = androidSelector.toJson();
     payload['text'] = text;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fill',
       payload,
     );
@@ -9999,7 +10019,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Fling
-  Future<void> channel_fling({
+  Future<void> fling({
     required AndroidSelector androidSelector,
     required AndroidDeviceFlingDirectionEnum direction,
     double? speed,
@@ -10010,29 +10030,32 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['direction'] = direction.value;
     if (speed != null) payload['speed'] = speed;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fling',
       payload,
     );
     return;
   }
 
-  Future<AndroidDeviceInfoResult> channel_info({
+  Future<AndroidDeviceInfoResult> info({
     required AndroidSelector androidSelector,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'info',
       payload,
     );
-    return AndroidDeviceInfoResult.fromJson(response, connection: connection);
+    return AndroidDeviceInfoResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Drag
-  Future<void> channel_inputDrag({
+  Future<void> inputDrag({
     required Point from,
     required int steps,
     required Point to,
@@ -10041,8 +10064,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['from'] = from.toJson();
     payload['steps'] = steps;
     payload['to'] = to.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'inputDrag',
       payload,
     );
@@ -10050,11 +10073,11 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Press
-  Future<void> channel_inputPress({required String key}) async {
+  Future<void> inputPress({required String key}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'inputPress',
       payload,
     );
@@ -10062,15 +10085,15 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Swipe
-  Future<void> channel_inputSwipe({
+  Future<void> inputSwipe({
     required List<Point> segments,
     required int steps,
   }) async {
     final payload = <String, dynamic>{};
     payload['segments'] = segments;
     payload['steps'] = steps;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'inputSwipe',
       payload,
     );
@@ -10078,11 +10101,11 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Tap
-  Future<void> channel_inputTap({required Point point}) async {
+  Future<void> inputTap({required Point point}) async {
     final payload = <String, dynamic>{};
     payload['point'] = point.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'inputTap',
       payload,
     );
@@ -10090,11 +10113,11 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Type
-  Future<void> channel_inputType({required String text}) async {
+  Future<void> inputType({required String text}) async {
     final payload = <String, dynamic>{};
     payload['text'] = text;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'inputType',
       payload,
     );
@@ -10102,15 +10125,12 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Install apk
-  Future<void> channel_installApk({
-    List<String>? args,
-    required String file,
-  }) async {
+  Future<void> installApk({List<String>? args, required String file}) async {
     final payload = <String, dynamic>{};
     if (args != null) payload['args'] = args;
     payload['file'] = file;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'installApk',
       payload,
     );
@@ -10118,7 +10138,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Launch browser
-  Future<AndroidDeviceLaunchBrowserResult> channel_launchBrowser({
+  Future<AndroidDeviceLaunchBrowserResult> launchBrowser({
     required ContextOptions contextOptions,
     List<String>? args,
     String? pkg,
@@ -10129,27 +10149,27 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     if (args != null) payload['args'] = args;
     if (pkg != null) payload['pkg'] = pkg;
     if (proxy != null) payload['proxy'] = proxy?.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'launchBrowser',
       payload,
     );
     return AndroidDeviceLaunchBrowserResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Long tap
-  Future<void> channel_longTap({
+  Future<void> longTap({
     required AndroidSelector androidSelector,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'longTap',
       payload,
     );
@@ -10157,21 +10177,22 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Open app
-  Future<AndroidDeviceOpenResult> channel_open({
-    required String command,
-  }) async {
+  Future<AndroidDeviceOpenResult> open({required String command}) async {
     final payload = <String, dynamic>{};
     payload['command'] = command;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'open',
       payload,
     );
-    return AndroidDeviceOpenResult.fromJson(response, connection: connection);
+    return AndroidDeviceOpenResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Pinch close
-  Future<void> channel_pinchClose({
+  Future<void> pinchClose({
     required AndroidSelector androidSelector,
     required double percent,
     double? speed,
@@ -10182,8 +10203,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'pinchClose',
       payload,
     );
@@ -10191,7 +10212,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Pinch open
-  Future<void> channel_pinchOpen({
+  Future<void> pinchOpen({
     required AndroidSelector androidSelector,
     required double percent,
     double? speed,
@@ -10202,8 +10223,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'pinchOpen',
       payload,
     );
@@ -10211,7 +10232,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Push
-  Future<void> channel_push({
+  Future<void> push({
     required String file,
     int? mode,
     required String path,
@@ -10220,8 +10241,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['file'] = file;
     if (mode != null) payload['mode'] = mode;
     payload['path'] = path;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'push',
       payload,
     );
@@ -10229,20 +10250,20 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Screenshot
-  Future<AndroidDeviceScreenshotResult> channel_screenshot() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<AndroidDeviceScreenshotResult> screenshot() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screenshot',
       {},
     );
     return AndroidDeviceScreenshotResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Scroll
-  Future<void> channel_scroll({
+  Future<void> scroll({
     required AndroidSelector androidSelector,
     required AndroidDeviceScrollDirectionEnum direction,
     required double percent,
@@ -10255,8 +10276,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'scroll',
       payload,
     );
@@ -10264,21 +10285,22 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Execute shell command
-  Future<AndroidDeviceShellResult> channel_shell({
-    required String command,
-  }) async {
+  Future<AndroidDeviceShellResult> shell({required String command}) async {
     final payload = <String, dynamic>{};
     payload['command'] = command;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'shell',
       payload,
     );
-    return AndroidDeviceShellResult.fromJson(response, connection: connection);
+    return AndroidDeviceShellResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Swipe
-  Future<void> channel_swipe({
+  Future<void> swipe({
     required AndroidSelector androidSelector,
     required AndroidDeviceSwipeDirectionEnum direction,
     required double percent,
@@ -10291,8 +10313,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'swipe',
       payload,
     );
@@ -10300,7 +10322,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
   }
 
   /// Tap
-  Future<void> channel_tap({
+  Future<void> tap({
     required AndroidSelector androidSelector,
     double? duration,
     required double timeout,
@@ -10309,12 +10331,16 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['androidSelector'] = androidSelector.toJson();
     if (duration != null) payload['duration'] = duration;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(guid, 'tap', payload);
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'tap',
+      payload,
+    );
     return;
   }
 
   /// Wait
-  Future<void> channel_wait({
+  Future<void> wait({
     required AndroidSelector androidSelector,
     AndroidDeviceWaitStateEnum? state,
     required double timeout,
@@ -10323,8 +10349,8 @@ abstract class AndroidDeviceBase extends ChannelOwner {
     payload['androidSelector'] = androidSelector.toJson();
     if (state != null) payload['state'] = state?.value;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'wait',
       payload,
     );
@@ -10333,6 +10359,7 @@ abstract class AndroidDeviceBase extends ChannelOwner {
 }
 
 abstract class AndroidSocketBase extends ChannelOwner {
+  late AndroidSocketChannel channel = AndroidSocketChannel(this);
   AndroidSocketBase(
     super.connection,
     super.channelType,
@@ -10340,17 +10367,25 @@ abstract class AndroidSocketBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<void> channel_close() async {
-    final response = await connection.sendMessageToServer(guid, 'close', {});
+class AndroidSocketChannel extends Channel {
+  AndroidSocketChannel(super.owner);
+
+  Future<void> close() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'close',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_write({required String data}) async {
+  Future<void> write({required String data}) async {
     final payload = <String, dynamic>{};
     payload['data'] = data;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'write',
       payload,
     );
@@ -10359,6 +10394,7 @@ abstract class AndroidSocketBase extends ChannelOwner {
 }
 
 abstract class ArtifactBase extends ChannelOwner {
+  late ArtifactChannel channel = ArtifactChannel(this);
   ArtifactBase(
     super.connection,
     super.channelType,
@@ -10369,64 +10405,91 @@ abstract class ArtifactBase extends ChannelOwner {
 
   ArtifactInitializer get typedInitializer =>
       ArtifactInitializer.fromJson(super.initializer, connection: connection);
+}
 
-  Future<void> channel_cancel() async {
-    final response = await connection.sendMessageToServer(guid, 'cancel', {});
+class ArtifactChannel extends Channel {
+  ArtifactChannel(super.owner);
+
+  Future<void> cancel() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'cancel',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_delete() async {
-    final response = await connection.sendMessageToServer(guid, 'delete', {});
+  Future<void> delete() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'delete',
+      {},
+    );
     return;
   }
 
-  Future<ArtifactFailureResult> channel_failure() async {
-    final response = await connection.sendMessageToServer(guid, 'failure', {});
-    return ArtifactFailureResult.fromJson(response, connection: connection);
+  Future<ArtifactFailureResult> failure() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'failure',
+      {},
+    );
+    return ArtifactFailureResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<ArtifactPathAfterFinishedResult> channel_pathAfterFinished() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ArtifactPathAfterFinishedResult> pathAfterFinished() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'pathAfterFinished',
       {},
     );
     return ArtifactPathAfterFinishedResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_saveAs({required String path}) async {
+  Future<void> saveAs({required String path}) async {
     final payload = <String, dynamic>{};
     payload['path'] = path;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'saveAs',
       payload,
     );
     return;
   }
 
-  Future<ArtifactSaveAsStreamResult> channel_saveAsStream() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ArtifactSaveAsStreamResult> saveAsStream() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'saveAsStream',
       {},
     );
     return ArtifactSaveAsStreamResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<ArtifactStreamResult> channel_stream() async {
-    final response = await connection.sendMessageToServer(guid, 'stream', {});
-    return ArtifactStreamResult.fromJson(response, connection: connection);
+  Future<ArtifactStreamResult> stream() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'stream',
+      {},
+    );
+    return ArtifactStreamResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class BindingCallBase extends ChannelOwner {
+  late BindingCallChannel channel = BindingCallChannel(this);
   BindingCallBase(
     super.connection,
     super.channelType,
@@ -10440,23 +10503,27 @@ abstract class BindingCallBase extends ChannelOwner {
         super.initializer,
         connection: connection,
       );
+}
 
-  Future<void> channel_reject({required SerializedError error}) async {
+class BindingCallChannel extends Channel {
+  BindingCallChannel(super.owner);
+
+  Future<void> reject({required SerializedError error}) async {
     final payload = <String, dynamic>{};
     payload['error'] = error.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'reject',
       payload,
     );
     return;
   }
 
-  Future<void> channel_resolve({required SerializedArgument result}) async {
+  Future<void> resolve({required SerializedArgument result}) async {
     final payload = <String, dynamic>{};
     payload['result'] = result.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'resolve',
       payload,
     );
@@ -10465,6 +10532,7 @@ abstract class BindingCallBase extends ChannelOwner {
 }
 
 abstract class BrowserBase extends ChannelOwner {
+  late BrowserChannel channel = BrowserChannel(this);
   BrowserBase(
     super.connection,
     super.channelType,
@@ -10475,48 +10543,49 @@ abstract class BrowserBase extends ChannelOwner {
 
   BrowserInitializer get typedInitializer =>
       BrowserInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class BrowserChannel extends Channel {
+  BrowserChannel(super.owner);
 
   /// Close browser
-  Future<void> channel_close({String? reason}) async {
+  Future<void> close({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'close',
       payload,
     );
     return;
   }
 
-  Future<BrowserDefaultUserAgentForTestResult>
-  channel_defaultUserAgentForTest() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<BrowserDefaultUserAgentForTestResult> defaultUserAgentForTest() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'defaultUserAgentForTest',
       {},
     );
     return BrowserDefaultUserAgentForTestResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_disconnectFromReusedContext({
-    required String reason,
-  }) async {
+  Future<void> disconnectFromReusedContext({required String reason}) async {
     final payload = <String, dynamic>{};
     payload['reason'] = reason;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'disconnectFromReusedContext',
       payload,
     );
     return;
   }
 
-  Future<void> channel_killForTests() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> killForTests() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'killForTests',
       {},
     );
@@ -10524,21 +10593,20 @@ abstract class BrowserBase extends ChannelOwner {
   }
 
   /// Create CDP session
-  Future<BrowserNewBrowserCDPSessionResult>
-  channel_newBrowserCDPSession() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<BrowserNewBrowserCDPSessionResult> newBrowserCDPSession() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'newBrowserCDPSession',
       {},
     );
     return BrowserNewBrowserCDPSessionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Create context
-  Future<BrowserNewContextResult> channel_newContext({
+  Future<BrowserNewContextResult> newContext({
     required ContextOptions contextOptions,
     BrowserNewContextProxy? proxy,
     BrowserNewContextStorageState? storageState,
@@ -10547,15 +10615,18 @@ abstract class BrowserBase extends ChannelOwner {
     payload.addAll(contextOptions.toJson() as Map<String, dynamic>);
     if (proxy != null) payload['proxy'] = proxy?.toJson();
     if (storageState != null) payload['storageState'] = storageState?.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'newContext',
       payload,
     );
-    return BrowserNewContextResult.fromJson(response, connection: connection);
+    return BrowserNewContextResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<BrowserNewContextForReuseResult> channel_newContextForReuse({
+  Future<BrowserNewContextForReuseResult> newContextForReuse({
     required ContextOptions contextOptions,
     BrowserNewContextForReuseProxy? proxy,
     BrowserNewContextForReuseStorageState? storageState,
@@ -10564,19 +10635,19 @@ abstract class BrowserBase extends ChannelOwner {
     payload.addAll(contextOptions.toJson() as Map<String, dynamic>);
     if (proxy != null) payload['proxy'] = proxy?.toJson();
     if (storageState != null) payload['storageState'] = storageState?.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'newContextForReuse',
       payload,
     );
     return BrowserNewContextForReuseResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Start server
-  Future<BrowserStartServerResult> channel_startServer({
+  Future<BrowserStartServerResult> startServer({
     String? host,
     JsonValue metadata,
     int? port,
@@ -10589,16 +10660,19 @@ abstract class BrowserBase extends ChannelOwner {
     if (port != null) payload['port'] = port;
     payload['title'] = title;
     if (workspaceDir != null) payload['workspaceDir'] = workspaceDir;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'startServer',
       payload,
     );
-    return BrowserStartServerResult.fromJson(response, connection: connection);
+    return BrowserStartServerResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Start browser tracing
-  Future<void> channel_startTracing({
+  Future<void> startTracing({
     List<String>? categories,
     PageBase? page,
     bool? screenshots,
@@ -10607,8 +10681,8 @@ abstract class BrowserBase extends ChannelOwner {
     if (categories != null) payload['categories'] = categories;
     if (page != null) payload['page'] = {'guid': page.guid};
     if (screenshots != null) payload['screenshots'] = screenshots;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'startTracing',
       payload,
     );
@@ -10616,9 +10690,9 @@ abstract class BrowserBase extends ChannelOwner {
   }
 
   /// Stop server
-  Future<void> channel_stopServer() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> stopServer() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'stopServer',
       {},
     );
@@ -10626,17 +10700,21 @@ abstract class BrowserBase extends ChannelOwner {
   }
 
   /// Stop browser tracing
-  Future<BrowserStopTracingResult> channel_stopTracing() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<BrowserStopTracingResult> stopTracing() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'stopTracing',
       {},
     );
-    return BrowserStopTracingResult.fromJson(response, connection: connection);
+    return BrowserStopTracingResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class BrowserContextBase extends ChannelOwner {
+  late BrowserContextChannel channel = BrowserContextChannel(this);
   BrowserContextBase(
     super.connection,
     super.channelType,
@@ -10650,15 +10728,17 @@ abstract class BrowserContextBase extends ChannelOwner {
         super.initializer,
         connection: connection,
       );
+}
+
+class BrowserContextChannel extends Channel {
+  BrowserContextChannel(super.owner);
 
   /// Add cookies
-  Future<void> channel_addCookies({
-    required List<SetNetworkCookie> cookies,
-  }) async {
+  Future<void> addCookies({required List<SetNetworkCookie> cookies}) async {
     final payload = <String, dynamic>{};
     payload['cookies'] = cookies;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'addCookies',
       payload,
     );
@@ -10666,24 +10746,24 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Add init script
-  Future<BrowserContextAddInitScriptResult> channel_addInitScript({
+  Future<BrowserContextAddInitScriptResult> addInitScript({
     required String source,
   }) async {
     final payload = <String, dynamic>{};
     payload['source'] = source;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'addInitScript',
       payload,
     );
     return BrowserContextAddInitScriptResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Clear cookies
-  Future<void> channel_clearCookies({
+  Future<void> clearCookies({
     String? domain,
     String? domainRegexFlags,
     String? domainRegexSource,
@@ -10706,8 +10786,8 @@ abstract class BrowserContextBase extends ChannelOwner {
     if (path != null) payload['path'] = path;
     if (pathRegexFlags != null) payload['pathRegexFlags'] = pathRegexFlags;
     if (pathRegexSource != null) payload['pathRegexSource'] = pathRegexSource;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clearCookies',
       payload,
     );
@@ -10715,9 +10795,9 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Clear permissions
-  Future<void> channel_clearPermissions() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> clearPermissions() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clearPermissions',
       {},
     );
@@ -10725,15 +10805,15 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Fast forward clock "{ticksNumber|ticksString}"
-  Future<void> channel_clockFastForward({
+  Future<void> clockFastForward({
     double? ticksNumber,
     String? ticksString,
   }) async {
     final payload = <String, dynamic>{};
     if (ticksNumber != null) payload['ticksNumber'] = ticksNumber;
     if (ticksString != null) payload['ticksString'] = ticksString;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clockFastForward',
       payload,
     );
@@ -10741,15 +10821,12 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Install clock "{timeNumber|timeString}"
-  Future<void> channel_clockInstall({
-    double? timeNumber,
-    String? timeString,
-  }) async {
+  Future<void> clockInstall({double? timeNumber, String? timeString}) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clockInstall',
       payload,
     );
@@ -10757,15 +10834,12 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Pause clock "{timeNumber|timeString}"
-  Future<void> channel_clockPauseAt({
-    double? timeNumber,
-    String? timeString,
-  }) async {
+  Future<void> clockPauseAt({double? timeNumber, String? timeString}) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clockPauseAt',
       payload,
     );
@@ -10773,9 +10847,9 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Resume clock
-  Future<void> channel_clockResume() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> clockResume() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clockResume',
       {},
     );
@@ -10783,15 +10857,12 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Run clock "{ticksNumber|ticksString}"
-  Future<void> channel_clockRunFor({
-    double? ticksNumber,
-    String? ticksString,
-  }) async {
+  Future<void> clockRunFor({double? ticksNumber, String? ticksString}) async {
     final payload = <String, dynamic>{};
     if (ticksNumber != null) payload['ticksNumber'] = ticksNumber;
     if (ticksString != null) payload['ticksString'] = ticksString;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clockRunFor',
       payload,
     );
@@ -10799,15 +10870,15 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Set fixed time "{timeNumber|timeString}"
-  Future<void> channel_clockSetFixedTime({
+  Future<void> clockSetFixedTime({
     double? timeNumber,
     String? timeString,
   }) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clockSetFixedTime',
       payload,
     );
@@ -10815,15 +10886,15 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Set system time "{timeNumber|timeString}"
-  Future<void> channel_clockSetSystemTime({
+  Future<void> clockSetSystemTime({
     double? timeNumber,
     String? timeString,
   }) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clockSetSystemTime',
       payload,
     );
@@ -10831,11 +10902,11 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Close context
-  Future<void> channel_close({String? reason}) async {
+  Future<void> close({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'close',
       payload,
     );
@@ -10843,42 +10914,42 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Get cookies
-  Future<BrowserContextCookiesResult> channel_cookies({
+  Future<BrowserContextCookiesResult> cookies({
     required List<String> urls,
   }) async {
     final payload = <String, dynamic>{};
     payload['urls'] = urls;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'cookies',
       payload,
     );
     return BrowserContextCookiesResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<BrowserContextCreateTempFilesResult> channel_createTempFiles({
+  Future<BrowserContextCreateTempFilesResult> createTempFiles({
     required List<BrowserContextCreateTempFilesItemsItems> items,
     String? rootDirName,
   }) async {
     final payload = <String, dynamic>{};
     payload['items'] = items;
     if (rootDirName != null) payload['rootDirName'] = rootDirName;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'createTempFiles',
       payload,
     );
     return BrowserContextCreateTempFilesResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Create virtual credential for "{rpId}"
-  Future<BrowserContextCredentialsCreateResult> channel_credentialsCreate({
+  Future<BrowserContextCredentialsCreateResult> credentialsCreate({
     String? id,
     String? privateKey,
     String? publicKey,
@@ -10891,23 +10962,23 @@ abstract class BrowserContextBase extends ChannelOwner {
     if (publicKey != null) payload['publicKey'] = publicKey;
     payload['rpId'] = rpId;
     if (userHandle != null) payload['userHandle'] = userHandle;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'credentialsCreate',
       payload,
     );
     return BrowserContextCredentialsCreateResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Delete virtual credential
-  Future<void> channel_credentialsDelete({required String id}) async {
+  Future<void> credentialsDelete({required String id}) async {
     final payload = <String, dynamic>{};
     payload['id'] = id;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'credentialsDelete',
       payload,
     );
@@ -10915,44 +10986,44 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Get virtual credentials
-  Future<BrowserContextCredentialsGetResult> channel_credentialsGet({
+  Future<BrowserContextCredentialsGetResult> credentialsGet({
     String? id,
     String? rpId,
   }) async {
     final payload = <String, dynamic>{};
     if (id != null) payload['id'] = id;
     if (rpId != null) payload['rpId'] = rpId;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'credentialsGet',
       payload,
     );
     return BrowserContextCredentialsGetResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Install virtual WebAuthn authenticator
-  Future<void> channel_credentialsInstall() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> credentialsInstall() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'credentialsInstall',
       {},
     );
     return;
   }
 
-  Future<void> channel_disableRecorder() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> disableRecorder() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'disableRecorder',
       {},
     );
     return;
   }
 
-  Future<void> channel_enableRecorder({
+  Future<void> enableRecorder({
     JsonValue contextOptions,
     String? device,
     bool? handleSIGINT,
@@ -10982,8 +11053,8 @@ abstract class BrowserContextBase extends ChannelOwner {
     if (saveStorage != null) payload['saveStorage'] = saveStorage;
     if (testIdAttributeName != null)
       payload['testIdAttributeName'] = testIdAttributeName;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'enableRecorder',
       payload,
     );
@@ -10991,25 +11062,25 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Expose binding
-  Future<BrowserContextExposeBindingResult> channel_exposeBinding({
+  Future<BrowserContextExposeBindingResult> exposeBinding({
     required String name,
   }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'exposeBinding',
       payload,
     );
     return BrowserContextExposeBindingResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_exposeConsoleApi() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> exposeConsoleApi() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'exposeConsoleApi',
       {},
     );
@@ -11017,15 +11088,15 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Grant permissions
-  Future<void> channel_grantPermissions({
+  Future<void> grantPermissions({
     String? origin,
     required List<String> permissions,
   }) async {
     final payload = <String, dynamic>{};
     if (origin != null) payload['origin'] = origin;
     payload['permissions'] = permissions;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'grantPermissions',
       payload,
     );
@@ -11033,46 +11104,54 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Create CDP session
-  Future<BrowserContextNewCDPSessionResult> channel_newCDPSession({
+  Future<BrowserContextNewCDPSessionResult> newCDPSession({
     FrameBase? frame,
     PageBase? page,
   }) async {
     final payload = <String, dynamic>{};
     if (frame != null) payload['frame'] = {'guid': frame.guid};
     if (page != null) payload['page'] = {'guid': page.guid};
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'newCDPSession',
       payload,
     );
     return BrowserContextNewCDPSessionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Create page
-  Future<BrowserContextNewPageResult> channel_newPage() async {
-    final response = await connection.sendMessageToServer(guid, 'newPage', {});
+  Future<BrowserContextNewPageResult> newPage() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'newPage',
+      {},
+    );
     return BrowserContextNewPageResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Pause
-  Future<void> channel_pause() async {
-    final response = await connection.sendMessageToServer(guid, 'pause', {});
+  Future<void> pause() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'pause',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_registerSelectorEngine({
+  Future<void> registerSelectorEngine({
     required SelectorEngine selectorEngine,
   }) async {
     final payload = <String, dynamic>{};
     payload['selectorEngine'] = selectorEngine.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'registerSelectorEngine',
       payload,
     );
@@ -11080,13 +11159,11 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Set extra HTTP headers
-  Future<void> channel_setExtraHTTPHeaders({
-    required List<NameValue> headers,
-  }) async {
+  Future<void> setExtraHTTPHeaders({required List<NameValue> headers}) async {
     final payload = <String, dynamic>{};
     payload['headers'] = headers;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setExtraHTTPHeaders',
       payload,
     );
@@ -11094,13 +11171,13 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Set geolocation
-  Future<void> channel_setGeolocation({
+  Future<void> setGeolocation({
     BrowserContextSetGeolocationGeolocation? geolocation,
   }) async {
     final payload = <String, dynamic>{};
     if (geolocation != null) payload['geolocation'] = geolocation?.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setGeolocation',
       payload,
     );
@@ -11108,14 +11185,14 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Set HTTP credentials
-  Future<void> channel_setHTTPCredentials({
+  Future<void> setHTTPCredentials({
     BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
   }) async {
     final payload = <String, dynamic>{};
     if (httpCredentials != null)
       payload['httpCredentials'] = httpCredentials?.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setHTTPCredentials',
       payload,
     );
@@ -11123,14 +11200,14 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Route requests
-  Future<void> channel_setNetworkInterceptionPatterns({
+  Future<void> setNetworkInterceptionPatterns({
     required List<BrowserContextSetNetworkInterceptionPatternsPatternsItems>
     patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setNetworkInterceptionPatterns',
       payload,
     );
@@ -11138,11 +11215,11 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Set offline mode
-  Future<void> channel_setOffline({required bool offline}) async {
+  Future<void> setOffline({required bool offline}) async {
     final payload = <String, dynamic>{};
     payload['offline'] = offline;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setOffline',
       payload,
     );
@@ -11150,26 +11227,26 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Set storage state
-  Future<void> channel_setStorageState({
+  Future<void> setStorageState({
     BrowserContextSetStorageStateStorageState? storageState,
   }) async {
     final payload = <String, dynamic>{};
     if (storageState != null) payload['storageState'] = storageState?.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setStorageState',
       payload,
     );
     return;
   }
 
-  Future<void> channel_setTestIdAttributeName({
+  Future<void> setTestIdAttributeName({
     required String testIdAttributeName,
   }) async {
     final payload = <String, dynamic>{};
     payload['testIdAttributeName'] = testIdAttributeName;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setTestIdAttributeName',
       payload,
     );
@@ -11177,14 +11254,14 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Route WebSockets
-  Future<void> channel_setWebSocketInterceptionPatterns({
+  Future<void> setWebSocketInterceptionPatterns({
     required List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems>
     patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setWebSocketInterceptionPatterns',
       payload,
     );
@@ -11192,31 +11269,31 @@ abstract class BrowserContextBase extends ChannelOwner {
   }
 
   /// Get storage state
-  Future<BrowserContextStorageStateResult> channel_storageState({
+  Future<BrowserContextStorageStateResult> storageState({
     bool? indexedDB,
   }) async {
     final payload = <String, dynamic>{};
     if (indexedDB != null) payload['indexedDB'] = indexedDB;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'storageState',
       payload,
     );
     return BrowserContextStorageStateResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_updateSubscription({
+  Future<void> updateSubscription({
     required bool enabled,
     required BrowserContextUpdateSubscriptionEventEnum event,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'updateSubscription',
       payload,
     );
@@ -11225,6 +11302,7 @@ abstract class BrowserContextBase extends ChannelOwner {
 }
 
 abstract class BrowserTypeBase extends ChannelOwner {
+  late BrowserTypeChannel channel = BrowserTypeChannel(this);
   BrowserTypeBase(
     super.connection,
     super.channelType,
@@ -11238,9 +11316,13 @@ abstract class BrowserTypeBase extends ChannelOwner {
         super.initializer,
         connection: connection,
       );
+}
+
+class BrowserTypeChannel extends Channel {
+  BrowserTypeChannel(super.owner);
 
   /// Connect over CDP
-  Future<BrowserTypeConnectOverCDPResult> channel_connectOverCDP({
+  Future<BrowserTypeConnectOverCDPResult> connectOverCDP({
     String? artifactsDir,
     String? endpointURL,
     List<NameValue>? headers,
@@ -11259,55 +11341,57 @@ abstract class BrowserTypeBase extends ChannelOwner {
     if (slowMo != null) payload['slowMo'] = slowMo;
     payload['timeout'] = timeout;
     if (transport != null) payload['transport'] = transport;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'connectOverCDP',
       payload,
     );
     return BrowserTypeConnectOverCDPResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Connect to worker
-  Future<BrowserTypeConnectToWorkerResult> channel_connectToWorker({
+  Future<BrowserTypeConnectToWorkerResult> connectToWorker({
     required String endpoint,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['endpoint'] = endpoint;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'connectToWorker',
       payload,
     );
     return BrowserTypeConnectToWorkerResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Launch browser
-  Future<BrowserTypeLaunchResult> channel_launch({
+  Future<BrowserTypeLaunchResult> launch({
     required LaunchOptions launchOptions,
     double? slowMo,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(launchOptions.toJson() as Map<String, dynamic>);
     if (slowMo != null) payload['slowMo'] = slowMo;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'launch',
       payload,
     );
-    return BrowserTypeLaunchResult.fromJson(response, connection: connection);
+    return BrowserTypeLaunchResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Launch persistent context
-  Future<BrowserTypeLaunchPersistentContextResult>
-  channel_launchPersistentContext({
+  Future<BrowserTypeLaunchPersistentContextResult> launchPersistentContext({
     required LaunchOptions launchOptions,
     required ContextOptions contextOptions,
     double? slowMo,
@@ -11318,19 +11402,20 @@ abstract class BrowserTypeBase extends ChannelOwner {
     payload.addAll(contextOptions.toJson() as Map<String, dynamic>);
     if (slowMo != null) payload['slowMo'] = slowMo;
     payload['userDataDir'] = userDataDir;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'launchPersistentContext',
       payload,
     );
     return BrowserTypeLaunchPersistentContextResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 }
 
 abstract class CDPSessionBase extends ChannelOwner {
+  late CDPSessionChannel channel = CDPSessionChannel(this);
   CDPSessionBase(
     super.connection,
     super.channelType,
@@ -11338,31 +11423,43 @@ abstract class CDPSessionBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
+
+class CDPSessionChannel extends Channel {
+  CDPSessionChannel(super.owner);
 
   /// Detach CDP session
-  Future<void> channel_detach() async {
-    final response = await connection.sendMessageToServer(guid, 'detach', {});
+  Future<void> detach() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'detach',
+      {},
+    );
     return;
   }
 
   /// Send CDP command
-  Future<CDPSessionSendResult> channel_send({
+  Future<CDPSessionSendResult> send({
     required String method,
     JsonValue params,
   }) async {
     final payload = <String, dynamic>{};
     payload['method'] = method;
     if (params != null) payload['params'] = params;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'send',
       payload,
     );
-    return CDPSessionSendResult.fromJson(response, connection: connection);
+    return CDPSessionSendResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class DebugControllerBase extends ChannelOwner {
+  late DebugControllerChannel channel = DebugControllerChannel(this);
   DebugControllerBase(
     super.connection,
     super.channelType,
@@ -11370,57 +11467,66 @@ abstract class DebugControllerBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<void> channel_hideHighlight() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+class DebugControllerChannel extends Channel {
+  DebugControllerChannel(super.owner);
+
+  Future<void> hideHighlight() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'hideHighlight',
       {},
     );
     return;
   }
 
-  Future<void> channel_highlight({
-    String? ariaTemplate,
-    Pattern? selector,
-  }) async {
+  Future<void> highlight({String? ariaTemplate, Pattern? selector}) async {
     final payload = <String, dynamic>{};
     if (ariaTemplate != null) payload['ariaTemplate'] = ariaTemplate;
     if (selector != null) payload['selector'] = selector?.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'highlight',
       payload,
     );
     return;
   }
 
-  Future<void> channel_initialize({
+  Future<void> initialize({
     required String codegenId,
     required SDKLanguage sdkLanguage,
   }) async {
     final payload = <String, dynamic>{};
     payload['codegenId'] = codegenId;
     payload['sdkLanguage'] = sdkLanguage.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'initialize',
       payload,
     );
     return;
   }
 
-  Future<void> channel_kill() async {
-    final response = await connection.sendMessageToServer(guid, 'kill', {});
+  Future<void> kill() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'kill',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_resume() async {
-    final response = await connection.sendMessageToServer(guid, 'resume', {});
+  Future<void> resume() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'resume',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_setRecorderMode({
+  Future<void> setRecorderMode({
     bool? generateAutoExpect,
     required DebugControllerSetRecorderModeModeEnum mode,
     String? testIdAttributeName,
@@ -11431,19 +11537,19 @@ abstract class DebugControllerBase extends ChannelOwner {
     payload['mode'] = mode.value;
     if (testIdAttributeName != null)
       payload['testIdAttributeName'] = testIdAttributeName;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setRecorderMode',
       payload,
     );
     return;
   }
 
-  Future<void> channel_setReportStateChanged({required bool enabled}) async {
+  Future<void> setReportStateChanged({required bool enabled}) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setReportStateChanged',
       payload,
     );
@@ -11452,6 +11558,7 @@ abstract class DebugControllerBase extends ChannelOwner {
 }
 
 abstract class DebuggerBase extends ChannelOwner {
+  late DebuggerChannel channel = DebuggerChannel(this);
   DebuggerBase(
     super.connection,
     super.channelType,
@@ -11459,17 +11566,25 @@ abstract class DebuggerBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
+
+class DebuggerChannel extends Channel {
+  DebuggerChannel(super.owner);
 
   /// Step to next call
-  Future<void> channel_next() async {
-    final response = await connection.sendMessageToServer(guid, 'next', {});
+  Future<void> next() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'next',
+      {},
+    );
     return;
   }
 
   /// Pause on next call
-  Future<void> channel_requestPause() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> requestPause() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'requestPause',
       {},
     );
@@ -11477,17 +11592,21 @@ abstract class DebuggerBase extends ChannelOwner {
   }
 
   /// Resume
-  Future<void> channel_resume() async {
-    final response = await connection.sendMessageToServer(guid, 'resume', {});
+  Future<void> resume() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'resume',
+      {},
+    );
     return;
   }
 
   /// Run to location
-  Future<void> channel_runTo({required DebuggerRunToLocation location}) async {
+  Future<void> runTo({required DebuggerRunToLocation location}) async {
     final payload = <String, dynamic>{};
     payload['location'] = location.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'runTo',
       payload,
     );
@@ -11496,6 +11615,7 @@ abstract class DebuggerBase extends ChannelOwner {
 }
 
 abstract class DialogBase extends ChannelOwner {
+  late DialogChannel channel = DialogChannel(this);
   DialogBase(
     super.connection,
     super.channelType,
@@ -11506,13 +11626,17 @@ abstract class DialogBase extends ChannelOwner {
 
   DialogInitializer get typedInitializer =>
       DialogInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class DialogChannel extends Channel {
+  DialogChannel(super.owner);
 
   /// Accept dialog
-  Future<void> channel_accept({String? promptText}) async {
+  Future<void> accept({String? promptText}) async {
     final payload = <String, dynamic>{};
     if (promptText != null) payload['promptText'] = promptText;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'accept',
       payload,
     );
@@ -11520,13 +11644,18 @@ abstract class DialogBase extends ChannelOwner {
   }
 
   /// Dismiss dialog
-  Future<void> channel_dismiss() async {
-    final response = await connection.sendMessageToServer(guid, 'dismiss', {});
+  Future<void> dismiss() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'dismiss',
+      {},
+    );
     return;
   }
 }
 
 abstract class DisposableBase extends ChannelOwner {
+  late DisposableChannel channel = DisposableChannel(this);
   DisposableBase(
     super.connection,
     super.channelType,
@@ -11534,14 +11663,23 @@ abstract class DisposableBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<void> channel_dispose() async {
-    final response = await connection.sendMessageToServer(guid, 'dispose', {});
+class DisposableChannel extends Channel {
+  DisposableChannel(super.owner);
+
+  Future<void> dispose() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'dispose',
+      {},
+    );
     return;
   }
 }
 
 abstract class ElectronBase extends ChannelOwner {
+  late ElectronChannel channel = ElectronChannel(this);
   ElectronBase(
     super.connection,
     super.channelType,
@@ -11549,9 +11687,13 @@ abstract class ElectronBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
+
+class ElectronChannel extends Channel {
+  ElectronChannel(super.owner);
 
   /// Launch electron
-  Future<ElectronLaunchResult> channel_launch({
+  Future<ElectronLaunchResult> launch({
     ElectronLaunchAcceptDownloadsEnum? acceptDownloads,
     List<String>? args,
     String? artifactsDir,
@@ -11603,16 +11745,20 @@ abstract class ElectronBase extends ChannelOwner {
     payload['timeout'] = timeout;
     if (timezoneId != null) payload['timezoneId'] = timezoneId;
     if (tracesDir != null) payload['tracesDir'] = tracesDir;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'launch',
       payload,
     );
-    return ElectronLaunchResult.fromJson(response, connection: connection);
+    return ElectronLaunchResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class ElectronApplicationBase extends ChannelOwner {
+  late ElectronApplicationChannel channel = ElectronApplicationChannel(this);
   ElectronApplicationBase(
     super.connection,
     super.channelType,
@@ -11626,26 +11772,29 @@ abstract class ElectronApplicationBase extends ChannelOwner {
         super.initializer,
         connection: connection,
       );
+}
 
-  Future<ElectronApplicationBrowserWindowResult> channel_browserWindow({
+class ElectronApplicationChannel extends Channel {
+  ElectronApplicationChannel(super.owner);
+
+  Future<ElectronApplicationBrowserWindowResult> browserWindow({
     required PageBase page,
   }) async {
     final payload = <String, dynamic>{};
     payload['page'] = {'guid': page.guid};
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'browserWindow',
       payload,
     );
     return ElectronApplicationBrowserWindowResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Evaluate
-  Future<ElectronApplicationEvaluateExpressionResult>
-  channel_evaluateExpression({
+  Future<ElectronApplicationEvaluateExpressionResult> evaluateExpression({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -11654,20 +11803,20 @@ abstract class ElectronApplicationBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpression',
       payload,
     );
     return ElectronApplicationEvaluateExpressionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Evaluate
   Future<ElectronApplicationEvaluateExpressionHandleResult>
-  channel_evaluateExpressionHandle({
+  evaluateExpressionHandle({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -11676,26 +11825,26 @@ abstract class ElectronApplicationBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpressionHandle',
       payload,
     );
     return ElectronApplicationEvaluateExpressionHandleResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_updateSubscription({
+  Future<void> updateSubscription({
     required bool enabled,
     required ElectronApplicationUpdateSubscriptionEventEnum event,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'updateSubscription',
       payload,
     );
@@ -11704,6 +11853,8 @@ abstract class ElectronApplicationBase extends ChannelOwner {
 }
 
 abstract class ElementHandleBase extends JSHandleBase {
+  // ignore: overridden_fields
+  covariant late ElementHandleChannel channel = ElementHandleChannel(this);
   ElementHandleBase(
     super.connection,
     super.channelType,
@@ -11711,22 +11862,26 @@ abstract class ElementHandleBase extends JSHandleBase {
     super.initializer, [
     super.parent,
   ]);
+}
+
+class ElementHandleChannel extends JSHandleChannel {
+  ElementHandleChannel(super.owner);
 
   /// Get bounding box
-  Future<ElementHandleBoundingBoxResult> channel_boundingBox() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleBoundingBoxResult> boundingBox() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'boundingBox',
       {},
     );
     return ElementHandleBoundingBoxResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Check
-  Future<void> channel_check({
+  Future<void> check({
     bool? force,
     Point? position,
     required double timeout,
@@ -11737,8 +11892,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (position != null) payload['position'] = position?.toJson();
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'check',
       payload,
     );
@@ -11746,7 +11901,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Click
-  Future<void> channel_click({
+  Future<void> click({
     ElementHandleClickButtonEnum? button,
     int? clickCount,
     double? delay,
@@ -11769,8 +11924,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (steps != null) payload['steps'] = steps;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'click',
       payload,
     );
@@ -11778,20 +11933,20 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Get content frame
-  Future<ElementHandleContentFrameResult> channel_contentFrame() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleContentFrameResult> contentFrame() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'contentFrame',
       {},
     );
     return ElementHandleContentFrameResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Double click
-  Future<void> channel_dblclick({
+  Future<void> dblclick({
     ElementHandleDblclickButtonEnum? button,
     double? delay,
     bool? force,
@@ -11810,8 +11965,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (steps != null) payload['steps'] = steps;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'dblclick',
       payload,
     );
@@ -11819,15 +11974,15 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Dispatch event
-  Future<void> channel_dispatchEvent({
+  Future<void> dispatchEvent({
     required SerializedArgument eventInit,
     required String type,
   }) async {
     final payload = <String, dynamic>{};
     payload['eventInit'] = eventInit.toJson();
     payload['type'] = type;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'dispatchEvent',
       payload,
     );
@@ -11835,7 +11990,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Evaluate
-  Future<ElementHandleEvalOnSelectorResult> channel_evalOnSelector({
+  Future<ElementHandleEvalOnSelectorResult> evalOnSelector({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -11848,19 +12003,19 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evalOnSelector',
       payload,
     );
     return ElementHandleEvalOnSelectorResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Evaluate
-  Future<ElementHandleEvalOnSelectorAllResult> channel_evalOnSelectorAll({
+  Future<ElementHandleEvalOnSelectorAllResult> evalOnSelectorAll({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -11871,19 +12026,19 @@ abstract class ElementHandleBase extends JSHandleBase {
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evalOnSelectorAll',
       payload,
     );
     return ElementHandleEvalOnSelectorAllResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Fill "{value}"
-  Future<void> channel_fill({
+  Future<void> fill({
     bool? force,
     required double timeout,
     required String value,
@@ -11892,8 +12047,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (force != null) payload['force'] = force;
     payload['timeout'] = timeout;
     payload['value'] = value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fill',
       payload,
     );
@@ -11901,30 +12056,34 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Focus
-  Future<void> channel_focus() async {
-    final response = await connection.sendMessageToServer(guid, 'focus', {});
+  Future<void> focus() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'focus',
+      {},
+    );
     return;
   }
 
   /// Get attribute
-  Future<ElementHandleGetAttributeResult> channel_getAttribute({
+  Future<ElementHandleGetAttributeResult> getAttribute({
     required String name,
   }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'getAttribute',
       payload,
     );
     return ElementHandleGetAttributeResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Hover
-  Future<void> channel_hover({
+  Future<void> hover({
     bool? force,
     List<ElementHandleHoverModifiersEnum>? modifiers,
     Point? position,
@@ -11937,8 +12096,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (position != null) payload['position'] = position?.toJson();
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'hover',
       payload,
     );
@@ -11946,133 +12105,137 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Get HTML
-  Future<ElementHandleInnerHTMLResult> channel_innerHTML() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleInnerHTMLResult> innerHTML() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'innerHTML',
       {},
     );
     return ElementHandleInnerHTMLResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get inner text
-  Future<ElementHandleInnerTextResult> channel_innerText() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleInnerTextResult> innerText() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'innerText',
       {},
     );
     return ElementHandleInnerTextResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get input value
-  Future<ElementHandleInputValueResult> channel_inputValue() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleInputValueResult> inputValue() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'inputValue',
       {},
     );
     return ElementHandleInputValueResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Is checked
-  Future<ElementHandleIsCheckedResult> channel_isChecked() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleIsCheckedResult> isChecked() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isChecked',
       {},
     );
     return ElementHandleIsCheckedResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Is disabled
-  Future<ElementHandleIsDisabledResult> channel_isDisabled() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleIsDisabledResult> isDisabled() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isDisabled',
       {},
     );
     return ElementHandleIsDisabledResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Is editable
-  Future<ElementHandleIsEditableResult> channel_isEditable() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleIsEditableResult> isEditable() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isEditable',
       {},
     );
     return ElementHandleIsEditableResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Is enabled
-  Future<ElementHandleIsEnabledResult> channel_isEnabled() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleIsEnabledResult> isEnabled() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isEnabled',
       {},
     );
     return ElementHandleIsEnabledResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Is hidden
-  Future<ElementHandleIsHiddenResult> channel_isHidden() async {
-    final response = await connection.sendMessageToServer(guid, 'isHidden', {});
+  Future<ElementHandleIsHiddenResult> isHidden() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'isHidden',
+      {},
+    );
     return ElementHandleIsHiddenResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Is visible
-  Future<ElementHandleIsVisibleResult> channel_isVisible() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleIsVisibleResult> isVisible() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isVisible',
       {},
     );
     return ElementHandleIsVisibleResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get owner frame
-  Future<ElementHandleOwnerFrameResult> channel_ownerFrame() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleOwnerFrameResult> ownerFrame() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'ownerFrame',
       {},
     );
     return ElementHandleOwnerFrameResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Press "{key}"
-  Future<void> channel_press({
+  Future<void> press({
     double? delay,
     required String key,
     bool? noWaitAfter,
@@ -12083,8 +12246,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     payload['key'] = key;
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'press',
       payload,
     );
@@ -12092,43 +12255,43 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Query selector
-  Future<ElementHandleQuerySelectorResult> channel_querySelector({
+  Future<ElementHandleQuerySelectorResult> querySelector({
     required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'querySelector',
       payload,
     );
     return ElementHandleQuerySelectorResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Query selector all
-  Future<ElementHandleQuerySelectorAllResult> channel_querySelectorAll({
+  Future<ElementHandleQuerySelectorAllResult> querySelectorAll({
     required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'querySelectorAll',
       payload,
     );
     return ElementHandleQuerySelectorAllResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Screenshot
-  Future<ElementHandleScreenshotResult> channel_screenshot({
+  Future<ElementHandleScreenshotResult> screenshot({
     required CommonScreenshotOptions commonScreenshotOptions,
     int? quality,
     required double timeout,
@@ -12139,23 +12302,23 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (quality != null) payload['quality'] = quality;
     payload['timeout'] = timeout;
     if (type != null) payload['type'] = type?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screenshot',
       payload,
     );
     return ElementHandleScreenshotResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Scroll into view
-  Future<void> channel_scrollIntoViewIfNeeded({required double timeout}) async {
+  Future<void> scrollIntoViewIfNeeded({required double timeout}) async {
     final payload = <String, dynamic>{};
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'scrollIntoViewIfNeeded',
       payload,
     );
@@ -12163,7 +12326,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Select option
-  Future<ElementHandleSelectOptionResult> channel_selectOption({
+  Future<ElementHandleSelectOptionResult> selectOption({
     List<ElementHandleBase>? elements,
     bool? force,
     List<ElementHandleSelectOptionOptionsItems>? options,
@@ -12174,27 +12337,24 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (force != null) payload['force'] = force;
     if (options != null) payload['options'] = options;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'selectOption',
       payload,
     );
     return ElementHandleSelectOptionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Select text
-  Future<void> channel_selectText({
-    bool? force,
-    required double timeout,
-  }) async {
+  Future<void> selectText({bool? force, required double timeout}) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'selectText',
       payload,
     );
@@ -12202,7 +12362,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Set input files
-  Future<void> channel_setInputFiles({
+  Future<void> setInputFiles({
     WritableStreamBase? directoryStream,
     String? localDirectory,
     List<String>? localPaths,
@@ -12218,8 +12378,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (payloads != null) payload['payloads'] = payloads;
     if (streams != null) payload['streams'] = streams;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setInputFiles',
       payload,
     );
@@ -12227,7 +12387,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Tap
-  Future<void> channel_tap({
+  Future<void> tap({
     bool? force,
     List<ElementHandleTapModifiersEnum>? modifiers,
     Point? position,
@@ -12240,25 +12400,29 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (position != null) payload['position'] = position?.toJson();
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(guid, 'tap', payload);
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'tap',
+      payload,
+    );
     return;
   }
 
   /// Get text content
-  Future<ElementHandleTextContentResult> channel_textContent() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ElementHandleTextContentResult> textContent() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'textContent',
       {},
     );
     return ElementHandleTextContentResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Type
-  Future<void> channel_type({
+  Future<void> type({
     double? delay,
     required String text,
     required double timeout,
@@ -12267,8 +12431,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (delay != null) payload['delay'] = delay;
     payload['text'] = text;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'type',
       payload,
     );
@@ -12276,7 +12440,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Uncheck
-  Future<void> channel_uncheck({
+  Future<void> uncheck({
     bool? force,
     Point? position,
     required double timeout,
@@ -12287,8 +12451,8 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (position != null) payload['position'] = position?.toJson();
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'uncheck',
       payload,
     );
@@ -12296,15 +12460,15 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Wait for state
-  Future<void> channel_waitForElementState({
+  Future<void> waitForElementState({
     required ElementHandleWaitForElementStateStateEnum state,
     required double timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['state'] = state.value;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'waitForElementState',
       payload,
     );
@@ -12312,7 +12476,7 @@ abstract class ElementHandleBase extends JSHandleBase {
   }
 
   /// Wait for selector
-  Future<ElementHandleWaitForSelectorResult> channel_waitForSelector({
+  Future<ElementHandleWaitForSelectorResult> waitForSelector({
     required Pattern selector,
     ElementHandleWaitForSelectorStateEnum? state,
     bool? strict,
@@ -12323,19 +12487,20 @@ abstract class ElementHandleBase extends JSHandleBase {
     if (state != null) payload['state'] = state?.value;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'waitForSelector',
       payload,
     );
     return ElementHandleWaitForSelectorResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 }
 
 abstract class FrameBase extends ChannelOwner {
+  late FrameChannel channel = FrameChannel(this);
   FrameBase(
     super.connection,
     super.channelType,
@@ -12346,9 +12511,13 @@ abstract class FrameBase extends ChannelOwner {
 
   FrameInitializer get typedInitializer =>
       FrameInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class FrameChannel extends Channel {
+  FrameChannel(super.owner);
 
   /// Add script tag
-  Future<FrameAddScriptTagResult> channel_addScriptTag({
+  Future<FrameAddScriptTagResult> addScriptTag({
     String? content,
     String? type,
     String? url,
@@ -12357,32 +12526,38 @@ abstract class FrameBase extends ChannelOwner {
     if (content != null) payload['content'] = content;
     if (type != null) payload['type'] = type;
     if (url != null) payload['url'] = url;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'addScriptTag',
       payload,
     );
-    return FrameAddScriptTagResult.fromJson(response, connection: connection);
+    return FrameAddScriptTagResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Add style tag
-  Future<FrameAddStyleTagResult> channel_addStyleTag({
+  Future<FrameAddStyleTagResult> addStyleTag({
     String? content,
     String? url,
   }) async {
     final payload = <String, dynamic>{};
     if (content != null) payload['content'] = content;
     if (url != null) payload['url'] = url;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'addStyleTag',
       payload,
     );
-    return FrameAddStyleTagResult.fromJson(response, connection: connection);
+    return FrameAddStyleTagResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Aria snapshot
-  Future<FrameAriaSnapshotResult> channel_ariaSnapshot({
+  Future<FrameAriaSnapshotResult> ariaSnapshot({
     bool? boxes,
     int? depth,
     FrameAriaSnapshotModeEnum? mode,
@@ -12397,16 +12572,19 @@ abstract class FrameBase extends ChannelOwner {
     if (selector != null) payload['selector'] = selector?.toString();
     payload['timeout'] = timeout;
     if (track != null) payload['track'] = track;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'ariaSnapshot',
       payload,
     );
-    return FrameAriaSnapshotResult.fromJson(response, connection: connection);
+    return FrameAriaSnapshotResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Blur
-  Future<void> channel_blur({
+  Future<void> blur({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12415,8 +12593,8 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'blur',
       payload,
     );
@@ -12424,7 +12602,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Check
-  Future<void> channel_check({
+  Future<void> check({
     bool? force,
     Point? position,
     required Pattern selector,
@@ -12439,8 +12617,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'check',
       payload,
     );
@@ -12448,7 +12626,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Click
-  Future<void> channel_click({
+  Future<void> click({
     FrameClickButtonEnum? button,
     int? clickCount,
     double? delay,
@@ -12475,8 +12653,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'click',
       payload,
     );
@@ -12484,13 +12662,17 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Get content
-  Future<FrameContentResult> channel_content() async {
-    final response = await connection.sendMessageToServer(guid, 'content', {});
-    return FrameContentResult.fromJson(response, connection: connection);
+  Future<FrameContentResult> content() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'content',
+      {},
+    );
+    return FrameContentResult.fromJson(response, connection: owner.connection);
   }
 
   /// Double click
-  Future<void> channel_dblclick({
+  Future<void> dblclick({
     FrameDblclickButtonEnum? button,
     double? delay,
     bool? force,
@@ -12513,8 +12695,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'dblclick',
       payload,
     );
@@ -12522,7 +12704,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Dispatch "{type}"
-  Future<void> channel_dispatchEvent({
+  Future<void> dispatchEvent({
     required SerializedArgument eventInit,
     required Pattern selector,
     bool? strict,
@@ -12535,8 +12717,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     payload['type'] = type;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'dispatchEvent',
       payload,
     );
@@ -12544,7 +12726,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Drag and drop
-  Future<void> channel_dragAndDrop({
+  Future<void> dragAndDrop({
     bool? force,
     required String source,
     Point? sourcePosition,
@@ -12567,8 +12749,8 @@ abstract class FrameBase extends ChannelOwner {
       payload['targetPosition'] = targetPosition?.toJson();
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'dragAndDrop',
       payload,
     );
@@ -12576,7 +12758,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Drop files or data onto an element
-  Future<void> channel_drop({
+  Future<void> drop({
     List<FrameDropDataItems>? data,
     List<String>? localPaths,
     List<FrameDropPayloadsItems>? payloads,
@@ -12595,8 +12777,8 @@ abstract class FrameBase extends ChannelOwner {
     if (streams != null) payload['streams'] = streams;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'drop',
       payload,
     );
@@ -12604,7 +12786,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Evaluate
-  Future<FrameEvalOnSelectorResult> channel_evalOnSelector({
+  Future<FrameEvalOnSelectorResult> evalOnSelector({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -12617,16 +12799,19 @@ abstract class FrameBase extends ChannelOwner {
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evalOnSelector',
       payload,
     );
-    return FrameEvalOnSelectorResult.fromJson(response, connection: connection);
+    return FrameEvalOnSelectorResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Evaluate
-  Future<FrameEvalOnSelectorAllResult> channel_evalOnSelectorAll({
+  Future<FrameEvalOnSelectorAllResult> evalOnSelectorAll({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -12637,19 +12822,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evalOnSelectorAll',
       payload,
     );
     return FrameEvalOnSelectorAllResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Evaluate
-  Future<FrameEvaluateExpressionResult> channel_evaluateExpression({
+  Future<FrameEvaluateExpressionResult> evaluateExpression({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -12658,19 +12843,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpression',
       payload,
     );
     return FrameEvaluateExpressionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Evaluate
-  Future<FrameEvaluateExpressionHandleResult> channel_evaluateExpressionHandle({
+  Future<FrameEvaluateExpressionHandleResult> evaluateExpressionHandle({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -12679,19 +12864,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpressionHandle',
       payload,
     );
     return FrameEvaluateExpressionHandleResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Expect "{expression}"
-  Future<void> channel_expect({
+  Future<void> expect({
     double? expectedNumber,
     List<ExpectedTextValue>? expectedText,
     SerializedArgument? expectedValue,
@@ -12715,8 +12900,8 @@ abstract class FrameBase extends ChannelOwner {
     if (selector != null) payload['selector'] = selector?.toString();
     payload['timeout'] = timeout;
     if (useInnerText != null) payload['useInnerText'] = useInnerText;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'expect',
       payload,
     );
@@ -12724,7 +12909,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Fill "{value}"
-  Future<void> channel_fill({
+  Future<void> fill({
     bool? force,
     required Pattern selector,
     bool? strict,
@@ -12737,8 +12922,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     payload['value'] = value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fill',
       payload,
     );
@@ -12746,7 +12931,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Focus
-  Future<void> channel_focus({
+  Future<void> focus({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12755,8 +12940,8 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'focus',
       payload,
     );
@@ -12764,17 +12949,20 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Get frame element
-  Future<FrameFrameElementResult> channel_frameElement() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<FrameFrameElementResult> frameElement() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'frameElement',
       {},
     );
-    return FrameFrameElementResult.fromJson(response, connection: connection);
+    return FrameFrameElementResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Get attribute "{name}"
-  Future<FrameGetAttributeResult> channel_getAttribute({
+  Future<FrameGetAttributeResult> getAttribute({
     required String name,
     required Pattern selector,
     bool? strict,
@@ -12785,16 +12973,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'getAttribute',
       payload,
     );
-    return FrameGetAttributeResult.fromJson(response, connection: connection);
+    return FrameGetAttributeResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Navigate to "{url}"
-  Future<FrameGotoResult> channel_goto({
+  Future<FrameGotoResult> goto({
     String? referer,
     required double timeout,
     required String url,
@@ -12805,34 +12996,31 @@ abstract class FrameBase extends ChannelOwner {
     payload['timeout'] = timeout;
     payload['url'] = url;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'goto',
       payload,
     );
-    return FrameGotoResult.fromJson(response, connection: connection);
+    return FrameGotoResult.fromJson(response, connection: owner.connection);
   }
 
-  Future<void> channel_hideHighlight({required Pattern selector}) async {
+  Future<void> hideHighlight({required Pattern selector}) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'hideHighlight',
       payload,
     );
     return;
   }
 
-  Future<void> channel_highlight({
-    required Pattern selector,
-    String? style,
-  }) async {
+  Future<void> highlight({required Pattern selector, String? style}) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (style != null) payload['style'] = style;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'highlight',
       payload,
     );
@@ -12840,7 +13028,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Hover
-  Future<void> channel_hover({
+  Future<void> hover({
     bool? force,
     List<FrameHoverModifiersEnum>? modifiers,
     Point? position,
@@ -12857,8 +13045,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'hover',
       payload,
     );
@@ -12866,7 +13054,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Get HTML
-  Future<FrameInnerHTMLResult> channel_innerHTML({
+  Future<FrameInnerHTMLResult> innerHTML({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12875,16 +13063,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'innerHTML',
       payload,
     );
-    return FrameInnerHTMLResult.fromJson(response, connection: connection);
+    return FrameInnerHTMLResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Get inner text
-  Future<FrameInnerTextResult> channel_innerText({
+  Future<FrameInnerTextResult> innerText({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12893,16 +13084,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'innerText',
       payload,
     );
-    return FrameInnerTextResult.fromJson(response, connection: connection);
+    return FrameInnerTextResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Get input value
-  Future<FrameInputValueResult> channel_inputValue({
+  Future<FrameInputValueResult> inputValue({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12911,16 +13105,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'inputValue',
       payload,
     );
-    return FrameInputValueResult.fromJson(response, connection: connection);
+    return FrameInputValueResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Is checked
-  Future<FrameIsCheckedResult> channel_isChecked({
+  Future<FrameIsCheckedResult> isChecked({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12929,16 +13126,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isChecked',
       payload,
     );
-    return FrameIsCheckedResult.fromJson(response, connection: connection);
+    return FrameIsCheckedResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Is disabled
-  Future<FrameIsDisabledResult> channel_isDisabled({
+  Future<FrameIsDisabledResult> isDisabled({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12947,16 +13147,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isDisabled',
       payload,
     );
-    return FrameIsDisabledResult.fromJson(response, connection: connection);
+    return FrameIsDisabledResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Is editable
-  Future<FrameIsEditableResult> channel_isEditable({
+  Future<FrameIsEditableResult> isEditable({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12965,16 +13168,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isEditable',
       payload,
     );
-    return FrameIsEditableResult.fromJson(response, connection: connection);
+    return FrameIsEditableResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Is enabled
-  Future<FrameIsEnabledResult> channel_isEnabled({
+  Future<FrameIsEnabledResult> isEnabled({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -12983,48 +13189,54 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isEnabled',
       payload,
     );
-    return FrameIsEnabledResult.fromJson(response, connection: connection);
+    return FrameIsEnabledResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Is hidden
-  Future<FrameIsHiddenResult> channel_isHidden({
+  Future<FrameIsHiddenResult> isHidden({
     required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isHidden',
       payload,
     );
-    return FrameIsHiddenResult.fromJson(response, connection: connection);
+    return FrameIsHiddenResult.fromJson(response, connection: owner.connection);
   }
 
   /// Is visible
-  Future<FrameIsVisibleResult> channel_isVisible({
+  Future<FrameIsVisibleResult> isVisible({
     required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'isVisible',
       payload,
     );
-    return FrameIsVisibleResult.fromJson(response, connection: connection);
+    return FrameIsVisibleResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Press "{key}"
-  Future<void> channel_press({
+  Future<void> press({
     double? delay,
     required String key,
     bool? noWaitAfter,
@@ -13039,8 +13251,8 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'press',
       payload,
     );
@@ -13048,70 +13260,74 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Query count
-  Future<FrameQueryCountResult> channel_queryCount({
-    required Pattern selector,
-  }) async {
+  Future<FrameQueryCountResult> queryCount({required Pattern selector}) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'queryCount',
       payload,
     );
-    return FrameQueryCountResult.fromJson(response, connection: connection);
+    return FrameQueryCountResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Query selector
-  Future<FrameQuerySelectorResult> channel_querySelector({
+  Future<FrameQuerySelectorResult> querySelector({
     required Pattern selector,
     bool? strict,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'querySelector',
       payload,
     );
-    return FrameQuerySelectorResult.fromJson(response, connection: connection);
+    return FrameQuerySelectorResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Query selector all
-  Future<FrameQuerySelectorAllResult> channel_querySelectorAll({
+  Future<FrameQuerySelectorAllResult> querySelectorAll({
     required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'querySelectorAll',
       payload,
     );
     return FrameQuerySelectorAllResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<FrameResolveSelectorResult> channel_resolveSelector({
+  Future<FrameResolveSelectorResult> resolveSelector({
     required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'resolveSelector',
       payload,
     );
     return FrameResolveSelectorResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Select option
-  Future<FrameSelectOptionResult> channel_selectOption({
+  Future<FrameSelectOptionResult> selectOption({
     List<ElementHandleBase>? elements,
     bool? force,
     List<FrameSelectOptionOptionsItems>? options,
@@ -13126,16 +13342,19 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'selectOption',
       payload,
     );
-    return FrameSelectOptionResult.fromJson(response, connection: connection);
+    return FrameSelectOptionResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Set content
-  Future<void> channel_setContent({
+  Future<void> setContent({
     required String html,
     required double timeout,
     LifecycleEvent? waitUntil,
@@ -13144,8 +13363,8 @@ abstract class FrameBase extends ChannelOwner {
     payload['html'] = html;
     payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setContent',
       payload,
     );
@@ -13153,7 +13372,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Set input files
-  Future<void> channel_setInputFiles({
+  Future<void> setInputFiles({
     WritableStreamBase? directoryStream,
     String? localDirectory,
     List<String>? localPaths,
@@ -13173,8 +13392,8 @@ abstract class FrameBase extends ChannelOwner {
     if (streams != null) payload['streams'] = streams;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setInputFiles',
       payload,
     );
@@ -13182,7 +13401,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Tap
-  Future<void> channel_tap({
+  Future<void> tap({
     bool? force,
     List<FrameTapModifiersEnum>? modifiers,
     Point? position,
@@ -13199,12 +13418,16 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(guid, 'tap', payload);
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'tap',
+      payload,
+    );
     return;
   }
 
   /// Get text content
-  Future<FrameTextContentResult> channel_textContent({
+  Future<FrameTextContentResult> textContent({
     required Pattern selector,
     bool? strict,
     required double timeout,
@@ -13213,22 +13436,29 @@ abstract class FrameBase extends ChannelOwner {
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'textContent',
       payload,
     );
-    return FrameTextContentResult.fromJson(response, connection: connection);
+    return FrameTextContentResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Get page title
-  Future<FrameTitleResult> channel_title() async {
-    final response = await connection.sendMessageToServer(guid, 'title', {});
-    return FrameTitleResult.fromJson(response, connection: connection);
+  Future<FrameTitleResult> title() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'title',
+      {},
+    );
+    return FrameTitleResult.fromJson(response, connection: owner.connection);
   }
 
   /// Type "{text}"
-  Future<void> channel_type({
+  Future<void> type({
     double? delay,
     required Pattern selector,
     bool? strict,
@@ -13241,8 +13471,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['text'] = text;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'type',
       payload,
     );
@@ -13250,7 +13480,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Uncheck
-  Future<void> channel_uncheck({
+  Future<void> uncheck({
     bool? force,
     Point? position,
     required Pattern selector,
@@ -13265,8 +13495,8 @@ abstract class FrameBase extends ChannelOwner {
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'uncheck',
       payload,
     );
@@ -13274,7 +13504,7 @@ abstract class FrameBase extends ChannelOwner {
   }
 
   /// Wait for function
-  Future<FrameWaitForFunctionResult> channel_waitForFunction({
+  Future<FrameWaitForFunctionResult> waitForFunction({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -13287,19 +13517,19 @@ abstract class FrameBase extends ChannelOwner {
     if (isFunction != null) payload['isFunction'] = isFunction;
     if (pollingInterval != null) payload['pollingInterval'] = pollingInterval;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'waitForFunction',
       payload,
     );
     return FrameWaitForFunctionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Wait for selector
-  Future<FrameWaitForSelectorResult> channel_waitForSelector({
+  Future<FrameWaitForSelectorResult> waitForSelector({
     bool? omitReturnValue,
     required Pattern selector,
     FrameWaitForSelectorStateEnum? state,
@@ -13312,23 +13542,23 @@ abstract class FrameBase extends ChannelOwner {
     if (state != null) payload['state'] = state?.value;
     if (strict != null) payload['strict'] = strict;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'waitForSelector',
       payload,
     );
     return FrameWaitForSelectorResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Wait for timeout
-  Future<void> channel_waitForTimeout({required double waitTimeout}) async {
+  Future<void> waitForTimeout({required double waitTimeout}) async {
     final payload = <String, dynamic>{};
     payload['waitTimeout'] = waitTimeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'waitForTimeout',
       payload,
     );
@@ -13337,6 +13567,7 @@ abstract class FrameBase extends ChannelOwner {
 }
 
 abstract class JSHandleBase extends ChannelOwner {
+  late JSHandleChannel channel = JSHandleChannel(this);
   JSHandleBase(
     super.connection,
     super.channelType,
@@ -13347,14 +13578,22 @@ abstract class JSHandleBase extends ChannelOwner {
 
   JSHandleInitializer get typedInitializer =>
       JSHandleInitializer.fromJson(super.initializer, connection: connection);
+}
 
-  Future<void> channel_dispose() async {
-    final response = await connection.sendMessageToServer(guid, 'dispose', {});
+class JSHandleChannel extends Channel {
+  JSHandleChannel(super.owner);
+
+  Future<void> dispose() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'dispose',
+      {},
+    );
     return;
   }
 
   /// Evaluate
-  Future<JSHandleEvaluateExpressionResult> channel_evaluateExpression({
+  Future<JSHandleEvaluateExpressionResult> evaluateExpression({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -13363,20 +13602,19 @@ abstract class JSHandleBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpression',
       payload,
     );
     return JSHandleEvaluateExpressionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Evaluate
-  Future<JSHandleEvaluateExpressionHandleResult>
-  channel_evaluateExpressionHandle({
+  Future<JSHandleEvaluateExpressionHandleResult> evaluateExpressionHandle({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -13385,56 +13623,61 @@ abstract class JSHandleBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpressionHandle',
       payload,
     );
     return JSHandleEvaluateExpressionHandleResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get JS property
-  Future<JSHandleGetPropertyResult> channel_getProperty({
-    required String name,
-  }) async {
+  Future<JSHandleGetPropertyResult> getProperty({required String name}) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'getProperty',
       payload,
     );
-    return JSHandleGetPropertyResult.fromJson(response, connection: connection);
+    return JSHandleGetPropertyResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Get property list
-  Future<JSHandleGetPropertyListResult> channel_getPropertyList() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<JSHandleGetPropertyListResult> getPropertyList() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'getPropertyList',
       {},
     );
     return JSHandleGetPropertyListResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get JSON value
-  Future<JSHandleJsonValueResult> channel_jsonValue() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<JSHandleJsonValueResult> jsonValue() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'jsonValue',
       {},
     );
-    return JSHandleJsonValueResult.fromJson(response, connection: connection);
+    return JSHandleJsonValueResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class JsonPipeBase extends ChannelOwner {
+  late JsonPipeChannel channel = JsonPipeChannel(this);
   JsonPipeBase(
     super.connection,
     super.channelType,
@@ -13442,17 +13685,25 @@ abstract class JsonPipeBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<void> channel_close() async {
-    final response = await connection.sendMessageToServer(guid, 'close', {});
+class JsonPipeChannel extends Channel {
+  JsonPipeChannel(super.owner);
+
+  Future<void> close() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'close',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_send({JsonValue message}) async {
+  Future<void> send({JsonValue message}) async {
     final payload = <String, dynamic>{};
     if (message != null) payload['message'] = message;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'send',
       payload,
     );
@@ -13461,6 +13712,7 @@ abstract class JsonPipeBase extends ChannelOwner {
 }
 
 abstract class LocalUtilsBase extends ChannelOwner {
+  late LocalUtilsChannel channel = LocalUtilsChannel(this);
   LocalUtilsBase(
     super.connection,
     super.channelType,
@@ -13471,21 +13723,25 @@ abstract class LocalUtilsBase extends ChannelOwner {
 
   LocalUtilsInitializer get typedInitializer =>
       LocalUtilsInitializer.fromJson(super.initializer, connection: connection);
+}
 
-  Future<void> channel_addStackToTracingNoReply({
+class LocalUtilsChannel extends Channel {
+  LocalUtilsChannel(super.owner);
+
+  Future<void> addStackToTracingNoReply({
     required ClientSideCallMetadata callData,
   }) async {
     final payload = <String, dynamic>{};
     payload['callData'] = callData.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'addStackToTracingNoReply',
       payload,
     );
     return;
   }
 
-  Future<LocalUtilsConnectResult> channel_connect({
+  Future<LocalUtilsConnectResult> connect({
     required String endpoint,
     String? exposeNetwork,
     JsonValue headers,
@@ -13501,15 +13757,18 @@ abstract class LocalUtilsBase extends ChannelOwner {
     if (socksProxyRedirectPortForTest != null)
       payload['socksProxyRedirectPortForTest'] = socksProxyRedirectPortForTest;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'connect',
       payload,
     );
-    return LocalUtilsConnectResult.fromJson(response, connection: connection);
+    return LocalUtilsConnectResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<LocalUtilsGlobToRegexResult> channel_globToRegex({
+  Future<LocalUtilsGlobToRegexResult> globToRegex({
     String? baseURL,
     required String glob,
     bool? webSocketUrl,
@@ -13518,29 +13777,29 @@ abstract class LocalUtilsBase extends ChannelOwner {
     if (baseURL != null) payload['baseURL'] = baseURL;
     payload['glob'] = glob;
     if (webSocketUrl != null) payload['webSocketUrl'] = webSocketUrl;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'globToRegex',
       payload,
     );
     return LocalUtilsGlobToRegexResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_harClose({required String harId}) async {
+  Future<void> harClose({required String harId}) async {
     final payload = <String, dynamic>{};
     payload['harId'] = harId;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'harClose',
       payload,
     );
     return;
   }
 
-  Future<LocalUtilsHarLookupResult> channel_harLookup({
+  Future<LocalUtilsHarLookupResult> harLookup({
     required String harId,
     required List<NameValue> headers,
     required bool isNavigationRequest,
@@ -13555,28 +13814,32 @@ abstract class LocalUtilsBase extends ChannelOwner {
     payload['method'] = method;
     if (postData != null) payload['postData'] = postData;
     payload['url'] = url;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'harLookup',
       payload,
     );
-    return LocalUtilsHarLookupResult.fromJson(response, connection: connection);
+    return LocalUtilsHarLookupResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<LocalUtilsHarOpenResult> channel_harOpen({
-    required String file,
-  }) async {
+  Future<LocalUtilsHarOpenResult> harOpen({required String file}) async {
     final payload = <String, dynamic>{};
     payload['file'] = file;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'harOpen',
       payload,
     );
-    return LocalUtilsHarOpenResult.fromJson(response, connection: connection);
+    return LocalUtilsHarOpenResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<void> channel_harUnzip({
+  Future<void> harUnzip({
     required String harFile,
     String? resourcesDir,
     required String zipFile,
@@ -13585,26 +13848,26 @@ abstract class LocalUtilsBase extends ChannelOwner {
     payload['harFile'] = harFile;
     if (resourcesDir != null) payload['resourcesDir'] = resourcesDir;
     payload['zipFile'] = zipFile;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'harUnzip',
       payload,
     );
     return;
   }
 
-  Future<void> channel_traceDiscarded({required String stacksId}) async {
+  Future<void> traceDiscarded({required String stacksId}) async {
     final payload = <String, dynamic>{};
     payload['stacksId'] = stacksId;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'traceDiscarded',
       payload,
     );
     return;
   }
 
-  Future<LocalUtilsTracingStartedResult> channel_tracingStarted({
+  Future<LocalUtilsTracingStartedResult> tracingStarted({
     bool? live,
     required String traceName,
     String? tracesDir,
@@ -13613,18 +13876,18 @@ abstract class LocalUtilsBase extends ChannelOwner {
     if (live != null) payload['live'] = live;
     payload['traceName'] = traceName;
     if (tracesDir != null) payload['tracesDir'] = tracesDir;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'tracingStarted',
       payload,
     );
     return LocalUtilsTracingStartedResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_zip({
+  Future<void> zip({
     List<String>? additionalSources,
     required List<NameValue> entries,
     required bool includeSources,
@@ -13640,12 +13903,17 @@ abstract class LocalUtilsBase extends ChannelOwner {
     payload['mode'] = mode.value;
     if (stacksId != null) payload['stacksId'] = stacksId;
     payload['zipFile'] = zipFile;
-    final response = await connection.sendMessageToServer(guid, 'zip', payload);
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'zip',
+      payload,
+    );
     return;
   }
 }
 
 abstract class PageBase extends ChannelOwner {
+  late PageChannel channel = PageChannel(this);
   PageBase(
     super.connection,
     super.channelType,
@@ -13656,25 +13924,32 @@ abstract class PageBase extends ChannelOwner {
 
   PageInitializer get typedInitializer =>
       PageInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class PageChannel extends Channel {
+  PageChannel(super.owner);
 
   /// Add init script
-  Future<PageAddInitScriptResult> channel_addInitScript({
+  Future<PageAddInitScriptResult> addInitScript({
     required String source,
   }) async {
     final payload = <String, dynamic>{};
     payload['source'] = source;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'addInitScript',
       payload,
     );
-    return PageAddInitScriptResult.fromJson(response, connection: connection);
+    return PageAddInitScriptResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Bring to front
-  Future<void> channel_bringToFront() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> bringToFront() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'bringToFront',
       {},
     );
@@ -13682,9 +13957,9 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Cancel pick locator
-  Future<void> channel_cancelPickLocator() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> cancelPickLocator() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'cancelPickLocator',
       {},
     );
@@ -13692,9 +13967,9 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Clear console messages
-  Future<void> channel_clearConsoleMessages() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> clearConsoleMessages() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clearConsoleMessages',
       {},
     );
@@ -13702,9 +13977,9 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Clear page errors
-  Future<void> channel_clearPageErrors() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> clearPageErrors() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'clearPageErrors',
       {},
     );
@@ -13712,11 +13987,11 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Close page
-  Future<void> channel_close({String? reason}) async {
+  Future<void> close({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'close',
       payload,
     );
@@ -13724,21 +13999,24 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Get console messages
-  Future<PageConsoleMessagesResult> channel_consoleMessages({
+  Future<PageConsoleMessagesResult> consoleMessages({
     ConsoleMessagesFilter? filter,
   }) async {
     final payload = <String, dynamic>{};
     if (filter != null) payload['filter'] = filter?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'consoleMessages',
       payload,
     );
-    return PageConsoleMessagesResult.fromJson(response, connection: connection);
+    return PageConsoleMessagesResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Emulate media
-  Future<void> channel_emulateMedia({
+  Future<void> emulateMedia({
     PageEmulateMediaColorSchemeEnum? colorScheme,
     PageEmulateMediaContrastEnum? contrast,
     PageEmulateMediaForcedColorsEnum? forcedColors,
@@ -13751,8 +14029,8 @@ abstract class PageBase extends ChannelOwner {
     if (forcedColors != null) payload['forcedColors'] = forcedColors?.value;
     if (media != null) payload['media'] = media?.value;
     if (reducedMotion != null) payload['reducedMotion'] = reducedMotion?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'emulateMedia',
       payload,
     );
@@ -13760,7 +14038,7 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Expect screenshot
-  Future<PageExpectScreenshotResult> channel_expectScreenshot({
+  Future<PageExpectScreenshotResult> expectScreenshot({
     required CommonScreenshotOptions commonScreenshotOptions,
     Rect? clip,
     String? comparator,
@@ -13786,67 +14064,68 @@ abstract class PageBase extends ChannelOwner {
     if (maxDiffPixels != null) payload['maxDiffPixels'] = maxDiffPixels;
     if (threshold != null) payload['threshold'] = threshold;
     payload['timeout'] = timeout;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'expectScreenshot',
       payload,
     );
     return PageExpectScreenshotResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Expose binding
-  Future<PageExposeBindingResult> channel_exposeBinding({
-    required String name,
-  }) async {
+  Future<PageExposeBindingResult> exposeBinding({required String name}) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'exposeBinding',
       payload,
     );
-    return PageExposeBindingResult.fromJson(response, connection: connection);
+    return PageExposeBindingResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Go back
-  Future<PageGoBackResult> channel_goBack({
+  Future<PageGoBackResult> goBack({
     required double timeout,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
     payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'goBack',
       payload,
     );
-    return PageGoBackResult.fromJson(response, connection: connection);
+    return PageGoBackResult.fromJson(response, connection: owner.connection);
   }
 
   /// Go forward
-  Future<PageGoForwardResult> channel_goForward({
+  Future<PageGoForwardResult> goForward({
     required double timeout,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
     payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'goForward',
       payload,
     );
-    return PageGoForwardResult.fromJson(response, connection: connection);
+    return PageGoForwardResult.fromJson(response, connection: owner.connection);
   }
 
   /// Hide all element highlights
-  Future<void> channel_hideHighlight() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> hideHighlight() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'hideHighlight',
       {},
     );
@@ -13854,11 +14133,11 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Key down "{key}"
-  Future<void> channel_keyboardDown({required String key}) async {
+  Future<void> keyboardDown({required String key}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'keyboardDown',
       payload,
     );
@@ -13866,11 +14145,11 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Insert "{text}"
-  Future<void> channel_keyboardInsertText({required String text}) async {
+  Future<void> keyboardInsertText({required String text}) async {
     final payload = <String, dynamic>{};
     payload['text'] = text;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'keyboardInsertText',
       payload,
     );
@@ -13878,15 +14157,12 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Press "{key}"
-  Future<void> channel_keyboardPress({
-    double? delay,
-    required String key,
-  }) async {
+  Future<void> keyboardPress({double? delay, required String key}) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
     payload['key'] = key;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'keyboardPress',
       payload,
     );
@@ -13894,15 +14170,12 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Type "{text}"
-  Future<void> channel_keyboardType({
-    double? delay,
-    required String text,
-  }) async {
+  Future<void> keyboardType({double? delay, required String text}) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
     payload['text'] = text;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'keyboardType',
       payload,
     );
@@ -13910,11 +14183,11 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Key up "{key}"
-  Future<void> channel_keyboardUp({required String key}) async {
+  Future<void> keyboardUp({required String key}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'keyboardUp',
       payload,
     );
@@ -13922,7 +14195,7 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Click
-  Future<void> channel_mouseClick({
+  Future<void> mouseClick({
     PageMouseClickButtonEnum? button,
     int? clickCount,
     double? delay,
@@ -13935,8 +14208,8 @@ abstract class PageBase extends ChannelOwner {
     if (delay != null) payload['delay'] = delay;
     payload['x'] = x;
     payload['y'] = y;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'mouseClick',
       payload,
     );
@@ -13944,15 +14217,15 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Mouse down
-  Future<void> channel_mouseDown({
+  Future<void> mouseDown({
     PageMouseDownButtonEnum? button,
     int? clickCount,
   }) async {
     final payload = <String, dynamic>{};
     if (button != null) payload['button'] = button?.value;
     if (clickCount != null) payload['clickCount'] = clickCount;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'mouseDown',
       payload,
     );
@@ -13960,7 +14233,7 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Mouse move
-  Future<void> channel_mouseMove({
+  Future<void> mouseMove({
     int? steps,
     required double x,
     required double y,
@@ -13969,8 +14242,8 @@ abstract class PageBase extends ChannelOwner {
     if (steps != null) payload['steps'] = steps;
     payload['x'] = x;
     payload['y'] = y;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'mouseMove',
       payload,
     );
@@ -13978,15 +14251,12 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Mouse up
-  Future<void> channel_mouseUp({
-    PageMouseUpButtonEnum? button,
-    int? clickCount,
-  }) async {
+  Future<void> mouseUp({PageMouseUpButtonEnum? button, int? clickCount}) async {
     final payload = <String, dynamic>{};
     if (button != null) payload['button'] = button?.value;
     if (clickCount != null) payload['clickCount'] = clickCount;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'mouseUp',
       payload,
     );
@@ -13994,15 +14264,15 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Mouse wheel
-  Future<void> channel_mouseWheel({
+  Future<void> mouseWheel({
     required double deltaX,
     required double deltaY,
   }) async {
     final payload = <String, dynamic>{};
     payload['deltaX'] = deltaX;
     payload['deltaY'] = deltaY;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'mouseWheel',
       payload,
     );
@@ -14010,21 +14280,24 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Get page errors
-  Future<PagePageErrorsResult> channel_pageErrors({
+  Future<PagePageErrorsResult> pageErrors({
     ConsoleMessagesFilter? filter,
   }) async {
     final payload = <String, dynamic>{};
     if (filter != null) payload['filter'] = filter?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'pageErrors',
       payload,
     );
-    return PagePageErrorsResult.fromJson(response, connection: connection);
+    return PagePageErrorsResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// PDF
-  Future<PagePdfResult> channel_pdf({
+  Future<PagePdfResult> pdf({
     bool? displayHeaderFooter,
     String? footerTemplate,
     String? format,
@@ -14057,59 +14330,66 @@ abstract class PageBase extends ChannelOwner {
     if (scale != null) payload['scale'] = scale;
     if (tagged != null) payload['tagged'] = tagged;
     if (width != null) payload['width'] = width;
-    final response = await connection.sendMessageToServer(guid, 'pdf', payload);
-    return PagePdfResult.fromJson(response, connection: connection);
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'pdf',
+      payload,
+    );
+    return PagePdfResult.fromJson(response, connection: owner.connection);
   }
 
   /// Pick locator
-  Future<PagePickLocatorResult> channel_pickLocator() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<PagePickLocatorResult> pickLocator() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'pickLocator',
       {},
     );
-    return PagePickLocatorResult.fromJson(response, connection: connection);
+    return PagePickLocatorResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Register locator handler
-  Future<PageRegisterLocatorHandlerResult> channel_registerLocatorHandler({
+  Future<PageRegisterLocatorHandlerResult> registerLocatorHandler({
     bool? noWaitAfter,
     required Pattern selector,
   }) async {
     final payload = <String, dynamic>{};
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
     payload['selector'] = selector.toString();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'registerLocatorHandler',
       payload,
     );
     return PageRegisterLocatorHandlerResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Reload
-  Future<PageReloadResult> channel_reload({
+  Future<PageReloadResult> reload({
     required double timeout,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
     payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'reload',
       payload,
     );
-    return PageReloadResult.fromJson(response, connection: connection);
+    return PageReloadResult.fromJson(response, connection: owner.connection);
   }
 
   /// Request garbage collection
-  Future<void> channel_requestGC() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> requestGC() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'requestGC',
       {},
     );
@@ -14117,20 +14397,24 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Get network requests
-  Future<PageRequestsResult> channel_requests() async {
-    final response = await connection.sendMessageToServer(guid, 'requests', {});
-    return PageRequestsResult.fromJson(response, connection: connection);
+  Future<PageRequestsResult> requests() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'requests',
+      {},
+    );
+    return PageRequestsResult.fromJson(response, connection: owner.connection);
   }
 
-  Future<void> channel_resolveLocatorHandlerNoReply({
+  Future<void> resolveLocatorHandlerNoReply({
     bool? remove,
     required int uid,
   }) async {
     final payload = <String, dynamic>{};
     if (remove != null) payload['remove'] = remove;
     payload['uid'] = uid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'resolveLocatorHandlerNoReply',
       payload,
     );
@@ -14138,9 +14422,9 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Run beforeunload
-  Future<void> channel_runBeforeUnload() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> runBeforeUnload() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'runBeforeUnload',
       {},
     );
@@ -14148,7 +14432,7 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Show chapter overlay
-  Future<void> channel_screencastChapter({
+  Future<void> screencastChapter({
     String? description,
     double? duration,
     required String title,
@@ -14157,8 +14441,8 @@ abstract class PageBase extends ChannelOwner {
     if (description != null) payload['description'] = description;
     if (duration != null) payload['duration'] = duration;
     payload['title'] = title;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastChapter',
       payload,
     );
@@ -14166,9 +14450,9 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Remove actions
-  Future<void> channel_screencastHideActions() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> screencastHideActions() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastHideActions',
       {},
     );
@@ -14176,11 +14460,11 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Remove overlay
-  Future<void> channel_screencastRemoveOverlay({required String id}) async {
+  Future<void> screencastRemoveOverlay({required String id}) async {
     final payload = <String, dynamic>{};
     payload['id'] = id;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastRemoveOverlay',
       payload,
     );
@@ -14188,13 +14472,11 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Set overlay visibility
-  Future<void> channel_screencastSetOverlayVisible({
-    required bool visible,
-  }) async {
+  Future<void> screencastSetOverlayVisible({required bool visible}) async {
     final payload = <String, dynamic>{};
     payload['visible'] = visible;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastSetOverlayVisible',
       payload,
     );
@@ -14202,13 +14484,13 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Show actions
-  Future<void> channel_screencastShowActions({
+  Future<void> screencastShowActions({
     required ShowActionsOptions showActionsOptions,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(showActionsOptions.toJson() as Map<String, dynamic>);
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastShowActions',
       payload,
     );
@@ -14216,26 +14498,26 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Show overlay
-  Future<PageScreencastShowOverlayResult> channel_screencastShowOverlay({
+  Future<PageScreencastShowOverlayResult> screencastShowOverlay({
     double? duration,
     required String html,
   }) async {
     final payload = <String, dynamic>{};
     if (duration != null) payload['duration'] = duration;
     payload['html'] = html;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastShowOverlay',
       payload,
     );
     return PageScreencastShowOverlayResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Start screencast
-  Future<PageScreencastStartResult> channel_screencastStart({
+  Future<PageScreencastStartResult> screencastStart({
     int? quality,
     bool? record,
     bool? sendFrames,
@@ -14246,18 +14528,21 @@ abstract class PageBase extends ChannelOwner {
     if (record != null) payload['record'] = record;
     if (sendFrames != null) payload['sendFrames'] = sendFrames;
     if (size != null) payload['size'] = size?.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastStart',
       payload,
     );
-    return PageScreencastStartResult.fromJson(response, connection: connection);
+    return PageScreencastStartResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Stop screencast
-  Future<void> channel_screencastStop() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> screencastStop() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screencastStop',
       {},
     );
@@ -14265,7 +14550,7 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Screenshot
-  Future<PageScreenshotResult> channel_screenshot({
+  Future<PageScreenshotResult> screenshot({
     required CommonScreenshotOptions commonScreenshotOptions,
     Rect? clip,
     bool? fullPage,
@@ -14280,19 +14565,22 @@ abstract class PageBase extends ChannelOwner {
     if (quality != null) payload['quality'] = quality;
     payload['timeout'] = timeout;
     if (type != null) payload['type'] = type?.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'screenshot',
       payload,
     );
-    return PageScreenshotResult.fromJson(response, connection: connection);
+    return PageScreenshotResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<void> channel_setDockTile({required String image}) async {
+  Future<void> setDockTile({required String image}) async {
     final payload = <String, dynamic>{};
     payload['image'] = image;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setDockTile',
       payload,
     );
@@ -14300,13 +14588,11 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Set extra HTTP headers
-  Future<void> channel_setExtraHTTPHeaders({
-    required List<NameValue> headers,
-  }) async {
+  Future<void> setExtraHTTPHeaders({required List<NameValue> headers}) async {
     final payload = <String, dynamic>{};
     payload['headers'] = headers;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setExtraHTTPHeaders',
       payload,
     );
@@ -14314,13 +14600,13 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Route requests
-  Future<void> channel_setNetworkInterceptionPatterns({
+  Future<void> setNetworkInterceptionPatterns({
     required List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setNetworkInterceptionPatterns',
       payload,
     );
@@ -14328,13 +14614,13 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Set viewport size
-  Future<void> channel_setViewportSize({
+  Future<void> setViewportSize({
     required PageSetViewportSizeViewportSize viewportSize,
   }) async {
     final payload = <String, dynamic>{};
     payload['viewportSize'] = viewportSize.toJson();
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setViewportSize',
       payload,
     );
@@ -14342,13 +14628,13 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Route WebSockets
-  Future<void> channel_setWebSocketInterceptionPatterns({
+  Future<void> setWebSocketInterceptionPatterns({
     required List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'setWebSocketInterceptionPatterns',
       payload,
     );
@@ -14356,12 +14642,12 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Start CSS coverage
-  Future<void> channel_startCSSCoverage({bool? resetOnNavigation}) async {
+  Future<void> startCSSCoverage({bool? resetOnNavigation}) async {
     final payload = <String, dynamic>{};
     if (resetOnNavigation != null)
       payload['resetOnNavigation'] = resetOnNavigation;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'startCSSCoverage',
       payload,
     );
@@ -14369,7 +14655,7 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Start JS coverage
-  Future<void> channel_startJSCoverage({
+  Future<void> startJSCoverage({
     bool? reportAnonymousScripts,
     bool? resetOnNavigation,
   }) async {
@@ -14378,8 +14664,8 @@ abstract class PageBase extends ChannelOwner {
       payload['reportAnonymousScripts'] = reportAnonymousScripts;
     if (resetOnNavigation != null)
       payload['resetOnNavigation'] = resetOnNavigation;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'startJSCoverage',
       payload,
     );
@@ -14387,35 +14673,38 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Stop CSS coverage
-  Future<PageStopCSSCoverageResult> channel_stopCSSCoverage() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<PageStopCSSCoverageResult> stopCSSCoverage() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'stopCSSCoverage',
       {},
     );
-    return PageStopCSSCoverageResult.fromJson(response, connection: connection);
+    return PageStopCSSCoverageResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Stop JS coverage
-  Future<PageStopJSCoverageResult> channel_stopJSCoverage() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<PageStopJSCoverageResult> stopJSCoverage() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'stopJSCoverage',
       {},
     );
-    return PageStopJSCoverageResult.fromJson(response, connection: connection);
+    return PageStopJSCoverageResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Tap
-  Future<void> channel_touchscreenTap({
-    required double x,
-    required double y,
-  }) async {
+  Future<void> touchscreenTap({required double x, required double y}) async {
     final payload = <String, dynamic>{};
     payload['x'] = x;
     payload['y'] = y;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'touchscreenTap',
       payload,
     );
@@ -14423,26 +14712,26 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Unregister locator handler
-  Future<void> channel_unregisterLocatorHandler({required int uid}) async {
+  Future<void> unregisterLocatorHandler({required int uid}) async {
     final payload = <String, dynamic>{};
     payload['uid'] = uid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'unregisterLocatorHandler',
       payload,
     );
     return;
   }
 
-  Future<void> channel_updateSubscription({
+  Future<void> updateSubscription({
     required bool enabled,
     required PageUpdateSubscriptionEventEnum event,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'updateSubscription',
       payload,
     );
@@ -14450,13 +14739,13 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Clear WebStorage
-  Future<void> channel_webStorageClear({
+  Future<void> webStorageClear({
     required PageWebStorageClearKindEnum kind,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'webStorageClear',
       payload,
     );
@@ -14464,48 +14753,51 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Get WebStorage item
-  Future<PageWebStorageGetItemResult> channel_webStorageGetItem({
+  Future<PageWebStorageGetItemResult> webStorageGetItem({
     required PageWebStorageGetItemKindEnum kind,
     required String name,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
     payload['name'] = name;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'webStorageGetItem',
       payload,
     );
     return PageWebStorageGetItemResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Get WebStorage items
-  Future<PageWebStorageItemsResult> channel_webStorageItems({
+  Future<PageWebStorageItemsResult> webStorageItems({
     required PageWebStorageItemsKindEnum kind,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'webStorageItems',
       payload,
     );
-    return PageWebStorageItemsResult.fromJson(response, connection: connection);
+    return PageWebStorageItemsResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Remove WebStorage item
-  Future<void> channel_webStorageRemoveItem({
+  Future<void> webStorageRemoveItem({
     required PageWebStorageRemoveItemKindEnum kind,
     required String name,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
     payload['name'] = name;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'webStorageRemoveItem',
       payload,
     );
@@ -14513,7 +14805,7 @@ abstract class PageBase extends ChannelOwner {
   }
 
   /// Set WebStorage item
-  Future<void> channel_webStorageSetItem({
+  Future<void> webStorageSetItem({
     required PageWebStorageSetItemKindEnum kind,
     required String name,
     required String value,
@@ -14522,8 +14814,8 @@ abstract class PageBase extends ChannelOwner {
     payload['kind'] = kind.value;
     payload['name'] = name;
     payload['value'] = value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'webStorageSetItem',
       payload,
     );
@@ -14532,6 +14824,7 @@ abstract class PageBase extends ChannelOwner {
 }
 
 abstract class PlaywrightBase extends ChannelOwner {
+  late PlaywrightChannel channel = PlaywrightChannel(this);
   PlaywrightBase(
     super.connection,
     super.channelType,
@@ -14542,9 +14835,13 @@ abstract class PlaywrightBase extends ChannelOwner {
 
   PlaywrightInitializer get typedInitializer =>
       PlaywrightInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class PlaywrightChannel extends Channel {
+  PlaywrightChannel(super.owner);
 
   /// Create request context
-  Future<PlaywrightNewRequestResult> channel_newRequest({
+  Future<PlaywrightNewRequestResult> newRequest({
     String? baseURL,
     List<PlaywrightNewRequestClientCertificatesItems>? clientCertificates,
     List<NameValue>? extraHTTPHeaders,
@@ -14574,19 +14871,20 @@ abstract class PlaywrightBase extends ChannelOwner {
     if (storageState != null) payload['storageState'] = storageState?.toJson();
     if (tracesDir != null) payload['tracesDir'] = tracesDir;
     if (userAgent != null) payload['userAgent'] = userAgent;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'newRequest',
       payload,
     );
     return PlaywrightNewRequestResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 }
 
 abstract class RequestBase extends ChannelOwner {
+  late RequestChannel channel = RequestChannel(this);
   RequestBase(
     super.connection,
     super.channelType,
@@ -14597,26 +14895,38 @@ abstract class RequestBase extends ChannelOwner {
 
   RequestInitializer get typedInitializer =>
       RequestInitializer.fromJson(super.initializer, connection: connection);
+}
 
-  Future<RequestRawRequestHeadersResult> channel_rawRequestHeaders() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+class RequestChannel extends Channel {
+  RequestChannel(super.owner);
+
+  Future<RequestRawRequestHeadersResult> rawRequestHeaders() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'rawRequestHeaders',
       {},
     );
     return RequestRawRequestHeadersResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<RequestResponseResult> channel_response() async {
-    final response = await connection.sendMessageToServer(guid, 'response', {});
-    return RequestResponseResult.fromJson(response, connection: connection);
+  Future<RequestResponseResult> response() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'response',
+      {},
+    );
+    return RequestResponseResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class ResponseBase extends ChannelOwner {
+  late ResponseChannel channel = ResponseChannel(this);
   ResponseBase(
     super.connection,
     super.channelType,
@@ -14627,62 +14937,81 @@ abstract class ResponseBase extends ChannelOwner {
 
   ResponseInitializer get typedInitializer =>
       ResponseInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class ResponseChannel extends Channel {
+  ResponseChannel(super.owner);
 
   /// Get response body
-  Future<ResponseBodyResult> channel_body() async {
-    final response = await connection.sendMessageToServer(guid, 'body', {});
-    return ResponseBodyResult.fromJson(response, connection: connection);
+  Future<ResponseBodyResult> body() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'body',
+      {},
+    );
+    return ResponseBodyResult.fromJson(response, connection: owner.connection);
   }
 
-  Future<ResponseHttpVersionResult> channel_httpVersion() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ResponseHttpVersionResult> httpVersion() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'httpVersion',
       {},
     );
-    return ResponseHttpVersionResult.fromJson(response, connection: connection);
+    return ResponseHttpVersionResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<ResponseRawResponseHeadersResult> channel_rawResponseHeaders() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ResponseRawResponseHeadersResult> rawResponseHeaders() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'rawResponseHeaders',
       {},
     );
     return ResponseRawResponseHeadersResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<ResponseSecurityDetailsResult> channel_securityDetails() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ResponseSecurityDetailsResult> securityDetails() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'securityDetails',
       {},
     );
     return ResponseSecurityDetailsResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<ResponseServerAddrResult> channel_serverAddr() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<ResponseServerAddrResult> serverAddr() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'serverAddr',
       {},
     );
-    return ResponseServerAddrResult.fromJson(response, connection: connection);
+    return ResponseServerAddrResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<ResponseSizesResult> channel_sizes() async {
-    final response = await connection.sendMessageToServer(guid, 'sizes', {});
-    return ResponseSizesResult.fromJson(response, connection: connection);
+  Future<ResponseSizesResult> sizes() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'sizes',
+      {},
+    );
+    return ResponseSizesResult.fromJson(response, connection: owner.connection);
   }
 }
 
 abstract class RootBase extends ChannelOwner {
+  late RootChannel channel = RootChannel(this);
   RootBase(
     super.connection,
     super.channelType,
@@ -14690,22 +15019,30 @@ abstract class RootBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<RootInitializeResult> channel_initialize({
+class RootChannel extends Channel {
+  RootChannel(super.owner);
+
+  Future<RootInitializeResult> initialize({
     required SDKLanguage sdkLanguage,
   }) async {
     final payload = <String, dynamic>{};
     payload['sdkLanguage'] = sdkLanguage.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'initialize',
       payload,
     );
-    return RootInitializeResult.fromJson(response, connection: connection);
+    return RootInitializeResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 }
 
 abstract class RouteBase extends ChannelOwner {
+  late RouteChannel channel = RouteChannel(this);
   RouteBase(
     super.connection,
     super.channelType,
@@ -14716,13 +15053,17 @@ abstract class RouteBase extends ChannelOwner {
 
   RouteInitializer get typedInitializer =>
       RouteInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class RouteChannel extends Channel {
+  RouteChannel(super.owner);
 
   /// Abort request
-  Future<void> channel_abort({String? errorCode}) async {
+  Future<void> abort({String? errorCode}) async {
     final payload = <String, dynamic>{};
     if (errorCode != null) payload['errorCode'] = errorCode;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'abort',
       payload,
     );
@@ -14730,7 +15071,7 @@ abstract class RouteBase extends ChannelOwner {
   }
 
   /// Continue request
-  Future<void> channel_continueValue({
+  Future<void> continueValue({
     List<NameValue>? headers,
     required bool isFallback,
     String? method,
@@ -14743,8 +15084,8 @@ abstract class RouteBase extends ChannelOwner {
     if (method != null) payload['method'] = method;
     if (postData != null) payload['postData'] = postData;
     if (url != null) payload['url'] = url;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'continue',
       payload,
     );
@@ -14752,7 +15093,7 @@ abstract class RouteBase extends ChannelOwner {
   }
 
   /// Fulfill request
-  Future<void> channel_fulfill({
+  Future<void> fulfill({
     String? body,
     String? fetchResponseUid,
     List<NameValue>? headers,
@@ -14766,19 +15107,19 @@ abstract class RouteBase extends ChannelOwner {
     if (headers != null) payload['headers'] = headers;
     if (isBase64 != null) payload['isBase64'] = isBase64;
     if (status != null) payload['status'] = status;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'fulfill',
       payload,
     );
     return;
   }
 
-  Future<void> channel_redirectNavigationRequest({required String url}) async {
+  Future<void> redirectNavigationRequest({required String url}) async {
     final payload = <String, dynamic>{};
     payload['url'] = url;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'redirectNavigationRequest',
       payload,
     );
@@ -14787,6 +15128,7 @@ abstract class RouteBase extends ChannelOwner {
 }
 
 abstract class SocksSupportBase extends ChannelOwner {
+  late SocksSupportChannel channel = SocksSupportChannel(this);
   SocksSupportBase(
     super.connection,
     super.channelType,
@@ -14794,8 +15136,12 @@ abstract class SocksSupportBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<void> channel_socksConnected({
+class SocksSupportChannel extends Channel {
+  SocksSupportChannel(super.owner);
+
+  Future<void> socksConnected({
     required String host,
     required int port,
     required String uid,
@@ -14804,64 +15150,58 @@ abstract class SocksSupportBase extends ChannelOwner {
     payload['host'] = host;
     payload['port'] = port;
     payload['uid'] = uid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'socksConnected',
       payload,
     );
     return;
   }
 
-  Future<void> channel_socksData({
-    required String data,
-    required String uid,
-  }) async {
+  Future<void> socksData({required String data, required String uid}) async {
     final payload = <String, dynamic>{};
     payload['data'] = data;
     payload['uid'] = uid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'socksData',
       payload,
     );
     return;
   }
 
-  Future<void> channel_socksEnd({required String uid}) async {
+  Future<void> socksEnd({required String uid}) async {
     final payload = <String, dynamic>{};
     payload['uid'] = uid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'socksEnd',
       payload,
     );
     return;
   }
 
-  Future<void> channel_socksError({
-    required String error,
-    required String uid,
-  }) async {
+  Future<void> socksError({required String error, required String uid}) async {
     final payload = <String, dynamic>{};
     payload['error'] = error;
     payload['uid'] = uid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'socksError',
       payload,
     );
     return;
   }
 
-  Future<void> channel_socksFailed({
+  Future<void> socksFailed({
     required String errorCode,
     required String uid,
   }) async {
     final payload = <String, dynamic>{};
     payload['errorCode'] = errorCode;
     payload['uid'] = uid;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'socksFailed',
       payload,
     );
@@ -14870,6 +15210,7 @@ abstract class SocksSupportBase extends ChannelOwner {
 }
 
 abstract class StreamBase extends ChannelOwner {
+  late StreamChannel channel = StreamChannel(this);
   StreamBase(
     super.connection,
     super.channelType,
@@ -14877,25 +15218,34 @@ abstract class StreamBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<void> channel_close() async {
-    final response = await connection.sendMessageToServer(guid, 'close', {});
+class StreamChannel extends Channel {
+  StreamChannel(super.owner);
+
+  Future<void> close() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'close',
+      {},
+    );
     return;
   }
 
-  Future<StreamReadResult> channel_read({int? size}) async {
+  Future<StreamReadResult> read({int? size}) async {
     final payload = <String, dynamic>{};
     if (size != null) payload['size'] = size;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'read',
       payload,
     );
-    return StreamReadResult.fromJson(response, connection: connection);
+    return StreamReadResult.fromJson(response, connection: owner.connection);
   }
 }
 
 abstract class TracingBase extends ChannelOwner {
+  late TracingChannel channel = TracingChannel(this);
   TracingBase(
     super.connection,
     super.channelType,
@@ -14903,47 +15253,57 @@ abstract class TracingBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<TracingHarExportResult> channel_harExport({
+class TracingChannel extends Channel {
+  TracingChannel(super.owner);
+
+  Future<TracingHarExportResult> harExport({
     String? harId,
     required TracingHarExportModeEnum mode,
   }) async {
     final payload = <String, dynamic>{};
     if (harId != null) payload['harId'] = harId;
     payload['mode'] = mode.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'harExport',
       payload,
     );
-    return TracingHarExportResult.fromJson(response, connection: connection);
+    return TracingHarExportResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
-  Future<TracingHarStartResult> channel_harStart({
+  Future<TracingHarStartResult> harStart({
     required RecordHarOptions options,
     PageBase? page,
   }) async {
     final payload = <String, dynamic>{};
     payload['options'] = options.toJson();
     if (page != null) payload['page'] = {'guid': page.guid};
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'harStart',
       payload,
     );
-    return TracingHarStartResult.fromJson(response, connection: connection);
+    return TracingHarStartResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
   }
 
   /// Trace "{name}"
-  Future<void> channel_tracingGroup({
+  Future<void> tracingGroup({
     TracingTracingGroupLocation? location,
     required String name,
   }) async {
     final payload = <String, dynamic>{};
     if (location != null) payload['location'] = location?.toJson();
     payload['name'] = name;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'tracingGroup',
       payload,
     );
@@ -14951,9 +15311,9 @@ abstract class TracingBase extends ChannelOwner {
   }
 
   /// Group end
-  Future<void> channel_tracingGroupEnd() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> tracingGroupEnd() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'tracingGroupEnd',
       {},
     );
@@ -14961,7 +15321,7 @@ abstract class TracingBase extends ChannelOwner {
   }
 
   /// Start tracing
-  Future<void> channel_tracingStart({
+  Future<void> tracingStart({
     bool? live,
     String? name,
     bool? screenshots,
@@ -14972,8 +15332,8 @@ abstract class TracingBase extends ChannelOwner {
     if (name != null) payload['name'] = name;
     if (screenshots != null) payload['screenshots'] = screenshots;
     if (snapshots != null) payload['snapshots'] = snapshots;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'tracingStart',
       payload,
     );
@@ -14981,28 +15341,28 @@ abstract class TracingBase extends ChannelOwner {
   }
 
   /// Start tracing
-  Future<TracingTracingStartChunkResult> channel_tracingStartChunk({
+  Future<TracingTracingStartChunkResult> tracingStartChunk({
     String? name,
     String? title,
   }) async {
     final payload = <String, dynamic>{};
     if (name != null) payload['name'] = name;
     if (title != null) payload['title'] = title;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'tracingStartChunk',
       payload,
     );
     return TracingTracingStartChunkResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Stop tracing
-  Future<void> channel_tracingStop() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> tracingStop() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'tracingStop',
       {},
     );
@@ -15010,19 +15370,19 @@ abstract class TracingBase extends ChannelOwner {
   }
 
   /// Stop tracing
-  Future<TracingTracingStopChunkResult> channel_tracingStopChunk({
+  Future<TracingTracingStopChunkResult> tracingStopChunk({
     required TracingTracingStopChunkModeEnum mode,
   }) async {
     final payload = <String, dynamic>{};
     payload['mode'] = mode.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'tracingStopChunk',
       payload,
     );
     return TracingTracingStopChunkResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 }
@@ -15041,6 +15401,7 @@ abstract class WebSocketBase extends ChannelOwner {
 }
 
 abstract class WebSocketRouteBase extends ChannelOwner {
+  late WebSocketRouteChannel channel = WebSocketRouteChannel(this);
   WebSocketRouteBase(
     super.connection,
     super.channelType,
@@ -15054,8 +15415,12 @@ abstract class WebSocketRouteBase extends ChannelOwner {
         super.initializer,
         connection: connection,
       );
+}
 
-  Future<void> channel_closePage({
+class WebSocketRouteChannel extends Channel {
+  WebSocketRouteChannel(super.owner);
+
+  Future<void> closePage({
     int? code,
     String? reason,
     required bool wasClean,
@@ -15064,15 +15429,15 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     if (code != null) payload['code'] = code;
     if (reason != null) payload['reason'] = reason;
     payload['wasClean'] = wasClean;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'closePage',
       payload,
     );
     return;
   }
 
-  Future<void> channel_closeServer({
+  Future<void> closeServer({
     int? code,
     String? reason,
     required bool wasClean,
@@ -15081,8 +15446,8 @@ abstract class WebSocketRouteBase extends ChannelOwner {
     if (code != null) payload['code'] = code;
     if (reason != null) payload['reason'] = reason;
     payload['wasClean'] = wasClean;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'closeServer',
       payload,
     );
@@ -15090,14 +15455,18 @@ abstract class WebSocketRouteBase extends ChannelOwner {
   }
 
   /// Connect WebSocket to server
-  Future<void> channel_connect() async {
-    final response = await connection.sendMessageToServer(guid, 'connect', {});
+  Future<void> connect() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'connect',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_ensureOpened() async {
-    final response = await connection.sendMessageToServer(
-      guid,
+  Future<void> ensureOpened() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'ensureOpened',
       {},
     );
@@ -15105,15 +15474,15 @@ abstract class WebSocketRouteBase extends ChannelOwner {
   }
 
   /// Send WebSocket message
-  Future<void> channel_sendToPage({
+  Future<void> sendToPage({
     required bool isBase64,
     required String message,
   }) async {
     final payload = <String, dynamic>{};
     payload['isBase64'] = isBase64;
     payload['message'] = message;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'sendToPage',
       payload,
     );
@@ -15121,15 +15490,15 @@ abstract class WebSocketRouteBase extends ChannelOwner {
   }
 
   /// Send WebSocket message
-  Future<void> channel_sendToServer({
+  Future<void> sendToServer({
     required bool isBase64,
     required String message,
   }) async {
     final payload = <String, dynamic>{};
     payload['isBase64'] = isBase64;
     payload['message'] = message;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'sendToServer',
       payload,
     );
@@ -15138,6 +15507,7 @@ abstract class WebSocketRouteBase extends ChannelOwner {
 }
 
 abstract class WorkerBase extends ChannelOwner {
+  late WorkerChannel channel = WorkerChannel(this);
   WorkerBase(
     super.connection,
     super.channelType,
@@ -15148,13 +15518,17 @@ abstract class WorkerBase extends ChannelOwner {
 
   WorkerInitializer get typedInitializer =>
       WorkerInitializer.fromJson(super.initializer, connection: connection);
+}
+
+class WorkerChannel extends Channel {
+  WorkerChannel(super.owner);
 
   /// Disconnect from worker
-  Future<void> channel_disconnect({String? reason}) async {
+  Future<void> disconnect({String? reason}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'disconnect',
       payload,
     );
@@ -15162,7 +15536,7 @@ abstract class WorkerBase extends ChannelOwner {
   }
 
   /// Evaluate
-  Future<WorkerEvaluateExpressionResult> channel_evaluateExpression({
+  Future<WorkerEvaluateExpressionResult> evaluateExpression({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -15171,20 +15545,19 @@ abstract class WorkerBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpression',
       payload,
     );
     return WorkerEvaluateExpressionResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
   /// Evaluate
-  Future<WorkerEvaluateExpressionHandleResult>
-  channel_evaluateExpressionHandle({
+  Future<WorkerEvaluateExpressionHandleResult> evaluateExpressionHandle({
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
@@ -15193,26 +15566,26 @@ abstract class WorkerBase extends ChannelOwner {
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'evaluateExpressionHandle',
       payload,
     );
     return WorkerEvaluateExpressionHandleResult.fromJson(
       response,
-      connection: connection,
+      connection: owner.connection,
     );
   }
 
-  Future<void> channel_updateSubscription({
+  Future<void> updateSubscription({
     required bool enabled,
     required WorkerUpdateSubscriptionEventEnum event,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'updateSubscription',
       payload,
     );
@@ -15221,6 +15594,7 @@ abstract class WorkerBase extends ChannelOwner {
 }
 
 abstract class WritableStreamBase extends ChannelOwner {
+  late WritableStreamChannel channel = WritableStreamChannel(this);
   WritableStreamBase(
     super.connection,
     super.channelType,
@@ -15228,17 +15602,25 @@ abstract class WritableStreamBase extends ChannelOwner {
     super.initializer, [
     super.parent,
   ]);
+}
 
-  Future<void> channel_close() async {
-    final response = await connection.sendMessageToServer(guid, 'close', {});
+class WritableStreamChannel extends Channel {
+  WritableStreamChannel(super.owner);
+
+  Future<void> close() async {
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'close',
+      {},
+    );
     return;
   }
 
-  Future<void> channel_write({required String binary}) async {
+  Future<void> write({required String binary}) async {
     final payload = <String, dynamic>{};
     payload['binary'] = binary;
-    final response = await connection.sendMessageToServer(
-      guid,
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
       'write',
       payload,
     );

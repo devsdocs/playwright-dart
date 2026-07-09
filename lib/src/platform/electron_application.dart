@@ -69,7 +69,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
   Future<ElectronApplicationBrowserWindowResult> browserWindow(
     PageBase page,
   ) async {
-    return await channel_browserWindow(page: page);
+    return await channel.browserWindow(page: page);
   }
 
   @override
@@ -78,7 +78,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
     bool? isFunction,
     Object? arg,
   }) async {
-    final result = await channel_evaluateExpression(
+    final result = await channel.evaluateExpression(
       expression: expression,
       isFunction: isFunction,
       arg: serializeArgument(arg),
@@ -92,7 +92,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
     bool? isFunction,
     Object? arg,
   }) async {
-    final result = await channel_evaluateExpressionHandle(
+    final result = await channel.evaluateExpressionHandle(
       expression: expression,
       isFunction: isFunction,
       arg: serializeArgument(arg),
@@ -105,6 +105,6 @@ class ElectronApplicationImpl extends ElectronApplicationBase
     ElectronApplicationUpdateSubscriptionEventEnum event,
     bool enabled,
   ) async {
-    await channel_updateSubscription(event: event, enabled: enabled);
+    await channel.updateSubscription(event: event, enabled: enabled);
   }
 }

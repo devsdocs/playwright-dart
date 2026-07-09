@@ -18,13 +18,13 @@ class BindingCallImpl extends BindingCallBase implements BindingCall {
 
   @override
   Future<void> resolve(dynamic result) async {
-    await channel_resolve(result: serializeArgument(result));
+    await channel.resolve(result: serializeArgument(result));
   }
 
   @override
   Future<void> reject(dynamic error) async {
     // Basic error serialization mapping for now
-    await channel_reject(
+    await channel.reject(
       error: SerializedError(
         error: SerializedErrorError.fromJson({
           'message': error.toString(),

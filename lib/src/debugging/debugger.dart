@@ -88,22 +88,22 @@ class DebuggerImpl extends DebuggerBase implements Debugger {
 
   @override
   Future<void> requestPause() async {
-    await channel_requestPause();
+    await channel.requestPause();
   }
 
   @override
   Future<void> resume() async {
-    await channel_resume();
+    await channel.resume();
   }
 
   // Aliases for missing script
   @override
   Future<void> next() async {
-    await channel_next();
+    await channel.next();
   }
 
   @override
   Future<void> runTo(DebuggerRunToLocation location) async {
-    await channel_runTo(location: location);
+    await channel.runTo(location: location);
   }
 }

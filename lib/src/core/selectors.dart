@@ -86,7 +86,7 @@ class Selectors {
     for (final context
         in (_playwright as PlaywrightImpl).connection.objects.values
             .whereType<BrowserContext>()) {
-      await (context as BrowserContextImpl).channel_registerSelectorEngine(
+      await (context as BrowserContextImpl).channel.registerSelectorEngine(
         selectorEngine: engine,
       );
     }
@@ -191,7 +191,7 @@ class Selectors {
     for (final context
         in (_playwright as PlaywrightImpl).connection.objects.values
             .whereType<BrowserContext>()) {
-      await (context as BrowserContextImpl).channel_setTestIdAttributeName(
+      await (context as BrowserContextImpl).channel.setTestIdAttributeName(
         testIdAttributeName: name,
       );
     }
@@ -207,12 +207,12 @@ class Selectors {
   Future<void> addContext(BrowserContext context) async {
     if (_testIdAttributeName != 'data-testid') {
       // Must be awaited so the attribute is in effect before the context is used.
-      await (context as BrowserContextImpl).channel_setTestIdAttributeName(
+      await (context as BrowserContextImpl).channel.setTestIdAttributeName(
         testIdAttributeName: _testIdAttributeName,
       );
     }
     for (final engine in _registrations) {
-      await (context as BrowserContextImpl).channel_registerSelectorEngine(
+      await (context as BrowserContextImpl).channel.registerSelectorEngine(
         selectorEngine: engine,
       );
     }

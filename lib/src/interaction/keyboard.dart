@@ -38,7 +38,7 @@ class Keyboard {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> down(String key) async {
-    await (page as PageImpl).channel_keyboardDown(key: key);
+    await (page as PageImpl).channel.keyboardDown(key: key);
   }
 
   /// Typesafe version of [down] that accepts a [KeyboardKey] enum.
@@ -174,7 +174,7 @@ class Keyboard {
   /// [Microsoft Artifact Registry]: https://mcr.microsoft.com/en-us/product/playwright/about "Microsoft Artifact Registry"
   /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<void> up(String key) async {
-    await (page as PageImpl).channel_keyboardUp(key: key);
+    await (page as PageImpl).channel.keyboardUp(key: key);
   }
 
   /// Typesafe version of [up] that accepts a [KeyboardKey] enum.
@@ -296,7 +296,7 @@ class Keyboard {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> insertText(String text) async {
-    await (page as PageImpl).channel_keyboardInsertText(text: text);
+    await (page as PageImpl).channel.keyboardInsertText(text: text);
   }
 
   /// In most cases, you should use [locator.fill()] instead. You only need to press keys one by one if there is special keyboard handling on the page - in this case use [locator.pressSequentially()].
@@ -327,7 +327,7 @@ class Keyboard {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> type(String text, {double? delay}) async {
-    await (page as PageImpl).channel_keyboardType(text: text, delay: delay);
+    await (page as PageImpl).channel.keyboardType(text: text, delay: delay);
   }
 
   /// In most cases, you should use [locator.press()] instead.
@@ -371,7 +371,7 @@ class Keyboard {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> press(String key, {double? delay}) async {
-    await (page as PageImpl).channel_keyboardPress(key: key, delay: delay);
+    await (page as PageImpl).channel.keyboardPress(key: key, delay: delay);
   }
 
   /// Typesafe version of [press] that accepts a [KeyboardKey] enum.

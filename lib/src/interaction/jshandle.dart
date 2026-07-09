@@ -252,7 +252,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
     implements JSHandle<T> {
   @override
   Future<void> dispose() async {
-    await channel_dispose();
+    await channel.dispose();
   }
 
   @override
@@ -280,7 +280,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
     Object? arg,
     bool? isFunction,
   ]) async {
-    final result = await channel_evaluateExpression(
+    final result = await channel.evaluateExpression(
       expression: expression,
       arg: serializeArgument(arg),
       isFunction: isFunction,
@@ -294,7 +294,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
     Object? arg,
     bool? isFunction,
   ]) async {
-    final result = await channel_evaluateExpressionHandle(
+    final result = await channel.evaluateExpressionHandle(
       expression: expression,
       arg: serializeArgument(arg),
       isFunction: isFunction,
@@ -318,13 +318,13 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
 
   @override
   Future<JSHandle<Object?>> getProperty(String name) async {
-    final result = await super.channel_getProperty(name: name);
+    final result = await super.channel.getProperty(name: name);
     return result.handle as JSHandle<Object?>;
   }
 
   @override
   Future<Map<String, JSHandle<Object?>>> getProperties() async {
-    final result = await super.channel_getPropertyList();
+    final result = await super.channel.getPropertyList();
     final map = <String, JSHandle<Object?>>{};
     for (final property in result.properties) {
       map[property.name] = property.value as JSHandle<Object?>;
@@ -337,7 +337,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
 
   @override
   Future<dynamic> jsonValue() async {
-    final result = await super.channel_jsonValue();
+    final result = await super.channel.jsonValue();
     return parseSerializedValue(result.value);
   }
 }

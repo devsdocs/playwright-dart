@@ -66,12 +66,12 @@ class CDPSessionImpl extends CDPSessionBase implements CDPSession {
     String method, {
     Map<String, dynamic>? params,
   }) async {
-    final result = await channel_send(method: method, params: params);
+    final result = await channel.send(method: method, params: params);
     return result.result as Map<String, dynamic>? ?? {};
   }
 
   @override
   Future<void> detach() async {
-    await channel_detach();
+    await channel.detach();
   }
 }

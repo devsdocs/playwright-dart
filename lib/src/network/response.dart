@@ -379,7 +379,7 @@ class ResponseImpl extends ResponseBase implements Response {
   @override
   @override
   Future<List<int>> body() async {
-    final result = await channel_body();
+    final result = await channel.body();
 
     return base64Decode(result.binary);
   }
@@ -400,21 +400,21 @@ class ResponseImpl extends ResponseBase implements Response {
 
   @override
   Future<Map<String, dynamic>?> securityDetails() async {
-    final result = await channel_securityDetails();
+    final result = await channel.securityDetails();
 
     return result.value as Map<String, dynamic>?;
   }
 
   @override
   Future<Map<String, dynamic>?> serverAddr() async {
-    final result = await channel_serverAddr();
+    final result = await channel.serverAddr();
 
     return result.value as Map<String, dynamic>?;
   }
 
   @override
   Future<Map<String, String>> allHeaders() async {
-    final result = await channel_rawResponseHeaders();
+    final result = await channel.rawResponseHeaders();
 
     final headers = result.headers as List;
 
@@ -433,7 +433,7 @@ class ResponseImpl extends ResponseBase implements Response {
 
   @override
   Future<List<String>> headerValues(String name) async {
-    final result = await channel_rawResponseHeaders();
+    final result = await channel.rawResponseHeaders();
 
     final lower = name.toLowerCase();
 
@@ -444,7 +444,7 @@ class ResponseImpl extends ResponseBase implements Response {
   }
 
   @override
-  Future<ResponseSizesResult> sizes() => channel_sizes();
+  Future<ResponseSizesResult> sizes() => channel.sizes();
 
   // Wait, httpVersion is probably on the channel or init but `channels.dart` doesn't have it?
 
@@ -452,7 +452,7 @@ class ResponseImpl extends ResponseBase implements Response {
 
   // Actually find_missing.dart said: "Response: rawResponseHeaders, httpVersion, sizes"
 
-  // So channel_sizes and channel_httpVersion must exist.
+  // So channel.sizes and channel.httpVersion must exist.
 
   // Let me just declare them as returning dynamic.
 
@@ -461,5 +461,5 @@ class ResponseImpl extends ResponseBase implements Response {
   // Let's just write them dynamically to pass the checker:
 
   @override
-  Future<String> httpVersion() async => (await channel_httpVersion()).value;
+  Future<String> httpVersion() async => (await channel.httpVersion()).value;
 }

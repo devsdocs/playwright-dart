@@ -18,12 +18,12 @@ class PlaywrightStreamImpl extends StreamBase implements PlaywrightStream {
 
   @override
   Future<List<int>> read({int? size}) async {
-    final result = await channel_read(size: size);
+    final result = await channel.read(size: size);
     return base64Decode(result.binary);
   }
 
   @override
   Future<void> close() async {
-    await channel_close();
+    await channel.close();
   }
 }

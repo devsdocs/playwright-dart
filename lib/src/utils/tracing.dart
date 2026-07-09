@@ -207,7 +207,7 @@ class TracingImpl extends TracingBase implements Tracing {
     bool? screenshots,
     bool? live,
   }) async {
-    await channel_tracingStart(
+    await channel.tracingStart(
       name: name,
       snapshots: snapshots,
       screenshots: screenshots,
@@ -220,7 +220,7 @@ class TracingImpl extends TracingBase implements Tracing {
     String? name,
     String? title,
   }) async {
-    return await channel_tracingStartChunk(name: name, title: title);
+    return await channel.tracingStartChunk(name: name, title: title);
   }
 
   @override
@@ -228,12 +228,12 @@ class TracingImpl extends TracingBase implements Tracing {
     String name, {
     TracingTracingGroupLocation? location,
   }) async {
-    await channel_tracingGroup(name: name, location: location);
+    await channel.tracingGroup(name: name, location: location);
   }
 
   @override
   Future<void> groupEnd() async {
-    await channel_tracingGroupEnd();
+    await channel.tracingGroupEnd();
   }
 
   @override
@@ -241,12 +241,12 @@ class TracingImpl extends TracingBase implements Tracing {
     TracingTracingStopChunkModeEnum mode =
         TracingTracingStopChunkModeEnum.discard,
   }) async {
-    return await channel_tracingStopChunk(mode: mode);
+    return await channel.tracingStopChunk(mode: mode);
   }
 
   @override
   Future<void> stop() async {
-    await channel_tracingStop();
+    await channel.tracingStop();
   }
 
   @override
@@ -280,13 +280,13 @@ class TracingImpl extends TracingBase implements Tracing {
   Future<void> tracingStop() => stop();
   @override
   Future<dynamic> harStart({Page? page, RecordHarOptions? options}) =>
-      channel_harStart(
+      channel.harStart(
         page: page as PageImpl?,
         options: options ?? RecordHarOptions(),
       );
   @override
   Future<dynamic> harExport({String? harId, TracingHarExportModeEnum? mode}) =>
-      channel_harExport(
+      channel.harExport(
         harId: harId,
         mode: mode ?? TracingHarExportModeEnum.archive,
       );

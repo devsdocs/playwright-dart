@@ -1312,7 +1312,7 @@ class ElementHandleImpl extends ElementHandleBase
     Object? arg,
     bool? isFunction,
   ]) async {
-    final result = await channel_evaluateExpression(
+    final result = await channel.evaluateExpression(
       expression: expression,
       arg: serializeArgument(arg),
       isFunction: isFunction,
@@ -1326,7 +1326,7 @@ class ElementHandleImpl extends ElementHandleBase
     Object? arg,
     bool? isFunction,
   ]) async {
-    final result = await channel_evaluateExpressionHandle(
+    final result = await channel.evaluateExpressionHandle(
       expression: expression,
       arg: serializeArgument(arg),
       isFunction: isFunction,
@@ -1350,7 +1350,7 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<JSHandle<Object?>> getProperty(String name) async {
-    final result = await channel_getProperty(name: name);
+    final result = await channel.getProperty(name: name);
     return ChannelOwner.from<JSHandleImpl>(
       connection,
       result.handle as Map<String, dynamic>,
@@ -1359,7 +1359,7 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<Map<String, JSHandle<Object?>>> getProperties() async {
-    final result = await channel_getPropertyList();
+    final result = await channel.getPropertyList();
     final map = <String, JSHandle<Object?>>{};
     for (final property in result.properties as List) {
       map[property['name'] as String] = ChannelOwner.from<JSHandleImpl>(
@@ -1375,13 +1375,13 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<dynamic> jsonValue() async {
-    final result = await channel_jsonValue();
+    final result = await channel.jsonValue();
     return parseSerializedValue(result.value);
   }
 
   @override
   Future<void> dispose() async {
-    await channel_dispose();
+    await channel.dispose();
   }
 
   @override
@@ -1392,7 +1392,7 @@ class ElementHandleImpl extends ElementHandleBase
     bool? strict,
     bool? isFunction,
   ]) async {
-    final result = await channel_evalOnSelector(
+    final result = await channel.evalOnSelector(
       selector: selector,
       expression: expression,
       arg: serializeArgument(arg),
@@ -1409,7 +1409,7 @@ class ElementHandleImpl extends ElementHandleBase
     Object? arg,
     bool? isFunction,
   ]) async {
-    final result = await channel_evalOnSelectorAll(
+    final result = await channel.evalOnSelectorAll(
       selector: selector,
       expression: expression,
       arg: serializeArgument(arg),
@@ -1432,7 +1432,7 @@ class ElementHandleImpl extends ElementHandleBase
     int? clickCount,
     int? steps,
   }) async {
-    await channel_click(
+    await channel.click(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
@@ -1457,7 +1457,7 @@ class ElementHandleImpl extends ElementHandleBase
     ElementHandleDblclickButtonEnum? button,
     int? steps,
   }) async {
-    await channel_dblclick(
+    await channel.dblclick(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
@@ -1471,7 +1471,7 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<void> fill(String value, {bool? force, double? timeout}) async {
-    await channel_fill(value: value, force: force, timeout: timeout ?? 30000.0);
+    await channel.fill(value: value, force: force, timeout: timeout ?? 30000.0);
   }
 
   @override
@@ -1482,7 +1482,7 @@ class ElementHandleImpl extends ElementHandleBase
     List<ElementHandleHoverModifiersEnum>? modifiers,
     Point? position,
   }) async {
-    await channel_hover(
+    await channel.hover(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
@@ -1493,12 +1493,12 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<void> focus() async {
-    await channel_focus();
+    await channel.focus();
   }
 
   @override
   Future<void> type(String text, {double? delay, double? timeout}) async {
-    await channel_type(text: text, delay: delay, timeout: timeout ?? 30000.0);
+    await channel.type(text: text, delay: delay, timeout: timeout ?? 30000.0);
   }
 
   @override
@@ -1508,7 +1508,7 @@ class ElementHandleImpl extends ElementHandleBase
     double? timeout,
     bool? noWaitAfter,
   }) async {
-    await channel_press(
+    await channel.press(
       key: key,
       delay: delay,
       timeout: timeout ?? 30000.0,
@@ -1524,7 +1524,7 @@ class ElementHandleImpl extends ElementHandleBase
     List<ElementHandleTapModifiersEnum>? modifiers,
     Point? position,
   }) async {
-    await channel_tap(
+    await channel.tap(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
@@ -1540,7 +1540,7 @@ class ElementHandleImpl extends ElementHandleBase
     bool? trial,
     Point? position,
   }) async {
-    await channel_check(
+    await channel.check(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
@@ -1555,7 +1555,7 @@ class ElementHandleImpl extends ElementHandleBase
     bool? trial,
     Point? position,
   }) async {
-    await channel_uncheck(
+    await channel.uncheck(
       force: force,
       timeout: timeout ?? 30000.0,
       trial: trial,
@@ -1565,97 +1565,97 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<void> scrollIntoViewIfNeeded({double? timeout}) async {
-    await channel_scrollIntoViewIfNeeded(timeout: timeout ?? 30000.0);
+    await channel.scrollIntoViewIfNeeded(timeout: timeout ?? 30000.0);
   }
 
   // State
   @override
   Future<String?> getAttribute(String name) async {
-    final result = await channel_getAttribute(name: name);
+    final result = await channel.getAttribute(name: name);
     return result.value;
   }
 
   @override
   Future<String> innerHTML() async {
-    final result = await channel_innerHTML();
+    final result = await channel.innerHTML();
     return result.value;
   }
 
   @override
   Future<String> innerText() async {
-    final result = await channel_innerText();
+    final result = await channel.innerText();
     return result.value;
   }
 
   @override
   Future<String> inputValue() async {
-    final result = await channel_inputValue();
+    final result = await channel.inputValue();
     return result.value;
   }
 
   @override
   Future<String> textContent() async {
-    final result = await channel_textContent();
+    final result = await channel.textContent();
     return result.value as String;
   }
 
   @override
   Future<bool> isChecked() async {
-    final result = await channel_isChecked();
+    final result = await channel.isChecked();
     return result.value;
   }
 
   @override
   Future<bool> isDisabled() async {
-    final result = await channel_isDisabled();
+    final result = await channel.isDisabled();
     return result.value;
   }
 
   @override
   Future<bool> isEditable() async {
-    final result = await channel_isEditable();
+    final result = await channel.isEditable();
     return result.value;
   }
 
   @override
   Future<bool> isEnabled() async {
-    final result = await channel_isEnabled();
+    final result = await channel.isEnabled();
     return result.value;
   }
 
   @override
   Future<bool> isHidden() async {
-    final result = await channel_isHidden();
+    final result = await channel.isHidden();
     return result.value;
   }
 
   @override
   Future<bool> isVisible() async {
-    final result = await channel_isVisible();
+    final result = await channel.isVisible();
     return result.value;
   }
 
   @override
   Future<Rect?> boundingBox() async {
-    final result = await channel_boundingBox();
+    final result = await channel.boundingBox();
     return result.value;
   }
 
   @override
   Future<Frame?> contentFrame() async {
-    final result = await channel_contentFrame();
+    final result = await channel.contentFrame();
     return result.frame as Frame?;
   }
 
   @override
   Future<Frame?> ownerFrame() async {
-    final result = await channel_ownerFrame();
+    final result = await channel.ownerFrame();
     return result.frame as Frame?;
   }
 
   @override
   Future<ElementHandle?> querySelector(String selector, {bool? strict}) async {
-    final result = await channel_querySelector(
+    final result = await channel.querySelector(
       selector: selector,
       strict: strict,
     );
@@ -1664,7 +1664,7 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<List<ElementHandle>> querySelectorAll(String selector) async {
-    final result = await channel_querySelectorAll(selector: selector);
+    final result = await channel.querySelectorAll(selector: selector);
     final elements = result.elements as List;
     return elements.cast<ElementHandle>();
   }
@@ -1674,7 +1674,7 @@ class ElementHandleImpl extends ElementHandleBase
     String type, {
     Map<String, dynamic>? eventInit,
   }) async {
-    await channel_dispatchEvent(
+    await channel.dispatchEvent(
       type: type,
       eventInit: serializeArgument(eventInit),
     );
@@ -1687,7 +1687,7 @@ class ElementHandleImpl extends ElementHandleBase
     String? type,
     int? quality,
   }) async {
-    final result = await channel_screenshot(
+    final result = await channel.screenshot(
       commonScreenshotOptions: options ?? CommonScreenshotOptions(),
       timeout: timeout,
       type: type != null
@@ -1720,7 +1720,7 @@ class ElementHandleImpl extends ElementHandleBase
       );
     }
 
-    final result = await channel_selectOption(
+    final result = await channel.selectOption(
       elements: elements?.cast<ElementHandleImpl>(),
       options: finalOptions?.isNotEmpty == true ? finalOptions : null,
       force: force,
@@ -1731,7 +1731,7 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<void> selectText({bool? force, double? timeout}) async {
-    await channel_selectText(force: force, timeout: timeout ?? 30000.0);
+    await channel.selectText(force: force, timeout: timeout ?? 30000.0);
   }
 
   @override
@@ -1744,7 +1744,7 @@ class ElementHandleImpl extends ElementHandleBase
     List<String>? localPaths,
     List<ChannelOwner>? streams,
   }) async {
-    await channel_setInputFiles(
+    await channel.setInputFiles(
       localPaths: localPaths ?? files,
       timeout: timeout ?? 30000.0,
       payloads: payloads,
@@ -1759,7 +1759,7 @@ class ElementHandleImpl extends ElementHandleBase
     ElementHandleWaitForElementStateStateEnum state, {
     double? timeout,
   }) async {
-    await channel_waitForElementState(
+    await channel.waitForElementState(
       state: state,
       timeout: timeout ?? 30000.0,
     );
@@ -1772,7 +1772,7 @@ class ElementHandleImpl extends ElementHandleBase
     ElementHandleWaitForSelectorStateEnum? state,
     double? timeout,
   }) async {
-    final result = await channel_waitForSelector(
+    final result = await channel.waitForSelector(
       selector: selector,
       strict: strict,
       state: state,

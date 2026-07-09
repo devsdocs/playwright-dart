@@ -1,3 +1,9 @@
+## 3.9.0
+
+- **Architecture**: Stripped the `channel_` prefix from generated internal protocol methods (e.g. `channel_saveAs` is now just `saveAs` in the internal API).
+- **Architecture**: Refactored the core protocol classes to use composition instead of inheritance for channel methods. All generated methods are now strictly isolated inside a strongly-typed `channel` property (e.g. `await channel.saveAs(...)`) rather than being inherited into the public wrappers. This prevents naming collisions and strictly hides the generated API from external consumers.
+- **Tooling**: Updated `find_missing.dart` and `cross_check_types.dart` to fully support the new `channel.` composition pattern.
+
 ## 3.8.0
 
 - **Breaking**: Refactored various string-based parameters in the public API into strongly-typed enums. 

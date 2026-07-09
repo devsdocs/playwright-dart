@@ -48,7 +48,7 @@ class AndroidImpl extends AndroidBase implements Android {
     int? port,
     bool? omitDriverInstall,
   }) async {
-    final result = await channel_devices(
+    final result = await channel.devices(
       host: host,
       port: port,
       omitDriverInstall: omitDriverInstall,

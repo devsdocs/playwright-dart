@@ -52,26 +52,26 @@ class SocksSupportImpl extends SocksSupportBase implements SocksSupport {
     required String host,
     required int port,
   }) async {
-    await channel_socksConnected(uid: uid, host: host, port: port);
+    await channel.socksConnected(uid: uid, host: host, port: port);
   }
 
   @override
   Future<void> socksFailed(String uid, String errorCode) async {
-    await channel_socksFailed(uid: uid, errorCode: errorCode);
+    await channel.socksFailed(uid: uid, errorCode: errorCode);
   }
 
   @override
   Future<void> socksData(String uid, String data) async {
-    await channel_socksData(uid: uid, data: data);
+    await channel.socksData(uid: uid, data: data);
   }
 
   @override
   Future<void> socksError(String uid, String error) async {
-    await channel_socksError(uid: uid, error: error);
+    await channel.socksError(uid: uid, error: error);
   }
 
   @override
   Future<void> socksEnd(String uid) async {
-    await channel_socksEnd(uid: uid);
+    await channel.socksEnd(uid: uid);
   }
 }

@@ -138,7 +138,7 @@ class WorkerImpl extends WorkerBase implements Worker {
 
   @override
   Future<void> disconnect({String? reason}) async {
-    await channel_disconnect(reason: reason);
+    await channel.disconnect(reason: reason);
   }
 
   @override
@@ -149,7 +149,7 @@ class WorkerImpl extends WorkerBase implements Worker {
 
     bool? isFunction,
   ]) async {
-    final result = await channel_evaluateExpression(
+    final result = await channel.evaluateExpression(
       expression: expression,
 
       arg: serializeArgument(arg),
@@ -168,7 +168,7 @@ class WorkerImpl extends WorkerBase implements Worker {
 
     bool? isFunction,
   ]) async {
-    final result = await channel_evaluateExpressionHandle(
+    final result = await channel.evaluateExpressionHandle(
       expression: expression,
 
       arg: serializeArgument(arg),
@@ -209,6 +209,6 @@ class WorkerImpl extends WorkerBase implements Worker {
 
     required bool enabled,
   }) async {
-    await channel_updateSubscription(event: event, enabled: enabled);
+    await channel.updateSubscription(event: event, enabled: enabled);
   }
 }

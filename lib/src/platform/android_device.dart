@@ -706,7 +706,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     AndroidDeviceWaitStateEnum? state,
     required double timeout,
   }) async {
-    await channel_wait(
+    await channel.wait(
       androidSelector: androidSelector,
       state: state,
       timeout: timeout,
@@ -719,7 +719,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     String text, {
     double timeout = 30000.0,
   }) async {
-    await channel_fill(
+    await channel.fill(
       androidSelector: androidSelector,
       text: text,
       timeout: timeout,
@@ -732,7 +732,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     double? duration,
     double timeout = 30000.0,
   }) async {
-    await channel_tap(
+    await channel.tap(
       androidSelector: androidSelector,
       duration: duration,
       timeout: timeout,
@@ -746,7 +746,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     double? speed,
     double timeout = 30000.0,
   }) async {
-    await channel_drag(
+    await channel.drag(
       androidSelector: androidSelector,
       dest: dest,
       speed: speed,
@@ -761,7 +761,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     double? speed,
     double timeout = 30000.0,
   }) async {
-    await channel_fling(
+    await channel.fling(
       androidSelector: androidSelector,
       direction: direction,
       speed: speed,
@@ -774,7 +774,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     AndroidSelector androidSelector, {
     double timeout = 30000.0,
   }) async {
-    await channel_longTap(androidSelector: androidSelector, timeout: timeout);
+    await channel.longTap(androidSelector: androidSelector, timeout: timeout);
   }
 
   @override
@@ -784,7 +784,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     double? speed,
     double timeout = 30000.0,
   }) async {
-    await channel_pinchClose(
+    await channel.pinchClose(
       androidSelector: androidSelector,
       percent: percent,
       speed: speed,
@@ -799,7 +799,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     double? speed,
     double timeout = 30000.0,
   }) async {
-    await channel_pinchOpen(
+    await channel.pinchOpen(
       androidSelector: androidSelector,
       percent: percent,
       speed: speed,
@@ -815,7 +815,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     double? speed,
     double timeout = 30000.0,
   }) async {
-    await channel_scroll(
+    await channel.scroll(
       androidSelector: androidSelector,
       direction: direction,
       percent: percent,
@@ -832,7 +832,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     double? speed,
     double timeout = 30000.0,
   }) async {
-    await channel_swipe(
+    await channel.swipe(
       androidSelector: androidSelector,
       direction: direction,
       percent: percent,
@@ -843,37 +843,37 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
 
   @override
   Future<AndroidDeviceInfoResult> info(AndroidSelector androidSelector) async {
-    return await channel_info(androidSelector: androidSelector);
+    return await channel.info(androidSelector: androidSelector);
   }
 
   @override
   Future<AndroidDeviceScreenshotResult> screenshot() async {
-    return await channel_screenshot();
+    return await channel.screenshot();
   }
 
   @override
   Future<void> inputType(String text) async {
-    await channel_inputType(text: text);
+    await channel.inputType(text: text);
   }
 
   @override
   Future<void> inputPress(String key) async {
-    await channel_inputPress(key: key);
+    await channel.inputPress(key: key);
   }
 
   @override
   Future<void> inputTap(Point point) async {
-    await channel_inputTap(point: point);
+    await channel.inputTap(point: point);
   }
 
   @override
   Future<void> inputSwipe(List<Point> segments, int steps) async {
-    await channel_inputSwipe(segments: segments, steps: steps);
+    await channel.inputSwipe(segments: segments, steps: steps);
   }
 
   @override
   Future<void> inputDrag(Point from, Point to, int steps) async {
-    await channel_inputDrag(from: from, to: to, steps: steps);
+    await channel.inputDrag(from: from, to: to, steps: steps);
   }
 
   @override
@@ -883,7 +883,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
     List<String>? args,
     AndroidDeviceLaunchBrowserProxy? proxy,
   }) async {
-    final result = await channel_launchBrowser(
+    final result = await channel.launchBrowser(
       contextOptions: contextOptions,
       pkg: pkg,
       args: args,
@@ -894,33 +894,33 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
 
   @override
   Future<AndroidDeviceOpenResult> open(String command) async {
-    return await channel_open(command: command);
+    return await channel.open(command: command);
   }
 
   @override
   Future<AndroidDeviceShellResult> shell(String command) async {
-    return await channel_shell(command: command);
+    return await channel.shell(command: command);
   }
 
   @override
   Future<void> installApk(String file, {List<String>? args}) async {
-    await channel_installApk(file: file, args: args);
+    await channel.installApk(file: file, args: args);
   }
 
   @override
   Future<void> push(String file, String path, {int? mode}) async {
-    await channel_push(file: file, path: path, mode: mode);
+    await channel.push(file: file, path: path, mode: mode);
   }
 
   @override
   Future<AndroidDeviceConnectToWebViewResult> connectToWebView(
     String socketName,
   ) async {
-    return await channel_connectToWebView(socketName: socketName);
+    return await channel.connectToWebView(socketName: socketName);
   }
 
   @override
   Future<void> close() async {
-    await channel_close();
+    await channel.close();
   }
 }

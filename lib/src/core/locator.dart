@@ -363,7 +363,7 @@ class Locator {
 
     double? timeout,
   }) async {
-    final result = await (frame as FrameImpl).channel_waitForSelector(
+    final result = await (frame as FrameImpl).channel.waitForSelector(
       selector: selector,
 
       state: FrameWaitForSelectorStateEnum.attached,
@@ -1116,7 +1116,7 @@ class Locator {
   /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
   Future<void> click({bool? force, double? timeout}) async {
     Logger.debug('click "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_click(
+    await (frame as FrameImpl).channel.click(
       selector: selector,
 
       force: force,
@@ -1165,7 +1165,7 @@ class Locator {
   /// To send fine-grained keyboard events, use [locator.pressSequentially()].
   Future<void> fill(String value, {bool? force, double? timeout}) async {
     Logger.debug('fill "$selector" ← "$value"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_fill(
+    await (frame as FrameImpl).channel.fill(
       selector: selector,
 
       value: value,
@@ -1457,7 +1457,7 @@ class Locator {
   /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
   Future<void> check({bool? force, double? timeout}) async {
     Logger.debug('check "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_check(
+    await (frame as FrameImpl).channel.check(
       selector: selector,
 
       force: force,
@@ -1517,7 +1517,7 @@ class Locator {
   /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
   Future<void> uncheck({bool? force, double? timeout}) async {
     Logger.debug('uncheck "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_uncheck(
+    await (frame as FrameImpl).channel.uncheck(
       selector: selector,
 
       force: force,
@@ -1548,7 +1548,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;String&gt;
   Future<String> innerText({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_innerText(
+    final result = await (frame as FrameImpl).channel.innerText(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -1579,7 +1579,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;[String&gt;]?
   Future<String> textContent({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_textContent(
+    final result = await (frame as FrameImpl).channel.textContent(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -1642,7 +1642,7 @@ class Locator {
   /// When all steps combined have not finished during the specified [timeout], this method throws a [TimeoutError]. Passing zero timeout disables this.
   Future<void> hover({bool? force, double? timeout}) async {
     Logger.debug('hover "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_hover(
+    await (frame as FrameImpl).channel.hover(
       selector: selector,
 
       force: force,
@@ -1670,7 +1670,7 @@ class Locator {
   /// - Future&lt;void&gt;
   Future<void> focus({double? timeout}) async {
     Logger.debug('focus "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_focus(
+    await (frame as FrameImpl).channel.focus(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -1696,7 +1696,7 @@ class Locator {
   /// - Future&lt;void&gt;
   Future<void> blur({double? timeout}) async {
     Logger.debug('blur "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_blur(
+    await (frame as FrameImpl).channel.blur(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -1768,7 +1768,7 @@ class Locator {
   /// `element.dblclick()` dispatches two `click` events and a single `dblclick` event.
   Future<void> dblclick({bool? force, double? timeout}) async {
     Logger.debug('dblclick "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_dblclick(
+    await (frame as FrameImpl).channel.dblclick(
       selector: selector,
 
       force: force,
@@ -1802,7 +1802,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;[String&gt;]?
   Future<String?> getAttribute(String name, {double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_getAttribute(
+    final result = await (frame as FrameImpl).channel.getAttribute(
       selector: selector,
 
       name: name,
@@ -1838,7 +1838,7 @@ class Locator {
   ///
   /// Throws elements that are not an input, textarea or a select. However, if the element is inside the `<label>` element that has an associated [control], returns the value of the control.
   Future<String> inputValue({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_inputValue(
+    final result = await (frame as FrameImpl).channel.inputValue(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -1871,7 +1871,7 @@ class Locator {
   ///     **Returns**
   /// - Future&lt;bool&gt;
   Future<bool> isVisible() async {
-    final result = await (frame as FrameImpl).channel_isVisible(
+    final result = await (frame as FrameImpl).channel.isVisible(
       selector: selector,
     );
 
@@ -1896,7 +1896,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;String&gt;
   Future<String> innerHTML({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_innerHTML(
+    final result = await (frame as FrameImpl).channel.innerHTML(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -1926,7 +1926,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;bool&gt;
   Future<bool> isEditable({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_isEditable(
+    final result = await (frame as FrameImpl).channel.isEditable(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -1957,7 +1957,7 @@ class Locator {
   ///     **Returns**
   /// - Future&lt;bool&gt;
   Future<bool> isHidden() async {
-    final result = await (frame as FrameImpl).channel_isHidden(
+    final result = await (frame as FrameImpl).channel.isHidden(
       selector: selector,
     );
 
@@ -1987,7 +1987,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;bool&gt;
   Future<bool> isEnabled({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_isEnabled(
+    final result = await (frame as FrameImpl).channel.isEnabled(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -2017,7 +2017,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;bool&gt;
   Future<bool> isDisabled({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_isDisabled(
+    final result = await (frame as FrameImpl).channel.isDisabled(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -2047,7 +2047,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;bool&gt;
   Future<bool> isChecked({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_isChecked(
+    final result = await (frame as FrameImpl).channel.isChecked(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -2201,7 +2201,7 @@ class Locator {
   /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<void> type(String text, {double? delay, double? timeout}) async {
     Logger.debug('type "$selector" ← "$text"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_type(
+    await (frame as FrameImpl).channel.type(
       selector: selector,
 
       text: text,
@@ -2310,7 +2310,7 @@ class Locator {
   /// Shortcuts such as `key: "Control+o"`, `key: "Control++` or `key: "Control+Shift+T"` are supported as well. When specified with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
   Future<void> press(String key, {double? delay, double? timeout}) async {
     Logger.debug('press "$selector" ← "$key"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_press(
+    await (frame as FrameImpl).channel.press(
       selector: selector,
 
       key: key,
@@ -2377,7 +2377,7 @@ class Locator {
   /// `element.tap()` requires that the `hasTouch` option of the browser context be set to true.
   Future<void> tap({bool? force, double? timeout}) async {
     Logger.debug('tap "$selector"', name: 'playwright.locator');
-    await (frame as FrameImpl).channel_tap(
+    await (frame as FrameImpl).channel.tap(
       selector: selector,
 
       force: force,
@@ -2590,7 +2590,7 @@ class Locator {
 
     double? timeout,
   }) async {
-    await (frame as FrameImpl).channel_dispatchEvent(
+    await (frame as FrameImpl).channel.dispatchEvent(
       selector: selector,
 
       type: type,
@@ -2624,7 +2624,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;[Disposable]&gt;
   Future<void> highlight() async {
-    await (frame as FrameImpl).channel_highlight(selector: selector);
+    await (frame as FrameImpl).channel.highlight(selector: selector);
   }
 
   /// Hides the element highlight previously added by [locator.highlight()].
@@ -2638,7 +2638,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> hideHighlight() async {
-    await (frame as FrameImpl).channel_hideHighlight(selector: selector);
+    await (frame as FrameImpl).channel.hideHighlight(selector: selector);
   }
 
   /// Simulate an external drag-and-drop of files or clipboard-like data onto this locator.
@@ -2902,7 +2902,7 @@ class Locator {
 
     // or rely on evalOnSelector which evaluates in the context of the element.
 
-    final result = await (frame as FrameImpl).channel_evalOnSelector(
+    final result = await (frame as FrameImpl).channel.evalOnSelector(
       selector: selector,
 
       expression: expression,
@@ -3141,7 +3141,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;[ElementHandle]&gt;
   Future<ElementHandle> elementHandle({double? timeout}) async {
-    final result = await (frame as FrameImpl).channel_waitForSelector(
+    final result = await (frame as FrameImpl).channel.waitForSelector(
       selector: selector,
 
       state: FrameWaitForSelectorStateEnum.attached,
@@ -3178,7 +3178,7 @@ class Locator {
   /// **Returns**
   /// - Future&lt;List&lt;[ElementHandle]&gt;&gt;
   Future<List<ElementHandle>> elementHandles() async {
-    final result = await (frame as FrameImpl).channel_querySelectorAll(
+    final result = await (frame as FrameImpl).channel.querySelectorAll(
       selector: selector,
     );
 

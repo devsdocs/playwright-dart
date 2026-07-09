@@ -73,13 +73,13 @@ class DebugControllerImpl extends DebugControllerBase
     required String codegenId,
     required SDKLanguage sdkLanguage,
   }) async {
-    await channel_initialize(codegenId: codegenId, sdkLanguage: sdkLanguage);
+    await channel.initialize(codegenId: codegenId, sdkLanguage: sdkLanguage);
   }
 
   // Aliases for missing script check
   @override
   Future<void> setReportStateChanged({required bool enabled}) =>
-      channel_setReportStateChanged(enabled: enabled);
+      channel.setReportStateChanged(enabled: enabled);
 
   @override
   Future<void> setRecorderMode({
@@ -87,7 +87,7 @@ class DebugControllerImpl extends DebugControllerBase
         DebugControllerSetRecorderModeModeEnum.none,
     String? testIdAttributeName,
     bool? generateAutoExpect,
-  }) => channel_setRecorderMode(
+  }) => channel.setRecorderMode(
     mode: mode,
     testIdAttributeName: testIdAttributeName,
     generateAutoExpect: generateAutoExpect,
@@ -95,12 +95,12 @@ class DebugControllerImpl extends DebugControllerBase
 
   @override
   Future<void> highlight({required String selector, String? ariaTemplate}) =>
-      channel_highlight(selector: selector, ariaTemplate: ariaTemplate);
+      channel.highlight(selector: selector, ariaTemplate: ariaTemplate);
 
   @override
-  Future<void> hideHighlight() => channel_hideHighlight();
+  Future<void> hideHighlight() => channel.hideHighlight();
   @override
-  Future<void> resume() => channel_resume();
+  Future<void> resume() => channel.resume();
   @override
-  Future<void> kill() => channel_kill();
+  Future<void> kill() => channel.kill();
 }

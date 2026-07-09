@@ -17,11 +17,11 @@ class WritableStreamImpl extends WritableStreamBase implements WritableStream {
 
   @override
   Future<void> write(String binary) async {
-    await channel_write(binary: binary);
+    await channel.write(binary: binary);
   }
 
   @override
   Future<void> close() async {
-    await channel_close();
+    await channel.close();
   }
 }

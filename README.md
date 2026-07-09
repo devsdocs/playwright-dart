@@ -274,7 +274,7 @@ void main() async {
 | **Debugging** | `Debugger`, `DebugController`, `BindingCall`, `EventTarget` |
 | **Platform** | `Android`, `AndroidDevice`, `Electron`, `ElectronApplication` |
 
-**35 wrapper classes** • **308 channel methods**
+**35 wrapper classes** • **317 channel methods**
 
 ## Contributing
 

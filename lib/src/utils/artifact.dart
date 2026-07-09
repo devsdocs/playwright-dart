@@ -23,23 +23,23 @@ class ArtifactImpl extends ArtifactBase implements Artifact {
 
   @override
   Future<String?> pathAfterFinished() async {
-    final result = await channel_pathAfterFinished();
+    final result = await channel.pathAfterFinished();
     return result.value as String?;
   }
 
   @override
   Future<void> saveAs(String path) async {
-    await channel_saveAs(path: path);
+    await channel.saveAs(path: path);
   }
 
   @override
   Future<void> delete() async {
-    await channel_delete();
+    await channel.delete();
   }
 
   @override
   Future<String> failureError() async {
-    final result = await channel_failure();
+    final result = await channel.failure();
     return result.error ?? '';
   }
 
@@ -47,12 +47,12 @@ class ArtifactImpl extends ArtifactBase implements Artifact {
   @override
   Future<String> failure() => failureError();
   @override
-  Future<ArtifactSaveAsStreamResult> saveAsStream() => channel_saveAsStream();
+  Future<ArtifactSaveAsStreamResult> saveAsStream() => channel.saveAsStream();
   @override
-  Future<ArtifactStreamResult> stream() => channel_stream();
+  Future<ArtifactStreamResult> stream() => channel.stream();
 
   @override
   Future<void> cancel() async {
-    await channel_cancel();
+    await channel.cancel();
   }
 }

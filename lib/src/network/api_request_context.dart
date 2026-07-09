@@ -631,7 +631,7 @@ class APIRequestContextImpl extends APIRequestContextBase
     String? encodedParams,
     List<NameValue>? params,
   }) async {
-    final result = await channel_fetch(
+    final result = await channel.fetch(
       url: url,
       method: method,
       headers: headers,
@@ -723,25 +723,25 @@ class APIRequestContextImpl extends APIRequestContextBase
   Future<APIRequestContextStorageStateResult> storageState({
     bool? indexedDB,
   }) async {
-    final result = await channel_storageState(indexedDB: indexedDB);
+    final result = await channel.storageState(indexedDB: indexedDB);
     return result;
   }
 
   @override
   Future<void> dispose({String? reason}) async {
-    await channel_dispose(reason: reason);
+    await channel.dispose(reason: reason);
   }
 
   // Aliases for missing script check
   @override
   Future<APIRequestContextFetchResponseBodyResult> fetchResponseBody({
     required String fetchUid,
-  }) => channel_fetchResponseBody(fetchUid: fetchUid);
+  }) => channel.fetchResponseBody(fetchUid: fetchUid);
   @override
   Future<APIRequestContextFetchLogResult> fetchLog({
     required String fetchUid,
-  }) => channel_fetchLog(fetchUid: fetchUid);
+  }) => channel.fetchLog(fetchUid: fetchUid);
   @override
   Future<void> disposeAPIResponse({required String fetchUid}) =>
-      channel_disposeAPIResponse(fetchUid: fetchUid);
+      channel.disposeAPIResponse(fetchUid: fetchUid);
 }

@@ -2728,7 +2728,7 @@ class FrameImpl extends FrameBase implements Frame {
     String? referer,
   }) async {
     Logger.debug('goto $url', name: 'playwright.frame');
-    await channel_goto(
+    await channel.goto(
       url: url,
 
       timeout: timeout ?? (page as PageImpl).defaultNavigationTimeout,
@@ -2748,7 +2748,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_textContent(
+    final result = await channel.textContent(
       selector: selector,
 
       timeout: timeout ?? 30000.0,
@@ -2762,7 +2762,7 @@ class FrameImpl extends FrameBase implements Frame {
   @override
   Future<dynamic> evaluate(String expression, [Object? arg]) async {
     Logger.debug('evaluate', name: 'playwright.frame');
-    final result = await channel_evaluateExpression(
+    final result = await channel.evaluateExpression(
       expression: expression,
 
       arg: serializeArgument(arg),
@@ -2783,7 +2783,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? omitReturnValue,
   }) async {
-    return await channel_waitForSelector(
+    return await channel.waitForSelector(
       selector: selector,
 
       state: state,
@@ -2937,7 +2937,7 @@ class FrameImpl extends FrameBase implements Frame {
     int? steps,
   }) async {
     Logger.debug('dragAndDrop "$source" → "$target"', name: 'playwright.frame');
-    await channel_dragAndDrop(
+    await channel.dragAndDrop(
       source: source,
 
       target: target,
@@ -2984,7 +2984,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     int? steps,
   }) async {
-    await channel_click(
+    await channel.click(
       selector: selector,
 
       force: force,
@@ -3021,7 +3021,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    await channel_fill(
+    await channel.fill(
       selector: selector,
 
       value: value,
@@ -3048,7 +3048,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     Point? position,
   }) async {
-    await channel_check(
+    await channel.check(
       selector: selector,
 
       force: force,
@@ -3077,7 +3077,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     Point? position,
   }) async {
-    await channel_uncheck(
+    await channel.uncheck(
       selector: selector,
 
       force: force,
@@ -3155,7 +3155,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     Point? position,
   }) async {
-    await channel_hover(
+    await channel.hover(
       selector: selector,
 
       force: force,
@@ -3174,7 +3174,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<void> focus(String selector, {double? timeout, bool? strict}) async {
-    await channel_focus(
+    await channel.focus(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3185,7 +3185,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<void> blur(String selector, {double? timeout, bool? strict}) async {
-    await channel_blur(
+    await channel.blur(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3216,7 +3216,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     int? steps,
   }) async {
-    await channel_dblclick(
+    await channel.dblclick(
       selector: selector,
 
       force: force,
@@ -3251,7 +3251,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    await channel_type(
+    await channel.type(
       selector: selector,
 
       text: text,
@@ -3278,7 +3278,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? noWaitAfter,
   }) async {
-    await channel_press(
+    await channel.press(
       selector: selector,
 
       key: key,
@@ -3307,7 +3307,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     Point? position,
   }) async {
-    await channel_tap(
+    await channel.tap(
       selector: selector,
 
       force: force,
@@ -3326,7 +3326,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<String> content() async {
-    final result = await channel_content();
+    final result = await channel.content();
 
     return result.value;
   }
@@ -3340,7 +3340,7 @@ class FrameImpl extends FrameBase implements Frame {
     LifecycleEvent? waitUntil,
   }) async {
     Logger.debug('setContent', name: 'playwright.frame');
-    await channel_setContent(
+    await channel.setContent(
       html: html,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3361,7 +3361,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? isFunction,
   ]) async {
-    final result = await channel_evalOnSelector(
+    final result = await channel.evalOnSelector(
       selector: selector,
 
       expression: expression,
@@ -3386,7 +3386,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? isFunction,
   ]) async {
-    final result = await channel_evalOnSelectorAll(
+    final result = await channel.evalOnSelectorAll(
       selector: selector,
 
       expression: expression,
@@ -3409,7 +3409,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_getAttribute(
+    final result = await channel.getAttribute(
       selector: selector,
 
       name: name,
@@ -3430,7 +3430,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_innerHTML(
+    final result = await channel.innerHTML(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3449,7 +3449,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_innerText(
+    final result = await channel.innerText(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3468,7 +3468,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_inputValue(
+    final result = await channel.inputValue(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3481,7 +3481,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<String> title() async {
-    final result = await channel_title();
+    final result = await channel.title();
 
     return result.value;
   }
@@ -3494,7 +3494,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_isChecked(
+    final result = await channel.isChecked(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3513,7 +3513,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_isDisabled(
+    final result = await channel.isDisabled(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3532,7 +3532,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_isEnabled(
+    final result = await channel.isEnabled(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3545,14 +3545,14 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<bool> isHidden(String selector, {bool? strict}) async {
-    final result = await channel_isHidden(selector: selector, strict: strict);
+    final result = await channel.isHidden(selector: selector, strict: strict);
 
     return result.value;
   }
 
   @override
   Future<bool> isVisible(String selector, {bool? strict}) async {
-    final result = await channel_isVisible(selector: selector, strict: strict);
+    final result = await channel.isVisible(selector: selector, strict: strict);
 
     return result.value;
   }
@@ -3565,7 +3565,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    final result = await channel_isEditable(
+    final result = await channel.isEditable(
       selector: selector,
 
       timeout: timeout ?? (page as PageImpl).defaultTimeout,
@@ -3584,17 +3584,17 @@ class FrameImpl extends FrameBase implements Frame {
 
     String? type,
   }) async {
-    await channel_addScriptTag(url: url, content: content, type: type);
+    await channel.addScriptTag(url: url, content: content, type: type);
   }
 
   @override
   Future<void> addStyleTag({String? url, String? content}) async {
-    await channel_addStyleTag(url: url, content: content);
+    await channel.addStyleTag(url: url, content: content);
   }
 
   @override
   Future<void> waitForTimeout(double waitTimeout) async {
-    await channel_waitForTimeout(waitTimeout: waitTimeout);
+    await channel.waitForTimeout(waitTimeout: waitTimeout);
   }
 
   @override
@@ -3609,7 +3609,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? isFunction,
   }) async {
-    final result = await channel_waitForFunction(
+    final result = await channel.waitForFunction(
       expression: expression,
 
       arg: serializeArgument(arg),
@@ -3636,7 +3636,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? strict,
   }) async {
-    await channel_dispatchEvent(
+    await channel.dispatchEvent(
       selector: selector,
 
       type: type,
@@ -3651,12 +3651,12 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<void> highlight(String selector, {String? style}) async {
-    await channel_highlight(selector: selector, style: style);
+    await channel.highlight(selector: selector, style: style);
   }
 
   @override
   Future<void> hideHighlight(String selector) async {
-    await channel_hideHighlight(selector: selector);
+    await channel.hideHighlight(selector: selector);
   }
 
   @override
@@ -3677,7 +3677,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     List<WritableStreamBase>? streams,
   }) async {
-    await channel_drop(
+    await channel.drop(
       selector: selector,
 
       strict: strict,
@@ -3698,7 +3698,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<FrameResolveSelectorResult> resolveSelector(String selector) async {
-    return await channel_resolveSelector(selector: selector);
+    return await channel.resolveSelector(selector: selector);
   }
 
   @override
@@ -3715,7 +3715,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     double? timeout,
   }) async {
-    return await channel_ariaSnapshot(
+    return await channel.ariaSnapshot(
       selector: selector,
 
       mode: mode,
@@ -3738,7 +3738,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     Object? arg,
   }) async {
-    final result = await channel_evaluateExpression(
+    final result = await channel.evaluateExpression(
       expression: expression,
 
       isFunction: isFunction,
@@ -3757,7 +3757,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     Object? arg,
   }) async {
-    final result = await channel_evaluateExpressionHandle(
+    final result = await channel.evaluateExpressionHandle(
       expression: expression,
 
       isFunction: isFunction,
@@ -3770,7 +3770,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<ElementHandle> frameElement() async {
-    final result = await channel_frameElement();
+    final result = await channel.frameElement();
 
     return ChannelOwner.from(
       connection,
@@ -3801,14 +3801,14 @@ class FrameImpl extends FrameBase implements Frame {
 
     FrameExpectPseudoEnum? pseudo,
   }) async {
-    // channel_expect now returns void (protocol change in v1.61+).
+    // channel.expect now returns void (protocol change in v1.61+).
 
     // Success means assertion passed → matches = !isNot.
 
     // Failure is thrown as an exception carrying the detail payload.
 
     try {
-      await channel_expect(
+      await channel.expect(
         selector: selector,
 
         expression: expression,
@@ -3853,7 +3853,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<List<Locator>> querySelectorAll(String selector) async {
-    final result = await channel_querySelectorAll(selector: selector);
+    final result = await channel.querySelectorAll(selector: selector);
 
     final elements = result.elements as List? ?? [];
 
@@ -3862,7 +3862,7 @@ class FrameImpl extends FrameBase implements Frame {
 
   @override
   Future<int> queryCount(String selector) async {
-    final result = await channel_queryCount(selector: selector);
+    final result = await channel.queryCount(selector: selector);
 
     return result.value;
   }
@@ -3907,7 +3907,7 @@ class FrameImpl extends FrameBase implements Frame {
           .toList();
     }
 
-    final result = await channel_selectOption(
+    final result = await channel.selectOption(
       selector: selector,
 
       elements: elements ?? parsed.elements,
@@ -3968,7 +3968,7 @@ class FrameImpl extends FrameBase implements Frame {
           .toList();
     }
 
-    await channel_setInputFiles(
+    await channel.setInputFiles(
       selector: selector,
 
       payloads: finalPayloads,

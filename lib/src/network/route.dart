@@ -328,7 +328,7 @@ class RouteImpl extends RouteBase implements Route {
 
   @override
   Future<void> abort({RouteErrorCode? errorCode}) async {
-    await channel_abort(errorCode: errorCode?.value);
+    await channel.abort(errorCode: errorCode?.value);
   }
 
   @override
@@ -351,7 +351,7 @@ class RouteImpl extends RouteBase implements Route {
       mappedHeaders.add(NameValue(name: 'content-type', value: contentType));
     }
 
-    await channel_fulfill(
+    await channel.fulfill(
       status: status,
 
       headers: mappedHeaders,
@@ -376,7 +376,7 @@ class RouteImpl extends RouteBase implements Route {
 
     bool isFallback = false,
   }) async {
-    await channel_continueValue(
+    await channel.continueValue(
       url: url,
 
       method: method,
@@ -412,7 +412,7 @@ class RouteImpl extends RouteBase implements Route {
 
   @override
   Future<void> redirectNavigationRequest(String url) async {
-    await channel_redirectNavigationRequest(url: url);
+    await channel.redirectNavigationRequest(url: url);
   }
 
   @override

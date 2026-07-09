@@ -33,11 +33,11 @@ class JsonPipeImpl extends JsonPipeBase implements JsonPipe {
 
   @override
   Future<void> send(Map<String, dynamic> message) async {
-    await channel_send(message: message);
+    await channel.send(message: message);
   }
 
   @override
   Future<void> close() async {
-    await channel_close();
+    await channel.close();
   }
 }

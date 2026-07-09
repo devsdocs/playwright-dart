@@ -192,11 +192,11 @@ class DialogImpl extends DialogBase implements Dialog {
 
   @override
   Future<void> accept({String? promptText}) async {
-    await channel_accept(promptText: promptText);
+    await channel.accept(promptText: promptText);
   }
 
   @override
   Future<void> dismiss() async {
-    await channel_dismiss();
+    await channel.dismiss();
   }
 }

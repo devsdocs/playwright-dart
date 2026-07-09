@@ -844,7 +844,7 @@ class BrowserImpl extends BrowserBase implements Browser {
       options ??= ContextOptions();
     }
 
-    final result = await super.channel_newContext(
+    final result = await super.channel.newContext(
       contextOptions: options ?? ContextOptions(),
 
       proxy: proxy,
@@ -873,7 +873,7 @@ class BrowserImpl extends BrowserBase implements Browser {
       'Closing browser ($browserName)${reason != null ? ': $reason' : ''}.',
       name: 'playwright.browser',
     );
-    await channel_close(reason: reason);
+    await channel.close(reason: reason);
 
     // Auto-shutdown Playwright connection if this was the last active browser.
 
@@ -900,7 +900,7 @@ class BrowserImpl extends BrowserBase implements Browser {
 
   @override
   Future<CDPSession> newBrowserCDPSession() async {
-    final result = await channel_newBrowserCDPSession();
+    final result = await channel.newBrowserCDPSession();
 
     return result.session as CDPSession;
   }
@@ -913,7 +913,7 @@ class BrowserImpl extends BrowserBase implements Browser {
 
     List<String>? categories,
   }) async {
-    await channel_startTracing(
+    await channel.startTracing(
       page: page as PageImpl?,
 
       screenshots: screenshots,
@@ -924,7 +924,7 @@ class BrowserImpl extends BrowserBase implements Browser {
 
   @override
   Future<List<int>> stopTracing() async {
-    final result = await channel_stopTracing();
+    final result = await channel.stopTracing();
 
     final artifact = result.artifact as Artifact;
 
@@ -959,7 +959,7 @@ class BrowserImpl extends BrowserBase implements Browser {
 
     int? port,
   }) async {
-    return await channel_startServer(
+    return await channel.startServer(
       title: title,
 
       workspaceDir: workspaceDir,
@@ -974,17 +974,17 @@ class BrowserImpl extends BrowserBase implements Browser {
 
   @override
   Future<void> stopServer() async {
-    await channel_stopServer();
+    await channel.stopServer();
   }
 
   @override
   Future<void> killForTests() async {
-    await channel_killForTests();
+    await channel.killForTests();
   }
 
   @override
   Future<String> defaultUserAgentForTest() async {
-    final result = await channel_defaultUserAgentForTest();
+    final result = await channel.defaultUserAgentForTest();
 
     return result.userAgent;
   }
@@ -995,7 +995,7 @@ class BrowserImpl extends BrowserBase implements Browser {
 
     BrowserNewContextForReuseStorageState? storageState,
   }) async {
-    final result = await channel_newContextForReuse(
+    final result = await channel.newContextForReuse(
       contextOptions: ContextOptions(),
 
       proxy: proxy,
@@ -1008,7 +1008,7 @@ class BrowserImpl extends BrowserBase implements Browser {
 
   @override
   Future<void> disconnectFromReusedContext({String reason = ''}) async {
-    await channel_disconnectFromReusedContext(reason: reason);
+    await channel.disconnectFromReusedContext(reason: reason);
   }
 
   @override

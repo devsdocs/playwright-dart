@@ -4017,7 +4017,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Stream<ConsoleMessage> get onConsole {
-    channel_updateSubscription(
+    channel.updateSubscription(
       enabled: true,
 
       event: PageUpdateSubscriptionEventEnum.console,
@@ -4043,7 +4043,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Stream<FileChooser> get onFileChooser {
-    channel_updateSubscription(
+    channel.updateSubscription(
       enabled: true,
 
       event: PageUpdateSubscriptionEventEnum.fileChooser,
@@ -4062,7 +4062,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Stream<Dialog> get onDialog {
-    channel_updateSubscription(
+    channel.updateSubscription(
       enabled: true,
 
       event: PageUpdateSubscriptionEventEnum.dialog,
@@ -4077,7 +4077,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Stream<Request> get onRequest {
-    channel_updateSubscription(
+    channel.updateSubscription(
       enabled: true,
 
       event: PageUpdateSubscriptionEventEnum.request,
@@ -4099,7 +4099,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Stream<Response> get onResponse {
-    channel_updateSubscription(
+    channel.updateSubscription(
       enabled: true,
 
       event: PageUpdateSubscriptionEventEnum.response,
@@ -4121,7 +4121,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Stream<Request> get onRequestFinished {
-    channel_updateSubscription(
+    channel.updateSubscription(
       enabled: true,
 
       event: PageUpdateSubscriptionEventEnum.requestFinished,
@@ -4139,7 +4139,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Stream<Request> get onRequestFailed {
-    channel_updateSubscription(
+    channel.updateSubscription(
       enabled: true,
 
       event: PageUpdateSubscriptionEventEnum.requestFailed,
@@ -4447,7 +4447,7 @@ class PageImpl extends PageBase implements Page {
 
     _routeListener.attach(onRoute);
 
-    await channel_setNetworkInterceptionPatterns(
+    await channel.setNetworkInterceptionPatterns(
       patterns: _routeManager.preparePagePatterns(),
     );
   }
@@ -4460,7 +4460,7 @@ class PageImpl extends PageBase implements Page {
   }) async {
     _routeManager.remove(url, handler);
 
-    await channel_setNetworkInterceptionPatterns(
+    await channel.setNetworkInterceptionPatterns(
       patterns: _routeManager.preparePagePatterns(),
     );
   }
@@ -4469,7 +4469,7 @@ class PageImpl extends PageBase implements Page {
   Future<void> unrouteAll() async {
     _routeManager.clear();
 
-    await channel_setNetworkInterceptionPatterns(patterns: []);
+    await channel.setNetworkInterceptionPatterns(patterns: []);
   }
 
   @override
@@ -4572,7 +4572,7 @@ class PageImpl extends PageBase implements Page {
   Future<void> setViewportSize(
     PageSetViewportSizeViewportSize viewportSize,
   ) async {
-    await channel_setViewportSize(viewportSize: viewportSize);
+    await channel.setViewportSize(viewportSize: viewportSize);
   }
 
   @override
@@ -4593,7 +4593,7 @@ class PageImpl extends PageBase implements Page {
       'screenshot${path != null ? ' to "$path"' : ''}',
       name: 'playwright.page',
     );
-    final result = await channel_screenshot(
+    final result = await channel.screenshot(
       timeout: timeout ?? 30000.0,
 
       type: type != null
@@ -4654,7 +4654,7 @@ class PageImpl extends PageBase implements Page {
       'pdf${path != null ? ' to "$path"' : ''}',
       name: 'playwright.page',
     );
-    final result = await channel_pdf(
+    final result = await channel.pdf(
       format: format?.value,
 
       landscape: landscape,
@@ -4696,7 +4696,7 @@ class PageImpl extends PageBase implements Page {
   @override
   Future<void> reload({double? timeout, LifecycleEvent? waitUntil}) async {
     Logger.debug('reload', name: 'playwright.page');
-    await channel_reload(
+    await channel.reload(
       timeout: timeout ?? 30000.0,
 
       waitUntil: waitUntil ?? LifecycleEvent.load,
@@ -4706,7 +4706,7 @@ class PageImpl extends PageBase implements Page {
   @override
   Future<void> goBack({double? timeout, LifecycleEvent? waitUntil}) async {
     Logger.debug('goBack', name: 'playwright.page');
-    await channel_goBack(
+    await channel.goBack(
       timeout: timeout ?? 30000.0,
 
       waitUntil: waitUntil ?? LifecycleEvent.load,
@@ -4716,7 +4716,7 @@ class PageImpl extends PageBase implements Page {
   @override
   Future<void> goForward({double? timeout, LifecycleEvent? waitUntil}) async {
     Logger.debug('goForward', name: 'playwright.page');
-    await channel_goForward(
+    await channel.goForward(
       timeout: timeout ?? 30000.0,
 
       waitUntil: waitUntil ?? LifecycleEvent.load,
@@ -4725,7 +4725,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> addInitScript(String source) async {
-    await channel_addInitScript(source: source);
+    await channel.addInitScript(source: source);
   }
 
   @override
@@ -4735,9 +4735,9 @@ class PageImpl extends PageBase implements Page {
       name: 'playwright.page',
     );
     if (runBeforeUnload == true) {
-      await channel_runBeforeUnload();
+      await channel.runBeforeUnload();
     } else {
-      await channel_close(reason: reason);
+      await channel.close(reason: reason);
     }
   }
 
@@ -4753,7 +4753,7 @@ class PageImpl extends PageBase implements Page {
 
     PageEmulateMediaContrastEnum? contrast,
   }) async {
-    await channel_emulateMedia(
+    await channel.emulateMedia(
       media: media,
 
       colorScheme: colorScheme,
@@ -5021,7 +5021,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> hideHighlight() async {
-    await channel_hideHighlight();
+    await channel.hideHighlight();
   }
 
   @override
@@ -5180,12 +5180,12 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> exposeBinding(String name) async {
-    await channel_exposeBinding(name: name);
+    await channel.exposeBinding(name: name);
   }
 
   @override
   Future<void> exposeFunction(String name) async {
-    await channel_exposeBinding(name: name);
+    await channel.exposeBinding(name: name);
   }
 
   @override
@@ -5193,7 +5193,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> requestGC() async {
-    await channel_requestGC();
+    await channel.requestGC();
   }
 
   @override
@@ -5202,7 +5202,7 @@ class PageImpl extends PageBase implements Page {
 
     bool? noWaitAfter,
   }) async {
-    return await channel_registerLocatorHandler(
+    return await channel.registerLocatorHandler(
       selector: selector.selector,
 
       noWaitAfter: noWaitAfter,
@@ -5211,7 +5211,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> unregisterLocatorHandler(int uid) async {
-    await channel_unregisterLocatorHandler(uid: uid);
+    await channel.unregisterLocatorHandler(uid: uid);
   }
 
   // ── High-level locator handler API ────────────────────────────────────────
@@ -5263,7 +5263,7 @@ class PageImpl extends PageBase implements Page {
             if (e.times != null) {
               e.remainingTimes = (e.remainingTimes ?? e.times!) - 1;
               final shouldRemove = e.remainingTimes! <= 0;
-              await channel_resolveLocatorHandlerNoReply(
+              await channel.resolveLocatorHandlerNoReply(
                 uid: triggeredUid,
                 remove: shouldRemove,
               );
@@ -5273,7 +5273,7 @@ class PageImpl extends PageBase implements Page {
                 }
               }
             } else {
-              await channel_resolveLocatorHandlerNoReply(
+              await channel.resolveLocatorHandlerNoReply(
                 uid: triggeredUid,
                 remove: false,
               );
@@ -5283,7 +5283,7 @@ class PageImpl extends PageBase implements Page {
         }
       }
       // Unknown uid — just resolve without remove.
-      await channel_resolveLocatorHandlerNoReply(
+      await channel.resolveLocatorHandlerNoReply(
         uid: triggeredUid,
         remove: false,
       );
@@ -5331,7 +5331,7 @@ class PageImpl extends PageBase implements Page {
 
     // Enable WebSocket interception for this pattern.
     final pattern = _urlToPattern(url);
-    await channel_setWebSocketInterceptionPatterns(patterns: [pattern]);
+    await channel.setWebSocketInterceptionPatterns(patterns: [pattern]);
   }
 
   bool _matchesPattern(String url, Pattern pattern) {
@@ -5366,34 +5366,34 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> setExtraHTTPHeaders(List<NameValue> headers) async {
-    await channel_setExtraHTTPHeaders(headers: headers);
+    await channel.setExtraHTTPHeaders(headers: headers);
   }
 
   @override
   Future<void> setNetworkInterceptionPatterns(
     List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setNetworkInterceptionPatterns(patterns: patterns);
+    await channel.setNetworkInterceptionPatterns(patterns: patterns);
   }
 
   @override
   Future<void> touchscreenTap(double x, double y) async {
-    await channel_touchscreenTap(x: x, y: y);
+    await channel.touchscreenTap(x: x, y: y);
   }
 
   @override
   Future<void> bringToFront() async {
-    await channel_bringToFront();
+    await channel.bringToFront();
   }
 
   @override
   Future<PagePickLocatorResult> pickLocator() async {
-    return await channel_pickLocator();
+    return await channel.pickLocator();
   }
 
   @override
   Future<void> cancelPickLocator() async {
-    await channel_cancelPickLocator();
+    await channel.cancelPickLocator();
   }
 
   @override
@@ -5406,7 +5406,7 @@ class PageImpl extends PageBase implements Page {
 
     bool? record,
   }) async {
-    await channel_screencastStart(
+    await channel.screencastStart(
       size: size,
 
       quality: quality,
@@ -5419,54 +5419,54 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> screencastStop() async {
-    await channel_screencastStop();
+    await channel.screencastStop();
   }
 
   @override
   Future<void> setDockTile(String image) async {
-    await channel_setDockTile(image: image);
+    await channel.setDockTile(image: image);
   }
 
   // --- Console Messages ---
 
   @override
   Future<void> clearConsoleMessages() async {
-    await channel_clearConsoleMessages();
+    await channel.clearConsoleMessages();
   }
 
   @override
   Future<PageConsoleMessagesResult> consoleMessages({
     ConsoleMessagesFilter? filter,
   }) async {
-    return await channel_consoleMessages(filter: filter);
+    return await channel.consoleMessages(filter: filter);
   }
 
   // --- Page Errors ---
 
   @override
   Future<void> clearPageErrors() async {
-    await channel_clearPageErrors();
+    await channel.clearPageErrors();
   }
 
   @override
   Future<PagePageErrorsResult> pageErrors({
     ConsoleMessagesFilter? filter,
   }) async {
-    return await channel_pageErrors(filter: filter);
+    return await channel.pageErrors(filter: filter);
   }
 
   // --- Requests ---
 
   @override
   Future<PageRequestsResult> requests() async {
-    return await channel_requests();
+    return await channel.requests();
   }
 
   // --- Locator Handler ---
 
   @override
   Future<void> resolveLocatorHandlerNoReply(int uid, {bool? remove}) async {
-    await channel_resolveLocatorHandlerNoReply(uid: uid, remove: remove);
+    await channel.resolveLocatorHandlerNoReply(uid: uid, remove: remove);
   }
 
   // --- Screenshot Expect ---
@@ -5495,7 +5495,7 @@ class PageImpl extends PageBase implements Page {
 
     required CommonScreenshotOptions screenshotOptions,
   }) async {
-    return await channel_expectScreenshot(
+    return await channel.expectScreenshot(
       expected: expected,
 
       timeout: timeout,
@@ -5526,7 +5526,7 @@ class PageImpl extends PageBase implements Page {
   Future<void> setWebSocketInterceptionPatterns(
     List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
+    await channel.setWebSocketInterceptionPatterns(patterns: patterns);
   }
 
   // --- JS/CSS Coverage ---
@@ -5537,7 +5537,7 @@ class PageImpl extends PageBase implements Page {
 
     bool? reportAnonymousScripts,
   }) async {
-    await channel_startJSCoverage(
+    await channel.startJSCoverage(
       resetOnNavigation: resetOnNavigation,
 
       reportAnonymousScripts: reportAnonymousScripts,
@@ -5546,17 +5546,17 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<PageStopJSCoverageResult> stopJSCoverage() async {
-    return await channel_stopJSCoverage();
+    return await channel.stopJSCoverage();
   }
 
   @override
   Future<void> startCSSCoverage({bool? resetOnNavigation}) async {
-    await channel_startCSSCoverage(resetOnNavigation: resetOnNavigation);
+    await channel.startCSSCoverage(resetOnNavigation: resetOnNavigation);
   }
 
   @override
   Future<PageStopCSSCoverageResult> stopCSSCoverage() async {
-    return await channel_stopCSSCoverage();
+    return await channel.stopCSSCoverage();
   }
 
   // --- Screencast ---
@@ -5567,12 +5567,12 @@ class PageImpl extends PageBase implements Page {
 
     double? duration,
   }) async {
-    return await channel_screencastShowOverlay(html: html, duration: duration);
+    return await channel.screencastShowOverlay(html: html, duration: duration);
   }
 
   @override
   Future<void> screencastRemoveOverlay(String id) async {
-    await channel_screencastRemoveOverlay(id: id);
+    await channel.screencastRemoveOverlay(id: id);
   }
 
   @override
@@ -5583,7 +5583,7 @@ class PageImpl extends PageBase implements Page {
 
     double? duration,
   }) async {
-    await channel_screencastChapter(
+    await channel.screencastChapter(
       title: title,
 
       description: description,
@@ -5594,17 +5594,17 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> screencastSetOverlayVisible(bool visible) async {
-    await channel_screencastSetOverlayVisible(visible: visible);
+    await channel.screencastSetOverlayVisible(visible: visible);
   }
 
   @override
   Future<void> screencastShowActions(ShowActionsOptions options) async {
-    await channel_screencastShowActions(showActionsOptions: options);
+    await channel.screencastShowActions(showActionsOptions: options);
   }
 
   @override
   Future<void> screencastHideActions() async {
-    await channel_screencastHideActions();
+    await channel.screencastHideActions();
   }
 
   // --- Subscription ---
@@ -5615,7 +5615,7 @@ class PageImpl extends PageBase implements Page {
 
     required bool enabled,
   }) async {
-    await channel_updateSubscription(event: event, enabled: enabled);
+    await channel.updateSubscription(event: event, enabled: enabled);
   }
 
   // ── Web Storage ───────────────────────────────────────────────────────────
@@ -5624,7 +5624,7 @@ class PageImpl extends PageBase implements Page {
   Future<Map<String, String>> storageItems(
     PageWebStorageItemsKindEnum kind,
   ) async {
-    final result = await channel_webStorageItems(kind: kind);
+    final result = await channel.webStorageItems(kind: kind);
 
     final items = result.items;
 
@@ -5637,7 +5637,7 @@ class PageImpl extends PageBase implements Page {
 
     String name,
   ) async {
-    final result = await channel_webStorageGetItem(kind: kind, name: name);
+    final result = await channel.webStorageGetItem(kind: kind, name: name);
 
     return result.value;
   }
@@ -5650,7 +5650,7 @@ class PageImpl extends PageBase implements Page {
 
     String value,
   ) async {
-    await channel_webStorageSetItem(kind: kind, name: name, value: value);
+    await channel.webStorageSetItem(kind: kind, name: name, value: value);
   }
 
   @override
@@ -5659,26 +5659,26 @@ class PageImpl extends PageBase implements Page {
 
     String name,
   ) async {
-    await channel_webStorageRemoveItem(kind: kind, name: name);
+    await channel.webStorageRemoveItem(kind: kind, name: name);
   }
 
   @override
   Future<void> storageClear(PageWebStorageClearKindEnum kind) async {
-    await channel_webStorageClear(kind: kind);
+    await channel.webStorageClear(kind: kind);
   }
 
   // ── Channel Method Aliases ────────────────────────────────────────────────
 
   @override
   Future<void> runBeforeUnload() async {
-    await channel_runBeforeUnload();
+    await channel.runBeforeUnload();
   }
 
   @override
   Future<void> webStorageClear({
     required PageWebStorageClearKindEnum kind,
   }) async {
-    await channel_webStorageClear(kind: kind);
+    await channel.webStorageClear(kind: kind);
   }
 
   @override
@@ -5687,14 +5687,14 @@ class PageImpl extends PageBase implements Page {
 
     required String name,
   }) async {
-    return await channel_webStorageGetItem(kind: kind, name: name);
+    return await channel.webStorageGetItem(kind: kind, name: name);
   }
 
   @override
   Future<PageWebStorageItemsResult> webStorageItems({
     required PageWebStorageItemsKindEnum kind,
   }) async {
-    return await channel_webStorageItems(kind: kind);
+    return await channel.webStorageItems(kind: kind);
   }
 
   @override
@@ -5703,7 +5703,7 @@ class PageImpl extends PageBase implements Page {
 
     required String name,
   }) async {
-    await channel_webStorageRemoveItem(kind: kind, name: name);
+    await channel.webStorageRemoveItem(kind: kind, name: name);
   }
 
   @override
@@ -5714,7 +5714,7 @@ class PageImpl extends PageBase implements Page {
 
     required String value,
   }) async {
-    await channel_webStorageSetItem(kind: kind, name: name, value: value);
+    await channel.webStorageSetItem(kind: kind, name: name, value: value);
   }
 }
 

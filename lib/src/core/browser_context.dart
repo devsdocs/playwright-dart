@@ -1435,7 +1435,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<Page> newPage() async {
-    final result = await super.channel_newPage();
+    final result = await super.channel.newPage();
 
     final page = result.page as Page;
     Logger.debug('New page created.', name: 'playwright.context');
@@ -1448,7 +1448,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
       'addCookies (${cookies.length} cookies)',
       name: 'playwright.context',
     );
-    await super.channel_addCookies(cookies: cookies);
+    await super.channel.addCookies(cookies: cookies);
   }
 
   @override
@@ -1471,7 +1471,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? pathRegexFlags,
   }) async {
-    await super.channel_clearCookies(
+    await super.channel.clearCookies(
       name: name,
 
       domain: domain,
@@ -1494,7 +1494,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<List<NetworkCookie>> cookies({List<String>? urls}) async {
-    final result = await super.channel_cookies(urls: urls ?? []);
+    final result = await super.channel.cookies(urls: urls ?? []);
 
     return result.cookies;
   }
@@ -1508,7 +1508,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
       'grantPermissions ${permissions.map((e) => e.value).toList()}${origin != null ? ' (origin: $origin)' : ''}',
       name: 'playwright.browserContext',
     );
-    await super.channel_grantPermissions(
+    await super.channel.grantPermissions(
       permissions: permissions.map((e) => e.value).toList(),
       origin: origin,
     );
@@ -1520,12 +1520,12 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
       'setExtraHTTPHeaders (${headers.length} headers)',
       name: 'playwright.context',
     );
-    await super.channel_setExtraHTTPHeaders(headers: headers);
+    await super.channel.setExtraHTTPHeaders(headers: headers);
   }
 
   @override
   Future<void> clearPermissions() async {
-    await channel_clearPermissions();
+    await channel.clearPermissions();
   }
 
   @override
@@ -1533,7 +1533,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     BrowserContextSetGeolocationGeolocation? geolocation,
   ) async {
     Logger.debug('setGeolocation', name: 'playwright.context');
-    await channel_setGeolocation(geolocation: geolocation);
+    await channel.setGeolocation(geolocation: geolocation);
   }
 
   @override
@@ -1541,20 +1541,20 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
     BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
   ) async {
     Logger.debug('setHTTPCredentials', name: 'playwright.context');
-    await channel_setHTTPCredentials(httpCredentials: httpCredentials);
+    await channel.setHTTPCredentials(httpCredentials: httpCredentials);
   }
 
   @override
   Future<void> setOffline(bool offline) async {
     Logger.debug('setOffline ($offline)', name: 'playwright.context');
-    await channel_setOffline(offline: offline);
+    await channel.setOffline(offline: offline);
   }
 
   @override
   Future<BrowserContextStorageStateResult> storageState({
     bool? indexedDB,
   }) async {
-    final result = await channel_storageState(indexedDB: indexedDB);
+    final result = await channel.storageState(indexedDB: indexedDB);
 
     return result;
   }
@@ -1563,13 +1563,13 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   Future<void> setStorageState(
     BrowserContextSetStorageStateStorageState storageState,
   ) async {
-    await channel_setStorageState(storageState: storageState);
+    await channel.setStorageState(storageState: storageState);
   }
 
   @override
   Future<void> addInitScript(String source) async {
     Logger.debug('addInitScript', name: 'playwright.context');
-    await channel_addInitScript(source: source);
+    await channel.addInitScript(source: source);
   }
 
   @override
@@ -1578,19 +1578,19 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
       'Closing browser context${reason != null ? ': $reason' : ''}.',
       name: 'playwright.context',
     );
-    await channel_close(reason: reason);
+    await channel.close(reason: reason);
   }
 
   @override
   Future<void> setNetworkInterceptionPatterns(
     List<BrowserContextSetNetworkInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setNetworkInterceptionPatterns(patterns: patterns);
+    await channel.setNetworkInterceptionPatterns(patterns: patterns);
   }
 
   @override
   Future<void> pause() async {
-    await channel_pause();
+    await channel.pause();
   }
 
   @override
@@ -1599,7 +1599,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? ticksString,
   }) async {
-    await channel_clockFastForward(
+    await channel.clockFastForward(
       ticksNumber: ticksNumber,
 
       ticksString: ticksString,
@@ -1608,22 +1608,22 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> clockInstall({double? timeNumber, String? timeString}) async {
-    await channel_clockInstall(timeNumber: timeNumber, timeString: timeString);
+    await channel.clockInstall(timeNumber: timeNumber, timeString: timeString);
   }
 
   @override
   Future<void> clockPauseAt({double? timeNumber, String? timeString}) async {
-    await channel_clockPauseAt(timeNumber: timeNumber, timeString: timeString);
+    await channel.clockPauseAt(timeNumber: timeNumber, timeString: timeString);
   }
 
   @override
   Future<void> clockResume() async {
-    await channel_clockResume();
+    await channel.clockResume();
   }
 
   @override
   Future<void> clockRunFor({double? ticksNumber, String? ticksString}) async {
-    await channel_clockRunFor(
+    await channel.clockRunFor(
       ticksNumber: ticksNumber,
 
       ticksString: ticksString,
@@ -1636,7 +1636,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? timeString,
   }) async {
-    await channel_clockSetFixedTime(
+    await channel.clockSetFixedTime(
       timeNumber: timeNumber,
 
       timeString: timeString,
@@ -1649,7 +1649,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? timeString,
   }) async {
-    await channel_clockSetSystemTime(
+    await channel.clockSetSystemTime(
       timeNumber: timeNumber,
 
       timeString: timeString,
@@ -1658,19 +1658,19 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> exposeBinding(String name) async {
-    await channel_exposeBinding(name: name);
+    await channel.exposeBinding(name: name);
   }
 
   @override
   Future<void> exposeFunction(String name) async {
-    await channel_exposeBinding(name: name);
+    await channel.exposeBinding(name: name);
   }
 
   // ── WebAuthn / Virtual Authenticator ─────────────────────────────────────
 
   @override
   Future<void> installVirtualAuthenticator() async {
-    await channel_credentialsInstall();
+    await channel.credentialsInstall();
   }
 
   @override
@@ -1685,7 +1685,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? userHandle,
   }) async {
-    return await channel_credentialsCreate(
+    return await channel.credentialsCreate(
       id: id,
 
       privateKey: privateKey,
@@ -1704,14 +1704,14 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? rpId,
   }) async {
-    final result = await channel_credentialsGet(id: id, rpId: rpId);
+    final result = await channel.credentialsGet(id: id, rpId: rpId);
 
     return result.credentials;
   }
 
   @override
   Future<void> removeVirtualCredential(String id) async {
-    await channel_credentialsDelete(id: id);
+    await channel.credentialsDelete(id: id);
   }
 
   // ── Channel Method Aliases ────────────────────────────────────────────────
@@ -1728,7 +1728,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? userHandle,
   }) async {
-    return await channel_credentialsCreate(
+    return await channel.credentialsCreate(
       id: id,
 
       privateKey: privateKey,
@@ -1743,7 +1743,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> credentialsDelete({required String id}) async {
-    await channel_credentialsDelete(id: id);
+    await channel.credentialsDelete(id: id);
   }
 
   @override
@@ -1752,12 +1752,12 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     String? rpId,
   }) async {
-    return await channel_credentialsGet(id: id, rpId: rpId);
+    return await channel.credentialsGet(id: id, rpId: rpId);
   }
 
   @override
   Future<void> credentialsInstall() async {
-    await channel_credentialsInstall();
+    await channel.credentialsInstall();
   }
 
   @override
@@ -1770,7 +1770,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     SelectorEngine? selectorEngine,
   }) async {
-    await channel_registerSelectorEngine(
+    await channel.registerSelectorEngine(
       selectorEngine:
           selectorEngine ??
           SelectorEngine(
@@ -1785,7 +1785,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> setTestIdAttributeName(String testIdAttributeName) async {
-    await channel_setTestIdAttributeName(
+    await channel.setTestIdAttributeName(
       testIdAttributeName: testIdAttributeName,
     );
   }
@@ -1794,7 +1794,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   Future<void> setWebSocketInterceptionPatterns(
     List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems> patterns,
   ) async {
-    await channel_setWebSocketInterceptionPatterns(patterns: patterns);
+    await channel.setWebSocketInterceptionPatterns(patterns: patterns);
   }
 
   @override
@@ -1823,7 +1823,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     bool? omitCallTracking,
   }) async {
-    await channel_enableRecorder(
+    await channel.enableRecorder(
       language: language,
 
       mode: mode,
@@ -1852,17 +1852,17 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> disableRecorder() async {
-    await channel_disableRecorder();
+    await channel.disableRecorder();
   }
 
   @override
   Future<void> exposeConsoleApi() async {
-    await channel_exposeConsoleApi();
+    await channel.exposeConsoleApi();
   }
 
   @override
   Future<CDPSession> newCDPSession({Page? page, Frame? frame}) async {
-    final result = await channel_newCDPSession(
+    final result = await channel.newCDPSession(
       page: page as PageImpl?,
 
       frame: frame as FrameImpl?,
@@ -1877,7 +1877,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     required List<BrowserContextCreateTempFilesItemsItems> items,
   }) async {
-    return await channel_createTempFiles(
+    return await channel.createTempFiles(
       rootDirName: rootDirName,
 
       items: items,
@@ -1890,7 +1890,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     required bool enabled,
   }) async {
-    await channel_updateSubscription(event: event, enabled: enabled);
+    await channel.updateSubscription(event: event, enabled: enabled);
   }
 
   @override
@@ -1899,7 +1899,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
     _routeListener.attach(onRoute);
 
-    await channel_setNetworkInterceptionPatterns(
+    await channel.setNetworkInterceptionPatterns(
       patterns: _routeManager.prepareContextPatterns(),
     );
   }
@@ -1912,7 +1912,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   }) async {
     _routeManager.remove(url, handler);
 
-    await channel_setNetworkInterceptionPatterns(
+    await channel.setNetworkInterceptionPatterns(
       patterns: _routeManager.prepareContextPatterns(),
     );
   }
@@ -1921,7 +1921,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   Future<void> unrouteAll() async {
     _routeManager.clear();
 
-    await channel_setNetworkInterceptionPatterns(patterns: []);
+    await channel.setNetworkInterceptionPatterns(patterns: []);
   }
 
   @override

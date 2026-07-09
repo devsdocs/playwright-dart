@@ -682,7 +682,7 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
     await ensureBrowsersInstalled();
 
     Logger.info('Launching $name browser...');
-    final result = await super.channel_launch(
+    final result = await super.channel.launch(
       launchOptions: options ?? LaunchOptions(timeout: 30000.0),
 
       slowMo: slowMo,
@@ -706,7 +706,7 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
     await ensureBrowsersInstalled();
 
     Logger.info('Launching $name persistent context at "$userDataDir"...');
-    final result = await super.channel_launchPersistentContext(
+    final result = await super.channel.launchPersistentContext(
       userDataDir: userDataDir,
 
       launchOptions: launchOptions ?? LaunchOptions(timeout: 30000.0),
@@ -728,7 +728,7 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
 
   @override
   Future<Worker> connectToWorker(String endpoint, {double? timeout}) async {
-    final result = await super.channel_connectToWorker(
+    final result = await super.channel.connectToWorker(
       endpoint: endpoint,
 
       timeout: timeout ?? 30000.0,
@@ -752,7 +752,7 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
     double timeout = 30000.0,
   }) async {
     Logger.info('Connecting to browser over CDP: $endpointURL');
-    final result = await super.channel_connectOverCDP(
+    final result = await super.channel.connectOverCDP(
       endpointURL: endpointURL,
 
       headers: headers,
@@ -788,8 +788,8 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
     // The driver connects over websocket and gives us a JsonPipe
 
     final result =
-        await ((playwright as PlaywrightImpl).utils as LocalUtilsImpl)
-            .channel_connect(
+        await ((playwright as PlaywrightImpl).utils as LocalUtilsImpl).channel
+            .connect(
               endpoint: wsEndpoint,
 
               headers: headers,

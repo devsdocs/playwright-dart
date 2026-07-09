@@ -275,7 +275,7 @@ class ElectronImpl extends ElectronBase implements Electron {
     List<SelectorEngine>? selectorEngines,
     String? testIdAttributeName,
   }) async {
-    return await channel_launch(
+    return await channel.launch(
       executablePath: executablePath,
       args: args,
       chromiumSandbox: chromiumSandbox,

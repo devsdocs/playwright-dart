@@ -107,6 +107,6 @@ class Touchscreen {
   /// [Microsoft Artifact Registry]: https://mcr.microsoft.com/en-us/product/playwright/about "Microsoft Artifact Registry"
   /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<void> tap(double x, double y) async {
-    await (page as PageImpl).channel_touchscreenTap(x: x, y: y);
+    await (page as PageImpl).channel.touchscreenTap(x: x, y: y);
   }
 }

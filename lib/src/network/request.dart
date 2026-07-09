@@ -496,7 +496,7 @@ class RequestImpl extends RequestBase implements Request {
 
   @override
   Future<Response?> response() async {
-    final result = await channel_response();
+    final result = await channel.response();
 
     final resp = result.response;
 
@@ -507,7 +507,7 @@ class RequestImpl extends RequestBase implements Request {
 
   @override
   Future<Map<String, String>> allHeaders() async {
-    final result = await channel_rawRequestHeaders();
+    final result = await channel.rawRequestHeaders();
 
     final headers = result.headers as List;
 
@@ -529,7 +529,7 @@ class RequestImpl extends RequestBase implements Request {
 
   @override
   Future<List<String>> headerValues(String name) async {
-    final result = await channel_rawRequestHeaders();
+    final result = await channel.rawRequestHeaders();
 
     final lower = name.toLowerCase();
 

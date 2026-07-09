@@ -184,7 +184,7 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
       'newRequest${baseURL != null ? ' (baseURL: $baseURL)' : ''}',
       name: 'playwright',
     );
-    final result = await super.channel_newRequest(
+    final result = await super.channel.newRequest(
       baseURL: baseURL,
 
       userAgent: userAgent,

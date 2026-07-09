@@ -135,7 +135,7 @@ class PageAssertions {
     // Page-level assertions (title, url) must NOT pass a selector; the
     // Playwright Node.js driver resolves these from `document` when no element
     // is resolved (selector absent → element null in the driver).
-    await (_page.mainFrame as FrameImpl).channel_expect(
+    await (_page.mainFrame as FrameImpl).channel.expect(
       expression: 'to.have.title',
       expectedText: text,
       isNot: _isNot,
@@ -182,7 +182,7 @@ class PageAssertions {
   /// - Future&lt;void&gt;
   Future<void> toHaveURL(Pattern expected, {double? timeout}) async {
     final text = _patternToExpectedText(expected);
-    await (_page.mainFrame as FrameImpl).channel_expect(
+    await (_page.mainFrame as FrameImpl).channel.expect(
       expression: 'to.have.url',
       expectedText: text,
       isNot: _isNot,

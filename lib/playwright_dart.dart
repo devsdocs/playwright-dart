@@ -26,7 +26,7 @@ export 'src/core/page.dart';
 export 'src/core/frame.dart'; // also exports ExpectResult, ExpectReceived
 export 'src/core/locator.dart';
 export 'src/core/selectors.dart';
-export 'src/generated/channels.dart' hide Channel, ConsoleMessage;
+export 'src/generated/channels.dart' hide ConsoleMessage;
 
 // Interaction
 export 'src/interaction/element_handle.dart';

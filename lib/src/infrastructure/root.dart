@@ -18,6 +18,6 @@ class RootImpl extends RootBase implements Root {
   Future<RootInitializeResult> initialize({
     required SDKLanguage sdkLanguage,
   }) async {
-    return await channel_initialize(sdkLanguage: sdkLanguage);
+    return await channel.initialize(sdkLanguage: sdkLanguage);
   }
 }
