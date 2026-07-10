@@ -2583,7 +2583,10 @@ class FrameImpl extends FrameBase implements Frame {
   Frame? get parentFrame => typedInitializer.parentFrame as Frame?;
 
   @override
-  List<Frame> get childFrames => objects.values.whereType<Frame>().toList();
+  List<Frame> get childFrames => connection.objects.values
+      .whereType<Frame>()
+      .where((f) => f.parentFrame == this)
+      .toList();
 
   @override
   String get name => typedInitializer.name;

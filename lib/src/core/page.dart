@@ -3941,14 +3941,14 @@ class PageImpl extends PageBase implements Page {
   Stream<Frame> get onFrameDetached {
     return onEvent
         .where((e) => e['event'] == 'frameDetached')
-        .map((e) => e['params']['frame']);
+        .map((e) => connection.objects[e['params']['frame']['guid']] as Frame);
   }
 
   @override
   Stream<Frame> get onFrameAttached {
     return onEvent
         .where((e) => e['event'] == 'frameAttached')
-        .map((e) => e['params']['frame']);
+        .map((e) => connection.objects[e['params']['frame']['guid']] as Frame);
   }
 
   @override

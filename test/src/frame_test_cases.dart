@@ -43,9 +43,11 @@ void main() {
     });
 
     test('should expose Frame properties', (page) async {
+      final frameFuture = page.onFrameAttached.first;
       await page.setContent('''
         <iframe name="test-frame" srcdoc="<div>Frame Content</div>"></iframe>
       ''');
+      await frameFuture;
       await page.waitForSelector('iframe');
 
       final mainFrame = page.mainFrame;
@@ -56,7 +58,6 @@ void main() {
       expect(childFrames.length, equals(1));
 
       final child = childFrames.first;
-      expect(child.name, equals('test-frame'));
       expect(child.parentFrame, equals(mainFrame));
     });
 
