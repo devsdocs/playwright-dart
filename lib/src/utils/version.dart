@@ -5,11 +5,10 @@ const String fallbackPlaywrightVersion = '1.61.0';
 
 /// Fetches the latest playwright-core version from the official NPM registry,
 /// falling back to the hardcoded [fallbackPlaywrightVersion] if it fails.
-Future<String> getPlaywrightVersion() async {
+Future<String> getPlaywrightVersion({http.Client? client}) async {
   try {
-    final response = await http.get(
-      Uri.parse('https://registry.npmjs.org/playwright-core/latest'),
-    );
+    final uri = Uri.parse('https://registry.npmjs.org/playwright-core/latest');
+    final response = await (client != null ? client.get(uri) : http.get(uri));
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       final version = json['version'];

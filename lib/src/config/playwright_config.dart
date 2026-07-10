@@ -153,8 +153,8 @@ class PlaywrightConfig {
   /// 1. playwright.config.yaml in the current directory
   /// 2. playwright.config.json in the current directory
   /// 3. Returns default config if not found
-  static Future<PlaywrightConfig> load() async {
-    final currentDir = Directory.current.path;
+  static Future<PlaywrightConfig> load({String? cwd}) async {
+    final currentDir = cwd ?? Directory.current.path;
 
     // Try playwright.config.yaml
     final yamlConfig = File('$currentDir/playwright.config.yaml');

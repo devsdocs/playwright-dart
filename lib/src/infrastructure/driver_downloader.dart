@@ -7,17 +7,24 @@ import 'package:path/path.dart' as p;
 
 import '../utils/version.dart';
 
-Future<String> _fetchNodeVersion(String driverVersion) async {
+Future<String> fetchNodeVersion(
+  String driverVersion, {
+  http.Client? client,
+}) async {
   try {
     final pkgUrl = 'https://registry.npmjs.org/playwright-core/$driverVersion';
-    final pkgRes = await http.get(Uri.parse(pkgUrl));
+    final pkgRes = await (client != null
+        ? client.get(Uri.parse(pkgUrl))
+        : http.get(Uri.parse(pkgUrl)));
     if (pkgRes.statusCode == 200) {
       final json = jsonDecode(pkgRes.body);
       final gitHead = json['gitHead'] as String?;
       if (gitHead != null) {
         final scriptUrl =
             'https://raw.githubusercontent.com/microsoft/playwright/$gitHead/utils/build/build-playwright-driver.sh';
-        final scriptRes = await http.get(Uri.parse(scriptUrl));
+        final scriptRes = await (client != null
+            ? client.get(Uri.parse(scriptUrl))
+            : http.get(Uri.parse(scriptUrl)));
         if (scriptRes.statusCode == 200) {
           final match = RegExp(
             r'NODE_VERSION="([^"]+)"',
@@ -44,17 +51,20 @@ class NodePlatform {
   NodePlatform(this.suffix, this.extension, this.isWindows);
 }
 
-NodePlatform _getNodePlatform() {
+NodePlatform _getNodePlatform({
+  ProcessResult Function(String, List<String>)? processRunSync,
+}) {
+  final runSync = processRunSync ?? Process.runSync;
   if (Platform.isWindows) {
     return NodePlatform('win-x64', 'zip', true);
   } else if (Platform.isMacOS) {
-    final result = Process.runSync('uname', ['-m']);
+    final result = runSync('uname', ['-m']);
     if (result.stdout.toString().trim() == 'arm64') {
       return NodePlatform('darwin-arm64', 'tar.gz', false);
     }
     return NodePlatform('darwin-x64', 'tar.gz', false);
   } else if (Platform.isLinux) {
-    final result = Process.runSync('uname', ['-m']);
+    final result = runSync('uname', ['-m']);
     if (result.stdout.toString().trim() == 'aarch64') {
       return NodePlatform('linux-arm64', 'tar.gz', false);
     }
@@ -63,17 +73,27 @@ NodePlatform _getNodePlatform() {
   throw UnsupportedError('Unsupported platform: ${Platform.operatingSystem}');
 }
 
-Future<String> downloadDriver() async {
-  final driverVersion = await getPlaywrightVersion();
-  final userHome =
-      Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
-  if (userHome == null) {
-    throw StateError('Could not find home directory');
+Future<String> downloadDriver({
+  http.Client? client,
+  String? driverDirOverride,
+  ProcessResult Function(String, List<String>)? processRunSync,
+}) async {
+  final driverVersion = await getPlaywrightVersion(client: client);
+
+  late Directory driverDir;
+  if (driverDirOverride != null) {
+    driverDir = Directory(driverDirOverride);
+  } else {
+    final userHome =
+        Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
+    if (userHome == null) {
+      throw StateError('Could not find home directory');
+    }
+    driverDir = Directory(
+      p.join(userHome, '.playwright-dart', 'driver', driverVersion),
+    );
   }
 
-  final driverDir = Directory(
-    p.join(userHome, '.playwright-dart', 'driver', driverVersion),
-  );
   final cliPath = p.join(driverDir.path, 'package', 'cli.js');
   final markerPath = p.join(driverDir.path, '.installed');
   if (File(cliPath).existsSync() && File(markerPath).existsSync()) {
@@ -90,7 +110,9 @@ Future<String> downloadDriver() async {
   final coreUrl =
       'https://registry.npmjs.org/playwright-core/-/playwright-core-$driverVersion.tgz';
   Logger.info('Downloading playwright-core...');
-  final coreResponse = await http.get(Uri.parse(coreUrl));
+  final coreResponse = await (client != null
+      ? client.get(Uri.parse(coreUrl))
+      : http.get(Uri.parse(coreUrl)));
   if (coreResponse.statusCode != 200) {
     throw StateError(
       'Failed to download playwright-core: ${coreResponse.statusCode}',
@@ -111,13 +133,15 @@ Future<String> downloadDriver() async {
   }
 
   // 2. Download and extract Node.js binary
-  final platform = _getNodePlatform();
-  final nodeVersion = await _fetchNodeVersion(driverVersion);
+  final platform = _getNodePlatform(processRunSync: processRunSync);
+  final nodeVersion = await fetchNodeVersion(driverVersion, client: client);
   final nodeDirName = 'node-v$nodeVersion-${platform.suffix}';
   final nodeUrl =
       'https://nodejs.org/dist/v$nodeVersion/$nodeDirName.${platform.extension}';
   Logger.info('Downloading Node.js $nodeVersion...');
-  final nodeResponse = await http.get(Uri.parse(nodeUrl));
+  final nodeResponse = await (client != null
+      ? client.get(Uri.parse(nodeUrl))
+      : http.get(Uri.parse(nodeUrl)));
   if (nodeResponse.statusCode != 200) {
     throw StateError('Failed to download Node.js: ${nodeResponse.statusCode}');
   }
@@ -132,6 +156,7 @@ Future<String> downloadDriver() async {
     );
   }
 
+  final runSync = processRunSync ?? Process.runSync;
   for (final file in nodeArchive) {
     if (file.isFile) {
       final name = file.name;
@@ -142,7 +167,7 @@ Future<String> downloadDriver() async {
         out.createSync(recursive: true);
         out.writeAsBytesSync(file.content as List<int>);
         if (!platform.isWindows) {
-          Process.runSync('chmod', ['+x', out.path]);
+          runSync('chmod', ['+x', out.path]);
         }
       } else if (name.endsWith('LICENSE')) {
         final out = File(p.join(driverDir.path, 'LICENSE'));
@@ -157,8 +182,12 @@ Future<String> downloadDriver() async {
   return driverDir.path;
 }
 
-Future<void> ensureBrowsersInstalled() async {
-  final driverDirPath = await downloadDriver();
+Future<void> ensureBrowsersInstalled({
+  ProcessResult Function(String, List<String>)? processRunSync,
+  String? driverDirOverride,
+}) async {
+  final runSync = processRunSync ?? Process.runSync;
+  final driverDirPath = driverDirOverride ?? await downloadDriver();
   final cliPath = p.join(driverDirPath, 'package', 'cli.js');
   final browserMarkerPath = p.join(driverDirPath, '.browsers-installed');
 
@@ -171,7 +200,7 @@ Future<void> ensureBrowsersInstalled() async {
     driverDirPath,
     Platform.isWindows ? 'node.exe' : 'node',
   );
-  final installProcess = Process.runSync(nodePath, [cliPath, 'install']);
+  final installProcess = runSync(nodePath, [cliPath, 'install']);
   if (installProcess.exitCode != 0) {
     Logger.info(installProcess.stdout.toString());
     Logger.error(installProcess.stderr.toString());
@@ -180,7 +209,7 @@ Future<void> ensureBrowsersInstalled() async {
 
   // Linux requires OS-level shared libraries
   if (Platform.isLinux) {
-    await _installLinuxDeps(nodePath, cliPath);
+    await _installLinuxDeps(nodePath, cliPath, runSync: runSync);
   }
 
   File(browserMarkerPath).writeAsStringSync('done');
@@ -188,10 +217,14 @@ Future<void> ensureBrowsersInstalled() async {
 }
 
 /// Installs OS-level browser dependencies on Linux via `install-deps`.
-Future<void> _installLinuxDeps(String nodePath, String cliPath) async {
+Future<void> _installLinuxDeps(
+  String nodePath,
+  String cliPath, {
+  required ProcessResult Function(String, List<String>) runSync,
+}) async {
   Logger.info('Installing Linux browser dependencies...');
 
-  final direct = Process.runSync(nodePath, [cliPath, 'install-deps']);
+  final direct = runSync(nodePath, [cliPath, 'install-deps']);
   if (direct.exitCode == 0) {
     Logger.info('Linux browser dependencies installed.');
     return;
@@ -202,7 +235,7 @@ Future<void> _installLinuxDeps(String nodePath, String cliPath) async {
     name: 'playwright.driver',
   );
 
-  final withSudo = Process.runSync('sudo', [nodePath, cliPath, 'install-deps']);
+  final withSudo = runSync('sudo', [nodePath, cliPath, 'install-deps']);
   if (withSudo.exitCode == 0) {
     Logger.info('Linux browser dependencies installed (via sudo).');
     return;

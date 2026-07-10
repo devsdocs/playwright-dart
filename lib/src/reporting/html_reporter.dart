@@ -9,11 +9,14 @@ class HtmlReporter {
   final String outputDir;
   final List<TestResult> _results = [];
   final ReportMetadata _metadata;
+  final DateTime Function() _clock;
 
   HtmlReporter({
     this.outputDir = 'test-results/html-report',
     ReportMetadata? metadata,
-  }) : _metadata = metadata ?? ReportMetadata();
+    DateTime Function()? clock,
+  }) : _metadata = metadata ?? ReportMetadata(),
+       _clock = clock ?? (() => DateTime.now());
 
   /// Adds a test result to the report.
   void addTestResult(TestResult result) {
@@ -94,7 +97,7 @@ class HtmlReporter {
                 <div class="header-meta">
                     <span class="project-name">${_escapeHtml(_metadata.projectName)}</span>
                     <span class="separator">•</span>
-                    <span class="timestamp">${DateTime.now().toIso8601String()}</span>
+                    <span class="timestamp">${_clock().toIso8601String()}</span>
                 </div>
             </div>
             <div class="theme-toggle">

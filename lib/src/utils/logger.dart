@@ -35,6 +35,15 @@ class Logger {
   /// The minimum level at which messages are emitted. Defaults to [LogLevel.info].
   static LogLevel level = LogLevel.info;
 
+  /// Optional custom sink for testing or custom log redirection.
+  static void Function(
+    String message, {
+    required String channel,
+    Object? error,
+    StackTrace? stackTrace,
+  })?
+  sink;
+
   // ── Private helpers ──────────────────────────────────────────────────────
 
   static bool _allows(LogLevel msgLevel) => msgLevel.index >= level.index;
@@ -45,6 +54,10 @@ class Logger {
     Object? error,
     StackTrace? stackTrace,
   }) {
+    if (sink != null) {
+      sink!(message, channel: channel, error: error, stackTrace: stackTrace);
+      return;
+    }
     developer.log(message, name: channel, error: error, stackTrace: stackTrace);
     final prefix = channel == 'playwright.info' ? '' : '[$channel] ';
     print('$prefix$message');

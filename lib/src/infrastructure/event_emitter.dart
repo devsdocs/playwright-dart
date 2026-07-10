@@ -35,7 +35,7 @@ class EventEmitter {
   void off(String event, void Function(dynamic) handler) {
     final listeners = _events[event];
     if (listeners == null) return;
-    listeners.removeWhere((l) => l.handler == handler);
+    listeners.removeWhere((l) => l.handler == handler || l.original == handler);
     if (listeners.isEmpty) _events.remove(event);
   }
 

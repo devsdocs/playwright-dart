@@ -109,5 +109,49 @@ void main() {
       expect(config.workers, isNull);
       expect(config.test.testDir, isNull);
     });
+
+    test('load() should return default config if no file exists', () async {
+      final dir = Directory.systemTemp.createTempSync('playwright_config_test');
+      try {
+        final config = await PlaywrightConfig.load(cwd: dir.path);
+        expect(config.workers, isNull);
+        expect(config.outputDir, isNull);
+      } finally {
+        dir.deleteSync(recursive: true);
+      }
+    });
+
+    test('load() should prioritize yaml over json', () async {
+      final dir = Directory.systemTemp.createTempSync(
+        'playwright_config_test_yaml',
+      );
+      try {
+        final yamlFile = File('${dir.path}/playwright.config.yaml');
+        yamlFile.writeAsStringSync('workers: 5\n');
+
+        final jsonFile = File('${dir.path}/playwright.config.json');
+        jsonFile.writeAsStringSync('{"workers": 3}');
+
+        final config = await PlaywrightConfig.load(cwd: dir.path);
+        expect(config.workers, 5);
+      } finally {
+        dir.deleteSync(recursive: true);
+      }
+    });
+
+    test('load() should read json if yaml does not exist', () async {
+      final dir = Directory.systemTemp.createTempSync(
+        'playwright_config_test_json',
+      );
+      try {
+        final jsonFile = File('${dir.path}/playwright.config.json');
+        jsonFile.writeAsStringSync('{"workers": 10}');
+
+        final config = await PlaywrightConfig.load(cwd: dir.path);
+        expect(config.workers, 10);
+      } finally {
+        dir.deleteSync(recursive: true);
+      }
+    });
   });
 }
