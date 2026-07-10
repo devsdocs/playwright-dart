@@ -1,5 +1,10 @@
-## 3.9.0
+## 3.10.0
 
+- **Test Coverage**: Increased core DOM interaction API test coverage from 13.7% to 49.1%. Added comprehensive tests for `ElementHandle`, `Frame`, `FrameLocator`, `Mouse`, and `Keyboard` APIs.
+- **Stability**: Fixed `TargetClosedError` and `SocketException` during test tear-downs by correctly managing reference counting in the Browser lifecycle.
+- **Fix**: Adjusted `selectOption` arguments in `Frame` to match positional semantics and resolved test flakiness related to `dispatchEvent` and keyboard modifiers.
+
+## 3.9.0
 - **Architecture**: Stripped the `channel_` prefix from generated internal protocol methods (e.g. `channel_saveAs` is now just `saveAs` in the internal API).
 - **Architecture**: Refactored the core protocol classes to use composition instead of inheritance for channel methods. All generated methods are now strictly isolated inside a strongly-typed `channel` property (e.g. `await channel.saveAs(...)`) rather than being inherited into the public wrappers. This prevents naming collisions and strictly hides the generated API from external consumers.
 - **Tooling**: Updated `find_missing.dart` and `cross_check_types.dart` to fully support the new `channel.` composition pattern.

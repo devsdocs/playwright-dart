@@ -881,9 +881,10 @@ class BrowserImpl extends BrowserBase implements Browser {
       try {
         final activeBrowsers = connection.objects.values
             .whereType<Browser>()
+            .where((b) => b != this)
             .length;
 
-        if (activeBrowsers <= 1) {
+        if (activeBrowsers == 0) {
           final playwright = connection.objects.values
               .whereType<Playwright>()
               .firstOrNull;

@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/playwright_dart.svg)](https://pub.dev/packages/playwright_dart)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Test Coverage](https://img.shields.io/badge/Coverage-44.1%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
+[![Test Coverage](https://img.shields.io/badge/Coverage-49.1%25-yellow.svg)](https://github.com/devsdocs/playwright-dart)
 [![AI Assisted](https://img.shields.io/badge/AI-Assisted-purple.svg)](https://github.com/devsdocs/playwright-dart)
 
 A Dart port of [Playwright](https://playwright.dev) — browser automation for Chromium, Firefox, and WebKit.
@@ -67,7 +67,7 @@ Or by manually installing the packages via `apt-get` as indicated in the error m
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.8.0
+  playwright_dart: ^3.10.0
 ```
 
 ## Quick Start

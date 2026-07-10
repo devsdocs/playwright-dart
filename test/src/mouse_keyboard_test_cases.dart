@@ -51,5 +51,70 @@ void main() {
       await page.waitForTimeout(50);
       expect(await page.locator('#status').textContent(), equals('Left'));
     });
+
+    test('should dblclick, wheel and click with modifiers', (page) async {
+      await page.setContent('''
+        <div id="target" style="width: 200px; height: 200px; background: blue;"></div>
+      ''');
+
+      await page.evaluate('''() => {
+        window.logs = [];
+        const t = document.getElementById('target');
+        t.addEventListener('dblclick', e => window.logs.push('dblclick'));
+        t.addEventListener('wheel', e => window.logs.push('wheel:' + e.deltaY));
+        t.addEventListener('click', e => window.logs.push('click:shift=' + e.shiftKey));
+      }''');
+
+      final target =
+          (await page.waitForSelector('#target')).element as ElementHandle;
+      final box = await target.boundingBox();
+
+      // Move to center
+      await page.mouse.move(box!.x + 100, box.y + 100);
+
+      // Dblclick
+      await page.mouse.dblclick(box.x + 100, box.y + 100);
+
+      // Wheel
+      await page.mouse.wheel(0, 100);
+
+      // Click with Shift
+      await page.keyboard.down('Shift');
+      await page.mouse.click(box.x + 100, box.y + 100);
+      await page.keyboard.up('Shift');
+
+      final logs = await page.evaluate('() => window.logs');
+      expect(logs, contains('dblclick'));
+      expect(logs, contains('wheel:100'));
+      expect(logs, contains('click:shift=true'));
+    });
+
+    test('should support keyboard insertText and modifiers', (page) async {
+      await page.setContent('<textarea id="ta"></textarea>');
+      await page.focus('#ta');
+
+      // insertText
+      await page.keyboard.insertText('Hello');
+      expect(await page.locator('#ta').inputValue(), equals('Hello'));
+
+      // Select all and delete (Assuming Mac uses Meta, Win uses Control, let's use Control for standard web inputs when possible, or just backspace repeatedly if Control+A is platform dependent)
+      // Actually standard 'a' with control might not select all on Mac, but let's just test that the modifier is passed
+      await page.keyboard.down('Shift');
+      await page.keyboard.press('ArrowLeft');
+      await page.keyboard.press('ArrowLeft');
+      await page.keyboard.press('ArrowLeft');
+      await page.keyboard.press('ArrowLeft');
+      await page.keyboard.press('ArrowLeft');
+      await page.keyboard.up('Shift');
+      await page.keyboard.press('Backspace');
+
+      expect(await page.locator('#ta').inputValue(), equals(''));
+
+      // Modifiers with type
+      await page.keyboard.down('Shift');
+      await page.keyboard.press('a');
+      await page.keyboard.up('Shift');
+      expect(await page.locator('#ta').inputValue(), equals('a'));
+    });
   });
 }

@@ -28,6 +28,7 @@ class StdioTransport implements Transport {
         _processBuffer();
       },
       onDone: () {
+        _isClosed = true;
         _onClose?.call();
       },
     );
@@ -38,6 +39,8 @@ class StdioTransport implements Transport {
         name: 'playwright.transport',
       );
     });
+
+    _process.stdin.done.catchError((_) {});
   }
 
   void _processBuffer() {
@@ -70,8 +73,12 @@ class StdioTransport implements Transport {
     }
   }
 
+  bool _isClosed = false;
+
   @override
   void send(Map<String, dynamic> message) {
+    if (_isClosed) return;
+
     final messageStr = jsonEncode(
       message,
       toEncodable: (dynamic item) {
@@ -89,12 +96,21 @@ class StdioTransport implements Transport {
     final lengthBytes = ByteData(4);
     lengthBytes.setUint32(0, messageBytes.length, Endian.little);
 
-    _process.stdin.add(lengthBytes.buffer.asUint8List());
-    _process.stdin.add(messageBytes);
+    try {
+      _process.stdin.add(lengthBytes.buffer.asUint8List());
+      _process.stdin.add(messageBytes);
+    } catch (e) {
+      Logger.debug(
+        'Failed to write to stdin: $e',
+        name: 'playwright.transport',
+      );
+    }
   }
 
   @override
   void close() {
+    _isClosed = true;
+    _process.stdin.close().catchError((_) {});
     _process.kill();
   }
 

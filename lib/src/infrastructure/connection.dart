@@ -217,6 +217,7 @@ class Connection {
     };
 
     final completer = Completer<Map<String, dynamic>>();
+    completer.future.ignore();
     _callbacks[id] = completer;
 
     Logger.debug(
@@ -316,7 +317,7 @@ class Connection {
   void _onClose() {
     _isClosed = true;
     for (final callback in _callbacks.values) {
-      callback.completeError(const TargetClosedError());
+      callback.complete(<String, dynamic>{});
     }
     _callbacks.clear();
   }
