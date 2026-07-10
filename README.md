@@ -301,3 +301,13 @@ MIT — see [LICENSE](LICENSE) for details.
 > 🤖 **AI-Assisted Development**
 >
 > This repository was built and maintained with the assistance of an advanced AI agent. The AI helped port the entire Playwright Node.js API to Dart, generated the protocol bindings, and test coverage for the protocol structures!
+
+## 💝 Support This Project
+
+This project is developed with the help of AI tools, which incur ongoing costs to maintain and improve the library. While I'm grateful to be able to share this work with the community, the financial burden of AI-assisted development adds up over time.
+
+If you've found `playwright_dart` useful in your projects — whether for testing, automation, or browser control — and you'd like to support its continued development, I would deeply appreciate your contribution. Your support helps cover AI costs and allows me to dedicate more time to features, bug fixes, and keeping the library up-to-date with Playwright's releases.
+
+Of course, there's no obligation whatsoever. This project will always remain free and open-source. But if you feel inclined to give back, any amount — no matter how small — makes a meaningful difference and is received with sincere gratitude.
+
+**[❤️ Sponsor on GitHub](https://github.com/sponsors/devsdocs)**
