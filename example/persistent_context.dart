@@ -42,4 +42,5 @@ void main() async {
 
   await context2.close();
   tempDir.deleteSync(recursive: true);
+  await playwright.stop();
 }
