@@ -153,5 +153,19 @@ void main() {
         dir.deleteSync(recursive: true);
       }
     });
+
+    test('should throw FormatException for invalid json root type', () {
+      expect(
+        () => PlaywrightConfig.fromJson('[]'),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('should throw FormatException for invalid nested field type', () {
+      expect(
+        () => PlaywrightConfig.fromJson('{"launchOptions": []}'),
+        throwsA(isA<FormatException>()),
+      );
+    });
   });
 }

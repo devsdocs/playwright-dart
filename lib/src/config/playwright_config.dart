@@ -60,30 +60,32 @@ class PlaywrightConfig {
 
   /// Creates a PlaywrightConfig from a JSON string.
   factory PlaywrightConfig.fromJson(String jsonContent) {
-    final jsonMap = jsonDecode(jsonContent) as Map<String, dynamic>;
-    return PlaywrightConfig.fromMap(jsonMap);
+    final decoded = jsonDecode(jsonContent);
+    if (decoded is! Map) throw FormatException('Config must be a JSON object');
+    return PlaywrightConfig.fromMap(Map<String, dynamic>.from(decoded));
   }
 
   /// Creates a PlaywrightConfig from a map.
   factory PlaywrightConfig.fromMap(Map<String, dynamic> map) {
+    Map<String, dynamic>? getMap(String key) {
+      final value = map[key];
+      if (value == null) return null;
+      if (value is! Map) throw FormatException("Config key '$key' must be a JSON object");
+      return Map<String, dynamic>.from(value);
+    }
+    
+    final launchOptions = getMap('launchOptions');
+    final contextOptions = getMap('contextOptions');
+    final test = getMap('test');
+    final timeout = getMap('timeout');
+    final retry = getMap('retry');
+
     return PlaywrightConfig(
-      launchOptions: map['launchOptions'] != null
-          ? LaunchOptions.fromJson(map['launchOptions'] as Map<String, dynamic>)
-          : null,
-      contextOptions: map['contextOptions'] != null
-          ? ContextOptions.fromJson(
-              map['contextOptions'] as Map<String, dynamic>,
-            )
-          : null,
-      test: map['test'] != null
-          ? TestConfig.fromMap(map['test'] as Map<String, dynamic>)
-          : const TestConfig(),
-      timeout: map['timeout'] != null
-          ? TimeoutConfig.fromMap(map['timeout'] as Map<String, dynamic>)
-          : const TimeoutConfig(),
-      retry: map['retry'] != null
-          ? RetryConfig.fromMap(map['retry'] as Map<String, dynamic>)
-          : const RetryConfig(),
+      launchOptions: launchOptions != null ? LaunchOptions.fromJson(launchOptions) : null,
+      contextOptions: contextOptions != null ? ContextOptions.fromJson(contextOptions) : null,
+      test: test != null ? TestConfig.fromMap(test) : const TestConfig(),
+      timeout: timeout != null ? TimeoutConfig.fromMap(timeout) : const TimeoutConfig(),
+      retry: retry != null ? RetryConfig.fromMap(retry) : const RetryConfig(),
       outputDir: map['outputDir'] as String?,
       fullyParallel: map['fullyParallel'] as bool?,
       workers: map['workers'] as int?,

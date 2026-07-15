@@ -148,5 +148,21 @@ void main() {
 
       await chk.expect().toBeChecked(indeterminate: true);
     });
+    test('querySelectorAll should map locators with nth to target individual elements', (page) async {
+      await page.setContent('''
+        <div class="list">
+          <button id="btn1">Btn 1</button>
+          <button id="btn2">Btn 2</button>
+          <button id="btn3">Btn 3</button>
+        </div>
+      ''');
+
+      final buttons = await page.querySelectorAll('button');
+      expect(buttons.length, equals(3));
+
+      expect(await buttons[0].innerText(), equals('Btn 1'));
+      expect(await buttons[1].innerText(), equals('Btn 2'));
+      expect(await buttons[2].innerText(), equals('Btn 3'));
+    });
   });
 }

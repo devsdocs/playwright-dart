@@ -3860,7 +3860,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     final elements = result.elements as List? ?? [];
 
-    return elements.map((_) => locator(selector)).toList();
+    return List.generate(elements.length, (i) => locator(selector).nth(i));
   }
 
   @override
