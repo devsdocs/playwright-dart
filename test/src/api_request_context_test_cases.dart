@@ -88,7 +88,7 @@ void main() {
 
     test('should get storage state', () async {
       final request = await playwright.newRequest();
-      
+
       final state = await request.storageState();
       expect(state.cookies, isA<List>());
 

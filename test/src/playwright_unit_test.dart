@@ -115,7 +115,7 @@ void main() {
 
       final pw = testConn.getObject('Playwright_2') as Playwright;
       expect(pw.chromium, isA<BrowserType>());
-      
+
       // Accessing an uninitialized late field should throw StateError/LateInitializationError
       expect(() => pw.firefox, throwsA(isA<Error>()));
     });

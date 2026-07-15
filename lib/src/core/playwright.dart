@@ -131,7 +131,10 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
     }
 
     if (initializer['utils'] != null) {
-      utils = ChannelOwner.from<LocalUtilsImpl>(connection, initializer['utils']);
+      utils = ChannelOwner.from<LocalUtilsImpl>(
+        connection,
+        initializer['utils'],
+      );
     }
 
     selectors = Selectors(this);
