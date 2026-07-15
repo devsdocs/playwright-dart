@@ -4,6 +4,7 @@
 - **Fix**: Improved strict type validation in `PlaywrightConfig`. Supplying an array instead of a JSON object for nested structures like `launchOptions` now gracefully throws a `FormatException` instead of crashing with a Dart `TypeError`.
 
 ## 3.10.0
+
 - **Test Coverage**: Increased core DOM interaction API test coverage from 13.7% to 49.1%. Added comprehensive tests for `ElementHandle`, `Frame`, `FrameLocator`, `Mouse`, and `Keyboard` APIs.
 - **Stability**: Fixed `TargetClosedError` and `SocketException` during test tear-downs by correctly managing reference counting in the Browser lifecycle.
 - **Fix**: Adjusted `selectOption` arguments in `Frame` to match positional semantics and resolved test flakiness related to `dispatchEvent` and keyboard modifiers.
