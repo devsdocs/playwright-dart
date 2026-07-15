@@ -9,8 +9,17 @@ abstract class RouteMatcher {
   factory RouteMatcher.regex(RegExp regex) = RegExpRouteMatcher;
 
   /// Matches any network event (e.g. Request, Response, Uri) that satisfies the [predicate].
-  factory RouteMatcher.function(bool Function(dynamic) predicate) =
-      FunctionRouteMatcher;
+  ///
+  /// You can use the generic type parameter `<T>` to get type safety and
+  /// auto-filtering based on the network event type.
+  ///
+  /// ```dart
+  /// final request = await page.waitForRequest(
+  ///   RouteMatcher.function<Request>((req) => req.url.contains('/api') && req.method == 'POST')
+  /// );
+  /// ```
+  static RouteMatcher function<T>(bool Function(T) predicate) =>
+      FunctionRouteMatcher<T>(predicate);
 
   /// Creates a RouteMatcher from a dynamic value (String, RegExp, or Function).
   /// This is useful for migrating from legacy `RouteMatcher urlOrPredicate`.
@@ -19,7 +28,7 @@ abstract class RouteMatcher {
     if (value is String) return RouteMatcher.string(value);
     if (value is RegExp) return RouteMatcher.regex(value);
     if (value is Function) {
-      return RouteMatcher.function(value as bool Function(dynamic));
+      return RouteMatcher.function<dynamic>(value as bool Function(dynamic));
     }
     throw ArgumentError('Unsupported RouteMatcher value: $value');
   }
@@ -35,7 +44,12 @@ class RegExpRouteMatcher extends RouteMatcher {
   const RegExpRouteMatcher(this.regex);
 }
 
-class FunctionRouteMatcher extends RouteMatcher {
-  final bool Function(dynamic) predicate;
+class FunctionRouteMatcher<T> extends RouteMatcher {
+  final bool Function(T) predicate;
   const FunctionRouteMatcher(this.predicate);
+
+  bool callPredicate(dynamic event) {
+    if (event is! T) return false;
+    return predicate(event);
+  }
 }

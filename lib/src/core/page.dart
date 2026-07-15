@@ -4287,9 +4287,10 @@ class PageImpl extends PageBase implements Page {
             return urlOrPredicate.regex.hasMatch(url);
           } else if (urlOrPredicate is FunctionRouteMatcher) {
             try {
-              final result = urlOrPredicate.predicate(event);
+              final result = urlOrPredicate.callPredicate(event);
               return result == true;
-            } catch (_) {
+            } catch (e, stack) {
+              print('Caught error in page.dart: $e\n$stack');
               return false;
             }
           }

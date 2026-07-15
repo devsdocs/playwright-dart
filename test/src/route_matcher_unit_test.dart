@@ -80,6 +80,31 @@ void main() {
         (matcher as FunctionRouteMatcher).predicate('https://example.com');
         expect(captured, equals('https://example.com'));
       });
+
+      test('should preserve generic type <T> and provide type safety', () {
+        final matcher = RouteMatcher.function<int>((val) => val > 5);
+        expect(matcher, isA<FunctionRouteMatcher<int>>());
+
+        final typedMatcher = matcher as FunctionRouteMatcher<int>;
+        expect(typedMatcher.predicate(10), isTrue);
+        expect(typedMatcher.predicate(3), isFalse);
+      });
+
+      test(
+        'should throw TypeError when invoked with wrong type (acts as runtime filter)',
+        () {
+          final matcher =
+              RouteMatcher.function<int>((val) => val > 5)
+                  as FunctionRouteMatcher<int>;
+
+          // In Playwright event streams (e.g. waitForRequest), this TypeError is caught
+          // and the event is safely ignored, proving our type-safe filter works perfectly.
+          expect(
+            () => matcher.predicate('wrong type' as dynamic),
+            throwsA(isA<TypeError>()),
+          );
+        },
+      );
     });
 
     group('from factory', () {

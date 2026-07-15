@@ -1,3 +1,7 @@
+## 3.11.1
+
+- **Feature**: `RouteMatcher.function<T>()` now supports a generic type parameter (like `<Request>`). This enforces type-safety on the predicate and automatically filters out incompatible network events under the hood without throwing errors.
+
 ## 3.11.0
 
 - **Feature**: Introduced type-safe JavaScript evaluation! Methods like `page.evaluate<T>()`, `locator.evaluate<T>()`, and `elementHandle.evaluate<T>()` now accept a generic type parameter `T`. 

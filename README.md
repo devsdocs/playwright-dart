@@ -68,7 +68,7 @@ Or by manually installing the packages via `apt-get` as indicated in the error m
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.11.0
+  playwright_dart: ^3.11.1
 ```
 
 ## Quick Start
@@ -168,6 +168,8 @@ final isReady = await page.evaluate<bool>('() => document.readyState === "comple
 final data = await page.evaluate<Map<String, dynamic>>('() => ({ user: "alice", id: 1 })');
 ```
 
+> **Tip:** You can view a fully runnable example demonstrating all type-safe features (including evaluation and network interception) at [`example/type_safe_api.dart`](example/type_safe_api.dart).
+
 ## API Testing & Requests
 
 You can use the `APIRequestContext` to make raw HTTP requests with automatic JSON serialization and type-safe response parsing:
@@ -206,6 +208,16 @@ await page.route('**/api/users', (route) async {
     body: '{"users": [{"name": "Alice"}]}',
   );
 });
+
+// Wait for a specific network request using a type-safe generic predicate
+final requestFuture = page.waitForRequest(
+  RouteMatcher.function<Request>((req) => req.url.contains('/api/data') && req.method == 'POST')
+);
+
+// Trigger the request
+await page.getByRole(AriaRole.button).click();
+final request = await requestFuture;
+print('Captured POST request to: ${request.url}');
 ```
 
 ## Tracing

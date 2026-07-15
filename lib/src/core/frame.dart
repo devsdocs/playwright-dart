@@ -2846,7 +2846,7 @@ class FrameImpl extends FrameBase implements Frame {
       } else if (urlOrPredicate is RegExpRouteMatcher) {
         return urlOrPredicate.regex.hasMatch(currentUrl);
       } else if (urlOrPredicate is FunctionRouteMatcher) {
-        return urlOrPredicate.predicate(currentUrl);
+        return urlOrPredicate.callPredicate(currentUrl);
       }
       return false;
     }

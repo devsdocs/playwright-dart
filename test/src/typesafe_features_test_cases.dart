@@ -172,7 +172,7 @@ void main() {
 
       await page.goto('https://example.com');
       final responseFuture = page.waitForResponse(
-        RouteMatcher.function((dynamic r) => r.url.contains('/api/data')),
+        RouteMatcher.function<Response>((res) => res.url.contains('/api/data')),
       );
       await page.evaluate(
         'async () => { await fetch("https://example.com/api/data"); }',
@@ -199,7 +199,7 @@ void main() {
 
       await page.goto('https://example.com');
       final responseFuture = page.waitForResponse(
-        RouteMatcher.function((dynamic r) => r.url.contains('/api/list')),
+        RouteMatcher.function<Response>((res) => res.url.contains('/api/list')),
       );
       await page.evaluate(
         'async () => { await fetch("https://example.com/api/list"); }',
@@ -225,7 +225,9 @@ void main() {
 
       await page.goto('https://example.com');
       final responseFuture = page.waitForResponse(
-        RouteMatcher.function((dynamic r) => r.url.contains('/api/plain')),
+        RouteMatcher.function<Response>(
+          (res) => res.url.contains('/api/plain'),
+        ),
       );
       await page.evaluate(
         'async () => { await fetch("https://example.com/api/plain"); }',
@@ -234,6 +236,26 @@ void main() {
 
       final data = await response.json();
       expect(data['ok'], isTrue);
+    });
+
+    test('waitForRequest works with typed RouteMatcher.function<Request>', (
+      page,
+    ) async {
+      await page.setContent(
+        '<button onclick="fetch(\'https://example.com/api/click\')">Click Me</button>',
+      );
+
+      final requestFuture = page.waitForRequest(
+        RouteMatcher.function<Request>(
+          (req) => req.url.contains('/api/click') && req.method == 'GET',
+        ),
+      );
+
+      await page.locator('button').click();
+
+      final request = await requestFuture;
+      expect(request.url, contains('/api/click'));
+      expect(request.method, equals('GET'));
     });
   });
 }
