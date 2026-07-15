@@ -109,39 +109,46 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
 
     super.parent,
   ]) {
-    chromium = ChannelOwner.from<BrowserTypeImpl>(
-      connection,
+    if (initializer['chromium'] != null) {
+      chromium = ChannelOwner.from<BrowserTypeImpl>(
+        connection,
+        initializer['chromium'],
+      );
+    }
 
-      initializer['chromium'],
-    );
+    if (initializer['firefox'] != null) {
+      firefox = ChannelOwner.from<BrowserTypeImpl>(
+        connection,
+        initializer['firefox'],
+      );
+    }
 
-    firefox = ChannelOwner.from<BrowserTypeImpl>(
-      connection,
+    if (initializer['webkit'] != null) {
+      webkit = ChannelOwner.from<BrowserTypeImpl>(
+        connection,
+        initializer['webkit'],
+      );
+    }
 
-      initializer['firefox'],
-    );
-
-    webkit = ChannelOwner.from<BrowserTypeImpl>(
-      connection,
-
-      initializer['webkit'],
-    );
-
-    utils = ChannelOwner.from<LocalUtilsImpl>(connection, initializer['utils']);
+    if (initializer['utils'] != null) {
+      utils = ChannelOwner.from<LocalUtilsImpl>(connection, initializer['utils']);
+    }
 
     selectors = Selectors(this);
 
-    android = ChannelOwner.from<AndroidImpl>(
-      connection,
+    if (initializer['android'] != null) {
+      android = ChannelOwner.from<AndroidImpl>(
+        connection,
+        initializer['android'],
+      );
+    }
 
-      initializer['android'],
-    );
-
-    electron = ChannelOwner.from<ElectronImpl>(
-      connection,
-
-      initializer['electron'],
-    );
+    if (initializer['electron'] != null) {
+      electron = ChannelOwner.from<ElectronImpl>(
+        connection,
+        initializer['electron'],
+      );
+    }
   }
 
   @override

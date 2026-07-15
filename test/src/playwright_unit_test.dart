@@ -106,5 +106,18 @@ void main() {
       );
       expect(msg['params']['baseURL'], equals('https://example.com'));
     });
+
+    test('PlaywrightImpl handles missing optional initializers gracefully', () {
+      testConn.dispatchCreate('Playwright', 'Playwright_2', {
+        'chromium': {'guid': 'BrowserType_chromium'},
+        // Omitting firefox, webkit, android, electron, utils
+      });
+
+      final pw = testConn.getObject('Playwright_2') as Playwright;
+      expect(pw.chromium, isA<BrowserType>());
+      
+      // Accessing an uninitialized late field should throw StateError/LateInitializationError
+      expect(() => pw.firefox, throwsA(isA<Error>()));
+    });
   });
 }

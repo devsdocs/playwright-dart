@@ -833,11 +833,7 @@ class BrowserTypeImpl extends BrowserTypeBase implements BrowserType {
       );
     }
 
-    final browser = ChannelOwner.from<BrowserImpl>(
-      remoteConnection,
-
-      preLaunchedBrowser as Map<String, dynamic>,
-    );
+    final browser = preLaunchedBrowser as BrowserImpl;
 
     Logger.info('Connected to browser.');
     // When browser is disconnected, close the remote connection

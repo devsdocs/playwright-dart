@@ -1,3 +1,7 @@
+## 3.11.2
+
+- **Fix**: Resolved `type 'Null' is not a subtype of type 'Map<String, dynamic>'` and `type 'BrowserImpl' is not a subtype of type 'Map<String, dynamic>'` exceptions when connecting to remote Playwright servers (e.g. Browserless) via `playwright.chromium.connect()`. The protocol connection now gracefully handles partial initializer payloads that omit optional fields like `firefox`, `webkit`, or `utils`, and fixes a casting error when unpacking `preLaunchedBrowser` from the initializer.
+
 ## 3.11.1
 
 - **Feature**: `RouteMatcher.function<T>()` now supports a generic type parameter (like `<Request>`). This enforces type-safety on the predicate and automatically filters out incompatible network events under the hood without throwing errors.

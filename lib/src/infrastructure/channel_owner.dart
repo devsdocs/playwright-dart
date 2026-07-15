@@ -195,16 +195,21 @@ abstract class ChannelOwner {
 
   static T from<T extends ChannelOwner>(
     Connection connection,
-
     Map<String, dynamic> wire,
   ) {
     final guid = wire['guid'] as String;
-
     final obj = connection.objects[guid];
-
     if (obj == null) throw Exception('Object with guid $guid not found');
-
     return obj as T;
+  }
+
+  /// Resolves an optional wire-format object reference to a typed [ChannelOwner].
+  static T? fromNullable<T extends ChannelOwner>(
+    Connection connection,
+    Map<String, dynamic>? wire,
+  ) {
+    if (wire == null) return null;
+    return from<T>(connection, wire);
   }
 }
 
