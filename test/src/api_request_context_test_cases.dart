@@ -37,5 +37,62 @@ void main() {
 
       await request.dispose();
     });
+
+    test('should perform PUT request', () async {
+      final request = await playwright.newRequest();
+
+      final response = await request.put(
+        'https://jsonplaceholder.typicode.com/posts/1',
+        jsonData: '{"id":1,"title":"foo","body":"bar","userId":1}',
+      );
+
+      expect(response.status, equals(200)); // OK
+
+      await request.dispose();
+    });
+
+    test('should perform DELETE request', () async {
+      final request = await playwright.newRequest();
+
+      final response = await request.delete(
+        'https://jsonplaceholder.typicode.com/posts/1',
+      );
+
+      expect(response.status, equals(200)); // OK
+
+      await request.dispose();
+    });
+
+    test('should perform PATCH request', () async {
+      final request = await playwright.newRequest();
+
+      final response = await request.patch(
+        'https://jsonplaceholder.typicode.com/posts/1',
+        jsonData: '{"title":"foo"}',
+      );
+
+      expect(response.status, equals(200)); // OK
+
+      await request.dispose();
+    });
+
+    test('should perform HEAD request', () async {
+      final request = await playwright.newRequest();
+
+      final response = await request.head('https://example.com');
+
+      expect(response.status, equals(200));
+
+      await request.dispose();
+    });
+
+    test('should get storage state', () async {
+      final request = await playwright.newRequest();
+      
+      final state = await request.storageState();
+      expect(state.cookies, isA<List>());
+
+      await request.dispose();
+    });
   });
 }
