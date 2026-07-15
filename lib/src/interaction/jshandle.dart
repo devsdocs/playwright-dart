@@ -49,7 +49,7 @@ abstract interface class JSHandle<T extends Object?> {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [Object? arg, bool? isFunction]);
+  Future<R> evaluate<R>(String expression, [Object? arg, bool? isFunction]);
 
   /// Returns the return value of [pageFunction] as a [JSHandle].
   ///
@@ -83,7 +83,7 @@ abstract interface class JSHandle<T extends Object?> {
     Object? arg,
     bool? isFunction,
   ]);
-  Future<dynamic> evaluateExpression(
+  Future<R> evaluateExpression<R>(
     String expression, [
     Object? arg,
     bool? isFunction,
@@ -275,7 +275,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
   ]);
 
   @override
-  Future<dynamic> evaluate(
+  Future<R> evaluate<R>(
     String expression, [
     Object? arg,
     bool? isFunction,
@@ -285,7 +285,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
       arg: serializeArgument(arg),
       isFunction: isFunction,
     );
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<R>(parseSerializedValue(result.value));
   }
 
   @override
@@ -303,7 +303,7 @@ class JSHandleImpl<T extends Object?> extends JSHandleBase
   }
 
   @override
-  Future<dynamic> evaluateExpression(
+  Future<R> evaluateExpression<R>(
     String expression, [
     Object? arg,
     bool? isFunction,

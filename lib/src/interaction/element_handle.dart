@@ -30,14 +30,14 @@ import 'dart:convert';
 /// await el.click();
 /// ```
 abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
-  Future<dynamic> evalOnSelector(
+  Future<R> evalOnSelector<R>(
     String selector,
     String expression, [
     Object? arg,
     bool? strict,
     bool? isFunction,
   ]);
-  Future<dynamic> evalOnSelectorAll(
+  Future<R> evalOnSelectorAll<R>(
     String selector,
     String expression, [
     Object? arg,
@@ -1307,7 +1307,7 @@ class ElementHandleImpl extends ElementHandleBase
   ]);
 
   @override
-  Future<dynamic> evaluate(
+  Future<R> evaluate<R>(
     String expression, [
     Object? arg,
     bool? isFunction,
@@ -1317,7 +1317,7 @@ class ElementHandleImpl extends ElementHandleBase
       arg: serializeArgument(arg),
       isFunction: isFunction,
     );
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<R>(parseSerializedValue(result.value));
   }
 
   @override
@@ -1335,7 +1335,7 @@ class ElementHandleImpl extends ElementHandleBase
   }
 
   @override
-  Future<dynamic> evaluateExpression(
+  Future<R> evaluateExpression<R>(
     String expression, [
     Object? arg,
     bool? isFunction,
@@ -1385,7 +1385,7 @@ class ElementHandleImpl extends ElementHandleBase
   }
 
   @override
-  Future<dynamic> evalOnSelector(
+  Future<R> evalOnSelector<R>(
     String selector,
     String expression, [
     Object? arg,
@@ -1399,11 +1399,11 @@ class ElementHandleImpl extends ElementHandleBase
       strict: strict,
       isFunction: isFunction,
     );
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<R>(parseSerializedValue(result.value));
   }
 
   @override
-  Future<dynamic> evalOnSelectorAll(
+  Future<R> evalOnSelectorAll<R>(
     String selector,
     String expression, [
     Object? arg,
@@ -1415,7 +1415,7 @@ class ElementHandleImpl extends ElementHandleBase
       arg: serializeArgument(arg),
       isFunction: isFunction,
     );
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<R>(parseSerializedValue(result.value));
   }
 
   // Element actions

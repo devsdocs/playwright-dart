@@ -43,6 +43,17 @@ dynamic parseSerializedValue(SerializedValue value) {
   return null;
 }
 
+/// Casts a deserialized JS value to [T], handling the JS number quirk:
+/// JavaScript has no integers — all numbers arrive as [double].
+/// When [T] is [int] and the value is a whole number, this converts
+/// automatically so callers can write `evaluate<int>(...)` naturally.
+T castEvaluateResult<T>(dynamic value) {
+  if (value is double && T == int) {
+    return value.toInt() as T;
+  }
+  return value as T;
+}
+
 SerializedArgument serializeArgument(dynamic value) {
   return SerializedArgument(value: serializeValue(value), handles: []);
 }

@@ -647,7 +647,7 @@ abstract interface class Frame {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [Object? arg]);
+  Future<T> evaluate<T>(String expression, [Object? arg]);
 
   /// **WARNING**
   /// [Discouraged]
@@ -1700,7 +1700,7 @@ abstract interface class Frame {
   });
 
   /// Evaluates JavaScript on the element matching the selector.
-  Future<dynamic> evalOnSelector(
+  Future<T> evalOnSelector<T>(
     String selector,
 
     String expression, [
@@ -1713,7 +1713,7 @@ abstract interface class Frame {
   ]);
 
   /// Evaluates JavaScript on all elements matching the selector.
-  Future<dynamic> evalOnSelectorAll(
+  Future<T> evalOnSelectorAll<T>(
     String selector,
 
     String expression, [
@@ -2370,7 +2370,7 @@ abstract interface class Frame {
     double? timeout,
   });
 
-  Future<dynamic> evaluateExpression(
+  Future<T> evaluateExpression<T>(
     String expression, {
 
     bool? isFunction,
@@ -2763,7 +2763,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<dynamic> evaluate(String expression, [Object? arg]) async {
+  Future<T> evaluate<T>(String expression, [Object? arg]) async {
     Logger.debug('evaluate', name: 'playwright.frame');
     final result = await channel.evaluateExpression(
       expression: expression,
@@ -2771,7 +2771,7 @@ class FrameImpl extends FrameBase implements Frame {
       arg: serializeArgument(arg),
     );
 
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<T>(parseSerializedValue(result.value));
   }
 
   @override
@@ -3353,7 +3353,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<dynamic> evalOnSelector(
+  Future<T> evalOnSelector<T>(
     String selector,
 
     String expression, [
@@ -3376,11 +3376,11 @@ class FrameImpl extends FrameBase implements Frame {
       isFunction: isFunction,
     );
 
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<T>(parseSerializedValue(result.value));
   }
 
   @override
-  Future<dynamic> evalOnSelectorAll(
+  Future<T> evalOnSelectorAll<T>(
     String selector,
 
     String expression, [
@@ -3399,7 +3399,7 @@ class FrameImpl extends FrameBase implements Frame {
       isFunction: isFunction,
     );
 
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<T>(parseSerializedValue(result.value));
   }
 
   @override
@@ -3734,7 +3734,7 @@ class FrameImpl extends FrameBase implements Frame {
   }
 
   @override
-  Future<dynamic> evaluateExpression(
+  Future<T> evaluateExpression<T>(
     String expression, {
 
     bool? isFunction,
@@ -3749,7 +3749,7 @@ class FrameImpl extends FrameBase implements Frame {
       arg: serializeArgument(arg),
     );
 
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<T>(parseSerializedValue(result.value));
   }
 
   @override

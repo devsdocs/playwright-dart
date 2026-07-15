@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../generated/channels.dart';
 
 /// Interface for APIRequestContext
@@ -85,6 +87,7 @@ abstract interface class APIRequestContext {
     String url, {
     String? method,
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     List<NameValue>? formData,
@@ -265,6 +268,7 @@ abstract interface class APIRequestContext {
   Future<APIResponse> post(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     double? timeout,
@@ -329,6 +333,7 @@ abstract interface class APIRequestContext {
   Future<APIResponse> put(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     double? timeout,
@@ -393,6 +398,7 @@ abstract interface class APIRequestContext {
   Future<APIResponse> delete(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     double? timeout,
   });
 
@@ -455,6 +461,7 @@ abstract interface class APIRequestContext {
   Future<APIResponse> patch(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     double? timeout,
@@ -619,6 +626,7 @@ class APIRequestContextImpl extends APIRequestContextBase
     String url, {
     String? method,
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     List<NameValue>? formData,
@@ -631,12 +639,24 @@ class APIRequestContextImpl extends APIRequestContextBase
     String? encodedParams,
     List<NameValue>? params,
   }) async {
+    // Auto-resolve `data`: Map/List → jsonData, String → postData.
+    var resolvedJsonData = jsonData;
+    var resolvedPostData = postData;
+    if (data != null && jsonData == null && postData == null) {
+      if (data is Map || data is List) {
+        resolvedJsonData = jsonEncode(data);
+      } else if (data is String) {
+        resolvedPostData = data;
+      } else {
+        resolvedJsonData = jsonEncode(data);
+      }
+    }
     final result = await channel.fetch(
       url: url,
       method: method,
       headers: headers,
-      postData: postData,
-      jsonData: jsonData,
+      postData: resolvedPostData,
+      jsonData: resolvedJsonData,
       formData: formData,
       multipartData: multipartData,
       timeout: timeout ?? 30000.0,
@@ -661,6 +681,7 @@ class APIRequestContextImpl extends APIRequestContextBase
   Future<APIResponse> post(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     double? timeout,
@@ -668,6 +689,7 @@ class APIRequestContextImpl extends APIRequestContextBase
     url,
     method: 'POST',
     headers: headers,
+    data: data,
     postData: postData,
     jsonData: jsonData,
     timeout: timeout,
@@ -677,6 +699,7 @@ class APIRequestContextImpl extends APIRequestContextBase
   Future<APIResponse> put(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     double? timeout,
@@ -684,6 +707,7 @@ class APIRequestContextImpl extends APIRequestContextBase
     url,
     method: 'PUT',
     headers: headers,
+    data: data,
     postData: postData,
     jsonData: jsonData,
     timeout: timeout,
@@ -693,13 +717,21 @@ class APIRequestContextImpl extends APIRequestContextBase
   Future<APIResponse> delete(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     double? timeout,
-  }) => fetch(url, method: 'DELETE', headers: headers, timeout: timeout);
+  }) => fetch(
+    url,
+    method: 'DELETE',
+    headers: headers,
+    data: data,
+    timeout: timeout,
+  );
 
   @override
   Future<APIResponse> patch(
     String url, {
     List<NameValue>? headers,
+    Object? data,
     String? postData,
     String? jsonData,
     double? timeout,
@@ -707,6 +739,7 @@ class APIRequestContextImpl extends APIRequestContextBase
     url,
     method: 'PATCH',
     headers: headers,
+    data: data,
     postData: postData,
     jsonData: jsonData,
     timeout: timeout,

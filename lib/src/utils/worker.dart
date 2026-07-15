@@ -48,7 +48,7 @@ abstract interface class Worker {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [Object? arg, bool? isFunction]);
+  Future<T> evaluate<T>(String expression, [Object? arg, bool? isFunction]);
 
   /// Returns the return value of [pageFunction] as a [JSHandle].
   ///
@@ -81,7 +81,7 @@ abstract interface class Worker {
     bool? isFunction,
   ]);
 
-  Future<dynamic> evaluateExpression(
+  Future<T> evaluateExpression<T>(
     String expression, [
 
     Object? arg,
@@ -142,7 +142,7 @@ class WorkerImpl extends WorkerBase implements Worker {
   }
 
   @override
-  Future<dynamic> evaluate(
+  Future<T> evaluate<T>(
     String expression, [
 
     Object? arg,
@@ -157,7 +157,7 @@ class WorkerImpl extends WorkerBase implements Worker {
       isFunction: isFunction,
     );
 
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<T>(parseSerializedValue(result.value));
   }
 
   @override
@@ -186,7 +186,7 @@ class WorkerImpl extends WorkerBase implements Worker {
   // Aliases for missing script check
 
   @override
-  Future<dynamic> evaluateExpression(
+  Future<T> evaluateExpression<T>(
     String expression, [
 
     Object? arg,

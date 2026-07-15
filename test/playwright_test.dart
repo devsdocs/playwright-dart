@@ -50,6 +50,7 @@ import 'src/locator_filter_visible_test_cases.dart'
 import 'src/page_properties_test_cases.dart' as page_properties_test_cases;
 import 'src/response_request_fixes_test_cases.dart'
     as response_request_fixes_test_cases;
+import 'src/typesafe_features_test_cases.dart' as typesafe_features_test_cases;
 
 void main() {
   setUpAll(() async {
@@ -101,4 +102,5 @@ void main() {
   locator_filter_visible_test_cases.main();
   page_properties_test_cases.main();
   response_request_fixes_test_cases.main();
+  typesafe_features_test_cases.main();
 }

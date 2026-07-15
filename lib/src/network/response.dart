@@ -224,7 +224,7 @@ abstract interface class Response {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> json();
+  Future<T> json<T>();
 
   /// Returns SSL and other security information.
   ///
@@ -392,10 +392,10 @@ class ResponseImpl extends ResponseBase implements Response {
   }
 
   @override
-  Future<dynamic> json() async {
+  Future<T> json<T>() async {
     final content = await text();
 
-    return jsonDecode(content);
+    return jsonDecode(content) as T;
   }
 
   @override

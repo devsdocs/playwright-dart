@@ -2083,7 +2083,7 @@ class Locator {
   /// If [pageFunction] returns a Future, this method will wait for the future to complete and return its value.
   ///
   /// If [pageFunction] throws or rejects, this method throws.
-  Future<dynamic> evaluateAll(String expression, [Object? arg]) async {
+  Future<T> evaluateAll<T>(String expression, [Object? arg]) async {
     return frame.evalOnSelectorAll(selector, expression, arg);
   }
 
@@ -2895,7 +2895,7 @@ class Locator {
   /// If [pageFunction] returns a Future, this method will wait for the future to complete and return its value.
   ///
   /// If [pageFunction] throws or rejects, this method throws.
-  Future<dynamic> evaluate(String expression, [Object? arg]) async {
+  Future<T> evaluate<T>(String expression, [Object? arg]) async {
     // Locator evaluation in Playwright takes the element as the first arg.
 
     // For simplicity, we just use the frame evaluate and pass the selector,
@@ -2910,7 +2910,7 @@ class Locator {
       arg: serializeArgument(arg),
     );
 
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<T>(parseSerializedValue(result.value));
   }
 
   /// Returns when element specified by locator satisfies the [state] option.

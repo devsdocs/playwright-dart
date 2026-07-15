@@ -710,7 +710,7 @@ abstract interface class Page {
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
-  Future<dynamic> evaluate(String expression, [Object? arg]);
+  Future<T> evaluate<T>(String expression, [Object? arg]);
 
   /// **WARNING**
   /// [Discouraged]
@@ -2430,7 +2430,7 @@ abstract interface class Page {
   Future<void> setContent(String html, {double? timeout});
 
   /// Evaluates JavaScript on the element matching the selector.
-  Future<dynamic> evalOnSelector(
+  Future<T> evalOnSelector<T>(
     String selector,
 
     String expression, [
@@ -2439,7 +2439,7 @@ abstract interface class Page {
   ]);
 
   /// Evaluates JavaScript on all elements matching the selector.
-  Future<dynamic> evalOnSelectorAll(
+  Future<T> evalOnSelectorAll<T>(
     String selector,
 
     String expression, [
@@ -4407,7 +4407,7 @@ class PageImpl extends PageBase implements Page {
       mainFrame.frameLocator(selector);
 
   @override
-  Future<dynamic> evaluate(String expression, [Object? arg]) async {
+  Future<T> evaluate<T>(String expression, [Object? arg]) async {
     return mainFrame.evaluate(expression, arg);
   }
 
@@ -4880,7 +4880,7 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
-  Future<dynamic> evalOnSelector(
+  Future<T> evalOnSelector<T>(
     String selector,
 
     String expression, [
@@ -4891,7 +4891,7 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
-  Future<dynamic> evalOnSelectorAll(
+  Future<T> evalOnSelectorAll<T>(
     String selector,
 
     String expression, [

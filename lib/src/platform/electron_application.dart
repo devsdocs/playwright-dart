@@ -23,7 +23,7 @@ abstract interface class ElectronApplication {
   /// **Returns**
   /// - Future&lt;[JSHandle]&gt;
   Future<ElectronApplicationBrowserWindowResult> browserWindow(PageBase page);
-  Future<dynamic> evaluateExpression(
+  Future<T> evaluateExpression<T>(
     String expression, {
     bool? isFunction,
     Object? arg,
@@ -73,7 +73,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
   }
 
   @override
-  Future<dynamic> evaluateExpression(
+  Future<T> evaluateExpression<T>(
     String expression, {
     bool? isFunction,
     Object? arg,
@@ -83,7 +83,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
       isFunction: isFunction,
       arg: serializeArgument(arg),
     );
-    return parseSerializedValue(result.value);
+    return castEvaluateResult<T>(parseSerializedValue(result.value));
   }
 
   @override

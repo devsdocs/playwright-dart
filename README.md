@@ -14,6 +14,7 @@ This is an actively developed port that covers the core Playwright surface area 
 - 🚀 **Launch & control** Chromium, Firefox, and WebKit
 - 🎯 **Locator API** with `getByRole`, `getByText`, `getByLabel`, and more — accepting both strings and `RegExp`
 - ✅ **Locator assertions** — 15+ assertions including `toBeVisible`, `toHaveText`, `toBeEditable`, `toHaveCSS`, and more
+- 🛡️ **Type-safe API** — generic `evaluate<T>()`, `Response.json<T>()`, and auto-JSON serialization
 - 🌐 **Network interception** — abort, mock, and modify requests
 - 🔐 **WebAuthn support** — virtual authenticators and credential management
 - 📸 **Screenshots & PDFs** — capture pages in any format
@@ -67,7 +68,7 @@ Or by manually installing the packages via `apt-get` as indicated in the error m
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.10.0
+  playwright_dart: ^3.11.0
 ```
 
 ## Quick Start
@@ -151,6 +152,40 @@ await page.locator('nav').getByText('Docs').click();
 // State assertions
 final isVisible = await page.locator('.modal').isVisible();
 final text = await page.locator('h1').textContent();
+```
+
+## Type-Safe Evaluation
+
+Playwright Dart supports fully type-safe JavaScript evaluation with smart casting. JavaScript numbers (`double` in Dart) are automatically cast to `int` when requested:
+
+```dart
+// Returns a typed int! No runtime casting errors.
+final count = await page.evaluate<int>('() => document.querySelectorAll("a").length');
+
+// Works for all JS primitives and objects
+final title = await page.evaluate<String>('() => document.title');
+final isReady = await page.evaluate<bool>('() => document.readyState === "complete"');
+final data = await page.evaluate<Map<String, dynamic>>('() => ({ user: "alice", id: 1 })');
+```
+
+## API Testing & Requests
+
+You can use the `APIRequestContext` to make raw HTTP requests with automatic JSON serialization and type-safe response parsing:
+
+```dart
+final request = await playwright.newRequest();
+
+// The `data` parameter automatically serializes Maps and Lists to JSON!
+final response = await request.post(
+  'https://api.example.com/users',
+  data: {'name': 'Alice', 'role': 'admin'},
+);
+
+// Type-safe JSON response parsing
+final json = await response.json<Map<String, dynamic>>();
+print(json['id']); 
+
+await request.dispose();
 ```
 
 ## Network Interception

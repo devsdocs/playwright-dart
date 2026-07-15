@@ -1,3 +1,10 @@
+## 3.11.0
+
+- **Feature**: Introduced type-safe JavaScript evaluation! Methods like `page.evaluate<T>()`, `locator.evaluate<T>()`, and `elementHandle.evaluate<T>()` now accept a generic type parameter `T`. 
+- **Feature**: Added smart numeric casting for `evaluate<T>()`. JavaScript numbers are floating-point (`double`), but Playwright Dart will now automatically cast them to Dart `int` when you specify `evaluate<int>()` and the value is a whole number.
+- **Feature**: Added type-safe `Response.json<T>()` allowing seamless parsing of network response bodies directly into typed Dart objects (like `Map<String, dynamic>` or `List`).
+- **Feature**: `APIRequestContext` request methods (`post`, `put`, `patch`, `delete`, `fetch`) now support an auto-serializing `data` parameter. Supplying a `Map` or `List` to `data` automatically serializes it to a JSON string, matching the convenience of the Node.js API.
+
 ## 3.10.1
 
 - **Fix**: Corrected a bug in `page.querySelectorAll()` where mapping locators directly to an array caused interactions on those locators to re-evaluate and execute against the first matching element on the page. The method now correctly appends `nth(i)` to each returned locator.
