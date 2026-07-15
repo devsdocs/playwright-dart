@@ -70,10 +70,12 @@ class PlaywrightConfig {
     Map<String, dynamic>? getMap(String key) {
       final value = map[key];
       if (value == null) return null;
-      if (value is! Map) throw FormatException("Config key '$key' must be a JSON object");
+      if (value is! Map) {
+        throw FormatException("Config key '$key' must be a JSON object");
+      }
       return Map<String, dynamic>.from(value);
     }
-    
+
     final launchOptions = getMap('launchOptions');
     final contextOptions = getMap('contextOptions');
     final test = getMap('test');
@@ -81,10 +83,16 @@ class PlaywrightConfig {
     final retry = getMap('retry');
 
     return PlaywrightConfig(
-      launchOptions: launchOptions != null ? LaunchOptions.fromJson(launchOptions) : null,
-      contextOptions: contextOptions != null ? ContextOptions.fromJson(contextOptions) : null,
+      launchOptions: launchOptions != null
+          ? LaunchOptions.fromJson(launchOptions)
+          : null,
+      contextOptions: contextOptions != null
+          ? ContextOptions.fromJson(contextOptions)
+          : null,
       test: test != null ? TestConfig.fromMap(test) : const TestConfig(),
-      timeout: timeout != null ? TimeoutConfig.fromMap(timeout) : const TimeoutConfig(),
+      timeout: timeout != null
+          ? TimeoutConfig.fromMap(timeout)
+          : const TimeoutConfig(),
       retry: retry != null ? RetryConfig.fromMap(retry) : const RetryConfig(),
       outputDir: map['outputDir'] as String?,
       fullyParallel: map['fullyParallel'] as bool?,
