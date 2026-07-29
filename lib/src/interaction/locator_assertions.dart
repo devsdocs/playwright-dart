@@ -95,6 +95,7 @@ class LocatorAssertions {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -128,6 +129,9 @@ class LocatorAssertions {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -155,6 +159,9 @@ class LocatorAssertions {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -219,6 +226,9 @@ class LocatorAssertions {
   ///   - `ignoreCase` bool *(optional)*
   ///
   ///     Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -299,6 +309,9 @@ class LocatorAssertions {
   ///   - `ignoreCase` bool *(optional)*
   ///
   ///     Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -339,6 +352,9 @@ class LocatorAssertions {
   /// **Arguments**
   /// - `options` Map *(optional)*
   ///   - `enabled` bool *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -365,6 +381,9 @@ class LocatorAssertions {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -401,6 +420,9 @@ class LocatorAssertions {
   ///
   ///   Attribute name.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -448,6 +470,9 @@ class LocatorAssertions {
   ///
   ///   Expected class or RegExp or a list of those.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -480,6 +505,9 @@ class LocatorAssertions {
   ///
   ///   Element id.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -512,6 +540,9 @@ class LocatorAssertions {
   ///
   ///   Expected value.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -547,6 +578,9 @@ class LocatorAssertions {
   ///   - `indeterminate` bool *(optional)*
   ///
   ///     Asserts that the element is in the indeterminate (mixed) state. Only supported for checkboxes and radio buttons. This option can't be true when [checked] is provided.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -586,6 +620,9 @@ class LocatorAssertions {
   /// **Arguments**
   /// - `options` Map *(optional)*
   ///   - `attached` bool *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -614,6 +651,9 @@ class LocatorAssertions {
   /// **Arguments**
   /// - `options` Map *(optional)*
   ///   - `editable` bool *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -641,6 +681,9 @@ class LocatorAssertions {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -667,6 +710,9 @@ class LocatorAssertions {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -701,6 +747,9 @@ class LocatorAssertions {
   ///   - `ratio` double *(optional)*
   ///
   ///     The minimal ratio of the element to intersect viewport. If equals to `0`, then element should intersect viewport at any positive ratio. Defaults to `0`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -748,10 +797,13 @@ class LocatorAssertions {
   /// ```
   ///
   /// **Arguments**
-  /// - `expected` dynamic
+  /// - `expected` Object
   ///
   ///   A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -801,6 +853,9 @@ class LocatorAssertions {
   ///   - `ignoreCase` bool *(optional)*
   ///
   ///     Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -844,6 +899,9 @@ class LocatorAssertions {
   ///   - `ignoreCase` bool *(optional)*
   ///
   ///     Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -887,6 +945,9 @@ class LocatorAssertions {
   ///   - `ignoreCase` bool *(optional)*
   ///
   ///     Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -933,6 +994,9 @@ class LocatorAssertions {
   ///   - `pseudo` String *(optional)*
   ///
   ///     Pseudo-element to read computed styles from.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -969,10 +1033,13 @@ class LocatorAssertions {
   /// - `name` String
   ///
   ///   Property name.
-  /// - `value` dynamic
+  /// - `value` Object
   ///
   ///   Property value.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -1010,6 +1077,9 @@ class LocatorAssertions {
   ///
   ///   Required aria role.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -1047,10 +1117,13 @@ class LocatorAssertions {
   /// ```
   ///
   /// **Arguments**
-  /// - `values` dynamic
+  /// - `values` Object
   ///
   ///   Expected options currently selected.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -1094,6 +1167,9 @@ class LocatorAssertions {
   ///   - `name` String *(optional)*
   ///
   ///     Name of the snapshot to store in the snapshot folder corresponding to this test. Generates sequential names if not specified.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -1124,6 +1200,9 @@ class LocatorAssertions {
   ///
   ///   Expected count.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.

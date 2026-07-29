@@ -32,17 +32,15 @@ class RouteManager {
 
   void clear() => _routes.clear();
 
-  List<BrowserContextSetNetworkInterceptionPatternsPatternsItems>
+  List<BrowserContextSetNetworkInterceptionPatternsItems>
   prepareContextPatterns() {
     return _preparePatterns(
-      BrowserContextSetNetworkInterceptionPatternsPatternsItems.fromJson,
+      BrowserContextSetNetworkInterceptionPatternsItems.fromJson,
     );
   }
 
-  List<PageSetNetworkInterceptionPatternsPatternsItems> preparePagePatterns() {
-    return _preparePatterns(
-      PageSetNetworkInterceptionPatternsPatternsItems.fromJson,
-    );
+  List<PageSetNetworkInterceptionPatternsItems> preparePagePatterns() {
+    return _preparePatterns(PageSetNetworkInterceptionPatternsItems.fromJson);
   }
 
   List<T> _preparePatterns<T>(T Function(Map<String, dynamic>) fromJson) {

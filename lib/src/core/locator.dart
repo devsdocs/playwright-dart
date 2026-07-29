@@ -366,7 +366,7 @@ class Locator {
     final result = await (frame as FrameImpl).channel.waitForSelector(
       selector: selector,
 
-      state: FrameWaitForSelectorStateEnum.attached,
+      state: SelectorState.attached,
 
       strict: true,
 
@@ -1090,6 +1090,12 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `steps` num *(optional)*
   ///
   ///     Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -1149,6 +1155,9 @@ class Locator {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1197,6 +1206,9 @@ class Locator {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1232,6 +1244,9 @@ class Locator {
       /// [Deprecated]
       ///     This option has no effect.
       ///     This option has no effect.
+      ///   - `signal` [AbortSignal] *(optional)*
+      ///
+      ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
       ///   - `timeout` timeout: *(optional)*
       ///
       ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1278,6 +1293,12 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1328,6 +1349,12 @@ class Locator {
       ///
       ///
       ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+      ///   - `scroll` "auto" | "none" *(optional)*
+      ///
+      ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+      ///   - `signal` [AbortSignal] *(optional)*
+      ///
+      ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
       ///   - `timeout` timeout: *(optional)*
       ///
       ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1379,6 +1406,12 @@ class Locator {
       ///
       ///
       ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+      ///   - `scroll` "auto" | "none" *(optional)*
+      ///
+      ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+      ///   - `signal` [AbortSignal] *(optional)*
+      ///
+      ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
       ///   - `timeout` timeout: *(optional)*
       ///
       ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1433,6 +1466,12 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1493,6 +1532,12 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1541,6 +1586,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1572,6 +1620,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1620,6 +1671,12 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1662,6 +1719,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1688,6 +1748,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1740,6 +1803,12 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `steps` num *(optional)*
   ///
   ///     Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -1795,6 +1864,9 @@ class Locator {
   ///
   ///   Attribute name to get the value for.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1827,6 +1899,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1889,6 +1964,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1919,6 +1997,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1980,6 +2061,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2010,6 +2094,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2040,6 +2127,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2069,7 +2159,7 @@ class Locator {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
   ///
@@ -2112,6 +2202,9 @@ class Locator {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2191,6 +2284,7 @@ class Locator {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -2248,6 +2342,9 @@ class Locator {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2286,6 +2383,9 @@ class Locator {
   /// [Deprecated]
   ///     This option will default to `true` in the future.
   ///     Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2352,6 +2452,12 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2412,7 +2518,7 @@ class Locator {
   /// ```
   ///
   /// **Arguments**
-  /// - `values` dynamic
+  /// - `values` List&lt;SelectOption&gt;
   ///   - `value` String *(optional)*
   ///
   ///     Matches by `option.value`. Optional.
@@ -2434,6 +2540,9 @@ class Locator {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2489,7 +2598,7 @@ class Locator {
   /// ```
   ///
   /// **Arguments**
-  /// - `files` dynamic
+  /// - `files` List&lt;InputFile&gt;
   ///   - `name` String
   ///
   ///     File name
@@ -2506,6 +2615,9 @@ class Locator {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2548,10 +2660,13 @@ class Locator {
   /// - `type` String
   ///
   ///   DOM event type: `"click"`, `"dragstart"`, etc.
-  /// - `eventInit` dynamic *(optional)*
+  /// - `eventInit` Map&lt;String, dynamic&gt; *(optional)*
   ///
   ///   Optional event-specific initialization properties.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2691,6 +2806,9 @@ class Locator {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2745,9 +2863,12 @@ class Locator {
   ///   - `depth` int *(optional)*
   ///
   ///     When specified, limits the depth of the snapshot.
-  ///   - `mode` FrameAriaSnapshotModeEnum *(optional)*
+  ///   - `mode` SnapshotMode *(optional)*
   ///
   ///     When set to `"ai"`, returns a snapshot optimized for AI consumption. Defaults to `"default"`. See details for more information.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2784,7 +2905,7 @@ class Locator {
   /// An AI-optimized snapshot, controlled by [mode], is different from a default snapshot:
   /// 1. Includes element references `[ref=e2]`. 2. Does not wait for an element matching the locator, and throws when no elements match. 3. Includes snapshots of `<iframe>`s inside the target.
   Future<FrameAriaSnapshotResult> ariaSnapshot({
-    FrameAriaSnapshotModeEnum? mode,
+    SnapshotMode? mode,
 
     String? track,
 
@@ -2877,10 +2998,16 @@ class Locator {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
   /// - `options` Map *(optional)*
+  ///   - `exposeFunctions` bool *(optional)*
+  ///
+  ///     When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` num *(optional)*
   ///
   ///     Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation itself is not limited by the timeout. Defaults to `0` - no timeout.
@@ -2926,7 +3053,10 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
-  ///   - `state` FrameWaitForSelectorStateEnum *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
+  ///   - `state` SelectorState *(optional)*
   ///
   ///     Defaults to `'visible'`. Can be either:
   ///     * `'attached'` - wait for element to be present in DOM.
@@ -2939,11 +3069,7 @@ class Locator {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> waitFor({
-    FrameWaitForSelectorStateEnum? state,
-
-    double? timeout,
-  }) async {
+  Future<void> waitFor({SelectorState? state, double? timeout}) async {
     await frame.waitForSelector(selector, state: state, timeout: timeout);
   }
 
@@ -2977,6 +3103,12 @@ class Locator {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `sourcePosition` Map *(optional)*
   ///     - `x` num
   ///
@@ -3134,6 +3266,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3144,7 +3279,7 @@ class Locator {
     final result = await (frame as FrameImpl).channel.waitForSelector(
       selector: selector,
 
-      state: FrameWaitForSelectorStateEnum.attached,
+      state: SelectorState.attached,
 
       strict: true,
 
@@ -3196,6 +3331,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3238,6 +3376,9 @@ class Locator {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` num *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3266,6 +3407,9 @@ class Locator {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` num *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3318,19 +3462,22 @@ class Locator {
   ///     The file path to save the image to. The screenshot type will be inferred from file extension. If [path] is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk.
   ///   - `quality` int *(optional)*
   ///
-  ///     The quality of the image, between 0-100. Not applicable to `png` images.
+  ///     The quality of the image, between 0-100. Not applicable to `png` images. For `jpeg` the default is `80`. For `webp`, a quality of `100` (the default) produces a lossless image, while lower values use lossy compression.
   ///   - `scale` "css" | "device" *(optional)*
   ///
   ///     When set to `"css"`, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will keep screenshots small. Using `"device"` option will produce a single pixel per each device pixel, so screenshots of high-dpi devices will be twice as large or even larger.
   ///
   ///     Defaults to `"device"`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `style` String *(optional)*
   ///
   ///     Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM and applies to the inner frames.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-  ///   - `type` String *(optional)*
+  ///   - `type` ElementHandleScreenshotType *(optional)*
   ///
   ///     Specify screenshot type, defaults to `png`.
   ///
@@ -3349,7 +3496,7 @@ class Locator {
 
     double? timeout,
 
-    String? type,
+    ElementHandleScreenshotType? type,
 
     int? quality,
   }) async {

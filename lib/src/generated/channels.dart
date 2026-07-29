@@ -8,111 +8,57 @@ import '../infrastructure/connection.dart';
 /// Arbitrary JSON value (Playwright protocol type `json` / `any`).
 typedef JsonValue = Object?;
 
-enum AndroidDeviceFlingDirectionEnum {
-  up('up'),
-  down('down'),
-  left('left'),
-  right('right');
+enum Action {
+  error('error'),
+  redirect('redirect'),
+  fulfill('fulfill'),
+  noentry('noentry');
 
   final String value;
-  const AndroidDeviceFlingDirectionEnum(this.value);
+  const Action(this.value);
 }
 
-enum AndroidDeviceScrollDirectionEnum {
-  up('up'),
-  down('down'),
-  left('left'),
-  right('right');
-
-  final String value;
-  const AndroidDeviceScrollDirectionEnum(this.value);
-}
-
-enum AndroidDeviceSwipeDirectionEnum {
-  up('up'),
-  down('down'),
-  left('left'),
-  right('right');
-
-  final String value;
-  const AndroidDeviceSwipeDirectionEnum(this.value);
-}
-
-enum AndroidDeviceWaitStateEnum {
-  gone('gone');
-
-  final String value;
-  const AndroidDeviceWaitStateEnum(this.value);
-}
-
-enum BrowserContextEnableRecorderModeEnum {
-  inspecting('inspecting'),
-  recording('recording');
-
-  final String value;
-  const BrowserContextEnableRecorderModeEnum(this.value);
-}
-
-enum BrowserContextEnableRecorderRecorderModeEnum {
-  defaultValue('default'),
-  api('api');
-
-  final String value;
-  const BrowserContextEnableRecorderRecorderModeEnum(this.value);
-}
-
-enum BrowserContextRecorderEventEventEventEnum {
-  actionAdded('actionAdded'),
-  actionUpdated('actionUpdated'),
-  signalAdded('signalAdded');
-
-  final String value;
-  const BrowserContextRecorderEventEventEventEnum(this.value);
-}
-
-enum BrowserContextUpdateSubscriptionEventEnum {
-  console('console'),
-  dialog('dialog'),
-  request('request'),
-  response('response'),
-  requestFinished('requestFinished'),
-  requestFailed('requestFailed');
-
-  final String value;
-  const BrowserContextUpdateSubscriptionEventEnum(this.value);
-}
-
-enum BrowserInitializerBrowserNameEnum {
-  chromium('chromium'),
-  firefox('firefox'),
-  webkit('webkit');
-
-  final String value;
-  const BrowserInitializerBrowserNameEnum(this.value);
-}
-
-enum CommonScreenshotOptionsAnimationsEnum {
+enum Animations {
   disabled('disabled'),
   allow('allow');
 
   final String value;
-  const CommonScreenshotOptionsAnimationsEnum(this.value);
+  const Animations(this.value);
 }
 
-enum CommonScreenshotOptionsCaretEnum {
+enum Button {
+  left('left'),
+  right('right'),
+  middle('middle');
+
+  final String value;
+  const Button(this.value);
+}
+
+enum Caret {
   hide('hide'),
   initial('initial');
 
   final String value;
-  const CommonScreenshotOptionsCaretEnum(this.value);
+  const Caret(this.value);
 }
 
-enum CommonScreenshotOptionsScaleEnum {
-  css('css'),
-  device('device');
+enum ChunkMode {
+  archive('archive'),
+  discard('discard'),
+  entries('entries');
 
   final String value;
-  const CommonScreenshotOptionsScaleEnum(this.value);
+  const ChunkMode(this.value);
+}
+
+enum Colors {
+  active('active'),
+  none('none'),
+  noOverride('no-override');
+
+  final String value;
+  const Colors(this.value);
 }
 
 enum ConsoleMessagesFilter {
@@ -123,174 +69,80 @@ enum ConsoleMessagesFilter {
   const ConsoleMessagesFilter(this.value);
 }
 
-enum ContextOptionsAcceptDownloadsEnum {
-  accept('accept'),
-  deny('deny'),
-  internalBrowserDefault('internal-browser-default');
+enum Content {
+  embed('embed'),
+  attach('attach'),
+  omit('omit');
 
   final String value;
-  const ContextOptionsAcceptDownloadsEnum(this.value);
+  const Content(this.value);
 }
 
-enum ContextOptionsColorSchemeEnum {
-  dark('dark'),
-  light('light'),
-  noPreference('no-preference'),
-  noOverride('no-override');
+enum ContextUpdateSubscriptionEvent {
+  console('console'),
+  dialog('dialog'),
+  request('request'),
+  response('response'),
+  requestFinished('requestFinished'),
+  requestFailed('requestFailed');
 
   final String value;
-  const ContextOptionsColorSchemeEnum(this.value);
+  const ContextUpdateSubscriptionEvent(this.value);
 }
 
-enum ContextOptionsContrastEnum {
+enum Contrast {
   noPreference('no-preference'),
   more('more'),
   noOverride('no-override');
 
   final String value;
-  const ContextOptionsContrastEnum(this.value);
+  const Contrast(this.value);
 }
 
-enum ContextOptionsForcedColorsEnum {
-  active('active'),
+enum Cursor {
   none('none'),
-  noOverride('no-override');
+  pointer('pointer');
 
   final String value;
-  const ContextOptionsForcedColorsEnum(this.value);
+  const Cursor(this.value);
 }
 
-enum ContextOptionsHttpCredentialsSendEnum {
-  always('always'),
-  unauthorized('unauthorized');
+enum Direction {
+  up('up'),
+  down('down'),
+  left('left'),
+  right('right');
 
   final String value;
-  const ContextOptionsHttpCredentialsSendEnum(this.value);
+  const Direction(this.value);
 }
 
-enum ContextOptionsReducedMotionEnum {
-  reduce('reduce'),
-  noPreference('no-preference'),
-  noOverride('no-override');
-
-  final String value;
-  const ContextOptionsReducedMotionEnum(this.value);
-}
-
-enum ContextOptionsServiceWorkersEnum {
-  allow('allow'),
-  block('block');
-
-  final String value;
-  const ContextOptionsServiceWorkersEnum(this.value);
-}
-
-enum DebugControllerSetRecorderModeModeEnum {
-  inspecting('inspecting'),
-  recording('recording'),
-  none('none');
-
-  final String value;
-  const DebugControllerSetRecorderModeModeEnum(this.value);
-}
-
-enum ElectronApplicationUpdateSubscriptionEventEnum {
-  console('console');
-
-  final String value;
-  const ElectronApplicationUpdateSubscriptionEventEnum(this.value);
-}
-
-enum ElectronLaunchAcceptDownloadsEnum {
+enum Downloads {
   accept('accept'),
   deny('deny'),
   internalBrowserDefault('internal-browser-default');
 
   final String value;
-  const ElectronLaunchAcceptDownloadsEnum(this.value);
+  const Downloads(this.value);
 }
 
-enum ElectronLaunchColorSchemeEnum {
-  dark('dark'),
-  light('light'),
-  noPreference('no-preference'),
-  noOverride('no-override');
+enum ElectronApplicationUpdateSubscriptionEvent {
+  console('console');
 
   final String value;
-  const ElectronLaunchColorSchemeEnum(this.value);
+  const ElectronApplicationUpdateSubscriptionEvent(this.value);
 }
 
-enum ElementHandleClickButtonEnum {
-  left('left'),
-  right('right'),
-  middle('middle');
-
-  final String value;
-  const ElementHandleClickButtonEnum(this.value);
-}
-
-enum ElementHandleClickModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const ElementHandleClickModifiersEnum(this.value);
-}
-
-enum ElementHandleDblclickButtonEnum {
-  left('left'),
-  right('right'),
-  middle('middle');
-
-  final String value;
-  const ElementHandleDblclickButtonEnum(this.value);
-}
-
-enum ElementHandleDblclickModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const ElementHandleDblclickModifiersEnum(this.value);
-}
-
-enum ElementHandleHoverModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const ElementHandleHoverModifiersEnum(this.value);
-}
-
-enum ElementHandleScreenshotTypeEnum {
+enum ElementHandleScreenshotType {
   png('png'),
-  jpeg('jpeg');
+  jpeg('jpeg'),
+  webp('webp');
 
   final String value;
-  const ElementHandleScreenshotTypeEnum(this.value);
+  const ElementHandleScreenshotType(this.value);
 }
 
-enum ElementHandleTapModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const ElementHandleTapModifiersEnum(this.value);
-}
-
-enum ElementHandleWaitForElementStateStateEnum {
+enum ElementState {
   visible('visible'),
   hidden('hidden'),
   stable('stable'),
@@ -299,325 +151,34 @@ enum ElementHandleWaitForElementStateStateEnum {
   editable('editable');
 
   final String value;
-  const ElementHandleWaitForElementStateStateEnum(this.value);
+  const ElementState(this.value);
 }
 
-enum ElementHandleWaitForSelectorStateEnum {
-  attached('attached'),
-  detached('detached'),
-  visible('visible'),
-  hidden('hidden');
+enum EnableRecorderMode {
+  inspecting('inspecting'),
+  recording('recording');
 
   final String value;
-  const ElementHandleWaitForSelectorStateEnum(this.value);
+  const EnableRecorderMode(this.value);
 }
 
-enum FrameAriaSnapshotModeEnum {
-  ai('ai'),
-  defaultValue('default');
-
-  final String value;
-  const FrameAriaSnapshotModeEnum(this.value);
-}
-
-enum FrameClickButtonEnum {
-  left('left'),
-  right('right'),
-  middle('middle');
-
-  final String value;
-  const FrameClickButtonEnum(this.value);
-}
-
-enum FrameClickModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const FrameClickModifiersEnum(this.value);
-}
-
-enum FrameDblclickButtonEnum {
-  left('left'),
-  right('right'),
-  middle('middle');
-
-  final String value;
-  const FrameDblclickButtonEnum(this.value);
-}
-
-enum FrameDblclickModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const FrameDblclickModifiersEnum(this.value);
-}
-
-enum FrameExpectPseudoEnum {
-  before('before'),
-  after('after');
-
-  final String value;
-  const FrameExpectPseudoEnum(this.value);
-}
-
-enum FrameHoverModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const FrameHoverModifiersEnum(this.value);
-}
-
-enum FrameTapModifiersEnum {
-  alt('Alt'),
-  control('Control'),
-  controlOrMeta('ControlOrMeta'),
-  meta('Meta'),
-  shift('Shift');
-
-  final String value;
-  const FrameTapModifiersEnum(this.value);
-}
-
-enum FrameWaitForSelectorStateEnum {
-  attached('attached'),
-  detached('detached'),
-  visible('visible'),
-  hidden('hidden');
-
-  final String value;
-  const FrameWaitForSelectorStateEnum(this.value);
-}
-
-enum LifecycleEvent {
-  load('load'),
-  domcontentloaded('domcontentloaded'),
-  networkidle('networkidle'),
-  commit('commit');
-
-  final String value;
-  const LifecycleEvent(this.value);
-}
-
-enum LocalUtilsHarLookupResultActionEnum {
-  error('error'),
-  redirect('redirect'),
-  fulfill('fulfill'),
-  noentry('noentry');
-
-  final String value;
-  const LocalUtilsHarLookupResultActionEnum(this.value);
-}
-
-enum LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum {
-  chromium('chromium'),
-  firefox('firefox'),
-  webkit('webkit');
-
-  final String value;
-  const LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum(
-    this.value,
-  );
-}
-
-enum LocalUtilsZipModeEnum {
-  write('write'),
-  append('append');
-
-  final String value;
-  const LocalUtilsZipModeEnum(this.value);
-}
-
-enum NetworkCookieSameSiteEnum {
-  strict('Strict'),
-  lax('Lax'),
-  none('None');
-
-  final String value;
-  const NetworkCookieSameSiteEnum(this.value);
-}
-
-enum PageEmulateMediaColorSchemeEnum {
-  dark('dark'),
-  light('light'),
-  noPreference('no-preference'),
-  noOverride('no-override');
-
-  final String value;
-  const PageEmulateMediaColorSchemeEnum(this.value);
-}
-
-enum PageEmulateMediaContrastEnum {
-  noPreference('no-preference'),
-  more('more'),
-  noOverride('no-override');
-
-  final String value;
-  const PageEmulateMediaContrastEnum(this.value);
-}
-
-enum PageEmulateMediaForcedColorsEnum {
-  active('active'),
-  none('none'),
-  noOverride('no-override');
-
-  final String value;
-  const PageEmulateMediaForcedColorsEnum(this.value);
-}
-
-enum PageEmulateMediaMediaEnum {
-  screen('screen'),
-  print('print'),
-  noOverride('no-override');
-
-  final String value;
-  const PageEmulateMediaMediaEnum(this.value);
-}
-
-enum PageEmulateMediaReducedMotionEnum {
-  reduce('reduce'),
-  noPreference('no-preference'),
-  noOverride('no-override');
-
-  final String value;
-  const PageEmulateMediaReducedMotionEnum(this.value);
-}
-
-enum PageMouseClickButtonEnum {
-  left('left'),
-  right('right'),
-  middle('middle');
-
-  final String value;
-  const PageMouseClickButtonEnum(this.value);
-}
-
-enum PageMouseDownButtonEnum {
-  left('left'),
-  right('right'),
-  middle('middle');
-
-  final String value;
-  const PageMouseDownButtonEnum(this.value);
-}
-
-enum PageMouseUpButtonEnum {
-  left('left'),
-  right('right'),
-  middle('middle');
-
-  final String value;
-  const PageMouseUpButtonEnum(this.value);
-}
-
-enum PageScreenshotTypeEnum {
+enum ExpectScreenshotType {
   png('png'),
-  jpeg('jpeg');
+  webp('webp');
 
   final String value;
-  const PageScreenshotTypeEnum(this.value);
+  const ExpectScreenshotType(this.value);
 }
 
-enum PageUpdateSubscriptionEventEnum {
-  console('console'),
-  dialog('dialog'),
-  fileChooser('fileChooser'),
-  request('request'),
-  response('response'),
-  requestFinished('requestFinished'),
-  requestFailed('requestFailed');
+enum ExportMode {
+  archive('archive'),
+  entries('entries');
 
   final String value;
-  const PageUpdateSubscriptionEventEnum(this.value);
+  const ExportMode(this.value);
 }
 
-enum PageWebStorageClearKindEnum {
-  local('local'),
-  session('session');
-
-  final String value;
-  const PageWebStorageClearKindEnum(this.value);
-}
-
-enum PageWebStorageGetItemKindEnum {
-  local('local'),
-  session('session');
-
-  final String value;
-  const PageWebStorageGetItemKindEnum(this.value);
-}
-
-enum PageWebStorageItemsKindEnum {
-  local('local'),
-  session('session');
-
-  final String value;
-  const PageWebStorageItemsKindEnum(this.value);
-}
-
-enum PageWebStorageRemoveItemKindEnum {
-  local('local'),
-  session('session');
-
-  final String value;
-  const PageWebStorageRemoveItemKindEnum(this.value);
-}
-
-enum PageWebStorageSetItemKindEnum {
-  local('local'),
-  session('session');
-
-  final String value;
-  const PageWebStorageSetItemKindEnum(this.value);
-}
-
-enum PlaywrightNewRequestHttpCredentialsSendEnum {
-  always('always'),
-  unauthorized('unauthorized');
-
-  final String value;
-  const PlaywrightNewRequestHttpCredentialsSendEnum(this.value);
-}
-
-enum RecordHarOptionsContentEnum {
-  embed('embed'),
-  attach('attach'),
-  omit('omit');
-
-  final String value;
-  const RecordHarOptionsContentEnum(this.value);
-}
-
-enum RecordHarOptionsModeEnum {
-  full('full'),
-  minimal('minimal');
-
-  final String value;
-  const RecordHarOptionsModeEnum(this.value);
-}
-
-enum SDKLanguage {
-  javascript('javascript'),
-  python('python'),
-  java('java'),
-  csharp('csharp');
-
-  final String value;
-  const SDKLanguage(this.value);
-}
-
-enum SerializedValueTaKEnum {
+enum K {
   i8('i8'),
   ui8('ui8'),
   ui8c('ui8c'),
@@ -631,39 +192,96 @@ enum SerializedValueTaKEnum {
   bui64('bui64');
 
   final String value;
-  const SerializedValueTaKEnum(this.value);
+  const K(this.value);
 }
 
-enum SerializedValueVEnum {
-  nullValue('null'),
-  undefined('undefined'),
-  nan('NaN'),
-  infinity('Infinity'),
-  minusInfinity('-Infinity'),
-  minusZero('-0');
+enum Kind {
+  local('local'),
+  session('session');
 
   final String value;
-  const SerializedValueVEnum(this.value);
+  const Kind(this.value);
 }
 
-enum SetNetworkCookieSameSiteEnum {
-  strict('Strict'),
-  lax('Lax'),
-  none('None');
+enum LifecycleEvent {
+  load('load'),
+  domcontentloaded('domcontentloaded'),
+  networkidle('networkidle'),
+  commit('commit');
 
   final String value;
-  const SetNetworkCookieSameSiteEnum(this.value);
+  const LifecycleEvent(this.value);
 }
 
-enum ShowActionsOptionsCursorEnum {
-  none('none'),
-  pointer('pointer');
+enum Media {
+  screen('screen'),
+  print('print'),
+  noOverride('no-override');
 
   final String value;
-  const ShowActionsOptionsCursorEnum(this.value);
+  const Media(this.value);
 }
 
-enum ShowActionsOptionsPositionEnum {
+enum Modifiers {
+  alt('Alt'),
+  control('Control'),
+  controlOrMeta('ControlOrMeta'),
+  meta('Meta'),
+  shift('Shift');
+
+  final String value;
+  const Modifiers(this.value);
+}
+
+enum Motion {
+  reduce('reduce'),
+  noPreference('no-preference'),
+  noOverride('no-override');
+
+  final String value;
+  const Motion(this.value);
+}
+
+enum Name {
+  chromium('chromium'),
+  firefox('firefox'),
+  webkit('webkit');
+
+  final String value;
+  const Name(this.value);
+}
+
+enum OptionsMode {
+  full('full'),
+  minimal('minimal');
+
+  final String value;
+  const OptionsMode(this.value);
+}
+
+enum PageUpdateSubscriptionEvent {
+  console('console'),
+  dialog('dialog'),
+  fileChooser('fileChooser'),
+  request('request'),
+  response('response'),
+  requestFinished('requestFinished'),
+  requestFailed('requestFailed');
+
+  final String value;
+  const PageUpdateSubscriptionEvent(this.value);
+}
+
+enum Phase {
+  before('before'),
+  after('after'),
+  log('log');
+
+  final String value;
+  const Phase(this.value);
+}
+
+enum Position {
   topLeft('top-left'),
   top('top'),
   topRight('top-right'),
@@ -672,40 +290,147 @@ enum ShowActionsOptionsPositionEnum {
   bottomRight('bottom-right');
 
   final String value;
-  const ShowActionsOptionsPositionEnum(this.value);
+  const Position(this.value);
 }
 
-enum TracingHarExportModeEnum {
-  archive('archive'),
-  entries('entries');
-
-  final String value;
-  const TracingHarExportModeEnum(this.value);
-}
-
-enum TracingTracingStopChunkModeEnum {
-  archive('archive'),
-  discard('discard'),
-  entries('entries');
-
-  final String value;
-  const TracingTracingStopChunkModeEnum(this.value);
-}
-
-enum WaitInfoPhaseEnum {
+enum Pseudo {
   before('before'),
-  after('after'),
-  log('log');
+  after('after');
 
   final String value;
-  const WaitInfoPhaseEnum(this.value);
+  const Pseudo(this.value);
 }
 
-enum WorkerUpdateSubscriptionEventEnum {
-  console('console');
+enum RecorderEvent {
+  actionAdded('actionAdded'),
+  actionUpdated('actionUpdated'),
+  signalAdded('signalAdded');
 
   final String value;
-  const WorkerUpdateSubscriptionEventEnum(this.value);
+  const RecorderEvent(this.value);
+}
+
+enum RecorderRecorderMode {
+  defaultValue('default'),
+  api('api');
+
+  final String value;
+  const RecorderRecorderMode(this.value);
+}
+
+enum SDKLanguage {
+  javascript('javascript'),
+  python('python'),
+  java('java'),
+  csharp('csharp');
+
+  final String value;
+  const SDKLanguage(this.value);
+}
+
+enum Scale {
+  css('css'),
+  device('device');
+
+  final String value;
+  const Scale(this.value);
+}
+
+enum Scheme {
+  dark('dark'),
+  light('light'),
+  noPreference('no-preference'),
+  noOverride('no-override');
+
+  final String value;
+  const Scheme(this.value);
+}
+
+enum Scroll {
+  auto('auto'),
+  none('none');
+
+  final String value;
+  const Scroll(this.value);
+}
+
+enum SelectorState {
+  attached('attached'),
+  detached('detached'),
+  visible('visible'),
+  hidden('hidden');
+
+  final String value;
+  const SelectorState(this.value);
+}
+
+enum Send {
+  always('always'),
+  unauthorized('unauthorized');
+
+  final String value;
+  const Send(this.value);
+}
+
+enum SetRecorderMode {
+  inspecting('inspecting'),
+  recording('recording'),
+  none('none');
+
+  final String value;
+  const SetRecorderMode(this.value);
+}
+
+enum Site {
+  strict('Strict'),
+  lax('Lax'),
+  none('None');
+
+  final String value;
+  const Site(this.value);
+}
+
+enum SnapshotMode {
+  ai('ai'),
+  defaultValue('default');
+
+  final String value;
+  const SnapshotMode(this.value);
+}
+
+enum V {
+  nullValue('null'),
+  undefined('undefined'),
+  nan('NaN'),
+  infinity('Infinity'),
+  minusInfinity('-Infinity'),
+  minusZero('-0');
+
+  final String value;
+  const V(this.value);
+}
+
+enum WaitState {
+  gone('gone');
+
+  final String value;
+  const WaitState(this.value);
+}
+
+enum Workers {
+  allow('allow'),
+  block('block');
+
+  final String value;
+  const Workers(this.value);
+}
+
+enum ZipMode {
+  write('write'),
+  append('append');
+
+  final String value;
+  const ZipMode(this.value);
 }
 
 class APIRequestContextFetchLogResult {
@@ -826,19 +551,23 @@ class APIRequestContextStorageStateResult {
 class APIResponse {
   final String fetchUid;
   final List<NameValue> headers;
+  final double? responseEndTiming;
   final SecurityDetails? securityDetails;
   final RemoteAddr? serverAddr;
   final int status;
   final String statusText;
+  final ResourceTiming? timing;
   final String url;
 
   APIResponse({
     required this.fetchUid,
     required this.headers,
+    this.responseEndTiming,
     this.securityDetails,
     this.serverAddr,
     required this.status,
     required this.statusText,
+    this.timing,
     required this.url,
   });
 
@@ -853,6 +582,7 @@ class APIResponse {
               ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
+      responseEndTiming: (json[r'responseEndTiming'] as num?)?.toDouble(),
       securityDetails: json[r'securityDetails'] == null
           ? null
           : SecurityDetails.fromJson(
@@ -864,6 +594,9 @@ class APIResponse {
           : RemoteAddr.fromJson(json[r'serverAddr'], connection: connection),
       status: (json[r'status'])!,
       statusText: (json[r'statusText'])!,
+      timing: json[r'timing'] == null
+          ? null
+          : ResourceTiming.fromJson(json[r'timing'], connection: connection),
       url: (json[r'url'])!,
     );
   }
@@ -872,11 +605,13 @@ class APIResponse {
     return {
       r'fetchUid': fetchUid,
       r'headers': headers.map((e) => e.toJson()).toList(),
+      if (responseEndTiming != null) r'responseEndTiming': responseEndTiming,
       if (securityDetails != null)
         r'securityDetails': securityDetails?.toJson(),
       if (serverAddr != null) r'serverAddr': serverAddr?.toJson(),
       r'status': status,
       r'statusText': statusText,
+      if (timing != null) r'timing': timing?.toJson(),
       r'url': url,
     };
   }
@@ -1655,20 +1390,17 @@ class BrowserContextCookiesResult {
   }
 }
 
-class BrowserContextCreateTempFilesItemsItems {
+class BrowserContextCreateTempFilesItems {
   final double? lastModifiedMs;
   final String name;
 
-  BrowserContextCreateTempFilesItemsItems({
-    this.lastModifiedMs,
-    required this.name,
-  });
+  BrowserContextCreateTempFilesItems({this.lastModifiedMs, required this.name});
 
-  factory BrowserContextCreateTempFilesItemsItems.fromJson(
+  factory BrowserContextCreateTempFilesItems.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return BrowserContextCreateTempFilesItemsItems(
+    return BrowserContextCreateTempFilesItems(
       lastModifiedMs: (json[r'lastModifiedMs'] as num?)?.toDouble(),
       name: (json[r'name'])!,
     );
@@ -2044,31 +1776,29 @@ class BrowserContextPageEvent {
   }
 }
 
-class BrowserContextRecorderEventEvent {
+class BrowserContextRecorderEvent {
   final String code;
   final JsonValue data;
-  final BrowserContextRecorderEventEventEventEnum event;
+  final RecorderEvent event;
   final PageBase page;
 
-  BrowserContextRecorderEventEvent({
+  BrowserContextRecorderEvent({
     required this.code,
     this.data,
     required this.event,
     required this.page,
   });
 
-  factory BrowserContextRecorderEventEvent.fromJson(
+  factory BrowserContextRecorderEvent.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return BrowserContextRecorderEventEvent(
+    return BrowserContextRecorderEvent(
       code: (json[r'code'])!,
       data: json[r'data'],
       event: (json[r'event'] == null
           ? null
-          : BrowserContextRecorderEventEventEventEnum.values.firstWhere(
-              (e) => e.value == json[r'event'],
-            ))!,
+          : RecorderEvent.values.firstWhere((e) => e.value == json[r'event']))!,
       page: (connection != null && json[r'page'] != null
           ? ChannelOwner.from<PageBase>(connection, json[r'page'])
           : null)!,
@@ -2267,22 +1997,22 @@ class BrowserContextServiceWorkerEvent {
   }
 }
 
-class BrowserContextSetGeolocationGeolocation {
+class BrowserContextSetGeolocation {
   final double? accuracy;
   final double latitude;
   final double longitude;
 
-  BrowserContextSetGeolocationGeolocation({
+  BrowserContextSetGeolocation({
     this.accuracy,
     required this.latitude,
     required this.longitude,
   });
 
-  factory BrowserContextSetGeolocationGeolocation.fromJson(
+  factory BrowserContextSetGeolocation.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return BrowserContextSetGeolocationGeolocation(
+    return BrowserContextSetGeolocation(
       accuracy: (json[r'accuracy'] as num?)?.toDouble(),
       latitude: ((json[r'latitude'] as num?)?.toDouble())!,
       longitude: ((json[r'longitude'] as num?)?.toDouble())!,
@@ -2329,24 +2059,24 @@ class BrowserContextSetHTTPCredentialsHttpCredentials {
   }
 }
 
-class BrowserContextSetNetworkInterceptionPatternsPatternsItems {
+class BrowserContextSetNetworkInterceptionPatternsItems {
   final String? glob;
   final String? regexFlags;
   final String? regexSource;
   final URLPattern? urlPattern;
 
-  BrowserContextSetNetworkInterceptionPatternsPatternsItems({
+  BrowserContextSetNetworkInterceptionPatternsItems({
     this.glob,
     this.regexFlags,
     this.regexSource,
     this.urlPattern,
   });
 
-  factory BrowserContextSetNetworkInterceptionPatternsPatternsItems.fromJson(
+  factory BrowserContextSetNetworkInterceptionPatternsItems.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return BrowserContextSetNetworkInterceptionPatternsPatternsItems(
+    return BrowserContextSetNetworkInterceptionPatternsItems(
       glob: json[r'glob'],
       regexFlags: json[r'regexFlags'],
       regexSource: json[r'regexSource'],
@@ -2366,19 +2096,23 @@ class BrowserContextSetNetworkInterceptionPatternsPatternsItems {
   }
 }
 
-class BrowserContextSetStorageStateStorageState {
+class BrowserContextSetStorageState {
   final List<SetNetworkCookie>? cookies;
+  final List<VirtualCredential>? credentials;
   final List<SetOriginStorage>? origins;
 
-  BrowserContextSetStorageStateStorageState({this.cookies, this.origins});
+  BrowserContextSetStorageState({this.cookies, this.credentials, this.origins});
 
-  factory BrowserContextSetStorageStateStorageState.fromJson(
+  factory BrowserContextSetStorageState.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return BrowserContextSetStorageStateStorageState(
+    return BrowserContextSetStorageState(
       cookies: (json[r'cookies'] as List?)
           ?.map((e) => SetNetworkCookie.fromJson(e, connection: connection))
+          .toList(),
+      credentials: (json[r'credentials'] as List?)
+          ?.map((e) => VirtualCredential.fromJson(e, connection: connection))
           .toList(),
       origins: (json[r'origins'] as List?)
           ?.map((e) => SetOriginStorage.fromJson(e, connection: connection))
@@ -2389,29 +2123,31 @@ class BrowserContextSetStorageStateStorageState {
   Map<String, dynamic> toJson() {
     return {
       if (cookies != null) r'cookies': cookies?.map((e) => e.toJson()).toList(),
+      if (credentials != null)
+        r'credentials': credentials?.map((e) => e.toJson()).toList(),
       if (origins != null) r'origins': origins?.map((e) => e.toJson()).toList(),
     };
   }
 }
 
-class BrowserContextSetWebSocketInterceptionPatternsPatternsItems {
+class BrowserContextSetWebSocketInterceptionPatternsItems {
   final String? glob;
   final String? regexFlags;
   final String? regexSource;
   final URLPattern? urlPattern;
 
-  BrowserContextSetWebSocketInterceptionPatternsPatternsItems({
+  BrowserContextSetWebSocketInterceptionPatternsItems({
     this.glob,
     this.regexFlags,
     this.regexSource,
     this.urlPattern,
   });
 
-  factory BrowserContextSetWebSocketInterceptionPatternsPatternsItems.fromJson(
+  factory BrowserContextSetWebSocketInterceptionPatternsItems.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return BrowserContextSetWebSocketInterceptionPatternsPatternsItems(
+    return BrowserContextSetWebSocketInterceptionPatternsItems(
       glob: json[r'glob'],
       regexFlags: json[r'regexFlags'],
       regexSource: json[r'regexSource'],
@@ -2433,10 +2169,12 @@ class BrowserContextSetWebSocketInterceptionPatternsPatternsItems {
 
 class BrowserContextStorageStateResult {
   final List<NetworkCookie> cookies;
+  final List<VirtualCredential>? credentials;
   final List<OriginStorage> origins;
 
   BrowserContextStorageStateResult({
     required this.cookies,
+    this.credentials,
     required this.origins,
   });
 
@@ -2450,6 +2188,9 @@ class BrowserContextStorageStateResult {
               ?.map((e) => NetworkCookie.fromJson(e, connection: connection))
               .toList()) ??
           [],
+      credentials: (json[r'credentials'] as List?)
+          ?.map((e) => VirtualCredential.fromJson(e, connection: connection))
+          .toList(),
       origins:
           ((json[r'origins'] as List?)
               ?.map((e) => OriginStorage.fromJson(e, connection: connection))
@@ -2461,6 +2202,8 @@ class BrowserContextStorageStateResult {
   Map<String, dynamic> toJson() {
     return {
       r'cookies': cookies.map((e) => e.toJson()).toList(),
+      if (credentials != null)
+        r'credentials': credentials?.map((e) => e.toJson()).toList(),
       r'origins': origins.map((e) => e.toJson()).toList(),
     };
   }
@@ -2512,7 +2255,7 @@ class BrowserDefaultUserAgentForTestResult {
 }
 
 class BrowserInitializer {
-  final BrowserInitializerBrowserNameEnum browserName;
+  final Name browserName;
   final String name;
   final String version;
 
@@ -2529,9 +2272,7 @@ class BrowserInitializer {
     return BrowserInitializer(
       browserName: (json[r'browserName'] == null
           ? null
-          : BrowserInitializerBrowserNameEnum.values.firstWhere(
-              (e) => e.value == json[r'browserName'],
-            ))!,
+          : Name.values.firstWhere((e) => e.value == json[r'browserName']))!,
       name: (json[r'name'])!,
       version: (json[r'version'])!,
     );
@@ -2629,9 +2370,14 @@ class BrowserNewContextForReuseResult {
 
 class BrowserNewContextForReuseStorageState {
   final List<SetNetworkCookie>? cookies;
+  final List<VirtualCredential>? credentials;
   final List<SetOriginStorage>? origins;
 
-  BrowserNewContextForReuseStorageState({this.cookies, this.origins});
+  BrowserNewContextForReuseStorageState({
+    this.cookies,
+    this.credentials,
+    this.origins,
+  });
 
   factory BrowserNewContextForReuseStorageState.fromJson(
     Map<String, dynamic> json, {
@@ -2640,6 +2386,9 @@ class BrowserNewContextForReuseStorageState {
     return BrowserNewContextForReuseStorageState(
       cookies: (json[r'cookies'] as List?)
           ?.map((e) => SetNetworkCookie.fromJson(e, connection: connection))
+          .toList(),
+      credentials: (json[r'credentials'] as List?)
+          ?.map((e) => VirtualCredential.fromJson(e, connection: connection))
           .toList(),
       origins: (json[r'origins'] as List?)
           ?.map((e) => SetOriginStorage.fromJson(e, connection: connection))
@@ -2650,6 +2399,8 @@ class BrowserNewContextForReuseStorageState {
   Map<String, dynamic> toJson() {
     return {
       if (cookies != null) r'cookies': cookies?.map((e) => e.toJson()).toList(),
+      if (credentials != null)
+        r'credentials': credentials?.map((e) => e.toJson()).toList(),
       if (origins != null) r'origins': origins?.map((e) => e.toJson()).toList(),
     };
   }
@@ -2715,9 +2466,10 @@ class BrowserNewContextResult {
 
 class BrowserNewContextStorageState {
   final List<SetNetworkCookie>? cookies;
+  final List<VirtualCredential>? credentials;
   final List<SetOriginStorage>? origins;
 
-  BrowserNewContextStorageState({this.cookies, this.origins});
+  BrowserNewContextStorageState({this.cookies, this.credentials, this.origins});
 
   factory BrowserNewContextStorageState.fromJson(
     Map<String, dynamic> json, {
@@ -2726,6 +2478,9 @@ class BrowserNewContextStorageState {
     return BrowserNewContextStorageState(
       cookies: (json[r'cookies'] as List?)
           ?.map((e) => SetNetworkCookie.fromJson(e, connection: connection))
+          .toList(),
+      credentials: (json[r'credentials'] as List?)
+          ?.map((e) => VirtualCredential.fromJson(e, connection: connection))
           .toList(),
       origins: (json[r'origins'] as List?)
           ?.map((e) => SetOriginStorage.fromJson(e, connection: connection))
@@ -2736,6 +2491,8 @@ class BrowserNewContextStorageState {
   Map<String, dynamic> toJson() {
     return {
       if (cookies != null) r'cookies': cookies?.map((e) => e.toJson()).toList(),
+      if (credentials != null)
+        r'credentials': credentials?.map((e) => e.toJson()).toList(),
       if (origins != null) r'origins': origins?.map((e) => e.toJson()).toList(),
     };
   }
@@ -2911,20 +2668,17 @@ class BrowserTypeLaunchResult {
   }
 }
 
-class CDPSessionEventEvent {
+class CDPSessionEvent {
   final String method;
   final JsonValue params;
 
-  CDPSessionEventEvent({required this.method, this.params});
+  CDPSessionEvent({required this.method, this.params});
 
-  factory CDPSessionEventEvent.fromJson(
+  factory CDPSessionEvent.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return CDPSessionEventEvent(
-      method: (json[r'method'])!,
-      params: json[r'params'],
-    );
+    return CDPSessionEvent(method: (json[r'method'])!, params: json[r'params']);
   }
 
   Map<String, dynamic> toJson() {
@@ -2976,12 +2730,12 @@ class ClientSideCallMetadata {
 }
 
 class CommonScreenshotOptions {
-  final CommonScreenshotOptionsAnimationsEnum? animations;
-  final CommonScreenshotOptionsCaretEnum? caret;
+  final Animations? animations;
+  final Caret? caret;
   final List<CommonScreenshotOptionsMaskItems>? mask;
   final String? maskColor;
   final bool? omitBackground;
-  final CommonScreenshotOptionsScaleEnum? scale;
+  final Scale? scale;
   final String? style;
 
   CommonScreenshotOptions({
@@ -3001,14 +2755,10 @@ class CommonScreenshotOptions {
     return CommonScreenshotOptions(
       animations: json[r'animations'] == null
           ? null
-          : CommonScreenshotOptionsAnimationsEnum.values.firstWhere(
-              (e) => e.value == json[r'animations'],
-            ),
+          : Animations.values.firstWhere((e) => e.value == json[r'animations']),
       caret: json[r'caret'] == null
           ? null
-          : CommonScreenshotOptionsCaretEnum.values.firstWhere(
-              (e) => e.value == json[r'caret'],
-            ),
+          : Caret.values.firstWhere((e) => e.value == json[r'caret']),
       mask: (json[r'mask'] as List?)
           ?.map(
             (e) => CommonScreenshotOptionsMaskItems.fromJson(
@@ -3021,9 +2771,7 @@ class CommonScreenshotOptions {
       omitBackground: json[r'omitBackground'],
       scale: json[r'scale'] == null
           ? null
-          : CommonScreenshotOptionsScaleEnum.values.firstWhere(
-              (e) => e.value == json[r'scale'],
-            ),
+          : Scale.values.firstWhere((e) => e.value == json[r'scale']),
       style: json[r'style'],
     );
   }
@@ -3152,15 +2900,15 @@ class ConsoleMessageLocation {
 }
 
 class ContextOptions {
-  final ContextOptionsAcceptDownloadsEnum? acceptDownloads;
+  final Downloads? acceptDownloads;
   final String? baseURL;
   final bool? bypassCSP;
   final List<ContextOptionsClientCertificatesItems>? clientCertificates;
-  final ContextOptionsColorSchemeEnum? colorScheme;
-  final ContextOptionsContrastEnum? contrast;
+  final Scheme? colorScheme;
+  final Contrast? contrast;
   final double? deviceScaleFactor;
   final List<NameValue>? extraHTTPHeaders;
-  final ContextOptionsForcedColorsEnum? forcedColors;
+  final Colors? forcedColors;
   final ContextOptionsGeolocation? geolocation;
   final bool? hasTouch;
   final ContextOptionsHttpCredentials? httpCredentials;
@@ -3173,10 +2921,10 @@ class ContextOptions {
   final List<String>? permissions;
   final RecordHarOptions? recordHar;
   final ContextOptionsRecordVideo? recordVideo;
-  final ContextOptionsReducedMotionEnum? reducedMotion;
+  final Motion? reducedMotion;
   final ContextOptionsScreen? screen;
   final List<SelectorEngine>? selectorEngines;
-  final ContextOptionsServiceWorkersEnum? serviceWorkers;
+  final Workers? serviceWorkers;
   final bool? strictSelectors;
   final String? testIdAttributeName;
   final String? timezoneId;
@@ -3223,7 +2971,7 @@ class ContextOptions {
     return ContextOptions(
       acceptDownloads: json[r'acceptDownloads'] == null
           ? null
-          : ContextOptionsAcceptDownloadsEnum.values.firstWhere(
+          : Downloads.values.firstWhere(
               (e) => e.value == json[r'acceptDownloads'],
             ),
       baseURL: json[r'baseURL'],
@@ -3238,23 +2986,17 @@ class ContextOptions {
           .toList(),
       colorScheme: json[r'colorScheme'] == null
           ? null
-          : ContextOptionsColorSchemeEnum.values.firstWhere(
-              (e) => e.value == json[r'colorScheme'],
-            ),
+          : Scheme.values.firstWhere((e) => e.value == json[r'colorScheme']),
       contrast: json[r'contrast'] == null
           ? null
-          : ContextOptionsContrastEnum.values.firstWhere(
-              (e) => e.value == json[r'contrast'],
-            ),
+          : Contrast.values.firstWhere((e) => e.value == json[r'contrast']),
       deviceScaleFactor: (json[r'deviceScaleFactor'] as num?)?.toDouble(),
       extraHTTPHeaders: (json[r'extraHTTPHeaders'] as List?)
           ?.map((e) => NameValue.fromJson(e, connection: connection))
           .toList(),
       forcedColors: json[r'forcedColors'] == null
           ? null
-          : ContextOptionsForcedColorsEnum.values.firstWhere(
-              (e) => e.value == json[r'forcedColors'],
-            ),
+          : Colors.values.firstWhere((e) => e.value == json[r'forcedColors']),
       geolocation: json[r'geolocation'] == null
           ? null
           : ContextOptionsGeolocation.fromJson(
@@ -3289,9 +3031,7 @@ class ContextOptions {
             ),
       reducedMotion: json[r'reducedMotion'] == null
           ? null
-          : ContextOptionsReducedMotionEnum.values.firstWhere(
-              (e) => e.value == json[r'reducedMotion'],
-            ),
+          : Motion.values.firstWhere((e) => e.value == json[r'reducedMotion']),
       screen: json[r'screen'] == null
           ? null
           : ContextOptionsScreen.fromJson(
@@ -3303,7 +3043,7 @@ class ContextOptions {
           .toList(),
       serviceWorkers: json[r'serviceWorkers'] == null
           ? null
-          : ContextOptionsServiceWorkersEnum.values.firstWhere(
+          : Workers.values.firstWhere(
               (e) => e.value == json[r'serviceWorkers'],
             ),
       strictSelectors: json[r'strictSelectors'],
@@ -3435,7 +3175,7 @@ class ContextOptionsGeolocation {
 class ContextOptionsHttpCredentials {
   final String? origin;
   final String password;
-  final ContextOptionsHttpCredentialsSendEnum? send;
+  final Send? send;
   final String username;
 
   ContextOptionsHttpCredentials({
@@ -3454,9 +3194,7 @@ class ContextOptionsHttpCredentials {
       password: (json[r'password'])!,
       send: json[r'send'] == null
           ? null
-          : ContextOptionsHttpCredentialsSendEnum.values.firstWhere(
-              (e) => e.value == json[r'send'],
-            ),
+          : Send.values.firstWhere((e) => e.value == json[r'send']),
       username: (json[r'username'])!,
     );
   }
@@ -5502,24 +5240,24 @@ class FrameTitleResult {
 }
 
 class FrameWaitForFunctionResult {
-  final JSHandleBase handle;
+  final JSHandleBase? handle;
 
-  FrameWaitForFunctionResult({required this.handle});
+  FrameWaitForFunctionResult({this.handle});
 
   factory FrameWaitForFunctionResult.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
     return FrameWaitForFunctionResult(
-      handle: (connection != null && json[r'handle'] != null
+      handle: connection != null && json[r'handle'] != null
           ? ChannelOwner.from<JSHandleBase>(connection, json[r'handle'])
-          : null)!,
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      r'handle': {'guid': handle.guid},
+      if (handle != null) r'handle': {'guid': handle?.guid},
     };
   }
 }
@@ -5952,7 +5690,7 @@ class LaunchOptions {
   final bool? ignoreAllDefaultArgs;
   final List<String>? ignoreDefaultArgs;
   final LaunchOptionsProxy? proxy;
-  final double timeout;
+  final double? timeout;
   final String? tracesDir;
 
   LaunchOptions({
@@ -5972,7 +5710,7 @@ class LaunchOptions {
     this.ignoreAllDefaultArgs,
     this.ignoreDefaultArgs,
     this.proxy,
-    required this.timeout,
+    this.timeout,
     this.tracesDir,
   });
 
@@ -6001,7 +5739,7 @@ class LaunchOptions {
       proxy: json[r'proxy'] == null
           ? null
           : LaunchOptionsProxy.fromJson(json[r'proxy'], connection: connection),
-      timeout: ((json[r'timeout'] as num?)?.toDouble())!,
+      timeout: (json[r'timeout'] as num?)?.toDouble(),
       tracesDir: json[r'tracesDir'],
     );
   }
@@ -6025,7 +5763,7 @@ class LaunchOptions {
         r'ignoreAllDefaultArgs': ignoreAllDefaultArgs,
       if (ignoreDefaultArgs != null) r'ignoreDefaultArgs': ignoreDefaultArgs,
       if (proxy != null) r'proxy': proxy?.toJson(),
-      r'timeout': timeout,
+      if (timeout != null) r'timeout': timeout,
       if (tracesDir != null) r'tracesDir': tracesDir,
     };
   }
@@ -6114,7 +5852,7 @@ class LocalUtilsGlobToRegexResult {
 }
 
 class LocalUtilsHarLookupResult {
-  final LocalUtilsHarLookupResultActionEnum action;
+  final Action action;
   final String? body;
   final List<NameValue>? headers;
   final String? message;
@@ -6137,9 +5875,7 @@ class LocalUtilsHarLookupResult {
     return LocalUtilsHarLookupResult(
       action: (json[r'action'] == null
           ? null
-          : LocalUtilsHarLookupResultActionEnum.values.firstWhere(
-              (e) => e.value == json[r'action'],
-            ))!,
+          : Action.values.firstWhere((e) => e.value == json[r'action']))!,
       body: json[r'body'],
       headers: (json[r'headers'] as List?)
           ?.map((e) => NameValue.fromJson(e, connection: connection))
@@ -6246,8 +5982,7 @@ class LocalUtilsInitializerDeviceDescriptorsItems {
 }
 
 class LocalUtilsInitializerDeviceDescriptorsItemsDescriptor {
-  final LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum
-  defaultBrowserType;
+  final Name defaultBrowserType;
   final double deviceScaleFactor;
   final bool hasTouch;
   final bool isMobile;
@@ -6272,9 +6007,9 @@ class LocalUtilsInitializerDeviceDescriptorsItemsDescriptor {
     return LocalUtilsInitializerDeviceDescriptorsItemsDescriptor(
       defaultBrowserType: (json[r'defaultBrowserType'] == null
           ? null
-          : LocalUtilsInitializerDeviceDescriptorsItemsDescriptorDefaultBrowserTypeEnum
-                .values
-                .firstWhere((e) => e.value == json[r'defaultBrowserType']))!,
+          : Name.values.firstWhere(
+              (e) => e.value == json[r'defaultBrowserType'],
+            ))!,
       deviceScaleFactor: ((json[r'deviceScaleFactor'] as num?)?.toDouble())!,
       hasTouch: (json[r'hasTouch'])!,
       isMobile: (json[r'isMobile'])!,
@@ -6376,9 +6111,16 @@ class Metadata {
   final bool? internal;
   final MetadataLocation? location;
   final String? stepId;
+  final double? timeout;
   final String? title;
 
-  Metadata({this.internal, this.location, this.stepId, this.title});
+  Metadata({
+    this.internal,
+    this.location,
+    this.stepId,
+    this.timeout,
+    this.title,
+  });
 
   factory Metadata.fromJson(
     Map<String, dynamic> json, {
@@ -6393,6 +6135,7 @@ class Metadata {
               connection: connection,
             ),
       stepId: json[r'stepId'],
+      timeout: (json[r'timeout'] as num?)?.toDouble(),
       title: json[r'title'],
     );
   }
@@ -6402,6 +6145,7 @@ class Metadata {
       if (internal != null) r'internal': internal,
       if (location != null) r'location': location?.toJson(),
       if (stepId != null) r'stepId': stepId,
+      if (timeout != null) r'timeout': timeout,
       if (title != null) r'title': title,
     };
   }
@@ -6460,7 +6204,7 @@ class NetworkCookie {
   final String name;
   final String? partitionKey;
   final String path;
-  final NetworkCookieSameSiteEnum sameSite;
+  final Site sameSite;
   final bool secure;
   final String value;
 
@@ -6491,9 +6235,7 @@ class NetworkCookie {
       path: (json[r'path'])!,
       sameSite: (json[r'sameSite'] == null
           ? null
-          : NetworkCookieSameSiteEnum.values.firstWhere(
-              (e) => e.value == json[r'sameSite'],
-            ))!,
+          : Site.values.firstWhere((e) => e.value == json[r'sameSite']))!,
       secure: (json[r'secure'])!,
       value: (json[r'value'])!,
     );
@@ -7133,12 +6875,14 @@ class PageRouteEvent {
 
 class PageScreencastFrameEvent {
   final String data;
+  final int frameId;
   final double timestamp;
   final int viewportHeight;
   final int viewportWidth;
 
   PageScreencastFrameEvent({
     required this.data,
+    required this.frameId,
     required this.timestamp,
     required this.viewportHeight,
     required this.viewportWidth,
@@ -7150,6 +6894,7 @@ class PageScreencastFrameEvent {
   }) {
     return PageScreencastFrameEvent(
       data: (json[r'data'])!,
+      frameId: (json[r'frameId'])!,
       timestamp: ((json[r'timestamp'] as num?)?.toDouble())!,
       viewportHeight: (json[r'viewportHeight'])!,
       viewportWidth: (json[r'viewportWidth'])!,
@@ -7159,6 +6904,7 @@ class PageScreencastFrameEvent {
   Map<String, dynamic> toJson() {
     return {
       r'data': data,
+      r'frameId': frameId,
       r'timestamp': timestamp,
       r'viewportHeight': viewportHeight,
       r'viewportWidth': viewportWidth,
@@ -7244,24 +6990,24 @@ class PageScreenshotResult {
   }
 }
 
-class PageSetNetworkInterceptionPatternsPatternsItems {
+class PageSetNetworkInterceptionPatternsItems {
   final String? glob;
   final String? regexFlags;
   final String? regexSource;
   final URLPattern? urlPattern;
 
-  PageSetNetworkInterceptionPatternsPatternsItems({
+  PageSetNetworkInterceptionPatternsItems({
     this.glob,
     this.regexFlags,
     this.regexSource,
     this.urlPattern,
   });
 
-  factory PageSetNetworkInterceptionPatternsPatternsItems.fromJson(
+  factory PageSetNetworkInterceptionPatternsItems.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PageSetNetworkInterceptionPatternsPatternsItems(
+    return PageSetNetworkInterceptionPatternsItems(
       glob: json[r'glob'],
       regexFlags: json[r'regexFlags'],
       regexSource: json[r'regexSource'],
@@ -7281,17 +7027,17 @@ class PageSetNetworkInterceptionPatternsPatternsItems {
   }
 }
 
-class PageSetViewportSizeViewportSize {
+class PageSetViewportSize {
   final int height;
   final int width;
 
-  PageSetViewportSizeViewportSize({required this.height, required this.width});
+  PageSetViewportSize({required this.height, required this.width});
 
-  factory PageSetViewportSizeViewportSize.fromJson(
+  factory PageSetViewportSize.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PageSetViewportSizeViewportSize(
+    return PageSetViewportSize(
       height: (json[r'height'])!,
       width: (json[r'width'])!,
     );
@@ -7302,24 +7048,24 @@ class PageSetViewportSizeViewportSize {
   }
 }
 
-class PageSetWebSocketInterceptionPatternsPatternsItems {
+class PageSetWebSocketInterceptionPatternsItems {
   final String? glob;
   final String? regexFlags;
   final String? regexSource;
   final URLPattern? urlPattern;
 
-  PageSetWebSocketInterceptionPatternsPatternsItems({
+  PageSetWebSocketInterceptionPatternsItems({
     this.glob,
     this.regexFlags,
     this.regexSource,
     this.urlPattern,
   });
 
-  factory PageSetWebSocketInterceptionPatternsPatternsItems.fromJson(
+  factory PageSetWebSocketInterceptionPatternsItems.fromJson(
     Map<String, dynamic> json, {
     Connection? connection,
   }) {
-    return PageSetWebSocketInterceptionPatternsPatternsItems(
+    return PageSetWebSocketInterceptionPatternsItems(
       glob: json[r'glob'],
       regexFlags: json[r'regexFlags'],
       regexSource: json[r'regexSource'],
@@ -7866,7 +7612,7 @@ class PlaywrightNewRequestClientCertificatesItems {
 class PlaywrightNewRequestHttpCredentials {
   final String? origin;
   final String password;
-  final PlaywrightNewRequestHttpCredentialsSendEnum? send;
+  final Send? send;
   final String username;
 
   PlaywrightNewRequestHttpCredentials({
@@ -7885,9 +7631,7 @@ class PlaywrightNewRequestHttpCredentials {
       password: (json[r'password'])!,
       send: json[r'send'] == null
           ? null
-          : PlaywrightNewRequestHttpCredentialsSendEnum.values.firstWhere(
-              (e) => e.value == json[r'send'],
-            ),
+          : Send.values.firstWhere((e) => e.value == json[r'send']),
       username: (json[r'username'])!,
     );
   }
@@ -8010,9 +7754,9 @@ class Point {
 }
 
 class RecordHarOptions {
-  final RecordHarOptionsContentEnum? content;
+  final Content? content;
   final String? harPath;
-  final RecordHarOptionsModeEnum? mode;
+  final OptionsMode? mode;
   final String? resourcesDir;
   final String? urlGlob;
   final String? urlRegexFlags;
@@ -8035,15 +7779,11 @@ class RecordHarOptions {
     return RecordHarOptions(
       content: json[r'content'] == null
           ? null
-          : RecordHarOptionsContentEnum.values.firstWhere(
-              (e) => e.value == json[r'content'],
-            ),
+          : Content.values.firstWhere((e) => e.value == json[r'content']),
       harPath: json[r'harPath'],
       mode: json[r'mode'] == null
           ? null
-          : RecordHarOptionsModeEnum.values.firstWhere(
-              (e) => e.value == json[r'mode'],
-            ),
+          : OptionsMode.values.firstWhere((e) => e.value == json[r'mode']),
       resourcesDir: json[r'resourcesDir'],
       urlGlob: json[r'urlGlob'],
       urlRegexFlags: json[r'urlRegexFlags'],
@@ -8714,7 +8454,7 @@ class SerializedArgument {
 }
 
 class SerializedError {
-  final SerializedErrorError? error;
+  final SerializedError? error;
   final SerializedValue? value;
 
   SerializedError({this.error, this.value});
@@ -8726,10 +8466,7 @@ class SerializedError {
     return SerializedError(
       error: json[r'error'] == null
           ? null
-          : SerializedErrorError.fromJson(
-              json[r'error'],
-              connection: connection,
-            ),
+          : SerializedError.fromJson(json[r'error'], connection: connection),
       value: json[r'value'] == null
           ? null
           : SerializedValue.fromJson(json[r'value'], connection: connection),
@@ -8744,39 +8481,13 @@ class SerializedError {
   }
 }
 
-class SerializedErrorError {
-  final String message;
-  final String name;
-  final String? stack;
-
-  SerializedErrorError({required this.message, required this.name, this.stack});
-
-  factory SerializedErrorError.fromJson(
-    Map<String, dynamic> json, {
-    Connection? connection,
-  }) {
-    return SerializedErrorError(
-      message: (json[r'message'])!,
-      name: (json[r'name'])!,
-      stack: json[r'stack'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      r'message': message,
-      r'name': name,
-      if (stack != null) r'stack': stack,
-    };
-  }
-}
-
 class SerializedValue {
   final List<SerializedValue>? a;
   final bool? b;
   final String? bi;
   final String? d;
   final SerializedValueE? e;
+  final String? fn;
   final int? h;
   final int? id;
   final double? n;
@@ -8786,7 +8497,7 @@ class SerializedValue {
   final String? s;
   final SerializedValueTa? ta;
   final String? u;
-  final SerializedValueVEnum? v;
+  final V? v;
 
   SerializedValue({
     this.a,
@@ -8794,6 +8505,7 @@ class SerializedValue {
     this.bi,
     this.d,
     this.e,
+    this.fn,
     this.h,
     this.id,
     this.n,
@@ -8820,6 +8532,7 @@ class SerializedValue {
       e: json[r'e'] == null
           ? null
           : SerializedValueE.fromJson(json[r'e'], connection: connection),
+      fn: json[r'fn'],
       h: json[r'h'],
       id: json[r'id'],
       n: (json[r'n'] as num?)?.toDouble(),
@@ -8839,9 +8552,7 @@ class SerializedValue {
       u: json[r'u'],
       v: json[r'v'] == null
           ? null
-          : SerializedValueVEnum.values.firstWhere(
-              (e) => e.value == json[r'v'],
-            ),
+          : V.values.firstWhere((e) => e.value == json[r'v']),
     );
   }
 
@@ -8852,6 +8563,7 @@ class SerializedValue {
       if (bi != null) r'bi': bi,
       if (d != null) r'd': d,
       if (e != null) r'e': e?.toJson(),
+      if (fn != null) r'fn': fn,
       if (h != null) r'h': h,
       if (id != null) r'id': id,
       if (n != null) r'n': n,
@@ -8932,7 +8644,7 @@ class SerializedValueR {
 
 class SerializedValueTa {
   final String b;
-  final SerializedValueTaKEnum k;
+  final K k;
 
   SerializedValueTa({required this.b, required this.k});
 
@@ -8944,9 +8656,7 @@ class SerializedValueTa {
       b: (json[r'b'])!,
       k: (json[r'k'] == null
           ? null
-          : SerializedValueTaKEnum.values.firstWhere(
-              (e) => e.value == json[r'k'],
-            ))!,
+          : K.values.firstWhere((e) => e.value == json[r'k']))!,
     );
   }
 
@@ -8963,7 +8673,7 @@ class SetNetworkCookie {
   final String name;
   final String? partitionKey;
   final String? path;
-  final SetNetworkCookieSameSiteEnum? sameSite;
+  final Site? sameSite;
   final bool? secure;
   final String? url;
   final String value;
@@ -8996,9 +8706,7 @@ class SetNetworkCookie {
       path: json[r'path'],
       sameSite: json[r'sameSite'] == null
           ? null
-          : SetNetworkCookieSameSiteEnum.values.firstWhere(
-              (e) => e.value == json[r'sameSite'],
-            ),
+          : Site.values.firstWhere((e) => e.value == json[r'sameSite']),
       secure: json[r'secure'],
       url: json[r'url'],
       value: (json[r'value'])!,
@@ -9062,10 +8770,10 @@ class SetOriginStorage {
 }
 
 class ShowActionsOptions {
-  final ShowActionsOptionsCursorEnum? cursor;
+  final Cursor? cursor;
   final double? duration;
   final int? fontSize;
-  final ShowActionsOptionsPositionEnum? position;
+  final Position? position;
 
   ShowActionsOptions({
     this.cursor,
@@ -9081,16 +8789,12 @@ class ShowActionsOptions {
     return ShowActionsOptions(
       cursor: json[r'cursor'] == null
           ? null
-          : ShowActionsOptionsCursorEnum.values.firstWhere(
-              (e) => e.value == json[r'cursor'],
-            ),
+          : Cursor.values.firstWhere((e) => e.value == json[r'cursor']),
       duration: (json[r'duration'] as num?)?.toDouble(),
       fontSize: json[r'fontSize'],
       position: json[r'position'] == null
           ? null
-          : ShowActionsOptionsPositionEnum.values.firstWhere(
-              (e) => e.value == json[r'position'],
-            ),
+          : Position.values.firstWhere((e) => e.value == json[r'position']),
     );
   }
 
@@ -9432,7 +9136,7 @@ class WaitInfo {
   final String? error;
   final String? event;
   final String? message;
-  final WaitInfoPhaseEnum phase;
+  final Phase phase;
   final String waitId;
 
   WaitInfo({
@@ -9453,9 +9157,7 @@ class WaitInfo {
       message: json[r'message'],
       phase: (json[r'phase'] == null
           ? null
-          : WaitInfoPhaseEnum.values.firstWhere(
-              (e) => e.value == json[r'phase'],
-            ))!,
+          : Phase.values.firstWhere((e) => e.value == json[r'phase']))!,
       waitId: (json[r'waitId'])!,
     );
   }
@@ -9816,7 +9518,7 @@ class APIRequestContextChannel extends Channel {
     List<FormField>? multipartData,
     List<NameValue>? params,
     String? postData,
-    required double timeout,
+    double? timeout,
     required String url,
   }) async {
     final payload = <String, dynamic>{};
@@ -9834,7 +9536,7 @@ class APIRequestContextChannel extends Channel {
     if (multipartData != null) payload['multipartData'] = multipartData;
     if (params != null) payload['params'] = params;
     if (postData != null) payload['postData'] = postData;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['url'] = url;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -9849,9 +9551,11 @@ class APIRequestContextChannel extends Channel {
 
   Future<APIRequestContextFetchLogResult> fetchLog({
     required String fetchUid,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['fetchUid'] = fetchUid;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'fetchLog',
@@ -9866,9 +9570,11 @@ class APIRequestContextChannel extends Channel {
   /// Get response body
   Future<APIRequestContextFetchResponseBodyResult> fetchResponseBody({
     required String fetchUid,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['fetchUid'] = fetchUid;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'fetchResponseBody',
@@ -9883,9 +9589,11 @@ class APIRequestContextChannel extends Channel {
   /// Get storage state
   Future<APIRequestContextStorageStateResult> storageState({
     bool? indexedDB,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (indexedDB != null) payload['indexedDB'] = indexedDB;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'storageState',
@@ -9916,12 +9624,14 @@ class AndroidChannel extends Channel {
     String? host,
     bool? omitDriverInstall,
     int? port,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (host != null) payload['host'] = host;
     if (omitDriverInstall != null)
       payload['omitDriverInstall'] = omitDriverInstall;
     if (port != null) payload['port'] = port;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'devices',
@@ -9954,11 +9664,13 @@ abstract class AndroidDeviceBase extends ChannelOwner {
 class AndroidDeviceChannel extends Channel {
   AndroidDeviceChannel(super.owner);
 
-  Future<void> close() async {
+  Future<void> close({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
-      {},
+      payload,
     );
     return;
   }
@@ -9966,9 +9678,11 @@ class AndroidDeviceChannel extends Channel {
   /// Connect to Web View
   Future<AndroidDeviceConnectToWebViewResult> connectToWebView({
     required String socketName,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['socketName'] = socketName;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'connectToWebView',
@@ -9985,13 +9699,13 @@ class AndroidDeviceChannel extends Channel {
     required AndroidSelector androidSelector,
     required Point dest,
     double? speed,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['dest'] = dest.toJson();
     if (speed != null) payload['speed'] = speed;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'drag',
@@ -10004,12 +9718,12 @@ class AndroidDeviceChannel extends Channel {
   Future<void> fill({
     required AndroidSelector androidSelector,
     required String text,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['text'] = text;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'fill',
@@ -10021,15 +9735,15 @@ class AndroidDeviceChannel extends Channel {
   /// Fling
   Future<void> fling({
     required AndroidSelector androidSelector,
-    required AndroidDeviceFlingDirectionEnum direction,
+    required Direction direction,
     double? speed,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['direction'] = direction.value;
     if (speed != null) payload['speed'] = speed;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'fling',
@@ -10040,9 +9754,11 @@ class AndroidDeviceChannel extends Channel {
 
   Future<AndroidDeviceInfoResult> info({
     required AndroidSelector androidSelector,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'info',
@@ -10058,11 +9774,13 @@ class AndroidDeviceChannel extends Channel {
   Future<void> inputDrag({
     required Point from,
     required int steps,
+    double? timeout,
     required Point to,
   }) async {
     final payload = <String, dynamic>{};
     payload['from'] = from.toJson();
     payload['steps'] = steps;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['to'] = to.toJson();
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -10073,9 +9791,10 @@ class AndroidDeviceChannel extends Channel {
   }
 
   /// Press
-  Future<void> inputPress({required String key}) async {
+  Future<void> inputPress({required String key, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'inputPress',
@@ -10088,10 +9807,12 @@ class AndroidDeviceChannel extends Channel {
   Future<void> inputSwipe({
     required List<Point> segments,
     required int steps,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['segments'] = segments;
     payload['steps'] = steps;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'inputSwipe',
@@ -10101,9 +9822,10 @@ class AndroidDeviceChannel extends Channel {
   }
 
   /// Tap
-  Future<void> inputTap({required Point point}) async {
+  Future<void> inputTap({required Point point, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['point'] = point.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'inputTap',
@@ -10113,9 +9835,10 @@ class AndroidDeviceChannel extends Channel {
   }
 
   /// Type
-  Future<void> inputType({required String text}) async {
+  Future<void> inputType({required String text, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['text'] = text;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'inputType',
@@ -10125,10 +9848,15 @@ class AndroidDeviceChannel extends Channel {
   }
 
   /// Install apk
-  Future<void> installApk({List<String>? args, required String file}) async {
+  Future<void> installApk({
+    List<String>? args,
+    required String file,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (args != null) payload['args'] = args;
     payload['file'] = file;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'installApk',
@@ -10143,12 +9871,14 @@ class AndroidDeviceChannel extends Channel {
     List<String>? args,
     String? pkg,
     AndroidDeviceLaunchBrowserProxy? proxy,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(contextOptions.toJson() as Map<String, dynamic>);
     if (args != null) payload['args'] = args;
     if (pkg != null) payload['pkg'] = pkg;
     if (proxy != null) payload['proxy'] = proxy?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'launchBrowser',
@@ -10163,11 +9893,11 @@ class AndroidDeviceChannel extends Channel {
   /// Long tap
   Future<void> longTap({
     required AndroidSelector androidSelector,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'longTap',
@@ -10177,9 +9907,13 @@ class AndroidDeviceChannel extends Channel {
   }
 
   /// Open app
-  Future<AndroidDeviceOpenResult> open({required String command}) async {
+  Future<AndroidDeviceOpenResult> open({
+    required String command,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['command'] = command;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'open',
@@ -10196,13 +9930,13 @@ class AndroidDeviceChannel extends Channel {
     required AndroidSelector androidSelector,
     required double percent,
     double? speed,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'pinchClose',
@@ -10216,13 +9950,13 @@ class AndroidDeviceChannel extends Channel {
     required AndroidSelector androidSelector,
     required double percent,
     double? speed,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'pinchOpen',
@@ -10236,11 +9970,13 @@ class AndroidDeviceChannel extends Channel {
     required String file,
     int? mode,
     required String path,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['file'] = file;
     if (mode != null) payload['mode'] = mode;
     payload['path'] = path;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'push',
@@ -10250,11 +9986,13 @@ class AndroidDeviceChannel extends Channel {
   }
 
   /// Screenshot
-  Future<AndroidDeviceScreenshotResult> screenshot() async {
+  Future<AndroidDeviceScreenshotResult> screenshot({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'screenshot',
-      {},
+      payload,
     );
     return AndroidDeviceScreenshotResult.fromJson(
       response,
@@ -10265,17 +10003,17 @@ class AndroidDeviceChannel extends Channel {
   /// Scroll
   Future<void> scroll({
     required AndroidSelector androidSelector,
-    required AndroidDeviceScrollDirectionEnum direction,
+    required Direction direction,
     required double percent,
     double? speed,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['direction'] = direction.value;
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'scroll',
@@ -10285,9 +10023,13 @@ class AndroidDeviceChannel extends Channel {
   }
 
   /// Execute shell command
-  Future<AndroidDeviceShellResult> shell({required String command}) async {
+  Future<AndroidDeviceShellResult> shell({
+    required String command,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['command'] = command;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'shell',
@@ -10302,17 +10044,17 @@ class AndroidDeviceChannel extends Channel {
   /// Swipe
   Future<void> swipe({
     required AndroidSelector androidSelector,
-    required AndroidDeviceSwipeDirectionEnum direction,
+    required Direction direction,
     required double percent,
     double? speed,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     payload['direction'] = direction.value;
     payload['percent'] = percent;
     if (speed != null) payload['speed'] = speed;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'swipe',
@@ -10325,12 +10067,12 @@ class AndroidDeviceChannel extends Channel {
   Future<void> tap({
     required AndroidSelector androidSelector,
     double? duration,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     if (duration != null) payload['duration'] = duration;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'tap',
@@ -10342,13 +10084,13 @@ class AndroidDeviceChannel extends Channel {
   /// Wait
   Future<void> wait({
     required AndroidSelector androidSelector,
-    AndroidDeviceWaitStateEnum? state,
-    required double timeout,
+    WaitState? state,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['androidSelector'] = androidSelector.toJson();
     if (state != null) payload['state'] = state?.value;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'wait',
@@ -10372,18 +10114,21 @@ abstract class AndroidSocketBase extends ChannelOwner {
 class AndroidSocketChannel extends Channel {
   AndroidSocketChannel(super.owner);
 
-  Future<void> close() async {
+  Future<void> close({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> write({required String data}) async {
+  Future<void> write({required String data, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['data'] = data;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'write',
@@ -10410,29 +10155,35 @@ abstract class ArtifactBase extends ChannelOwner {
 class ArtifactChannel extends Channel {
   ArtifactChannel(super.owner);
 
-  Future<void> cancel() async {
+  Future<void> cancel({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'cancel',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> delete() async {
+  Future<void> delete({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'delete',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<ArtifactFailureResult> failure() async {
+  Future<ArtifactFailureResult> failure({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'failure',
-      {},
+      payload,
     );
     return ArtifactFailureResult.fromJson(
       response,
@@ -10440,11 +10191,15 @@ class ArtifactChannel extends Channel {
     );
   }
 
-  Future<ArtifactPathAfterFinishedResult> pathAfterFinished() async {
+  Future<ArtifactPathAfterFinishedResult> pathAfterFinished({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'pathAfterFinished',
-      {},
+      payload,
     );
     return ArtifactPathAfterFinishedResult.fromJson(
       response,
@@ -10452,9 +10207,10 @@ class ArtifactChannel extends Channel {
     );
   }
 
-  Future<void> saveAs({required String path}) async {
+  Future<void> saveAs({required String path, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['path'] = path;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'saveAs',
@@ -10463,11 +10219,13 @@ class ArtifactChannel extends Channel {
     return;
   }
 
-  Future<ArtifactSaveAsStreamResult> saveAsStream() async {
+  Future<ArtifactSaveAsStreamResult> saveAsStream({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'saveAsStream',
-      {},
+      payload,
     );
     return ArtifactSaveAsStreamResult.fromJson(
       response,
@@ -10475,11 +10233,13 @@ class ArtifactChannel extends Channel {
     );
   }
 
-  Future<ArtifactStreamResult> stream() async {
+  Future<ArtifactStreamResult> stream({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'stream',
-      {},
+      payload,
     );
     return ArtifactStreamResult.fromJson(
       response,
@@ -10508,9 +10268,10 @@ abstract class BindingCallBase extends ChannelOwner {
 class BindingCallChannel extends Channel {
   BindingCallChannel(super.owner);
 
-  Future<void> reject({required SerializedError error}) async {
+  Future<void> reject({required SerializedError error, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['error'] = error.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'reject',
@@ -10519,9 +10280,13 @@ class BindingCallChannel extends Channel {
     return;
   }
 
-  Future<void> resolve({required SerializedArgument result}) async {
+  Future<void> resolve({
+    required SerializedArgument result,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['result'] = result.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'resolve',
@@ -10549,9 +10314,10 @@ class BrowserChannel extends Channel {
   BrowserChannel(super.owner);
 
   /// Close browser
-  Future<void> close({String? reason}) async {
+  Future<void> close({String? reason, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
@@ -10560,11 +10326,15 @@ class BrowserChannel extends Channel {
     return;
   }
 
-  Future<BrowserDefaultUserAgentForTestResult> defaultUserAgentForTest() async {
+  Future<BrowserDefaultUserAgentForTestResult> defaultUserAgentForTest({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'defaultUserAgentForTest',
-      {},
+      payload,
     );
     return BrowserDefaultUserAgentForTestResult.fromJson(
       response,
@@ -10572,9 +10342,13 @@ class BrowserChannel extends Channel {
     );
   }
 
-  Future<void> disconnectFromReusedContext({required String reason}) async {
+  Future<void> disconnectFromReusedContext({
+    required String reason,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['reason'] = reason;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'disconnectFromReusedContext',
@@ -10583,21 +10357,27 @@ class BrowserChannel extends Channel {
     return;
   }
 
-  Future<void> killForTests() async {
+  Future<void> killForTests({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'killForTests',
-      {},
+      payload,
     );
     return;
   }
 
   /// Create CDP session
-  Future<BrowserNewBrowserCDPSessionResult> newBrowserCDPSession() async {
+  Future<BrowserNewBrowserCDPSessionResult> newBrowserCDPSession({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'newBrowserCDPSession',
-      {},
+      payload,
     );
     return BrowserNewBrowserCDPSessionResult.fromJson(
       response,
@@ -10610,11 +10390,13 @@ class BrowserChannel extends Channel {
     required ContextOptions contextOptions,
     BrowserNewContextProxy? proxy,
     BrowserNewContextStorageState? storageState,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(contextOptions.toJson() as Map<String, dynamic>);
     if (proxy != null) payload['proxy'] = proxy?.toJson();
     if (storageState != null) payload['storageState'] = storageState?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'newContext',
@@ -10630,11 +10412,13 @@ class BrowserChannel extends Channel {
     required ContextOptions contextOptions,
     BrowserNewContextForReuseProxy? proxy,
     BrowserNewContextForReuseStorageState? storageState,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(contextOptions.toJson() as Map<String, dynamic>);
     if (proxy != null) payload['proxy'] = proxy?.toJson();
     if (storageState != null) payload['storageState'] = storageState?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'newContextForReuse',
@@ -10651,6 +10435,7 @@ class BrowserChannel extends Channel {
     String? host,
     JsonValue metadata,
     int? port,
+    double? timeout,
     required String title,
     String? workspaceDir,
   }) async {
@@ -10658,6 +10443,7 @@ class BrowserChannel extends Channel {
     if (host != null) payload['host'] = host;
     if (metadata != null) payload['metadata'] = metadata;
     if (port != null) payload['port'] = port;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['title'] = title;
     if (workspaceDir != null) payload['workspaceDir'] = workspaceDir;
     final response = await owner.connection.sendMessageToServer(
@@ -10676,11 +10462,13 @@ class BrowserChannel extends Channel {
     List<String>? categories,
     PageBase? page,
     bool? screenshots,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (categories != null) payload['categories'] = categories;
     if (page != null) payload['page'] = {'guid': page.guid};
     if (screenshots != null) payload['screenshots'] = screenshots;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'startTracing',
@@ -10690,21 +10478,25 @@ class BrowserChannel extends Channel {
   }
 
   /// Stop server
-  Future<void> stopServer() async {
+  Future<void> stopServer({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'stopServer',
-      {},
+      payload,
     );
     return;
   }
 
   /// Stop browser tracing
-  Future<BrowserStopTracingResult> stopTracing() async {
+  Future<BrowserStopTracingResult> stopTracing({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'stopTracing',
-      {},
+      payload,
     );
     return BrowserStopTracingResult.fromJson(
       response,
@@ -10734,9 +10526,13 @@ class BrowserContextChannel extends Channel {
   BrowserContextChannel(super.owner);
 
   /// Add cookies
-  Future<void> addCookies({required List<SetNetworkCookie> cookies}) async {
+  Future<void> addCookies({
+    required List<SetNetworkCookie> cookies,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['cookies'] = cookies;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'addCookies',
@@ -10748,9 +10544,11 @@ class BrowserContextChannel extends Channel {
   /// Add init script
   Future<BrowserContextAddInitScriptResult> addInitScript({
     required String source,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['source'] = source;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'addInitScript',
@@ -10773,6 +10571,7 @@ class BrowserContextChannel extends Channel {
     String? path,
     String? pathRegexFlags,
     String? pathRegexSource,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (domain != null) payload['domain'] = domain;
@@ -10786,6 +10585,7 @@ class BrowserContextChannel extends Channel {
     if (path != null) payload['path'] = path;
     if (pathRegexFlags != null) payload['pathRegexFlags'] = pathRegexFlags;
     if (pathRegexSource != null) payload['pathRegexSource'] = pathRegexSource;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clearCookies',
@@ -10795,11 +10595,13 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Clear permissions
-  Future<void> clearPermissions() async {
+  Future<void> clearPermissions({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clearPermissions',
-      {},
+      payload,
     );
     return;
   }
@@ -10808,10 +10610,12 @@ class BrowserContextChannel extends Channel {
   Future<void> clockFastForward({
     double? ticksNumber,
     String? ticksString,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (ticksNumber != null) payload['ticksNumber'] = ticksNumber;
     if (ticksString != null) payload['ticksString'] = ticksString;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clockFastForward',
@@ -10821,10 +10625,15 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Install clock "{timeNumber|timeString}"
-  Future<void> clockInstall({double? timeNumber, String? timeString}) async {
+  Future<void> clockInstall({
+    double? timeNumber,
+    String? timeString,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clockInstall',
@@ -10834,10 +10643,15 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Pause clock "{timeNumber|timeString}"
-  Future<void> clockPauseAt({double? timeNumber, String? timeString}) async {
+  Future<void> clockPauseAt({
+    double? timeNumber,
+    String? timeString,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clockPauseAt',
@@ -10847,20 +10661,27 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Resume clock
-  Future<void> clockResume() async {
+  Future<void> clockResume({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clockResume',
-      {},
+      payload,
     );
     return;
   }
 
   /// Run clock "{ticksNumber|ticksString}"
-  Future<void> clockRunFor({double? ticksNumber, String? ticksString}) async {
+  Future<void> clockRunFor({
+    double? ticksNumber,
+    String? ticksString,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (ticksNumber != null) payload['ticksNumber'] = ticksNumber;
     if (ticksString != null) payload['ticksString'] = ticksString;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clockRunFor',
@@ -10873,10 +10694,12 @@ class BrowserContextChannel extends Channel {
   Future<void> clockSetFixedTime({
     double? timeNumber,
     String? timeString,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clockSetFixedTime',
@@ -10889,10 +10712,12 @@ class BrowserContextChannel extends Channel {
   Future<void> clockSetSystemTime({
     double? timeNumber,
     String? timeString,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (timeNumber != null) payload['timeNumber'] = timeNumber;
     if (timeString != null) payload['timeString'] = timeString;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clockSetSystemTime',
@@ -10902,9 +10727,10 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Close context
-  Future<void> close({String? reason}) async {
+  Future<void> close({String? reason, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
@@ -10915,9 +10741,11 @@ class BrowserContextChannel extends Channel {
 
   /// Get cookies
   Future<BrowserContextCookiesResult> cookies({
+    double? timeout,
     required List<String> urls,
   }) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['urls'] = urls;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -10931,12 +10759,14 @@ class BrowserContextChannel extends Channel {
   }
 
   Future<BrowserContextCreateTempFilesResult> createTempFiles({
-    required List<BrowserContextCreateTempFilesItemsItems> items,
+    required List<BrowserContextCreateTempFilesItems> items,
     String? rootDirName,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['items'] = items;
     if (rootDirName != null) payload['rootDirName'] = rootDirName;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'createTempFiles',
@@ -10954,6 +10784,7 @@ class BrowserContextChannel extends Channel {
     String? privateKey,
     String? publicKey,
     required String rpId,
+    double? timeout,
     String? userHandle,
   }) async {
     final payload = <String, dynamic>{};
@@ -10961,6 +10792,7 @@ class BrowserContextChannel extends Channel {
     if (privateKey != null) payload['privateKey'] = privateKey;
     if (publicKey != null) payload['publicKey'] = publicKey;
     payload['rpId'] = rpId;
+    if (timeout != null) payload['timeout'] = timeout;
     if (userHandle != null) payload['userHandle'] = userHandle;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -10974,9 +10806,10 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Delete virtual credential
-  Future<void> credentialsDelete({required String id}) async {
+  Future<void> credentialsDelete({required String id, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['id'] = id;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'credentialsDelete',
@@ -10989,10 +10822,12 @@ class BrowserContextChannel extends Channel {
   Future<BrowserContextCredentialsGetResult> credentialsGet({
     String? id,
     String? rpId,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (id != null) payload['id'] = id;
     if (rpId != null) payload['rpId'] = rpId;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'credentialsGet',
@@ -11005,20 +10840,24 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Install virtual WebAuthn authenticator
-  Future<void> credentialsInstall() async {
+  Future<void> credentialsInstall({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'credentialsInstall',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> disableRecorder() async {
+  Future<void> disableRecorder({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'disableRecorder',
-      {},
+      payload,
     );
     return;
   }
@@ -11029,13 +10868,14 @@ class BrowserContextChannel extends Channel {
     bool? handleSIGINT,
     String? language,
     JsonValue launchOptions,
-    BrowserContextEnableRecorderModeEnum? mode,
+    EnableRecorderMode? mode,
     bool? omitCallTracking,
     String? outputFile,
     bool? pauseOnNextStatement,
-    BrowserContextEnableRecorderRecorderModeEnum? recorderMode,
+    RecorderRecorderMode? recorderMode,
     String? saveStorage,
     String? testIdAttributeName,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (contextOptions != null) payload['contextOptions'] = contextOptions;
@@ -11053,6 +10893,7 @@ class BrowserContextChannel extends Channel {
     if (saveStorage != null) payload['saveStorage'] = saveStorage;
     if (testIdAttributeName != null)
       payload['testIdAttributeName'] = testIdAttributeName;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'enableRecorder',
@@ -11064,9 +10905,13 @@ class BrowserContextChannel extends Channel {
   /// Expose binding
   Future<BrowserContextExposeBindingResult> exposeBinding({
     required String name,
+    bool? noGlobal,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
+    if (noGlobal != null) payload['noGlobal'] = noGlobal;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'exposeBinding',
@@ -11078,11 +10923,13 @@ class BrowserContextChannel extends Channel {
     );
   }
 
-  Future<void> exposeConsoleApi() async {
+  Future<void> exposeConsoleApi({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'exposeConsoleApi',
-      {},
+      payload,
     );
     return;
   }
@@ -11091,10 +10938,12 @@ class BrowserContextChannel extends Channel {
   Future<void> grantPermissions({
     String? origin,
     required List<String> permissions,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (origin != null) payload['origin'] = origin;
     payload['permissions'] = permissions;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'grantPermissions',
@@ -11107,10 +10956,12 @@ class BrowserContextChannel extends Channel {
   Future<BrowserContextNewCDPSessionResult> newCDPSession({
     FrameBase? frame,
     PageBase? page,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (frame != null) payload['frame'] = {'guid': frame.guid};
     if (page != null) payload['page'] = {'guid': page.guid};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'newCDPSession',
@@ -11123,11 +10974,13 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Create page
-  Future<BrowserContextNewPageResult> newPage() async {
+  Future<BrowserContextNewPageResult> newPage({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'newPage',
-      {},
+      payload,
     );
     return BrowserContextNewPageResult.fromJson(
       response,
@@ -11136,20 +10989,24 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Pause
-  Future<void> pause() async {
+  Future<void> pause({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'pause',
-      {},
+      payload,
     );
     return;
   }
 
   Future<void> registerSelectorEngine({
     required SelectorEngine selectorEngine,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selectorEngine'] = selectorEngine.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'registerSelectorEngine',
@@ -11159,9 +11016,13 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Set extra HTTP headers
-  Future<void> setExtraHTTPHeaders({required List<NameValue> headers}) async {
+  Future<void> setExtraHTTPHeaders({
+    required List<NameValue> headers,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['headers'] = headers;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setExtraHTTPHeaders',
@@ -11172,10 +11033,12 @@ class BrowserContextChannel extends Channel {
 
   /// Set geolocation
   Future<void> setGeolocation({
-    BrowserContextSetGeolocationGeolocation? geolocation,
+    BrowserContextSetGeolocation? geolocation,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (geolocation != null) payload['geolocation'] = geolocation?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setGeolocation',
@@ -11187,10 +11050,12 @@ class BrowserContextChannel extends Channel {
   /// Set HTTP credentials
   Future<void> setHTTPCredentials({
     BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (httpCredentials != null)
       payload['httpCredentials'] = httpCredentials?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setHTTPCredentials',
@@ -11201,11 +11066,12 @@ class BrowserContextChannel extends Channel {
 
   /// Route requests
   Future<void> setNetworkInterceptionPatterns({
-    required List<BrowserContextSetNetworkInterceptionPatternsPatternsItems>
-    patterns,
+    required List<BrowserContextSetNetworkInterceptionPatternsItems> patterns,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setNetworkInterceptionPatterns',
@@ -11215,9 +11081,10 @@ class BrowserContextChannel extends Channel {
   }
 
   /// Set offline mode
-  Future<void> setOffline({required bool offline}) async {
+  Future<void> setOffline({required bool offline, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['offline'] = offline;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setOffline',
@@ -11228,10 +11095,12 @@ class BrowserContextChannel extends Channel {
 
   /// Set storage state
   Future<void> setStorageState({
-    BrowserContextSetStorageStateStorageState? storageState,
+    BrowserContextSetStorageState? storageState,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (storageState != null) payload['storageState'] = storageState?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setStorageState',
@@ -11242,9 +11111,11 @@ class BrowserContextChannel extends Channel {
 
   Future<void> setTestIdAttributeName({
     required String testIdAttributeName,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['testIdAttributeName'] = testIdAttributeName;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setTestIdAttributeName',
@@ -11255,11 +11126,12 @@ class BrowserContextChannel extends Channel {
 
   /// Route WebSockets
   Future<void> setWebSocketInterceptionPatterns({
-    required List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems>
-    patterns,
+    required List<BrowserContextSetWebSocketInterceptionPatternsItems> patterns,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setWebSocketInterceptionPatterns',
@@ -11270,10 +11142,14 @@ class BrowserContextChannel extends Channel {
 
   /// Get storage state
   Future<BrowserContextStorageStateResult> storageState({
+    bool? credentials,
     bool? indexedDB,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
+    if (credentials != null) payload['credentials'] = credentials;
     if (indexedDB != null) payload['indexedDB'] = indexedDB;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'storageState',
@@ -11287,11 +11163,13 @@ class BrowserContextChannel extends Channel {
 
   Future<void> updateSubscription({
     required bool enabled,
-    required BrowserContextUpdateSubscriptionEventEnum event,
+    required ContextUpdateSubscriptionEvent event,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'updateSubscription',
@@ -11329,7 +11207,7 @@ class BrowserTypeChannel extends Channel {
     bool? isLocal,
     bool? noDefaults,
     double? slowMo,
-    required double timeout,
+    double? timeout,
     String? transport,
   }) async {
     final payload = <String, dynamic>{};
@@ -11339,7 +11217,7 @@ class BrowserTypeChannel extends Channel {
     if (isLocal != null) payload['isLocal'] = isLocal;
     if (noDefaults != null) payload['noDefaults'] = noDefaults;
     if (slowMo != null) payload['slowMo'] = slowMo;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (transport != null) payload['transport'] = transport;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11355,11 +11233,11 @@ class BrowserTypeChannel extends Channel {
   /// Connect to worker
   Future<BrowserTypeConnectToWorkerResult> connectToWorker({
     required String endpoint,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['endpoint'] = endpoint;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'connectToWorker',
@@ -11375,10 +11253,12 @@ class BrowserTypeChannel extends Channel {
   Future<BrowserTypeLaunchResult> launch({
     required LaunchOptions launchOptions,
     double? slowMo,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(launchOptions.toJson() as Map<String, dynamic>);
     if (slowMo != null) payload['slowMo'] = slowMo;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'launch',
@@ -11395,12 +11275,14 @@ class BrowserTypeChannel extends Channel {
     required LaunchOptions launchOptions,
     required ContextOptions contextOptions,
     double? slowMo,
+    double? timeout,
     required String userDataDir,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(launchOptions.toJson() as Map<String, dynamic>);
     payload.addAll(contextOptions.toJson() as Map<String, dynamic>);
     if (slowMo != null) payload['slowMo'] = slowMo;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['userDataDir'] = userDataDir;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11429,11 +11311,13 @@ class CDPSessionChannel extends Channel {
   CDPSessionChannel(super.owner);
 
   /// Detach CDP session
-  Future<void> detach() async {
+  Future<void> detach({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'detach',
-      {},
+      payload,
     );
     return;
   }
@@ -11442,10 +11326,12 @@ class CDPSessionChannel extends Channel {
   Future<CDPSessionSendResult> send({
     required String method,
     JsonValue params,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['method'] = method;
     if (params != null) payload['params'] = params;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'send',
@@ -11472,19 +11358,26 @@ abstract class DebugControllerBase extends ChannelOwner {
 class DebugControllerChannel extends Channel {
   DebugControllerChannel(super.owner);
 
-  Future<void> hideHighlight() async {
+  Future<void> hideHighlight({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'hideHighlight',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> highlight({String? ariaTemplate, Pattern? selector}) async {
+  Future<void> highlight({
+    String? ariaTemplate,
+    Pattern? selector,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (ariaTemplate != null) payload['ariaTemplate'] = ariaTemplate;
     if (selector != null) payload['selector'] = selector?.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'highlight',
@@ -11496,10 +11389,12 @@ class DebugControllerChannel extends Channel {
   Future<void> initialize({
     required String codegenId,
     required SDKLanguage sdkLanguage,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['codegenId'] = codegenId;
     payload['sdkLanguage'] = sdkLanguage.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'initialize',
@@ -11508,28 +11403,33 @@ class DebugControllerChannel extends Channel {
     return;
   }
 
-  Future<void> kill() async {
+  Future<void> kill({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'kill',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> resume() async {
+  Future<void> resume({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'resume',
-      {},
+      payload,
     );
     return;
   }
 
   Future<void> setRecorderMode({
     bool? generateAutoExpect,
-    required DebugControllerSetRecorderModeModeEnum mode,
+    required SetRecorderMode mode,
     String? testIdAttributeName,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (generateAutoExpect != null)
@@ -11537,6 +11437,7 @@ class DebugControllerChannel extends Channel {
     payload['mode'] = mode.value;
     if (testIdAttributeName != null)
       payload['testIdAttributeName'] = testIdAttributeName;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setRecorderMode',
@@ -11545,9 +11446,13 @@ class DebugControllerChannel extends Channel {
     return;
   }
 
-  Future<void> setReportStateChanged({required bool enabled}) async {
+  Future<void> setReportStateChanged({
+    required bool enabled,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setReportStateChanged',
@@ -11572,39 +11477,49 @@ class DebuggerChannel extends Channel {
   DebuggerChannel(super.owner);
 
   /// Step to next call
-  Future<void> next() async {
+  Future<void> next({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'next',
-      {},
+      payload,
     );
     return;
   }
 
   /// Pause on next call
-  Future<void> requestPause() async {
+  Future<void> requestPause({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'requestPause',
-      {},
+      payload,
     );
     return;
   }
 
   /// Resume
-  Future<void> resume() async {
+  Future<void> resume({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'resume',
-      {},
+      payload,
     );
     return;
   }
 
   /// Run to location
-  Future<void> runTo({required DebuggerRunToLocation location}) async {
+  Future<void> runTo({
+    required DebuggerRunToLocation location,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['location'] = location.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'runTo',
@@ -11632,9 +11547,10 @@ class DialogChannel extends Channel {
   DialogChannel(super.owner);
 
   /// Accept dialog
-  Future<void> accept({String? promptText}) async {
+  Future<void> accept({String? promptText, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (promptText != null) payload['promptText'] = promptText;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'accept',
@@ -11644,11 +11560,13 @@ class DialogChannel extends Channel {
   }
 
   /// Dismiss dialog
-  Future<void> dismiss() async {
+  Future<void> dismiss({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'dismiss',
-      {},
+      payload,
     );
     return;
   }
@@ -11694,12 +11612,12 @@ class ElectronChannel extends Channel {
 
   /// Launch electron
   Future<ElectronLaunchResult> launch({
-    ElectronLaunchAcceptDownloadsEnum? acceptDownloads,
+    Downloads? acceptDownloads,
     List<String>? args,
     String? artifactsDir,
     bool? bypassCSP,
     bool? chromiumSandbox,
-    ElectronLaunchColorSchemeEnum? colorScheme,
+    Scheme? colorScheme,
     String? cwd,
     List<NameValue>? env,
     String? executablePath,
@@ -11713,7 +11631,7 @@ class ElectronChannel extends Channel {
     List<SelectorEngine>? selectorEngines,
     bool? strictSelectors,
     String? testIdAttributeName,
-    required double timeout,
+    double? timeout,
     String? timezoneId,
     String? tracesDir,
   }) async {
@@ -11742,7 +11660,7 @@ class ElectronChannel extends Channel {
     if (strictSelectors != null) payload['strictSelectors'] = strictSelectors;
     if (testIdAttributeName != null)
       payload['testIdAttributeName'] = testIdAttributeName;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (timezoneId != null) payload['timezoneId'] = timezoneId;
     if (tracesDir != null) payload['tracesDir'] = tracesDir;
     final response = await owner.connection.sendMessageToServer(
@@ -11779,9 +11697,11 @@ class ElectronApplicationChannel extends Channel {
 
   Future<ElectronApplicationBrowserWindowResult> browserWindow({
     required PageBase page,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['page'] = {'guid': page.guid};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'browserWindow',
@@ -11798,11 +11718,13 @@ class ElectronApplicationChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpression',
@@ -11820,11 +11742,13 @@ class ElectronApplicationChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpressionHandle',
@@ -11838,11 +11762,13 @@ class ElectronApplicationChannel extends Channel {
 
   Future<void> updateSubscription({
     required bool enabled,
-    required ElectronApplicationUpdateSubscriptionEventEnum event,
+    required ElectronApplicationUpdateSubscriptionEvent event,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'updateSubscription',
@@ -11868,11 +11794,13 @@ class ElementHandleChannel extends JSHandleChannel {
   ElementHandleChannel(super.owner);
 
   /// Get bounding box
-  Future<ElementHandleBoundingBoxResult> boundingBox() async {
+  Future<ElementHandleBoundingBoxResult> boundingBox({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'boundingBox',
-      {},
+      payload,
     );
     return ElementHandleBoundingBoxResult.fromJson(
       response,
@@ -11884,13 +11812,15 @@ class ElementHandleChannel extends JSHandleChannel {
   Future<void> check({
     bool? force,
     Point? position,
-    required double timeout,
+    Scroll? scroll,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (position != null) payload['position'] = position?.toJson();
-    payload['timeout'] = timeout;
+    if (scroll != null) payload['scroll'] = scroll?.value;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11902,15 +11832,16 @@ class ElementHandleChannel extends JSHandleChannel {
 
   /// Click
   Future<void> click({
-    ElementHandleClickButtonEnum? button,
+    Button? button,
     int? clickCount,
     double? delay,
     bool? force,
-    List<ElementHandleClickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     bool? noWaitAfter,
     Point? position,
+    Scroll? scroll,
     int? steps,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
@@ -11921,8 +11852,9 @@ class ElementHandleChannel extends JSHandleChannel {
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     if (steps != null) payload['steps'] = steps;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11933,11 +11865,15 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Get content frame
-  Future<ElementHandleContentFrameResult> contentFrame() async {
+  Future<ElementHandleContentFrameResult> contentFrame({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'contentFrame',
-      {},
+      payload,
     );
     return ElementHandleContentFrameResult.fromJson(
       response,
@@ -11947,13 +11883,14 @@ class ElementHandleChannel extends JSHandleChannel {
 
   /// Double click
   Future<void> dblclick({
-    ElementHandleDblclickButtonEnum? button,
+    Button? button,
     double? delay,
     bool? force,
-    List<ElementHandleDblclickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
+    Scroll? scroll,
     int? steps,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
@@ -11962,8 +11899,9 @@ class ElementHandleChannel extends JSHandleChannel {
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     if (steps != null) payload['steps'] = steps;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11976,10 +11914,12 @@ class ElementHandleChannel extends JSHandleChannel {
   /// Dispatch event
   Future<void> dispatchEvent({
     required SerializedArgument eventInit,
+    double? timeout,
     required String type,
   }) async {
     final payload = <String, dynamic>{};
     payload['eventInit'] = eventInit.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     payload['type'] = type;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11996,6 +11936,7 @@ class ElementHandleChannel extends JSHandleChannel {
     bool? isFunction,
     required Pattern selector,
     bool? strict,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
@@ -12003,6 +11944,7 @@ class ElementHandleChannel extends JSHandleChannel {
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evalOnSelector',
@@ -12020,12 +11962,14 @@ class ElementHandleChannel extends JSHandleChannel {
     required String expression,
     bool? isFunction,
     required Pattern selector,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evalOnSelectorAll',
@@ -12040,12 +11984,12 @@ class ElementHandleChannel extends JSHandleChannel {
   /// Fill "{value}"
   Future<void> fill({
     bool? force,
-    required double timeout,
+    double? timeout,
     required String value,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['value'] = value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12056,11 +12000,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Focus
-  Future<void> focus() async {
+  Future<void> focus({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'focus',
-      {},
+      payload,
     );
     return;
   }
@@ -12068,9 +12014,11 @@ class ElementHandleChannel extends JSHandleChannel {
   /// Get attribute
   Future<ElementHandleGetAttributeResult> getAttribute({
     required String name,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'getAttribute',
@@ -12085,16 +12033,18 @@ class ElementHandleChannel extends JSHandleChannel {
   /// Hover
   Future<void> hover({
     bool? force,
-    List<ElementHandleHoverModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
-    required double timeout,
+    Scroll? scroll,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
-    payload['timeout'] = timeout;
+    if (scroll != null) payload['scroll'] = scroll?.value;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12105,11 +12055,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Get HTML
-  Future<ElementHandleInnerHTMLResult> innerHTML() async {
+  Future<ElementHandleInnerHTMLResult> innerHTML({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'innerHTML',
-      {},
+      payload,
     );
     return ElementHandleInnerHTMLResult.fromJson(
       response,
@@ -12118,11 +12070,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Get inner text
-  Future<ElementHandleInnerTextResult> innerText() async {
+  Future<ElementHandleInnerTextResult> innerText({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'innerText',
-      {},
+      payload,
     );
     return ElementHandleInnerTextResult.fromJson(
       response,
@@ -12131,11 +12085,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Get input value
-  Future<ElementHandleInputValueResult> inputValue() async {
+  Future<ElementHandleInputValueResult> inputValue({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'inputValue',
-      {},
+      payload,
     );
     return ElementHandleInputValueResult.fromJson(
       response,
@@ -12144,11 +12100,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Is checked
-  Future<ElementHandleIsCheckedResult> isChecked() async {
+  Future<ElementHandleIsCheckedResult> isChecked({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isChecked',
-      {},
+      payload,
     );
     return ElementHandleIsCheckedResult.fromJson(
       response,
@@ -12157,11 +12115,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Is disabled
-  Future<ElementHandleIsDisabledResult> isDisabled() async {
+  Future<ElementHandleIsDisabledResult> isDisabled({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isDisabled',
-      {},
+      payload,
     );
     return ElementHandleIsDisabledResult.fromJson(
       response,
@@ -12170,11 +12130,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Is editable
-  Future<ElementHandleIsEditableResult> isEditable() async {
+  Future<ElementHandleIsEditableResult> isEditable({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isEditable',
-      {},
+      payload,
     );
     return ElementHandleIsEditableResult.fromJson(
       response,
@@ -12183,11 +12145,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Is enabled
-  Future<ElementHandleIsEnabledResult> isEnabled() async {
+  Future<ElementHandleIsEnabledResult> isEnabled({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isEnabled',
-      {},
+      payload,
     );
     return ElementHandleIsEnabledResult.fromJson(
       response,
@@ -12196,11 +12160,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Is hidden
-  Future<ElementHandleIsHiddenResult> isHidden() async {
+  Future<ElementHandleIsHiddenResult> isHidden({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isHidden',
-      {},
+      payload,
     );
     return ElementHandleIsHiddenResult.fromJson(
       response,
@@ -12209,11 +12175,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Is visible
-  Future<ElementHandleIsVisibleResult> isVisible() async {
+  Future<ElementHandleIsVisibleResult> isVisible({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isVisible',
-      {},
+      payload,
     );
     return ElementHandleIsVisibleResult.fromJson(
       response,
@@ -12222,11 +12190,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Get owner frame
-  Future<ElementHandleOwnerFrameResult> ownerFrame() async {
+  Future<ElementHandleOwnerFrameResult> ownerFrame({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'ownerFrame',
-      {},
+      payload,
     );
     return ElementHandleOwnerFrameResult.fromJson(
       response,
@@ -12239,13 +12209,13 @@ class ElementHandleChannel extends JSHandleChannel {
     double? delay,
     required String key,
     bool? noWaitAfter,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
     payload['key'] = key;
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'press',
@@ -12258,10 +12228,12 @@ class ElementHandleChannel extends JSHandleChannel {
   Future<ElementHandleQuerySelectorResult> querySelector({
     required Pattern selector,
     bool? strict,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'querySelector',
@@ -12276,9 +12248,11 @@ class ElementHandleChannel extends JSHandleChannel {
   /// Query selector all
   Future<ElementHandleQuerySelectorAllResult> querySelectorAll({
     required Pattern selector,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'querySelectorAll',
@@ -12294,13 +12268,13 @@ class ElementHandleChannel extends JSHandleChannel {
   Future<ElementHandleScreenshotResult> screenshot({
     required CommonScreenshotOptions commonScreenshotOptions,
     int? quality,
-    required double timeout,
-    ElementHandleScreenshotTypeEnum? type,
+    double? timeout,
+    ElementHandleScreenshotType? type,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(commonScreenshotOptions.toJson() as Map<String, dynamic>);
     if (quality != null) payload['quality'] = quality;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (type != null) payload['type'] = type?.value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12314,9 +12288,9 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Scroll into view
-  Future<void> scrollIntoViewIfNeeded({required double timeout}) async {
+  Future<void> scrollIntoViewIfNeeded({double? timeout}) async {
     final payload = <String, dynamic>{};
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'scrollIntoViewIfNeeded',
@@ -12330,13 +12304,13 @@ class ElementHandleChannel extends JSHandleChannel {
     List<ElementHandleBase>? elements,
     bool? force,
     List<ElementHandleSelectOptionOptionsItems>? options,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (elements != null) payload['elements'] = elements;
     if (force != null) payload['force'] = force;
     if (options != null) payload['options'] = options;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'selectOption',
@@ -12349,10 +12323,10 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Select text
-  Future<void> selectText({bool? force, required double timeout}) async {
+  Future<void> selectText({bool? force, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'selectText',
@@ -12368,7 +12342,7 @@ class ElementHandleChannel extends JSHandleChannel {
     List<String>? localPaths,
     List<ElementHandleSetInputFilesPayloadsItems>? payloads,
     List<WritableStreamBase>? streams,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (directoryStream != null)
@@ -12377,7 +12351,7 @@ class ElementHandleChannel extends JSHandleChannel {
     if (localPaths != null) payload['localPaths'] = localPaths;
     if (payloads != null) payload['payloads'] = payloads;
     if (streams != null) payload['streams'] = streams;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setInputFiles',
@@ -12389,16 +12363,18 @@ class ElementHandleChannel extends JSHandleChannel {
   /// Tap
   Future<void> tap({
     bool? force,
-    List<ElementHandleTapModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
-    required double timeout,
+    Scroll? scroll,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
-    payload['timeout'] = timeout;
+    if (scroll != null) payload['scroll'] = scroll?.value;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12409,11 +12385,13 @@ class ElementHandleChannel extends JSHandleChannel {
   }
 
   /// Get text content
-  Future<ElementHandleTextContentResult> textContent() async {
+  Future<ElementHandleTextContentResult> textContent({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'textContent',
-      {},
+      payload,
     );
     return ElementHandleTextContentResult.fromJson(
       response,
@@ -12425,12 +12403,12 @@ class ElementHandleChannel extends JSHandleChannel {
   Future<void> type({
     double? delay,
     required String text,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
     payload['text'] = text;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'type',
@@ -12443,13 +12421,15 @@ class ElementHandleChannel extends JSHandleChannel {
   Future<void> uncheck({
     bool? force,
     Point? position,
-    required double timeout,
+    Scroll? scroll,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (position != null) payload['position'] = position?.toJson();
-    payload['timeout'] = timeout;
+    if (scroll != null) payload['scroll'] = scroll?.value;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12461,12 +12441,12 @@ class ElementHandleChannel extends JSHandleChannel {
 
   /// Wait for state
   Future<void> waitForElementState({
-    required ElementHandleWaitForElementStateStateEnum state,
-    required double timeout,
+    required ElementState state,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['state'] = state.value;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'waitForElementState',
@@ -12478,15 +12458,15 @@ class ElementHandleChannel extends JSHandleChannel {
   /// Wait for selector
   Future<ElementHandleWaitForSelectorResult> waitForSelector({
     required Pattern selector,
-    ElementHandleWaitForSelectorStateEnum? state,
+    SelectorState? state,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (state != null) payload['state'] = state?.value;
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'waitForSelector',
@@ -12519,11 +12499,13 @@ class FrameChannel extends Channel {
   /// Add script tag
   Future<FrameAddScriptTagResult> addScriptTag({
     String? content,
+    double? timeout,
     String? type,
     String? url,
   }) async {
     final payload = <String, dynamic>{};
     if (content != null) payload['content'] = content;
+    if (timeout != null) payload['timeout'] = timeout;
     if (type != null) payload['type'] = type;
     if (url != null) payload['url'] = url;
     final response = await owner.connection.sendMessageToServer(
@@ -12540,10 +12522,12 @@ class FrameChannel extends Channel {
   /// Add style tag
   Future<FrameAddStyleTagResult> addStyleTag({
     String? content,
+    double? timeout,
     String? url,
   }) async {
     final payload = <String, dynamic>{};
     if (content != null) payload['content'] = content;
+    if (timeout != null) payload['timeout'] = timeout;
     if (url != null) payload['url'] = url;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12560,18 +12544,16 @@ class FrameChannel extends Channel {
   Future<FrameAriaSnapshotResult> ariaSnapshot({
     bool? boxes,
     int? depth,
-    FrameAriaSnapshotModeEnum? mode,
+    SnapshotMode? mode,
     Pattern? selector,
-    required double timeout,
-    String? track,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (boxes != null) payload['boxes'] = boxes;
     if (depth != null) payload['depth'] = depth;
     if (mode != null) payload['mode'] = mode?.value;
     if (selector != null) payload['selector'] = selector?.toString();
-    payload['timeout'] = timeout;
-    if (track != null) payload['track'] = track;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'ariaSnapshot',
@@ -12587,12 +12569,12 @@ class FrameChannel extends Channel {
   Future<void> blur({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'blur',
@@ -12605,17 +12587,19 @@ class FrameChannel extends Channel {
   Future<void> check({
     bool? force,
     Point? position,
+    Scroll? scroll,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12627,17 +12611,18 @@ class FrameChannel extends Channel {
 
   /// Click
   Future<void> click({
-    FrameClickButtonEnum? button,
+    Button? button,
     int? clickCount,
     double? delay,
     bool? force,
-    List<FrameClickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     bool? noWaitAfter,
     Point? position,
+    Scroll? scroll,
     required Pattern selector,
     int? steps,
     bool? strict,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
@@ -12648,10 +12633,11 @@ class FrameChannel extends Channel {
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     payload['selector'] = selector.toString();
     if (steps != null) payload['steps'] = steps;
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12662,26 +12648,29 @@ class FrameChannel extends Channel {
   }
 
   /// Get content
-  Future<FrameContentResult> content() async {
+  Future<FrameContentResult> content({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'content',
-      {},
+      payload,
     );
     return FrameContentResult.fromJson(response, connection: owner.connection);
   }
 
   /// Double click
   Future<void> dblclick({
-    FrameDblclickButtonEnum? button,
+    Button? button,
     double? delay,
     bool? force,
-    List<FrameDblclickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
+    Scroll? scroll,
     required Pattern selector,
     int? steps,
     bool? strict,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
@@ -12690,10 +12679,11 @@ class FrameChannel extends Channel {
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     payload['selector'] = selector.toString();
     if (steps != null) payload['steps'] = steps;
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12708,14 +12698,14 @@ class FrameChannel extends Channel {
     required SerializedArgument eventInit,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
     required String type,
   }) async {
     final payload = <String, dynamic>{};
     payload['eventInit'] = eventInit.toJson();
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['type'] = type;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12728,17 +12718,19 @@ class FrameChannel extends Channel {
   /// Drag and drop
   Future<void> dragAndDrop({
     bool? force,
+    Scroll? scroll,
     required String source,
     Point? sourcePosition,
     int? steps,
     bool? strict,
     required String target,
     Point? targetPosition,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
+    if (scroll != null) payload['scroll'] = scroll?.value;
     payload['source'] = source;
     if (sourcePosition != null)
       payload['sourcePosition'] = sourcePosition?.toJson();
@@ -12747,7 +12739,7 @@ class FrameChannel extends Channel {
     payload['target'] = target;
     if (targetPosition != null)
       payload['targetPosition'] = targetPosition?.toJson();
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12766,7 +12758,7 @@ class FrameChannel extends Channel {
     required Pattern selector,
     List<WritableStreamBase>? streams,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (data != null) payload['data'] = data;
@@ -12776,7 +12768,7 @@ class FrameChannel extends Channel {
     payload['selector'] = selector.toString();
     if (streams != null) payload['streams'] = streams;
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'drop',
@@ -12792,6 +12784,7 @@ class FrameChannel extends Channel {
     bool? isFunction,
     required Pattern selector,
     bool? strict,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
@@ -12799,6 +12792,7 @@ class FrameChannel extends Channel {
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evalOnSelector',
@@ -12816,12 +12810,14 @@ class FrameChannel extends Channel {
     required String expression,
     bool? isFunction,
     required Pattern selector,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evalOnSelectorAll',
@@ -12838,11 +12834,13 @@ class FrameChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpression',
@@ -12859,11 +12857,13 @@ class FrameChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpressionHandle',
@@ -12883,9 +12883,9 @@ class FrameChannel extends Channel {
     required String expression,
     JsonValue expressionArg,
     required bool isNot,
-    FrameExpectPseudoEnum? pseudo,
+    Pseudo? pseudo,
     Pattern? selector,
-    required double timeout,
+    double? timeout,
     bool? useInnerText,
   }) async {
     final payload = <String, dynamic>{};
@@ -12898,7 +12898,7 @@ class FrameChannel extends Channel {
     payload['isNot'] = isNot;
     if (pseudo != null) payload['pseudo'] = pseudo?.value;
     if (selector != null) payload['selector'] = selector?.toString();
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (useInnerText != null) payload['useInnerText'] = useInnerText;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12913,14 +12913,14 @@ class FrameChannel extends Channel {
     bool? force,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
     required String value,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['value'] = value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -12934,12 +12934,12 @@ class FrameChannel extends Channel {
   Future<void> focus({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'focus',
@@ -12949,11 +12949,13 @@ class FrameChannel extends Channel {
   }
 
   /// Get frame element
-  Future<FrameFrameElementResult> frameElement() async {
+  Future<FrameFrameElementResult> frameElement({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'frameElement',
-      {},
+      payload,
     );
     return FrameFrameElementResult.fromJson(
       response,
@@ -12966,13 +12968,13 @@ class FrameChannel extends Channel {
     required String name,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'getAttribute',
@@ -12987,13 +12989,13 @@ class FrameChannel extends Channel {
   /// Navigate to "{url}"
   Future<FrameGotoResult> goto({
     String? referer,
-    required double timeout,
+    double? timeout,
     required String url,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
     if (referer != null) payload['referer'] = referer;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['url'] = url;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
     final response = await owner.connection.sendMessageToServer(
@@ -13004,9 +13006,13 @@ class FrameChannel extends Channel {
     return FrameGotoResult.fromJson(response, connection: owner.connection);
   }
 
-  Future<void> hideHighlight({required Pattern selector}) async {
+  Future<void> hideHighlight({
+    required Pattern selector,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'hideHighlight',
@@ -13015,10 +13021,15 @@ class FrameChannel extends Channel {
     return;
   }
 
-  Future<void> highlight({required Pattern selector, String? style}) async {
+  Future<void> highlight({
+    required Pattern selector,
+    String? style,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (style != null) payload['style'] = style;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'highlight',
@@ -13030,20 +13041,22 @@ class FrameChannel extends Channel {
   /// Hover
   Future<void> hover({
     bool? force,
-    List<FrameHoverModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
+    Scroll? scroll,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13057,12 +13070,12 @@ class FrameChannel extends Channel {
   Future<FrameInnerHTMLResult> innerHTML({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'innerHTML',
@@ -13078,12 +13091,12 @@ class FrameChannel extends Channel {
   Future<FrameInnerTextResult> innerText({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'innerText',
@@ -13099,12 +13112,12 @@ class FrameChannel extends Channel {
   Future<FrameInputValueResult> inputValue({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'inputValue',
@@ -13120,12 +13133,12 @@ class FrameChannel extends Channel {
   Future<FrameIsCheckedResult> isChecked({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isChecked',
@@ -13141,12 +13154,12 @@ class FrameChannel extends Channel {
   Future<FrameIsDisabledResult> isDisabled({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isDisabled',
@@ -13162,12 +13175,12 @@ class FrameChannel extends Channel {
   Future<FrameIsEditableResult> isEditable({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isEditable',
@@ -13183,12 +13196,12 @@ class FrameChannel extends Channel {
   Future<FrameIsEnabledResult> isEnabled({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isEnabled',
@@ -13204,10 +13217,12 @@ class FrameChannel extends Channel {
   Future<FrameIsHiddenResult> isHidden({
     required Pattern selector,
     bool? strict,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isHidden',
@@ -13220,10 +13235,12 @@ class FrameChannel extends Channel {
   Future<FrameIsVisibleResult> isVisible({
     required Pattern selector,
     bool? strict,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'isVisible',
@@ -13242,7 +13259,7 @@ class FrameChannel extends Channel {
     bool? noWaitAfter,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
@@ -13250,7 +13267,7 @@ class FrameChannel extends Channel {
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'press',
@@ -13260,9 +13277,13 @@ class FrameChannel extends Channel {
   }
 
   /// Query count
-  Future<FrameQueryCountResult> queryCount({required Pattern selector}) async {
+  Future<FrameQueryCountResult> queryCount({
+    required Pattern selector,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'queryCount',
@@ -13278,10 +13299,12 @@ class FrameChannel extends Channel {
   Future<FrameQuerySelectorResult> querySelector({
     required Pattern selector,
     bool? strict,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'querySelector',
@@ -13296,9 +13319,11 @@ class FrameChannel extends Channel {
   /// Query selector all
   Future<FrameQuerySelectorAllResult> querySelectorAll({
     required Pattern selector,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'querySelectorAll',
@@ -13312,9 +13337,11 @@ class FrameChannel extends Channel {
 
   Future<FrameResolveSelectorResult> resolveSelector({
     required Pattern selector,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'resolveSelector',
@@ -13333,7 +13360,7 @@ class FrameChannel extends Channel {
     List<FrameSelectOptionOptionsItems>? options,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (elements != null) payload['elements'] = elements;
@@ -13341,7 +13368,7 @@ class FrameChannel extends Channel {
     if (options != null) payload['options'] = options;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'selectOption',
@@ -13356,12 +13383,12 @@ class FrameChannel extends Channel {
   /// Set content
   Future<void> setContent({
     required String html,
-    required double timeout,
+    double? timeout,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
     payload['html'] = html;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13380,7 +13407,7 @@ class FrameChannel extends Channel {
     required Pattern selector,
     List<WritableStreamBase>? streams,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (directoryStream != null)
@@ -13391,7 +13418,7 @@ class FrameChannel extends Channel {
     payload['selector'] = selector.toString();
     if (streams != null) payload['streams'] = streams;
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setInputFiles',
@@ -13403,20 +13430,22 @@ class FrameChannel extends Channel {
   /// Tap
   Future<void> tap({
     bool? force,
-    List<FrameTapModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
+    Scroll? scroll,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (modifiers != null) payload['modifiers'] = modifiers;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13430,12 +13459,12 @@ class FrameChannel extends Channel {
   Future<FrameTextContentResult> textContent({
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'textContent',
@@ -13448,11 +13477,13 @@ class FrameChannel extends Channel {
   }
 
   /// Get page title
-  Future<FrameTitleResult> title() async {
+  Future<FrameTitleResult> title({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'title',
-      {},
+      payload,
     );
     return FrameTitleResult.fromJson(response, connection: owner.connection);
   }
@@ -13463,14 +13494,14 @@ class FrameChannel extends Channel {
     required Pattern selector,
     bool? strict,
     required String text,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
     payload['text'] = text;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'type',
@@ -13483,17 +13514,19 @@ class FrameChannel extends Channel {
   Future<void> uncheck({
     bool? force,
     Point? position,
+    Scroll? scroll,
     required Pattern selector,
     bool? strict,
-    required double timeout,
+    double? timeout,
     bool? trial,
   }) async {
     final payload = <String, dynamic>{};
     if (force != null) payload['force'] = force;
     if (position != null) payload['position'] = position?.toJson();
+    if (scroll != null) payload['scroll'] = scroll?.value;
     payload['selector'] = selector.toString();
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (trial != null) payload['trial'] = trial;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13509,14 +13542,18 @@ class FrameChannel extends Channel {
     required String expression,
     bool? isFunction,
     double? pollingInterval,
-    required double timeout,
+    Pattern? selector,
+    bool? strict,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
     if (pollingInterval != null) payload['pollingInterval'] = pollingInterval;
-    payload['timeout'] = timeout;
+    if (selector != null) payload['selector'] = selector?.toString();
+    if (strict != null) payload['strict'] = strict;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'waitForFunction',
@@ -13532,16 +13569,16 @@ class FrameChannel extends Channel {
   Future<FrameWaitForSelectorResult> waitForSelector({
     bool? omitReturnValue,
     required Pattern selector,
-    FrameWaitForSelectorStateEnum? state,
+    SelectorState? state,
     bool? strict,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (omitReturnValue != null) payload['omitReturnValue'] = omitReturnValue;
     payload['selector'] = selector.toString();
     if (state != null) payload['state'] = state?.value;
     if (strict != null) payload['strict'] = strict;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'waitForSelector',
@@ -13554,8 +13591,12 @@ class FrameChannel extends Channel {
   }
 
   /// Wait for timeout
-  Future<void> waitForTimeout({required double waitTimeout}) async {
+  Future<void> waitForTimeout({
+    double? timeout,
+    required double waitTimeout,
+  }) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['waitTimeout'] = waitTimeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13597,11 +13638,13 @@ class JSHandleChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpression',
@@ -13618,11 +13661,13 @@ class JSHandleChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpressionHandle',
@@ -13635,9 +13680,13 @@ class JSHandleChannel extends Channel {
   }
 
   /// Get JS property
-  Future<JSHandleGetPropertyResult> getProperty({required String name}) async {
+  Future<JSHandleGetPropertyResult> getProperty({
+    required String name,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'getProperty',
@@ -13650,11 +13699,15 @@ class JSHandleChannel extends Channel {
   }
 
   /// Get property list
-  Future<JSHandleGetPropertyListResult> getPropertyList() async {
+  Future<JSHandleGetPropertyListResult> getPropertyList({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'getPropertyList',
-      {},
+      payload,
     );
     return JSHandleGetPropertyListResult.fromJson(
       response,
@@ -13663,11 +13716,13 @@ class JSHandleChannel extends Channel {
   }
 
   /// Get JSON value
-  Future<JSHandleJsonValueResult> jsonValue() async {
+  Future<JSHandleJsonValueResult> jsonValue({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'jsonValue',
-      {},
+      payload,
     );
     return JSHandleJsonValueResult.fromJson(
       response,
@@ -13690,18 +13745,21 @@ abstract class JsonPipeBase extends ChannelOwner {
 class JsonPipeChannel extends Channel {
   JsonPipeChannel(super.owner);
 
-  Future<void> close() async {
+  Future<void> close({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> send({JsonValue message}) async {
+  Future<void> send({JsonValue message, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (message != null) payload['message'] = message;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'send',
@@ -13730,9 +13788,11 @@ class LocalUtilsChannel extends Channel {
 
   Future<void> addStackToTracingNoReply({
     required ClientSideCallMetadata callData,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['callData'] = callData.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'addStackToTracingNoReply',
@@ -13747,7 +13807,7 @@ class LocalUtilsChannel extends Channel {
     JsonValue headers,
     double? slowMo,
     int? socksProxyRedirectPortForTest,
-    required double timeout,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['endpoint'] = endpoint;
@@ -13756,7 +13816,7 @@ class LocalUtilsChannel extends Channel {
     if (slowMo != null) payload['slowMo'] = slowMo;
     if (socksProxyRedirectPortForTest != null)
       payload['socksProxyRedirectPortForTest'] = socksProxyRedirectPortForTest;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'connect',
@@ -13771,11 +13831,13 @@ class LocalUtilsChannel extends Channel {
   Future<LocalUtilsGlobToRegexResult> globToRegex({
     String? baseURL,
     required String glob,
+    double? timeout,
     bool? webSocketUrl,
   }) async {
     final payload = <String, dynamic>{};
     if (baseURL != null) payload['baseURL'] = baseURL;
     payload['glob'] = glob;
+    if (timeout != null) payload['timeout'] = timeout;
     if (webSocketUrl != null) payload['webSocketUrl'] = webSocketUrl;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13788,9 +13850,10 @@ class LocalUtilsChannel extends Channel {
     );
   }
 
-  Future<void> harClose({required String harId}) async {
+  Future<void> harClose({required String harId, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['harId'] = harId;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'harClose',
@@ -13805,6 +13868,7 @@ class LocalUtilsChannel extends Channel {
     required bool isNavigationRequest,
     required String method,
     String? postData,
+    double? timeout,
     required String url,
   }) async {
     final payload = <String, dynamic>{};
@@ -13813,6 +13877,7 @@ class LocalUtilsChannel extends Channel {
     payload['isNavigationRequest'] = isNavigationRequest;
     payload['method'] = method;
     if (postData != null) payload['postData'] = postData;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['url'] = url;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13825,9 +13890,13 @@ class LocalUtilsChannel extends Channel {
     );
   }
 
-  Future<LocalUtilsHarOpenResult> harOpen({required String file}) async {
+  Future<LocalUtilsHarOpenResult> harOpen({
+    required String file,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['file'] = file;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'harOpen',
@@ -13842,11 +13911,13 @@ class LocalUtilsChannel extends Channel {
   Future<void> harUnzip({
     required String harFile,
     String? resourcesDir,
+    double? timeout,
     required String zipFile,
   }) async {
     final payload = <String, dynamic>{};
     payload['harFile'] = harFile;
     if (resourcesDir != null) payload['resourcesDir'] = resourcesDir;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['zipFile'] = zipFile;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13856,9 +13927,13 @@ class LocalUtilsChannel extends Channel {
     return;
   }
 
-  Future<void> traceDiscarded({required String stacksId}) async {
+  Future<void> traceDiscarded({
+    required String stacksId,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['stacksId'] = stacksId;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'traceDiscarded',
@@ -13869,11 +13944,13 @@ class LocalUtilsChannel extends Channel {
 
   Future<LocalUtilsTracingStartedResult> tracingStarted({
     bool? live,
+    double? timeout,
     required String traceName,
     String? tracesDir,
   }) async {
     final payload = <String, dynamic>{};
     if (live != null) payload['live'] = live;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['traceName'] = traceName;
     if (tracesDir != null) payload['tracesDir'] = tracesDir;
     final response = await owner.connection.sendMessageToServer(
@@ -13891,8 +13968,9 @@ class LocalUtilsChannel extends Channel {
     List<String>? additionalSources,
     required List<NameValue> entries,
     required bool includeSources,
-    required LocalUtilsZipModeEnum mode,
+    required ZipMode mode,
     String? stacksId,
+    double? timeout,
     required String zipFile,
   }) async {
     final payload = <String, dynamic>{};
@@ -13902,6 +13980,7 @@ class LocalUtilsChannel extends Channel {
     payload['includeSources'] = includeSources;
     payload['mode'] = mode.value;
     if (stacksId != null) payload['stacksId'] = stacksId;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['zipFile'] = zipFile;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -13932,9 +14011,11 @@ class PageChannel extends Channel {
   /// Add init script
   Future<PageAddInitScriptResult> addInitScript({
     required String source,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['source'] = source;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'addInitScript',
@@ -13947,49 +14028,58 @@ class PageChannel extends Channel {
   }
 
   /// Bring to front
-  Future<void> bringToFront() async {
+  Future<void> bringToFront({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'bringToFront',
-      {},
+      payload,
     );
     return;
   }
 
   /// Cancel pick locator
-  Future<void> cancelPickLocator() async {
+  Future<void> cancelPickLocator({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'cancelPickLocator',
-      {},
+      payload,
     );
     return;
   }
 
   /// Clear console messages
-  Future<void> clearConsoleMessages() async {
+  Future<void> clearConsoleMessages({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clearConsoleMessages',
-      {},
+      payload,
     );
     return;
   }
 
   /// Clear page errors
-  Future<void> clearPageErrors() async {
+  Future<void> clearPageErrors({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'clearPageErrors',
-      {},
+      payload,
     );
     return;
   }
 
   /// Close page
-  Future<void> close({String? reason}) async {
+  Future<void> close({String? reason, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
@@ -14001,9 +14091,11 @@ class PageChannel extends Channel {
   /// Get console messages
   Future<PageConsoleMessagesResult> consoleMessages({
     ConsoleMessagesFilter? filter,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (filter != null) payload['filter'] = filter?.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'consoleMessages',
@@ -14017,11 +14109,12 @@ class PageChannel extends Channel {
 
   /// Emulate media
   Future<void> emulateMedia({
-    PageEmulateMediaColorSchemeEnum? colorScheme,
-    PageEmulateMediaContrastEnum? contrast,
-    PageEmulateMediaForcedColorsEnum? forcedColors,
-    PageEmulateMediaMediaEnum? media,
-    PageEmulateMediaReducedMotionEnum? reducedMotion,
+    Scheme? colorScheme,
+    Contrast? contrast,
+    Colors? forcedColors,
+    Media? media,
+    Motion? reducedMotion,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (colorScheme != null) payload['colorScheme'] = colorScheme?.value;
@@ -14029,6 +14122,7 @@ class PageChannel extends Channel {
     if (forcedColors != null) payload['forcedColors'] = forcedColors?.value;
     if (media != null) payload['media'] = media?.value;
     if (reducedMotion != null) payload['reducedMotion'] = reducedMotion?.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'emulateMedia',
@@ -14049,7 +14143,8 @@ class PageChannel extends Channel {
     double? maxDiffPixelRatio,
     int? maxDiffPixels,
     double? threshold,
-    required double timeout,
+    double? timeout,
+    ExpectScreenshotType? type,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(commonScreenshotOptions.toJson() as Map<String, dynamic>);
@@ -14063,7 +14158,8 @@ class PageChannel extends Channel {
       payload['maxDiffPixelRatio'] = maxDiffPixelRatio;
     if (maxDiffPixels != null) payload['maxDiffPixels'] = maxDiffPixels;
     if (threshold != null) payload['threshold'] = threshold;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
+    if (type != null) payload['type'] = type?.value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'expectScreenshot',
@@ -14076,9 +14172,15 @@ class PageChannel extends Channel {
   }
 
   /// Expose binding
-  Future<PageExposeBindingResult> exposeBinding({required String name}) async {
+  Future<PageExposeBindingResult> exposeBinding({
+    required String name,
+    bool? noGlobal,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['name'] = name;
+    if (noGlobal != null) payload['noGlobal'] = noGlobal;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'exposeBinding',
@@ -14092,11 +14194,11 @@ class PageChannel extends Channel {
 
   /// Go back
   Future<PageGoBackResult> goBack({
-    required double timeout,
+    double? timeout,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14108,11 +14210,11 @@ class PageChannel extends Channel {
 
   /// Go forward
   Future<PageGoForwardResult> goForward({
-    required double timeout,
+    double? timeout,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14123,19 +14225,22 @@ class PageChannel extends Channel {
   }
 
   /// Hide all element highlights
-  Future<void> hideHighlight() async {
+  Future<void> hideHighlight({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'hideHighlight',
-      {},
+      payload,
     );
     return;
   }
 
   /// Key down "{key}"
-  Future<void> keyboardDown({required String key}) async {
+  Future<void> keyboardDown({required String key, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'keyboardDown',
@@ -14145,9 +14250,13 @@ class PageChannel extends Channel {
   }
 
   /// Insert "{text}"
-  Future<void> keyboardInsertText({required String text}) async {
+  Future<void> keyboardInsertText({
+    required String text,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['text'] = text;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'keyboardInsertText',
@@ -14157,10 +14266,15 @@ class PageChannel extends Channel {
   }
 
   /// Press "{key}"
-  Future<void> keyboardPress({double? delay, required String key}) async {
+  Future<void> keyboardPress({
+    double? delay,
+    required String key,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
     payload['key'] = key;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'keyboardPress',
@@ -14170,10 +14284,15 @@ class PageChannel extends Channel {
   }
 
   /// Type "{text}"
-  Future<void> keyboardType({double? delay, required String text}) async {
+  Future<void> keyboardType({
+    double? delay,
+    required String text,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (delay != null) payload['delay'] = delay;
     payload['text'] = text;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'keyboardType',
@@ -14183,9 +14302,10 @@ class PageChannel extends Channel {
   }
 
   /// Key up "{key}"
-  Future<void> keyboardUp({required String key}) async {
+  Future<void> keyboardUp({required String key, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['key'] = key;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'keyboardUp',
@@ -14196,9 +14316,10 @@ class PageChannel extends Channel {
 
   /// Click
   Future<void> mouseClick({
-    PageMouseClickButtonEnum? button,
+    Button? button,
     int? clickCount,
     double? delay,
+    double? timeout,
     required double x,
     required double y,
   }) async {
@@ -14206,6 +14327,7 @@ class PageChannel extends Channel {
     if (button != null) payload['button'] = button?.value;
     if (clickCount != null) payload['clickCount'] = clickCount;
     if (delay != null) payload['delay'] = delay;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['x'] = x;
     payload['y'] = y;
     final response = await owner.connection.sendMessageToServer(
@@ -14218,12 +14340,14 @@ class PageChannel extends Channel {
 
   /// Mouse down
   Future<void> mouseDown({
-    PageMouseDownButtonEnum? button,
+    Button? button,
     int? clickCount,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (button != null) payload['button'] = button?.value;
     if (clickCount != null) payload['clickCount'] = clickCount;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'mouseDown',
@@ -14235,11 +14359,13 @@ class PageChannel extends Channel {
   /// Mouse move
   Future<void> mouseMove({
     int? steps,
+    double? timeout,
     required double x,
     required double y,
   }) async {
     final payload = <String, dynamic>{};
     if (steps != null) payload['steps'] = steps;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['x'] = x;
     payload['y'] = y;
     final response = await owner.connection.sendMessageToServer(
@@ -14251,10 +14377,15 @@ class PageChannel extends Channel {
   }
 
   /// Mouse up
-  Future<void> mouseUp({PageMouseUpButtonEnum? button, int? clickCount}) async {
+  Future<void> mouseUp({
+    Button? button,
+    int? clickCount,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (button != null) payload['button'] = button?.value;
     if (clickCount != null) payload['clickCount'] = clickCount;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'mouseUp',
@@ -14267,10 +14398,12 @@ class PageChannel extends Channel {
   Future<void> mouseWheel({
     required double deltaX,
     required double deltaY,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['deltaX'] = deltaX;
     payload['deltaY'] = deltaY;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'mouseWheel',
@@ -14282,9 +14415,11 @@ class PageChannel extends Channel {
   /// Get page errors
   Future<PagePageErrorsResult> pageErrors({
     ConsoleMessagesFilter? filter,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (filter != null) payload['filter'] = filter?.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'pageErrors',
@@ -14311,6 +14446,7 @@ class PageChannel extends Channel {
     bool? printBackground,
     double? scale,
     bool? tagged,
+    double? timeout,
     String? width,
   }) async {
     final payload = <String, dynamic>{};
@@ -14329,6 +14465,7 @@ class PageChannel extends Channel {
     if (printBackground != null) payload['printBackground'] = printBackground;
     if (scale != null) payload['scale'] = scale;
     if (tagged != null) payload['tagged'] = tagged;
+    if (timeout != null) payload['timeout'] = timeout;
     if (width != null) payload['width'] = width;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14339,11 +14476,13 @@ class PageChannel extends Channel {
   }
 
   /// Pick locator
-  Future<PagePickLocatorResult> pickLocator() async {
+  Future<PagePickLocatorResult> pickLocator({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'pickLocator',
-      {},
+      payload,
     );
     return PagePickLocatorResult.fromJson(
       response,
@@ -14355,10 +14494,12 @@ class PageChannel extends Channel {
   Future<PageRegisterLocatorHandlerResult> registerLocatorHandler({
     bool? noWaitAfter,
     required Pattern selector,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (noWaitAfter != null) payload['noWaitAfter'] = noWaitAfter;
     payload['selector'] = selector.toString();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'registerLocatorHandler',
@@ -14372,11 +14513,11 @@ class PageChannel extends Channel {
 
   /// Reload
   Future<PageReloadResult> reload({
-    required double timeout,
+    double? timeout,
     LifecycleEvent? waitUntil,
   }) async {
     final payload = <String, dynamic>{};
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (waitUntil != null) payload['waitUntil'] = waitUntil?.value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14387,31 +14528,37 @@ class PageChannel extends Channel {
   }
 
   /// Request garbage collection
-  Future<void> requestGC() async {
+  Future<void> requestGC({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'requestGC',
-      {},
+      payload,
     );
     return;
   }
 
   /// Get network requests
-  Future<PageRequestsResult> requests() async {
+  Future<PageRequestsResult> requests({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'requests',
-      {},
+      payload,
     );
     return PageRequestsResult.fromJson(response, connection: owner.connection);
   }
 
   Future<void> resolveLocatorHandlerNoReply({
     bool? remove,
+    double? timeout,
     required int uid,
   }) async {
     final payload = <String, dynamic>{};
     if (remove != null) payload['remove'] = remove;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['uid'] = uid;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14422,11 +14569,13 @@ class PageChannel extends Channel {
   }
 
   /// Run beforeunload
-  Future<void> runBeforeUnload() async {
+  Future<void> runBeforeUnload({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'runBeforeUnload',
-      {},
+      payload,
     );
     return;
   }
@@ -14435,11 +14584,13 @@ class PageChannel extends Channel {
   Future<void> screencastChapter({
     String? description,
     double? duration,
+    double? timeout,
     required String title,
   }) async {
     final payload = <String, dynamic>{};
     if (description != null) payload['description'] = description;
     if (duration != null) payload['duration'] = duration;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['title'] = title;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14449,20 +14600,41 @@ class PageChannel extends Channel {
     return;
   }
 
+  Future<void> screencastFrameAck({
+    required int frameId,
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    payload['frameId'] = frameId;
+    if (timeout != null) payload['timeout'] = timeout;
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'screencastFrameAck',
+      payload,
+    );
+    return;
+  }
+
   /// Remove actions
-  Future<void> screencastHideActions() async {
+  Future<void> screencastHideActions({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'screencastHideActions',
-      {},
+      payload,
     );
     return;
   }
 
   /// Remove overlay
-  Future<void> screencastRemoveOverlay({required String id}) async {
+  Future<void> screencastRemoveOverlay({
+    required String id,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['id'] = id;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'screencastRemoveOverlay',
@@ -14472,8 +14644,12 @@ class PageChannel extends Channel {
   }
 
   /// Set overlay visibility
-  Future<void> screencastSetOverlayVisible({required bool visible}) async {
+  Future<void> screencastSetOverlayVisible({
+    double? timeout,
+    required bool visible,
+  }) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['visible'] = visible;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14486,9 +14662,11 @@ class PageChannel extends Channel {
   /// Show actions
   Future<void> screencastShowActions({
     required ShowActionsOptions showActionsOptions,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(showActionsOptions.toJson() as Map<String, dynamic>);
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'screencastShowActions',
@@ -14501,10 +14679,12 @@ class PageChannel extends Channel {
   Future<PageScreencastShowOverlayResult> screencastShowOverlay({
     double? duration,
     required String html,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (duration != null) payload['duration'] = duration;
     payload['html'] = html;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'screencastShowOverlay',
@@ -14522,12 +14702,14 @@ class PageChannel extends Channel {
     bool? record,
     bool? sendFrames,
     PageScreencastStartSize? size,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (quality != null) payload['quality'] = quality;
     if (record != null) payload['record'] = record;
     if (sendFrames != null) payload['sendFrames'] = sendFrames;
     if (size != null) payload['size'] = size?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'screencastStart',
@@ -14540,11 +14722,13 @@ class PageChannel extends Channel {
   }
 
   /// Stop screencast
-  Future<void> screencastStop() async {
+  Future<void> screencastStop({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'screencastStop',
-      {},
+      payload,
     );
     return;
   }
@@ -14555,15 +14739,15 @@ class PageChannel extends Channel {
     Rect? clip,
     bool? fullPage,
     int? quality,
-    required double timeout,
-    PageScreenshotTypeEnum? type,
+    double? timeout,
+    ElementHandleScreenshotType? type,
   }) async {
     final payload = <String, dynamic>{};
     payload.addAll(commonScreenshotOptions.toJson() as Map<String, dynamic>);
     if (clip != null) payload['clip'] = clip?.toJson();
     if (fullPage != null) payload['fullPage'] = fullPage;
     if (quality != null) payload['quality'] = quality;
-    payload['timeout'] = timeout;
+    if (timeout != null) payload['timeout'] = timeout;
     if (type != null) payload['type'] = type?.value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14576,9 +14760,10 @@ class PageChannel extends Channel {
     );
   }
 
-  Future<void> setDockTile({required String image}) async {
+  Future<void> setDockTile({required String image, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['image'] = image;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setDockTile',
@@ -14588,9 +14773,13 @@ class PageChannel extends Channel {
   }
 
   /// Set extra HTTP headers
-  Future<void> setExtraHTTPHeaders({required List<NameValue> headers}) async {
+  Future<void> setExtraHTTPHeaders({
+    required List<NameValue> headers,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     payload['headers'] = headers;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setExtraHTTPHeaders',
@@ -14601,10 +14790,12 @@ class PageChannel extends Channel {
 
   /// Route requests
   Future<void> setNetworkInterceptionPatterns({
-    required List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
+    required List<PageSetNetworkInterceptionPatternsItems> patterns,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setNetworkInterceptionPatterns',
@@ -14615,9 +14806,11 @@ class PageChannel extends Channel {
 
   /// Set viewport size
   Future<void> setViewportSize({
-    required PageSetViewportSizeViewportSize viewportSize,
+    double? timeout,
+    required PageSetViewportSize viewportSize,
   }) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['viewportSize'] = viewportSize.toJson();
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14629,10 +14822,12 @@ class PageChannel extends Channel {
 
   /// Route WebSockets
   Future<void> setWebSocketInterceptionPatterns({
-    required List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
+    required List<PageSetWebSocketInterceptionPatternsItems> patterns,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['patterns'] = patterns;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'setWebSocketInterceptionPatterns',
@@ -14642,10 +14837,14 @@ class PageChannel extends Channel {
   }
 
   /// Start CSS coverage
-  Future<void> startCSSCoverage({bool? resetOnNavigation}) async {
+  Future<void> startCSSCoverage({
+    bool? resetOnNavigation,
+    double? timeout,
+  }) async {
     final payload = <String, dynamic>{};
     if (resetOnNavigation != null)
       payload['resetOnNavigation'] = resetOnNavigation;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'startCSSCoverage',
@@ -14658,12 +14857,14 @@ class PageChannel extends Channel {
   Future<void> startJSCoverage({
     bool? reportAnonymousScripts,
     bool? resetOnNavigation,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (reportAnonymousScripts != null)
       payload['reportAnonymousScripts'] = reportAnonymousScripts;
     if (resetOnNavigation != null)
       payload['resetOnNavigation'] = resetOnNavigation;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'startJSCoverage',
@@ -14673,11 +14874,13 @@ class PageChannel extends Channel {
   }
 
   /// Stop CSS coverage
-  Future<PageStopCSSCoverageResult> stopCSSCoverage() async {
+  Future<PageStopCSSCoverageResult> stopCSSCoverage({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'stopCSSCoverage',
-      {},
+      payload,
     );
     return PageStopCSSCoverageResult.fromJson(
       response,
@@ -14686,11 +14889,13 @@ class PageChannel extends Channel {
   }
 
   /// Stop JS coverage
-  Future<PageStopJSCoverageResult> stopJSCoverage() async {
+  Future<PageStopJSCoverageResult> stopJSCoverage({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'stopJSCoverage',
-      {},
+      payload,
     );
     return PageStopJSCoverageResult.fromJson(
       response,
@@ -14699,8 +14904,13 @@ class PageChannel extends Channel {
   }
 
   /// Tap
-  Future<void> touchscreenTap({required double x, required double y}) async {
+  Future<void> touchscreenTap({
+    double? timeout,
+    required double x,
+    required double y,
+  }) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['x'] = x;
     payload['y'] = y;
     final response = await owner.connection.sendMessageToServer(
@@ -14712,8 +14922,12 @@ class PageChannel extends Channel {
   }
 
   /// Unregister locator handler
-  Future<void> unregisterLocatorHandler({required int uid}) async {
+  Future<void> unregisterLocatorHandler({
+    double? timeout,
+    required int uid,
+  }) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['uid'] = uid;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14725,11 +14939,13 @@ class PageChannel extends Channel {
 
   Future<void> updateSubscription({
     required bool enabled,
-    required PageUpdateSubscriptionEventEnum event,
+    required PageUpdateSubscriptionEvent event,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'updateSubscription',
@@ -14739,11 +14955,10 @@ class PageChannel extends Channel {
   }
 
   /// Clear WebStorage
-  Future<void> webStorageClear({
-    required PageWebStorageClearKindEnum kind,
-  }) async {
+  Future<void> webStorageClear({required Kind kind, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'webStorageClear',
@@ -14754,12 +14969,14 @@ class PageChannel extends Channel {
 
   /// Get WebStorage item
   Future<PageWebStorageGetItemResult> webStorageGetItem({
-    required PageWebStorageGetItemKindEnum kind,
+    required Kind kind,
     required String name,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
     payload['name'] = name;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'webStorageGetItem',
@@ -14773,10 +14990,12 @@ class PageChannel extends Channel {
 
   /// Get WebStorage items
   Future<PageWebStorageItemsResult> webStorageItems({
-    required PageWebStorageItemsKindEnum kind,
+    required Kind kind,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'webStorageItems',
@@ -14790,12 +15009,14 @@ class PageChannel extends Channel {
 
   /// Remove WebStorage item
   Future<void> webStorageRemoveItem({
-    required PageWebStorageRemoveItemKindEnum kind,
+    required Kind kind,
     required String name,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
     payload['name'] = name;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'webStorageRemoveItem',
@@ -14806,13 +15027,15 @@ class PageChannel extends Channel {
 
   /// Set WebStorage item
   Future<void> webStorageSetItem({
-    required PageWebStorageSetItemKindEnum kind,
+    required Kind kind,
     required String name,
+    double? timeout,
     required String value,
   }) async {
     final payload = <String, dynamic>{};
     payload['kind'] = kind.value;
     payload['name'] = name;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['value'] = value;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -14851,6 +15074,7 @@ class PlaywrightChannel extends Channel {
     int? maxRedirects,
     PlaywrightNewRequestProxy? proxy,
     PlaywrightNewRequestStorageState? storageState,
+    double? timeout,
     String? tracesDir,
     String? userAgent,
   }) async {
@@ -14869,6 +15093,7 @@ class PlaywrightChannel extends Channel {
     if (maxRedirects != null) payload['maxRedirects'] = maxRedirects;
     if (proxy != null) payload['proxy'] = proxy?.toJson();
     if (storageState != null) payload['storageState'] = storageState?.toJson();
+    if (timeout != null) payload['timeout'] = timeout;
     if (tracesDir != null) payload['tracesDir'] = tracesDir;
     if (userAgent != null) payload['userAgent'] = userAgent;
     final response = await owner.connection.sendMessageToServer(
@@ -14900,11 +15125,15 @@ abstract class RequestBase extends ChannelOwner {
 class RequestChannel extends Channel {
   RequestChannel(super.owner);
 
-  Future<RequestRawRequestHeadersResult> rawRequestHeaders() async {
+  Future<RequestRawRequestHeadersResult> rawRequestHeaders({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'rawRequestHeaders',
-      {},
+      payload,
     );
     return RequestRawRequestHeadersResult.fromJson(
       response,
@@ -14912,11 +15141,13 @@ class RequestChannel extends Channel {
     );
   }
 
-  Future<RequestResponseResult> response() async {
+  Future<RequestResponseResult> response({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'response',
-      {},
+      payload,
     );
     return RequestResponseResult.fromJson(
       response,
@@ -14943,20 +15174,24 @@ class ResponseChannel extends Channel {
   ResponseChannel(super.owner);
 
   /// Get response body
-  Future<ResponseBodyResult> body() async {
+  Future<ResponseBodyResult> body({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'body',
-      {},
+      payload,
     );
     return ResponseBodyResult.fromJson(response, connection: owner.connection);
   }
 
-  Future<ResponseHttpVersionResult> httpVersion() async {
+  Future<ResponseHttpVersionResult> httpVersion({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'httpVersion',
-      {},
+      payload,
     );
     return ResponseHttpVersionResult.fromJson(
       response,
@@ -14964,11 +15199,15 @@ class ResponseChannel extends Channel {
     );
   }
 
-  Future<ResponseRawResponseHeadersResult> rawResponseHeaders() async {
+  Future<ResponseRawResponseHeadersResult> rawResponseHeaders({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'rawResponseHeaders',
-      {},
+      payload,
     );
     return ResponseRawResponseHeadersResult.fromJson(
       response,
@@ -14976,11 +15215,15 @@ class ResponseChannel extends Channel {
     );
   }
 
-  Future<ResponseSecurityDetailsResult> securityDetails() async {
+  Future<ResponseSecurityDetailsResult> securityDetails({
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'securityDetails',
-      {},
+      payload,
     );
     return ResponseSecurityDetailsResult.fromJson(
       response,
@@ -14988,11 +15231,13 @@ class ResponseChannel extends Channel {
     );
   }
 
-  Future<ResponseServerAddrResult> serverAddr() async {
+  Future<ResponseServerAddrResult> serverAddr({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'serverAddr',
-      {},
+      payload,
     );
     return ResponseServerAddrResult.fromJson(
       response,
@@ -15000,11 +15245,13 @@ class ResponseChannel extends Channel {
     );
   }
 
-  Future<ResponseSizesResult> sizes() async {
+  Future<ResponseSizesResult> sizes({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'sizes',
-      {},
+      payload,
     );
     return ResponseSizesResult.fromJson(response, connection: owner.connection);
   }
@@ -15026,9 +15273,11 @@ class RootChannel extends Channel {
 
   Future<RootInitializeResult> initialize({
     required SDKLanguage sdkLanguage,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['sdkLanguage'] = sdkLanguage.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'initialize',
@@ -15059,9 +15308,10 @@ class RouteChannel extends Channel {
   RouteChannel(super.owner);
 
   /// Abort request
-  Future<void> abort({String? errorCode}) async {
+  Future<void> abort({String? errorCode, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (errorCode != null) payload['errorCode'] = errorCode;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'abort',
@@ -15076,6 +15326,7 @@ class RouteChannel extends Channel {
     required bool isFallback,
     String? method,
     String? postData,
+    double? timeout,
     String? url,
   }) async {
     final payload = <String, dynamic>{};
@@ -15083,6 +15334,7 @@ class RouteChannel extends Channel {
     payload['isFallback'] = isFallback;
     if (method != null) payload['method'] = method;
     if (postData != null) payload['postData'] = postData;
+    if (timeout != null) payload['timeout'] = timeout;
     if (url != null) payload['url'] = url;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15099,6 +15351,7 @@ class RouteChannel extends Channel {
     List<NameValue>? headers,
     bool? isBase64,
     int? status,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (body != null) payload['body'] = body;
@@ -15107,6 +15360,7 @@ class RouteChannel extends Channel {
     if (headers != null) payload['headers'] = headers;
     if (isBase64 != null) payload['isBase64'] = isBase64;
     if (status != null) payload['status'] = status;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'fulfill',
@@ -15115,8 +15369,12 @@ class RouteChannel extends Channel {
     return;
   }
 
-  Future<void> redirectNavigationRequest({required String url}) async {
+  Future<void> redirectNavigationRequest({
+    double? timeout,
+    required String url,
+  }) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['url'] = url;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15144,11 +15402,13 @@ class SocksSupportChannel extends Channel {
   Future<void> socksConnected({
     required String host,
     required int port,
+    double? timeout,
     required String uid,
   }) async {
     final payload = <String, dynamic>{};
     payload['host'] = host;
     payload['port'] = port;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['uid'] = uid;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15158,9 +15418,14 @@ class SocksSupportChannel extends Channel {
     return;
   }
 
-  Future<void> socksData({required String data, required String uid}) async {
+  Future<void> socksData({
+    required String data,
+    double? timeout,
+    required String uid,
+  }) async {
     final payload = <String, dynamic>{};
     payload['data'] = data;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['uid'] = uid;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15170,8 +15435,9 @@ class SocksSupportChannel extends Channel {
     return;
   }
 
-  Future<void> socksEnd({required String uid}) async {
+  Future<void> socksEnd({double? timeout, required String uid}) async {
     final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     payload['uid'] = uid;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15181,9 +15447,14 @@ class SocksSupportChannel extends Channel {
     return;
   }
 
-  Future<void> socksError({required String error, required String uid}) async {
+  Future<void> socksError({
+    required String error,
+    double? timeout,
+    required String uid,
+  }) async {
     final payload = <String, dynamic>{};
     payload['error'] = error;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['uid'] = uid;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15195,10 +15466,12 @@ class SocksSupportChannel extends Channel {
 
   Future<void> socksFailed({
     required String errorCode,
+    double? timeout,
     required String uid,
   }) async {
     final payload = <String, dynamic>{};
     payload['errorCode'] = errorCode;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['uid'] = uid;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15223,18 +15496,21 @@ abstract class StreamBase extends ChannelOwner {
 class StreamChannel extends Channel {
   StreamChannel(super.owner);
 
-  Future<void> close() async {
+  Future<void> close({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<StreamReadResult> read({int? size}) async {
+  Future<StreamReadResult> read({int? size, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (size != null) payload['size'] = size;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'read',
@@ -15260,11 +15536,13 @@ class TracingChannel extends Channel {
 
   Future<TracingHarExportResult> harExport({
     String? harId,
-    required TracingHarExportModeEnum mode,
+    required ExportMode mode,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (harId != null) payload['harId'] = harId;
     payload['mode'] = mode.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'harExport',
@@ -15279,10 +15557,12 @@ class TracingChannel extends Channel {
   Future<TracingHarStartResult> harStart({
     required RecordHarOptions options,
     PageBase? page,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['options'] = options.toJson();
     if (page != null) payload['page'] = {'guid': page.guid};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'harStart',
@@ -15298,10 +15578,12 @@ class TracingChannel extends Channel {
   Future<void> tracingGroup({
     TracingTracingGroupLocation? location,
     required String name,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (location != null) payload['location'] = location?.toJson();
     payload['name'] = name;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'tracingGroup',
@@ -15311,11 +15593,13 @@ class TracingChannel extends Channel {
   }
 
   /// Group end
-  Future<void> tracingGroupEnd() async {
+  Future<void> tracingGroupEnd({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'tracingGroupEnd',
-      {},
+      payload,
     );
     return;
   }
@@ -15326,12 +15610,14 @@ class TracingChannel extends Channel {
     String? name,
     bool? screenshots,
     bool? snapshots,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (live != null) payload['live'] = live;
     if (name != null) payload['name'] = name;
     if (screenshots != null) payload['screenshots'] = screenshots;
     if (snapshots != null) payload['snapshots'] = snapshots;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'tracingStart',
@@ -15343,10 +15629,12 @@ class TracingChannel extends Channel {
   /// Start tracing
   Future<TracingTracingStartChunkResult> tracingStartChunk({
     String? name,
+    double? timeout,
     String? title,
   }) async {
     final payload = <String, dynamic>{};
     if (name != null) payload['name'] = name;
+    if (timeout != null) payload['timeout'] = timeout;
     if (title != null) payload['title'] = title;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15360,21 +15648,25 @@ class TracingChannel extends Channel {
   }
 
   /// Stop tracing
-  Future<void> tracingStop() async {
+  Future<void> tracingStop({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'tracingStop',
-      {},
+      payload,
     );
     return;
   }
 
   /// Stop tracing
   Future<TracingTracingStopChunkResult> tracingStopChunk({
-    required TracingTracingStopChunkModeEnum mode,
+    required ChunkMode mode,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['mode'] = mode.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'tracingStopChunk',
@@ -15423,11 +15715,13 @@ class WebSocketRouteChannel extends Channel {
   Future<void> closePage({
     int? code,
     String? reason,
+    double? timeout,
     required bool wasClean,
   }) async {
     final payload = <String, dynamic>{};
     if (code != null) payload['code'] = code;
     if (reason != null) payload['reason'] = reason;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['wasClean'] = wasClean;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15440,11 +15734,13 @@ class WebSocketRouteChannel extends Channel {
   Future<void> closeServer({
     int? code,
     String? reason,
+    double? timeout,
     required bool wasClean,
   }) async {
     final payload = <String, dynamic>{};
     if (code != null) payload['code'] = code;
     if (reason != null) payload['reason'] = reason;
+    if (timeout != null) payload['timeout'] = timeout;
     payload['wasClean'] = wasClean;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -15455,20 +15751,24 @@ class WebSocketRouteChannel extends Channel {
   }
 
   /// Connect WebSocket to server
-  Future<void> connect() async {
+  Future<void> connect({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'connect',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> ensureOpened() async {
+  Future<void> ensureOpened({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'ensureOpened',
-      {},
+      payload,
     );
     return;
   }
@@ -15477,10 +15777,12 @@ class WebSocketRouteChannel extends Channel {
   Future<void> sendToPage({
     required bool isBase64,
     required String message,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['isBase64'] = isBase64;
     payload['message'] = message;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'sendToPage',
@@ -15493,10 +15795,12 @@ class WebSocketRouteChannel extends Channel {
   Future<void> sendToServer({
     required bool isBase64,
     required String message,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['isBase64'] = isBase64;
     payload['message'] = message;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'sendToServer',
@@ -15524,9 +15828,10 @@ class WorkerChannel extends Channel {
   WorkerChannel(super.owner);
 
   /// Disconnect from worker
-  Future<void> disconnect({String? reason}) async {
+  Future<void> disconnect({String? reason, double? timeout}) async {
     final payload = <String, dynamic>{};
     if (reason != null) payload['reason'] = reason;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'disconnect',
@@ -15540,11 +15845,13 @@ class WorkerChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpression',
@@ -15561,11 +15868,13 @@ class WorkerChannel extends Channel {
     required SerializedArgument arg,
     required String expression,
     bool? isFunction,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['arg'] = arg.toJson();
     payload['expression'] = expression;
     if (isFunction != null) payload['isFunction'] = isFunction;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'evaluateExpressionHandle',
@@ -15579,11 +15888,13 @@ class WorkerChannel extends Channel {
 
   Future<void> updateSubscription({
     required bool enabled,
-    required WorkerUpdateSubscriptionEventEnum event,
+    required ElectronApplicationUpdateSubscriptionEvent event,
+    double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     payload['enabled'] = enabled;
     payload['event'] = event.value;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'updateSubscription',
@@ -15607,18 +15918,21 @@ abstract class WritableStreamBase extends ChannelOwner {
 class WritableStreamChannel extends Channel {
   WritableStreamChannel(super.owner);
 
-  Future<void> close() async {
+  Future<void> close({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'close',
-      {},
+      payload,
     );
     return;
   }
 
-  Future<void> write({required String binary}) async {
+  Future<void> write({required String binary, double? timeout}) async {
     final payload = <String, dynamic>{};
     payload['binary'] = binary;
+    if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
       'write',

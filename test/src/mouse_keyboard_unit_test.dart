@@ -107,17 +107,14 @@ void main() {
       expect(req['params']['y'], 200);
       expect(req['params']['steps'], 5);
 
-      await page.mouse.down(
-        button: PageMouseDownButtonEnum.right,
-        clickCount: 2,
-      );
+      await page.mouse.down(button: Button.right, clickCount: 2);
       req = testConnection.transport.sentMessages.lastWhere(
         (m) => m['method'] == 'mouseDown',
       );
       expect(req['params']['button'], 'right');
       expect(req['params']['clickCount'], 2);
 
-      await page.mouse.up(button: PageMouseUpButtonEnum.right, clickCount: 2);
+      await page.mouse.up(button: Button.right, clickCount: 2);
       req = testConnection.transport.sentMessages.lastWhere(
         (m) => m['method'] == 'mouseUp',
       );
@@ -127,7 +124,7 @@ void main() {
       await page.mouse.click(
         50,
         60,
-        button: PageMouseClickButtonEnum.middle,
+        button: Button.middle,
         delay: 10,
         clickCount: 3,
       );
@@ -140,12 +137,7 @@ void main() {
       expect(req['params']['delay'], 10);
       expect(req['params']['clickCount'], 3);
 
-      await page.mouse.dblclick(
-        70,
-        80,
-        button: PageMouseClickButtonEnum.left,
-        delay: 20,
-      );
+      await page.mouse.dblclick(70, 80, button: Button.left, delay: 20);
       req = testConnection.transport.sentMessages.lastWhere(
         (m) => m['method'] == 'mouseClick',
       );

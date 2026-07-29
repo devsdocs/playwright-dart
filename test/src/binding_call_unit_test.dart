@@ -92,7 +92,7 @@ void main() {
       );
       expect(msg, isNotNull);
       final error = msg['params']['error'] as Map<String, dynamic>;
-      expect(error['error'], isNotNull);
+      expect(error['value'], isNotNull);
     });
 
     test('reject serializes error message via toString()', () async {
@@ -104,10 +104,10 @@ void main() {
         (m) => m['method'] == 'reject',
       );
       final errorPayload =
-          msg['params']['error']['error'] as Map<String, dynamic>;
-      expect(errorPayload['message'], contains('test state error'));
-      expect(errorPayload['name'], equals('Error'));
-      expect(errorPayload['stack'], equals(''));
+          msg['params']['error']['value']['e'] as Map<String, dynamic>;
+      expect(errorPayload['m'], contains('test state error'));
+      expect(errorPayload['n'], equals('Error'));
+      expect(errorPayload['s'], equals(''));
     });
 
     test('reject works with plain string error', () async {

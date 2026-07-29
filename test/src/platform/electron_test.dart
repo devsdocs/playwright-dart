@@ -120,7 +120,7 @@ void main() {
       expect(handleReq['params']['expression'], '() => window');
 
       await app.updateSubscription(
-        ElectronApplicationUpdateSubscriptionEventEnum.console,
+        ElectronApplicationUpdateSubscriptionEvent.console,
         true,
       );
       final subReq = testConnection.transport.sentMessages.firstWhere(

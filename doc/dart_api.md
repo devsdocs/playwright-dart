@@ -15,14 +15,21 @@
   - [`FrameLocator`](#framelocator)
   - [`Locator`](#locator)
   - [`Page`](#page)
+  - [`PdfDimension`](#pdfdimension)
   - [`Playwright`](#playwright)
   - [`PlaywrightDart`](#playwrightdart)
+  - [`RouteMatcher`](#routematcher)
+  - [`StringRouteMatcher`](#stringroutematcher)
+  - [`RegExpRouteMatcher`](#regexproutematcher)
+  - [`FunctionRouteMatcher`](#functionroutematcher)
   - [`Selectors`](#selectors)
 - [Interaction](#interaction)
   - [`APIResponseAssertions`](#apiresponseassertions)
   - [`Dialog`](#dialog)
   - [`ElementHandle`](#elementhandle)
   - [`FileChooser`](#filechooser)
+  - [`SelectOption`](#selectoption)
+  - [`InputFile`](#inputfile)
   - [`JSHandle`](#jshandle)
   - [`Keyboard`](#keyboard)
   - [`LocatorAssertions`](#locatorassertions)
@@ -68,6 +75,7 @@
   - [`Channel`](#channel)
   - [`Connection`](#connection)
   - [`Driver`](#driver)
+  - [`NodePlatform`](#nodeplatform)
   - [`EventEmitter`](#eventemitter)
   - [`FilePayload`](#filepayload)
   - [`JsonPipe`](#jsonpipe)
@@ -1306,7 +1314,7 @@ The [origin] to grant permissions to, e.g. "https://example.com".
 - Future&lt;void&gt;
 
 ```dart
-Future<void> grantPermissions(List<String> permissions,
+Future<void> grantPermissions( List<BrowserPermission> permissions,
 ```
 
 ### `setExtraHTTPHeaders`
@@ -1372,7 +1380,7 @@ await browserContext.setGeolocation( latitude: 59.95, longitude: 30.31667 );
 **NOTE**
 Consider using [browserContext.grantPermissions()] to grant permissions for the browser context pages to read its geolocation.
 **Arguments**
-- `geolocation` BrowserContextSetGeolocationGeolocation
+- `geolocation` BrowserContextSetGeolocation
 - `latitude` num
 
 Latitude between -90 and 90.
@@ -1387,7 +1395,7 @@ Non-negative accuracy value. Defaults to `0`.
 - Future&lt;void&gt;
 
 ```dart
-Future<void> setGeolocation( BrowserContextSetGeolocationGeolocation? geolocation, )
+Future<void> setGeolocation( BrowserContextSetGeolocation? geolocation, )
 ```
 
 ### `setHTTPCredentials`
@@ -1601,7 +1609,7 @@ await context.setStorageState('state.json');
 ```
 
 **Arguments**
-- `storageState` BrowserContextSetStorageStateStorageState
+- `storageState` BrowserContextSetStorageState
 - `cookies` List&lt;Map&gt;
 - `name` String
 
@@ -1651,7 +1659,7 @@ Populates context with given storage state. This option can be used to initializ
 - Future&lt;void&gt;
 
 ```dart
-Future<void> setStorageState( BrowserContextSetStorageStateStorageState storageState, )
+Future<void> setStorageState( BrowserContextSetStorageState storageState, )
 ```
 
 ### `addInitScript`
@@ -1854,7 +1862,7 @@ Future<void> close(
 Sets network interception patterns for this context.
 
 ```dart
-Future<void> setNetworkInterceptionPatterns( List<BrowserContextSetNetworkInterceptionPatternsPatternsItems> patterns, )
+Future<void> setNetworkInterceptionPatterns( List<BrowserContextSetNetworkInterceptionPatternsItems> patterns, )
 ```
 
 ### `pause`
@@ -2066,7 +2074,7 @@ Future<void> setTestIdAttributeName(String testIdAttributeName)
 Sets WebSocket interception patterns.
 
 ```dart
-Future<void> setWebSocketInterceptionPatterns( List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems> patterns, )
+Future<void> setWebSocketInterceptionPatterns( List<BrowserContextSetWebSocketInterceptionPatternsItems> patterns, )
 ```
 
 ### `enableRecorder`
@@ -3656,7 +3664,7 @@ Optional argument to pass to [pageFunction].
 - Future&lt;[Serializable]&gt;
 
 ```dart
-Future<dynamic> evaluate(String expression, [dynamic arg])
+Future<T> evaluate<T>(String expression, [Object? arg])
 ```
 
 ### `waitForSelector`
@@ -3698,7 +3706,7 @@ await browser.close();
 
 A selector to query for.
 - `options` Map *(optional)*
-- `state` FrameWaitForSelectorStateEnum *(optional)*
+- `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
 * `'attached'` - wait for element to be present in DOM.
@@ -3794,7 +3802,7 @@ When to consider operation succeeded, defaults to `load`. Events can be either:
 - Future&lt;void&gt;
 
 ```dart
-Future<void> waitForURL( dynamic urlOrPredicate,
+Future<void> waitForURL( RouteMatcher urlOrPredicate,
 ```
 
 ### `waitForNavigation`
@@ -3941,7 +3949,7 @@ await frame.click(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
-- `button` FrameClickButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `clickCount` int *(optional)*
@@ -3953,7 +3961,7 @@ Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;FrameClickModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -4271,7 +4279,7 @@ A selector to search for an element. If there are multiple elements satisfying t
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;FrameHoverModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -4383,7 +4391,7 @@ await frame.dblclick(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
-- `button` FrameDblclickButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `delay` double *(optional)*
@@ -4392,7 +4400,7 @@ Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;FrameDblclickModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -4565,7 +4573,7 @@ A selector to search for an element. If there are multiple elements satisfying t
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;FrameTapModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -4661,7 +4669,7 @@ Future<void> setContent( String html,
 Evaluates JavaScript on the element matching the selector.
 
 ```dart
-Future<dynamic> evalOnSelector( String selector, String expression, [ dynamic arg, bool? strict, bool? isFunction, ])
+Future<T> evalOnSelector<T>( String selector, String expression, [ Object? arg, bool? strict, bool? isFunction, ])
 ```
 
 ### `evalOnSelectorAll`
@@ -4671,7 +4679,7 @@ Future<dynamic> evalOnSelector( String selector, String expression, [ dynamic ar
 Evaluates JavaScript on all elements matching the selector.
 
 ```dart
-Future<dynamic> evalOnSelectorAll( String selector, String expression, [ dynamic arg, bool? isFunction, ])
+Future<T> evalOnSelectorAll<T>( String selector, String expression, [ Object? arg, bool? isFunction, ])
 ```
 
 ### `getAttribute`
@@ -5486,7 +5494,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 - Future&lt;List&lt;String&gt;&gt;
 
 ```dart
-Future<List<String>> selectOption( String selector, dynamic values,
+Future<List<String>> selectOption( String selector, List<SelectOption>? values,
 ```
 
 ### `setInputFiles`
@@ -5541,7 +5549,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 - Future&lt;void&gt;
 
 ```dart
-Future<void> setInputFiles( String selector, dynamic files,
+Future<void> setInputFiles( String selector, List<InputFile>? files,
 ```
 
 ## `FrameLocator`
@@ -8425,7 +8433,7 @@ If [pageFunction] returns a Future, this method will wait for the future to comp
 If [pageFunction] throws or rejects, this method throws.
 
 ```dart
-Future<dynamic> evaluateAll(String expression, [dynamic arg]) async
+Future<T> evaluateAll<T>(String expression, [Object? arg]) async
 ```
 
 ### `type`
@@ -8782,7 +8790,7 @@ Returns the array of option values that have been successfully selected.
 Triggers a `change` and `input` event once all the provided options have been selected.
 
 ```dart
-Future<List<String>> selectOption( dynamic values,
+Future<List<String>> selectOption( List<SelectOption>? values,
 ```
 
 ### `setInputFiles`
@@ -8849,7 +8857,7 @@ Sets the value of the file input to these file paths or files. If some of the `f
 This method expects [Locator] to point to an [input element]. However, if the element is inside the `<label>` element that has an associated [control], targets the control instead.
 
 ```dart
-Future<void> setInputFiles( dynamic files,
+Future<void> setInputFiles( List<InputFile>? files,
 ```
 
 ### `dispatchEvent`
@@ -9049,7 +9057,7 @@ When `true`, appends each element's bounding box as `[box=x,y,width,height]` to 
 - `depth` int *(optional)*
 
 When specified, limits the depth of the snapshot.
-- `mode` FrameAriaSnapshotModeEnum *(optional)*
+- `mode` SnapshotMode *(optional)*
 
 When set to `"ai"`, returns a snapshot optimized for AI consumption. Defaults to `"default"`. See details for more information.
 - `timeout` double *(optional)*
@@ -9179,7 +9187,7 @@ If [pageFunction] returns a Future, this method will wait for the future to comp
 If [pageFunction] throws or rejects, this method throws.
 
 ```dart
-Future<dynamic> evaluate(String expression, [dynamic arg]) async
+Future<T> evaluate<T>(String expression, [Object? arg]) async
 ```
 
 ### `waitFor`
@@ -9199,7 +9207,7 @@ await orderSent.waitFor();
 
 **Arguments**
 - `options` Map *(optional)*
-- `state` FrameWaitForSelectorStateEnum *(optional)*
+- `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
 * `'attached'` - wait for element to be present in DOM.
@@ -9999,7 +10007,7 @@ Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to disable t
 - Future&lt;[Request]&gt;
 
 ```dart
-Future<Request> waitForRequest(dynamic urlOrPredicate,
+Future<Request> waitForRequest( RouteMatcher urlOrPredicate,
 ```
 
 ### `waitForResponse`
@@ -10041,7 +10049,7 @@ Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to disable t
 - Future&lt;[Response]&gt;
 
 ```dart
-Future<Response> waitForResponse(dynamic urlOrPredicate,
+Future<Response> waitForResponse( RouteMatcher urlOrPredicate,
 ```
 
 ### `isClosed`
@@ -10100,7 +10108,7 @@ page width in pixels.
 page height in pixels.
 
 ```dart
-PageSetViewportSizeViewportSize? get viewportSize
+PageSetViewportSize? get viewportSize
 ```
 
 ### `setDefaultTimeout`
@@ -10301,7 +10309,7 @@ When to consider operation succeeded, defaults to `load`. Events can be either:
 - Future&lt;void&gt;
 
 ```dart
-Future<void> waitForURL( dynamic urlOrPredicate,
+Future<void> waitForURL( RouteMatcher urlOrPredicate,
 ```
 
 ### `waitForNavigation`
@@ -10497,7 +10505,7 @@ Optional argument to pass to [pageFunction].
 - Future&lt;[Serializable]&gt;
 
 ```dart
-Future<dynamic> evaluate(String expression, [dynamic arg])
+Future<T> evaluate<T>(String expression, [Object? arg])
 ```
 
 ### `waitForSelector`
@@ -10539,7 +10547,7 @@ await browser.close();
 
 A selector to query for.
 - `options` Map *(optional)*
-- `state` FrameWaitForSelectorStateEnum *(optional)*
+- `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
 * `'attached'` - wait for element to be present in DOM.
@@ -11150,7 +11158,7 @@ await page.goto('https://example.com');
 ```
 
 **Arguments**
-- `viewportSize` PageSetViewportSizeViewportSize
+- `viewportSize` PageSetViewportSize
 - `width` num
 
 page width in pixels.
@@ -11162,7 +11170,7 @@ page height in pixels.
 - Future&lt;void&gt;
 
 ```dart
-Future<void> setViewportSize(PageSetViewportSizeViewportSize viewportSize)
+Future<void> setViewportSize(PageSetViewportSize viewportSize)
 ```
 
 ### `screenshot`
@@ -11589,19 +11597,19 @@ await page.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches);
 
 **Arguments**
 - `options` Map *(optional)*
-- `colorScheme` PageEmulateMediaColorSchemeEnum *(optional)*
+- `colorScheme` Scheme *(optional)*
 
 Emulates [prefers-colors-scheme] media feature, supported values are `'light'` and `'dark'`. Passing `null` disables color scheme emulation. `'no-preference'` is deprecated.
-- `contrast` PageEmulateMediaContrastEnum *(optional)*
+- `contrast` Contrast *(optional)*
 
 Emulates `'prefers-contrast'` media feature, supported values are `'no-preference'`, `'more'`. Passing `null` disables contrast emulation.
-- `forcedColors` PageEmulateMediaForcedColorsEnum *(optional)*
+- `forcedColors` Colors *(optional)*
 
 Emulates `'forced-colors'` media feature, supported values are `'active'` and `'none'`. Passing `null` disables forced colors emulation.
-- `media` PageEmulateMediaMediaEnum *(optional)*
+- `media` Media *(optional)*
 
 Changes the CSS media type of the page. The only allowed values are `'screen'`, `'print'` and `null`. Passing `null` disables CSS media emulation.
-- `reducedMotion` PageEmulateMediaReducedMotionEnum *(optional)*
+- `reducedMotion` Motion *(optional)*
 
 Emulates `'prefers-reduced-motion'` media feature, supported values are `'reduce'`, `'no-preference'`. Passing `null` disables reduced motion emulation.
 
@@ -12371,7 +12379,7 @@ Future<void> setContent(String html,
 Evaluates JavaScript on the element matching the selector.
 
 ```dart
-Future<dynamic> evalOnSelector( String selector, String expression, [ dynamic arg, ])
+Future<T> evalOnSelector<T>( String selector, String expression, [ Object? arg, ])
 ```
 
 ### `evalOnSelectorAll`
@@ -12381,7 +12389,7 @@ Future<dynamic> evalOnSelector( String selector, String expression, [ dynamic ar
 Evaluates JavaScript on all elements matching the selector.
 
 ```dart
-Future<dynamic> evalOnSelectorAll( String selector, String expression, [ dynamic arg, ])
+Future<T> evalOnSelectorAll<T>( String selector, String expression, [ Object? arg, ])
 ```
 
 ### `getAttribute`
@@ -12990,7 +12998,7 @@ Maximum time to wait for in milliseconds. Defaults to `0` - no timeout. The defa
 - Future&lt;[JSHandle]&gt;
 
 ```dart
-Future<JSHandle> waitForFunction( String expression, [ dynamic arg, double? timeout, double? pollingInterval, ])
+Future<JSHandle> waitForFunction( String expression, [ Object? arg, double? timeout, double? pollingInterval, ])
 ```
 
 ### `dispatchEvent`
@@ -13194,7 +13202,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 - Future&lt;List&lt;String&gt;&gt;
 
 ```dart
-Future<List<String>> selectOption( String selector, dynamic values,
+Future<List<String>> selectOption( String selector, List<SelectOption>? values,
 ```
 
 ### `setInputFiles`
@@ -13249,7 +13257,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 - Future&lt;void&gt;
 
 ```dart
-Future<void> setInputFiles( String selector, dynamic files,
+Future<void> setInputFiles( String selector, List<InputFile>? files,
 ```
 
 ### `ariaSnapshot`
@@ -13620,7 +13628,7 @@ Future<void> setExtraHTTPHeaders(List<NameValue> headers)
 Sets network interception patterns for the page.
 
 ```dart
-Future<void> setNetworkInterceptionPatterns( List<PageSetNetworkInterceptionPatternsPatternsItems> patterns, )
+Future<void> setNetworkInterceptionPatterns( List<PageSetNetworkInterceptionPatternsItems> patterns, )
 ```
 
 ### `routeWebSocket`
@@ -13870,6 +13878,12 @@ await page.requests();
 Future<PageRequestsResult> requests()
 ```
 
+## `PdfDimension`
+
+```dart
+class PdfDimension
+```
+
 ## `Playwright`
 
 ```dart
@@ -13989,6 +14003,51 @@ for raw protocol messages, or [LogLevel.none] to silence everything.
 
 ```dart
 static Future<Playwright> create(
+```
+
+## `RouteMatcher`
+
+A matcher for a route URL or a network event predicate.
+
+```dart
+abstract class RouteMatcher
+```
+
+### `function`
+
+*⚙️ Method*
+
+Matches any network event (e.g. Request, Response, Uri) that satisfies the [predicate].
+
+You can use the generic type parameter `<T>` to get type safety and
+auto-filtering based on the network event type.
+
+```dart
+final request = await page.waitForRequest(
+RouteMatcher.function<Request>((req) => req.url.contains('/api') && req.method == 'POST')
+);
+```
+
+```dart
+static RouteMatcher function<T>(bool Function(T) predicate)
+```
+
+## `StringRouteMatcher`
+
+```dart
+class StringRouteMatcher extends RouteMatcher
+```
+
+## `RegExpRouteMatcher`
+
+```dart
+class RegExpRouteMatcher extends RouteMatcher
+```
+
+## `FunctionRouteMatcher`
+
+```dart
+class FunctionRouteMatcher<T> extends RouteMatcher
 ```
 
 ## `Selectors`
@@ -14670,7 +14729,7 @@ await elementHandle.click(options);
 
 **Arguments**
 - `options` Map *(optional)*
-- `button` ElementHandleClickButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `clickCount` int *(optional)*
@@ -14682,7 +14741,7 @@ Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;ElementHandleClickModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -14745,7 +14804,7 @@ await elementHandle.dblclick(options);
 
 **Arguments**
 - `options` Map *(optional)*
-- `button` ElementHandleDblclickButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `delay` double *(optional)*
@@ -14754,7 +14813,7 @@ Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;ElementHandleDblclickModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -14865,7 +14924,7 @@ await elementHandle.hover(options);
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;ElementHandleHoverModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -15047,7 +15106,7 @@ await elementHandle.tap(options);
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
-- `modifiers` List&lt;ElementHandleTapModifiersEnum&gt; *(optional)*
+- `modifiers` List&lt;Modifiers&gt; *(optional)*
 
 Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
 - `noWaitAfter` bool *(optional)*
@@ -15885,7 +15944,7 @@ await elementHandle.waitForElementState(state, options);
 ```
 
 **Arguments**
-- `state` ElementHandleWaitForElementStateStateEnum
+- `state` ElementState
 
 A state to wait for, see below for more details.
 - `options` Map *(optional)*
@@ -15897,7 +15956,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 - Future&lt;void&gt;
 
 ```dart
-Future<void> waitForElementState( ElementHandleWaitForElementStateStateEnum state,
+Future<void> waitForElementState( ElementState state,
 ```
 
 ### `waitForSelector`
@@ -15929,7 +15988,7 @@ This method does not work across navigations, use [page.waitForSelector()] inste
 
 A selector to query for.
 - `options` Map *(optional)*
-- `state` ElementHandleWaitForSelectorStateEnum *(optional)*
+- `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
 * `'attached'` - wait for element to be present in DOM.
@@ -16162,6 +16221,18 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 Future<void> setFiles(List<String> files,
 ```
 
+## `SelectOption`
+
+```dart
+class SelectOption
+```
+
+## `InputFile`
+
+```dart
+class InputFile
+```
+
 ## `JSHandle`
 
 A handle to a JavaScript value in the browser page.
@@ -16217,7 +16288,7 @@ Optional argument to pass to [pageFunction].
 - Future&lt;[Serializable]&gt;
 
 ```dart
-Future<dynamic> evaluate(String expression, [dynamic arg, bool? isFunction])
+Future<R> evaluate<R>(String expression, [Object? arg, bool? isFunction])
 ```
 
 ### `evaluateHandle`
@@ -16253,7 +16324,7 @@ Optional argument to pass to [pageFunction].
 - Future&lt;[JSHandle]&gt;
 
 ```dart
-Future<JSHandle<Object?>> evaluateHandle( String expression, [ dynamic arg, bool? isFunction, ])
+Future<JSHandle<Object?>> evaluateHandle( String expression, [ Object? arg, bool? isFunction, ])
 ```
 
 ### `getProperty`
@@ -17649,7 +17720,7 @@ Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestC
 - Future&lt;void&gt;
 
 ```dart
-Future<void> toContainClass(dynamic expected,
+Future<void> toContainClass(Object expected,
 ```
 
 ### `toHaveAccessibleDescription`
@@ -17812,7 +17883,7 @@ Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestC
 - Future&lt;void&gt;
 
 ```dart
-Future<void> toHaveJSProperty( String name, dynamic value,
+Future<void> toHaveJSProperty( String name, Object? value,
 ```
 
 ### `toHaveRole`
@@ -17883,7 +17954,7 @@ Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestC
 - Future&lt;void&gt;
 
 ```dart
-Future<void> toHaveValues(dynamic values,
+Future<void> toHaveValues(Object values,
 ```
 
 ### `toMatchAriaSnapshot`
@@ -17999,7 +18070,7 @@ await mouse.down(options);
 
 **Arguments**
 - `options` Map *(optional)*
-- `button` PageMouseDownButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `clickCount` int *(optional)*
@@ -18028,7 +18099,7 @@ await mouse.up(options);
 
 **Arguments**
 - `options` Map *(optional)*
-- `button` PageMouseUpButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `clickCount` int *(optional)*
@@ -18063,7 +18134,7 @@ X coordinate relative to the main frame's viewport in CSS pixels.
 
 Y coordinate relative to the main frame's viewport in CSS pixels.
 - `options` Map *(optional)*
-- `button` PageMouseClickButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `clickCount` int *(optional)*
@@ -18101,7 +18172,7 @@ X coordinate relative to the main frame's viewport in CSS pixels.
 
 Y coordinate relative to the main frame's viewport in CSS pixels.
 - `options` Map *(optional)*
-- `button` PageMouseClickButtonEnum *(optional)*
+- `button` Button *(optional)*
 
 Defaults to `left`.
 - `delay` double *(optional)*
@@ -18297,7 +18368,7 @@ Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
 - Future&lt;void&gt;
 
 ```dart
-await dblclick(x, y, delay: delay, button: PageMouseClickButtonEnum.left)
+await dblclick(x, y, delay: delay, button: Button.left)
 ```
 
 ### `rightDblclick`
@@ -18342,7 +18413,7 @@ Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
 - Future&lt;void&gt;
 
 ```dart
-await dblclick(x, y, delay: delay, button: PageMouseClickButtonEnum.right)
+await dblclick(x, y, delay: delay, button: Button.right)
 ```
 
 ### `middleDblclick`
@@ -18387,7 +18458,7 @@ Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
 - Future&lt;void&gt;
 
 ```dart
-await dblclick(x, y, delay: delay, button: PageMouseClickButtonEnum.middle)
+await dblclick(x, y, delay: delay, button: Button.middle)
 ```
 
 ### `scrollUp`
@@ -20022,7 +20093,7 @@ await response.json();
 - Future&lt;[Serializable]&gt;
 
 ```dart
-Future<dynamic> json()
+Future<T> json<T>()
 ```
 
 ### `securityDetails`
@@ -20571,7 +20642,7 @@ await androidDevice.wait(selector, options);
 
 Selector to wait for.
 - `options` Map *(optional)*
-- `state` AndroidDeviceWaitStateEnum *(optional)*
+- `state` WaitState *(optional)*
 
 Optional state. Can be either:
 * default - wait for element to be present.
@@ -20708,7 +20779,7 @@ await androidDevice.fling(selector, direction, options);
 - `selector` [AndroidSelector]
 
 Selector to fling.
-- `direction` AndroidDeviceFlingDirectionEnum
+- `direction` Direction
 
 Fling direction.
 - `options` Map *(optional)*
@@ -20723,7 +20794,7 @@ Maximum time in milliseconds, defaults to 30 seconds, pass `0` to disable timeou
 - Future&lt;void&gt;
 
 ```dart
-Future<void> fling( AndroidSelector androidSelector, AndroidDeviceFlingDirectionEnum direction,
+Future<void> fling( AndroidSelector androidSelector, Direction direction,
 ```
 
 ### `longTap`
@@ -20842,7 +20913,7 @@ await androidDevice.scroll(selector, direction, percent, options);
 - `selector` [AndroidSelector]
 
 Selector to scroll.
-- `direction` AndroidDeviceScrollDirectionEnum
+- `direction` Direction
 
 Scroll direction.
 - `percent` double
@@ -20860,7 +20931,7 @@ Maximum time in milliseconds, defaults to 30 seconds, pass `0` to disable timeou
 - Future&lt;void&gt;
 
 ```dart
-Future<void> scroll( AndroidSelector androidSelector, AndroidDeviceScrollDirectionEnum direction, double percent,
+Future<void> scroll( AndroidSelector androidSelector, Direction direction, double percent,
 ```
 
 ### `swipe`
@@ -20880,7 +20951,7 @@ await androidDevice.swipe(selector, direction, percent, options);
 - `selector` [AndroidSelector]
 
 Selector to swipe.
-- `direction` AndroidDeviceSwipeDirectionEnum
+- `direction` Direction
 
 Swipe direction.
 - `percent` double
@@ -20898,7 +20969,7 @@ Maximum time in milliseconds, defaults to 30 seconds, pass `0` to disable timeou
 - Future&lt;void&gt;
 
 ```dart
-Future<void> swipe( AndroidSelector androidSelector, AndroidDeviceSwipeDirectionEnum direction, double percent,
+Future<void> swipe( AndroidSelector androidSelector, Direction direction, double percent,
 ```
 
 ### `info`
@@ -21360,7 +21431,7 @@ await electron.launch(options);
 
 **Arguments**
 - `options` Map *(optional)*
-- `acceptDownloads` ElectronLaunchAcceptDownloadsEnum *(optional)*
+- `acceptDownloads` Downloads *(optional)*
 
 Whether to automatically download all the attachments. Defaults to `true` where all the downloads are accepted.
 - `args` List&lt;String&gt; *(optional)*
@@ -21375,7 +21446,7 @@ Toggles bypassing page's Content-Security-Policy. Defaults to `false`.
 - `chromiumSandbox` bool *(optional)*
 
 Enable Chromium sandboxing. Defaults to `false`.
-- `colorScheme` ElectronLaunchColorSchemeEnum *(optional)*
+- `colorScheme` Scheme *(optional)*
 
 Emulates [prefers-colors-scheme] media feature, supported values are `'light'` and `'dark'`. See [page.emulateMedia()] for more details. Passing `null` resets emulation to system defaults. Defaults to `'light'`.
 - `cwd` String *(optional)*
@@ -21978,6 +22049,16 @@ Use [PlaywrightDart.create] to pass a [LogLevel] at startup.
 class Logger
 ```
 
+### `Function`
+
+*⚙️ Method*
+
+Optional custom sink for testing or custom log redirection.
+
+```dart
+static void Function( String message,
+```
+
 ### `trace`
 
 *⚙️ Method*
@@ -22440,7 +22521,7 @@ Optional argument to pass to [pageFunction].
 - Future&lt;[Serializable]&gt;
 
 ```dart
-Future<dynamic> evaluate(String expression, [dynamic arg, bool? isFunction])
+Future<T> evaluate<T>(String expression, [Object? arg, bool? isFunction])
 ```
 
 ### `evaluateHandle`
@@ -22472,7 +22553,7 @@ Optional argument to pass to [pageFunction].
 - Future&lt;[JSHandle]&gt;
 
 ```dart
-Future<JSHandle> evaluateHandle( String expression, [ dynamic arg, bool? isFunction, ])
+Future<JSHandle> evaluateHandle( String expression, [ Object? arg, bool? isFunction, ])
 ```
 
 ---
@@ -22726,6 +22807,16 @@ abstract interface class EventTarget
 abstract class ChannelOwner
 ```
 
+### `fromNullable`
+
+*⚙️ Method*
+
+Resolves an optional wire-format object reference to a typed [ChannelOwner].
+
+```dart
+static T? fromNullable<T extends ChannelOwner>( Connection connection, Map<String, dynamic>? wire, )
+```
+
 ## `RootChannelOwner`
 
 ```dart
@@ -22750,6 +22841,32 @@ class Connection
 class Driver
 ```
 
+### `Function`
+
+*⚙️ Method*
+
+Exposed for testing to override Process.start behavior
+
+```dart
+static Future<Process> Function(String, List<String>) processStart = Process.start
+```
+
+### `Function`
+
+*⚙️ Method*
+
+Exposed for testing to override driver download behavior
+
+```dart
+static Future<String> Function() getDriverPath = downloadDriver
+```
+
+## `NodePlatform`
+
+```dart
+class NodePlatform
+```
+
 ## `EventEmitter`
 
 A typed event emitter that mirrors the Playwright Node.js [EventEmitter] API.
@@ -22764,7 +22881,7 @@ JavaScript Playwright client, while mapping each named event to a
 ```dart
 final emitter = EventEmitter();
 
-void handler(dynamic args) => print('got: $args');
+void handler(Object? args) => print('got: $args');
 emitter.on('data', handler);
 emitter.emit('data', 'hello');   // prints "got: hello"
 emitter.off('data', handler);
@@ -22844,7 +22961,7 @@ Emits [event] synchronously, calling all registered listeners with [args].
 Returns `true` if any listeners were registered for this event.
 
 ```dart
-bool emit(String event, [dynamic args])
+bool emit(String event, [Object? args])
 ```
 
 ### `stream`

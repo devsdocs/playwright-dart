@@ -36,6 +36,9 @@ class FileChooser {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -115,6 +118,7 @@ class FileChooser {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"

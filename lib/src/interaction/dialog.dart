@@ -100,6 +100,7 @@ abstract interface class Dialog {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"

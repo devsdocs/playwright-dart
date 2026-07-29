@@ -68,7 +68,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
-  ///   - `button` ElementHandleClickButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `clickCount` int *(optional)*
@@ -80,7 +80,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;ElementHandleClickModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -97,6 +97,12 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `steps` int *(optional)*
   ///
   ///     Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -114,10 +120,10 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
     double? timeout,
     bool? trial,
     bool? noWaitAfter,
-    List<ElementHandleClickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
     double? delay,
-    ElementHandleClickButtonEnum? button,
+    Button? button,
     int? clickCount,
     int? steps,
   });
@@ -147,7 +153,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
-  ///   - `button` ElementHandleDblclickButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `delay` double *(optional)*
@@ -156,7 +162,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;ElementHandleDblclickModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -173,6 +179,12 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `steps` int *(optional)*
   ///
   ///     Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -189,10 +201,10 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
     bool? force,
     double? timeout,
     bool? trial,
-    List<ElementHandleDblclickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
     double? delay,
-    ElementHandleDblclickButtonEnum? button,
+    Button? button,
     int? steps,
   });
 
@@ -228,6 +240,9 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -262,7 +277,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;ElementHandleHoverModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -279,6 +294,12 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -292,7 +313,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
     bool? force,
     double? timeout,
     bool? trial,
-    List<ElementHandleHoverModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
   });
 
@@ -338,6 +359,9 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -386,6 +410,9 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// [Deprecated]
   ///     This option will default to `true` in the future.
   ///     Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -427,7 +454,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;ElementHandleTapModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -444,6 +471,12 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -457,7 +490,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
     bool? force,
     double? timeout,
     bool? trial,
-    List<ElementHandleTapModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
   });
 
@@ -503,6 +536,12 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -561,6 +600,12 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -597,6 +642,9 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -681,9 +729,10 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// - `options` Map *(optional)*
   ///   - `timeout` num *(optional)*
   ///
-  ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-  ///
-  /// **Returns**
+  ///     **WARNING**
+  /// [Deprecated]
+  ///     This option is ignored. The value is returned immediately.
+  ///     **Returns**
   /// - Future&lt;String&gt;
   Future<String> inputValue();
 
@@ -902,7 +951,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// - `type` String
   ///
   ///   DOM event type: `"click"`, `"dragstart"`, etc.
-  /// - `eventInit` dynamic *(optional)*
+  /// - `eventInit` Map&lt;String, dynamic&gt; *(optional)*
   ///
   ///   Optional event-specific initialization properties.
   ///
@@ -954,19 +1003,22 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///     The file path to save the image to. The screenshot type will be inferred from file extension. If [path] is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk.
   ///   - `quality` int *(optional)*
   ///
-  ///     The quality of the image, between 0-100. Not applicable to `png` images.
+  ///     The quality of the image, between 0-100. Not applicable to `png` images. For `jpeg` the default is `80`. For `webp`, a quality of `100` (the default) produces a lossless image, while lower values use lossy compression.
   ///   - `scale` "css" | "device" *(optional)*
   ///
   ///     When set to `"css"`, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will keep screenshots small. Using `"device"` option will produce a single pixel per each device pixel, so screenshots of high-dpi devices will be twice as large or even larger.
   ///
   ///     Defaults to `"device"`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `style` String *(optional)*
   ///
   ///     Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM and applies to the inner frames.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-  ///   - `type` String *(optional)*
+  ///   - `type` ElementHandleScreenshotType *(optional)*
   ///
   ///     Specify screenshot type, defaults to `png`.
   ///
@@ -975,7 +1027,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   Future<List<int>> screenshot({
     CommonScreenshotOptions? options,
     required double timeout,
-    String? type,
+    ElementHandleScreenshotType? type,
     int? quality,
   });
 
@@ -1006,7 +1058,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// ```
   ///
   /// **Arguments**
-  /// - `values` dynamic
+  /// - `values` List&lt;SelectOption&gt;
   ///   - `value` String *(optional)*
   ///
   ///     Matches by `option.value`. Optional.
@@ -1028,6 +1080,9 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1063,6 +1118,9 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1105,6 +1163,9 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1141,20 +1202,20 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// ```
   ///
   /// **Arguments**
-  /// - `state` ElementHandleWaitForElementStateStateEnum
+  /// - `state` ElementState
   ///
   ///   A state to wait for, see below for more details.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> waitForElementState(
-    ElementHandleWaitForElementStateStateEnum state, {
-    double? timeout,
-  });
+  Future<void> waitForElementState(ElementState state, {double? timeout});
 
   /// **WARNING**
   /// [Discouraged]
@@ -1181,7 +1242,10 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   ///
   ///   A selector to query for.
   /// - `options` Map *(optional)*
-  ///   - `state` ElementHandleWaitForSelectorStateEnum *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
+  ///   - `state` SelectorState *(optional)*
   ///
   ///     Defaults to `'visible'`. Can be either:
   ///     * `'attached'` - wait for element to be present in DOM.
@@ -1270,6 +1334,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -1281,7 +1346,7 @@ abstract interface class ElementHandle<T extends Node> implements JSHandle<T> {
   Future<ElementHandle?> waitForSelector(
     String selector, {
     bool? strict,
-    ElementHandleWaitForSelectorStateEnum? state,
+    SelectorState? state,
     double? timeout,
   });
 }
@@ -1425,10 +1490,10 @@ class ElementHandleImpl extends ElementHandleBase
     double? timeout,
     bool? trial,
     bool? noWaitAfter,
-    List<ElementHandleClickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
     double? delay,
-    ElementHandleClickButtonEnum? button,
+    Button? button,
     int? clickCount,
     int? steps,
   }) async {
@@ -1451,10 +1516,10 @@ class ElementHandleImpl extends ElementHandleBase
     bool? force,
     double? timeout,
     bool? trial,
-    List<ElementHandleDblclickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
     double? delay,
-    ElementHandleDblclickButtonEnum? button,
+    Button? button,
     int? steps,
   }) async {
     await channel.dblclick(
@@ -1479,7 +1544,7 @@ class ElementHandleImpl extends ElementHandleBase
     bool? force,
     double? timeout,
     bool? trial,
-    List<ElementHandleHoverModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
   }) async {
     await channel.hover(
@@ -1521,7 +1586,7 @@ class ElementHandleImpl extends ElementHandleBase
     bool? force,
     double? timeout,
     bool? trial,
-    List<ElementHandleTapModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
     Point? position,
   }) async {
     await channel.tap(
@@ -1684,17 +1749,13 @@ class ElementHandleImpl extends ElementHandleBase
   Future<List<int>> screenshot({
     CommonScreenshotOptions? options,
     required double timeout,
-    String? type,
+    ElementHandleScreenshotType? type,
     int? quality,
   }) async {
     final result = await channel.screenshot(
       commonScreenshotOptions: options ?? CommonScreenshotOptions(),
       timeout: timeout,
-      type: type != null
-          ? ElementHandleScreenshotTypeEnum.values.firstWhere(
-              (e) => e.value == type,
-            )
-          : null,
+      type: type,
       quality: quality,
     );
     return base64Decode(result.binary);
@@ -1756,7 +1817,7 @@ class ElementHandleImpl extends ElementHandleBase
 
   @override
   Future<void> waitForElementState(
-    ElementHandleWaitForElementStateStateEnum state, {
+    ElementState state, {
     double? timeout,
   }) async {
     await channel.waitForElementState(
@@ -1769,7 +1830,7 @@ class ElementHandleImpl extends ElementHandleBase
   Future<ElementHandle?> waitForSelector(
     String selector, {
     bool? strict,
-    ElementHandleWaitForSelectorStateEnum? state,
+    SelectorState? state,
     double? timeout,
   }) async {
     final result = await channel.waitForSelector(

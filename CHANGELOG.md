@@ -1,3 +1,19 @@
+## 3.12.0
+
+- **Breaking**: Updated Playwright protocol from v1.61.0 to v1.62.0, bringing in new protocol features and changes.
+- **Feature**: Enhanced enum naming optimization algorithm to prevent duplicate class definitions while maintaining short, method-agnostic, reusable enum names.
+- **Feature**: Applied generated enum types to public API instead of raw strings for better type safety:
+  - `Page.ariaSnapshot()` now uses `SnapshotMode?` instead of `String?` for the `mode` parameter
+  - `Page.screenshot()` now uses `ElementHandleScreenshotType?` instead of `String?` for the `type` parameter
+  - `Locator.screenshot()` now uses `ElementHandleScreenshotType?` instead of `String?` for the `type` parameter
+  - `ElementHandle.screenshot()` now uses `ElementHandleScreenshotType?` instead of `String?` for the `type` parameter
+- **Fix**: Resolved duplicate `SerializedError` class definition in generated protocol code by adding deduplication logic to the generator.
+- **Fix**: Fixed `BindingCall.reject()` error serialization to use the correct `SerializedValue` wrapper structure.
+- **Fix**: Removed deprecated `track` parameter from `ariaSnapshot` method to match updated protocol.
+- **Fix**: Updated timeout test to use reasonable timeout values (100ms instead of 1ms) to account for network/processing overhead.
+- **Tooling**: Enhanced `tool/detect_enum.dart` to better identify String parameters that should use generated enum types.
+- **Tooling**: Created `tool/fix_enum_names.dart` script for batch updating enum name references across the codebase.
+
 ## 3.11.2
 
 - **Fix**: Resolved `type 'Null' is not a subtype of type 'Map<String, dynamic>'` and `type 'BrowserImpl' is not a subtype of type 'Map<String, dynamic>'` exceptions when connecting to remote Playwright servers (e.g. Browserless) via `playwright.chromium.connect()`. The protocol connection now gracefully handles partial initializer payloads that omit optional fields like `firefox`, `webkit`, or `utils`, and fixes a casting error when unpacking `preLaunchedBrowser` from the initializer.

@@ -13,7 +13,7 @@ abstract interface class DebugController {
   });
   Future<void> setReportStateChanged({required bool enabled});
   Future<void> setRecorderMode({
-    DebugControllerSetRecorderModeModeEnum mode,
+    SetRecorderMode mode,
     String? testIdAttributeName,
     bool? generateAutoExpect,
   });
@@ -83,8 +83,7 @@ class DebugControllerImpl extends DebugControllerBase
 
   @override
   Future<void> setRecorderMode({
-    DebugControllerSetRecorderModeModeEnum mode =
-        DebugControllerSetRecorderModeModeEnum.none,
+    SetRecorderMode mode = SetRecorderMode.none,
     String? testIdAttributeName,
     bool? generateAutoExpect,
   }) => channel.setRecorderMode(

@@ -278,13 +278,13 @@ abstract interface class Page {
   /// ```
   ///
   /// **Arguments**
-  /// - `urlOrPredicate` dynamic
+  /// - `urlOrPredicate` RouteMatcher
   ///
   ///   Request URL string, regex or predicate receiving [Request] object.
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to disable the timeout. The default value can be changed by using the [page.setDefaultTimeout()] method.
@@ -316,13 +316,13 @@ abstract interface class Page {
   /// ```
   ///
   /// **Arguments**
-  /// - `urlOrPredicate` dynamic
+  /// - `urlOrPredicate` RouteMatcher
   ///
   ///   Request URL string, regex or predicate receiving [Response] object. When a [baseURL] via the context options was provided and the passed URL is a path, it gets merged via the [`new URL()`] constructor.
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to disable the timeout. The default value can be changed by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -370,7 +370,7 @@ abstract interface class Page {
   ///   - `height` num
   ///
   ///     page height in pixels.
-  PageSetViewportSizeViewportSize? get viewportSize;
+  PageSetViewportSize? get viewportSize;
 
   /// This setting will change the default maximum time for all the methods accepting [timeout] option.
   ///
@@ -444,6 +444,9 @@ abstract interface class Page {
   ///   - `referer` String *(optional)*
   ///
   ///     Referer header value. If provided it will take preference over the referer header value set by [page.setExtraHTTPHeaders()].
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -498,7 +501,7 @@ abstract interface class Page {
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -523,7 +526,7 @@ abstract interface class Page {
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -569,11 +572,11 @@ abstract interface class Page {
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
-  ///   - `url` String *(optional)*
+  ///   - `url` RouteMatcher *(optional)*
   ///
   ///     A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to the string.
   ///   - `waitUntil` LifecycleEvent *(optional)*
@@ -704,9 +707,13 @@ abstract interface class Page {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
+  /// - `options` Map *(optional)*
+  ///   - `exposeFunctions` bool *(optional)*
+  ///
+  ///     When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
@@ -747,7 +754,10 @@ abstract interface class Page {
   ///
   ///   A selector to query for.
   /// - `options` Map *(optional)*
-  ///   - `state` FrameWaitForSelectorStateEnum *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
+  ///   - `state` SelectorState *(optional)*
   ///
   ///     Defaults to `'visible'`. Can be either:
   ///     * `'attached'` - wait for element to be present in DOM.
@@ -766,7 +776,7 @@ abstract interface class Page {
   Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
 
-    FrameWaitForSelectorStateEnum? state,
+    SelectorState? state,
 
     double? timeout,
   });
@@ -1288,7 +1298,7 @@ abstract interface class Page {
   /// ```
   ///
   /// **Arguments**
-  /// - `viewportSize` PageSetViewportSizeViewportSize
+  /// - `viewportSize` PageSetViewportSize
   ///   - `width` num
   ///
   ///     page width in pixels.
@@ -1298,7 +1308,7 @@ abstract interface class Page {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> setViewportSize(PageSetViewportSizeViewportSize viewportSize);
+  Future<void> setViewportSize(PageSetViewportSize viewportSize);
 
   /// Returns the buffer with the captured screenshot.
   ///
@@ -1353,19 +1363,22 @@ abstract interface class Page {
   ///     The file path to save the image to. The screenshot type will be inferred from file extension. If [path] is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk.
   ///   - `quality` int *(optional)*
   ///
-  ///     The quality of the image, between 0-100. Not applicable to `png` images.
+  ///     The quality of the image, between 0-100. Not applicable to `png` images. For `jpeg` the default is `80`. For `webp`, a quality of `100` (the default) produces a lossless image, while lower values use lossy compression.
   ///   - `scale` "css" | "device" *(optional)*
   ///
   ///     When set to `"css"`, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will keep screenshots small. Using `"device"` option will produce a single pixel per each device pixel, so screenshots of high-dpi devices will be twice as large or even larger.
   ///
   ///     Defaults to `"device"`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `style` String *(optional)*
   ///
   ///     Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM and applies to the inner frames.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-  ///   - `type` String *(optional)*
+  ///   - `type` ElementHandleScreenshotType *(optional)*
   ///
   ///     Specify screenshot type, defaults to `png`.
   ///
@@ -1376,7 +1389,7 @@ abstract interface class Page {
 
     bool? fullPage,
 
-    String? type,
+    ElementHandleScreenshotType? type,
 
     int? quality,
 
@@ -1435,7 +1448,7 @@ abstract interface class Page {
   ///   - `footerTemplate` String *(optional)*
   ///
   ///     HTML template for the print footer. Should use the same format as the [headerTemplate].
-  ///   - `format` String *(optional)*
+  ///   - `format` PdfFormat *(optional)*
   ///
   ///     Paper format. If set, takes priority over [width] or [height] options. Defaults to 'Letter'.
   ///   - `headerTemplate` String *(optional)*
@@ -1446,7 +1459,7 @@ abstract interface class Page {
   ///     * `'url'` document location
   ///     * `'pageNumber'` current page number
   ///     * `'totalPages'` total pages in the document
-  ///   - `height` dynamic *(optional)*
+  ///   - `height` PdfDimension *(optional)*
   ///
   ///     Paper height, accepts values labeled with units.
   ///   - `landscape` bool *(optional)*
@@ -1488,7 +1501,7 @@ abstract interface class Page {
   ///   - `tagged` bool *(optional)*
   ///
   ///     Whether or not to generate tagged (accessible) PDF. Defaults to `false`.
-  ///   - `width` dynamic *(optional)*
+  ///   - `width` PdfDimension *(optional)*
   ///
   ///     Paper width, accepts values labeled with units.
   ///
@@ -1537,6 +1550,9 @@ abstract interface class Page {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1556,6 +1572,8 @@ abstract interface class Page {
   ///
   /// Navigate to the previous page in history.
   ///
+  /// **WARNING**
+  /// **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because BFCache restores unfreeze the DOM without firing these events, using `page.goBack()` or `page.goForward()` to trigger a BFCache restore will result in timeouts and a desynchronized `Page` state.
   /// **Usage**
   ///
   /// ```dart
@@ -1565,6 +1583,9 @@ abstract interface class Page {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1584,6 +1605,8 @@ abstract interface class Page {
   ///
   /// Navigate to the next page in history.
   ///
+  /// **WARNING**
+  /// **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because BFCache restores unfreeze the DOM without firing these events, using `page.goBack()` or `page.goForward()` to trigger a BFCache restore will result in timeouts and a desynchronized `Page` state.
   /// **Usage**
   ///
   /// ```dart
@@ -1593,6 +1616,9 @@ abstract interface class Page {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1649,6 +1675,10 @@ abstract interface class Page {
   /// - `arg` [Serializable] *(optional)*
   ///
   ///   Optional argument to pass to [script] (only supported when passing a function).
+  /// - `options` Map *(optional)*
+  ///   - `exposeFunctions` bool *(optional)*
+  ///
+  ///     When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the init script. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Unlike functions passed to [page.evaluate()], functions passed to an init script are exposed in every new document, so they survive navigations. Defaults to `false`, in which case functions are not serializable and are silently dropped.
   ///
   /// **Returns**
   /// - Future&lt;[Disposable]&gt;
@@ -1713,34 +1743,34 @@ abstract interface class Page {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
-  ///   - `colorScheme` PageEmulateMediaColorSchemeEnum *(optional)*
+  ///   - `colorScheme` Scheme *(optional)*
   ///
   ///     Emulates [prefers-colors-scheme] media feature, supported values are `'light'` and `'dark'`. Passing `null` disables color scheme emulation. `'no-preference'` is deprecated.
-  ///   - `contrast` PageEmulateMediaContrastEnum *(optional)*
+  ///   - `contrast` Contrast *(optional)*
   ///
   ///     Emulates `'prefers-contrast'` media feature, supported values are `'no-preference'`, `'more'`. Passing `null` disables contrast emulation.
-  ///   - `forcedColors` PageEmulateMediaForcedColorsEnum *(optional)*
+  ///   - `forcedColors` Colors *(optional)*
   ///
   ///     Emulates `'forced-colors'` media feature, supported values are `'active'` and `'none'`. Passing `null` disables forced colors emulation.
-  ///   - `media` PageEmulateMediaMediaEnum *(optional)*
+  ///   - `media` Media *(optional)*
   ///
   ///     Changes the CSS media type of the page. The only allowed values are `'screen'`, `'print'` and `null`. Passing `null` disables CSS media emulation.
-  ///   - `reducedMotion` PageEmulateMediaReducedMotionEnum *(optional)*
+  ///   - `reducedMotion` Motion *(optional)*
   ///
   ///     Emulates `'prefers-reduced-motion'` media feature, supported values are `'reduce'`, `'no-preference'`. Passing `null` disables reduced motion emulation.
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> emulateMedia({
-    PageEmulateMediaMediaEnum? media,
+    Media? media,
 
-    PageEmulateMediaColorSchemeEnum? colorScheme,
+    Scheme? colorScheme,
 
-    PageEmulateMediaReducedMotionEnum? reducedMotion,
+    Motion? reducedMotion,
 
-    PageEmulateMediaForcedColorsEnum? forcedColors,
+    Colors? forcedColors,
 
-    PageEmulateMediaContrastEnum? contrast,
+    Contrast? contrast,
   });
 
   /// **WARNING**
@@ -1798,6 +1828,12 @@ abstract interface class Page {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1847,6 +1883,9 @@ abstract interface class Page {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1910,6 +1949,12 @@ abstract interface class Page {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1968,6 +2013,12 @@ abstract interface class Page {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2030,6 +2081,12 @@ abstract interface class Page {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2097,6 +2154,12 @@ abstract interface class Page {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2130,6 +2193,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2197,6 +2263,12 @@ abstract interface class Page {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2239,6 +2311,9 @@ abstract interface class Page {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2308,6 +2383,9 @@ abstract interface class Page {
   /// [Deprecated]
   ///     This option will default to `true` in the future.
   ///     Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2374,6 +2452,12 @@ abstract interface class Page {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2414,6 +2498,9 @@ abstract interface class Page {
   ///
   ///   HTML markup to assign to the page.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2469,6 +2556,9 @@ abstract interface class Page {
   ///
   ///   Attribute name to get the value for.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2499,6 +2589,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2529,6 +2622,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2561,6 +2657,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2591,6 +2690,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2621,6 +2723,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2651,6 +2756,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2743,6 +2851,9 @@ abstract interface class Page {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2903,6 +3014,7 @@ abstract interface class Page {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -2943,13 +3055,16 @@ abstract interface class Page {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
   /// - `options` Map *(optional)*
   ///   - `polling` num | "raf" *(optional)*
   ///
   ///     If [polling] is `'raf'`, then [pageFunction] is constantly executed in `requestAnimationFrame` callback. If [polling] is a number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to `raf`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time to wait for in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3008,10 +3123,13 @@ abstract interface class Page {
   /// - `type` String
   ///
   ///   DOM event type: `"click"`, `"dragstart"`, etc.
-  /// - `eventInit` dynamic *(optional)*
+  /// - `eventInit` Map&lt;String, dynamic&gt; *(optional)*
   ///
   ///   Optional event-specific initialization properties.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -3101,7 +3219,7 @@ abstract interface class Page {
   /// - `selector` String
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
-  /// - `values` dynamic
+  /// - `values` List&lt;SelectOption&gt;
   ///   - `value` String *(optional)*
   ///
   ///     Matches by `option.value`. Optional.
@@ -3123,6 +3241,9 @@ abstract interface class Page {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -3162,7 +3283,7 @@ abstract interface class Page {
   /// - `selector` String
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
-  /// - `files` dynamic
+  /// - `files` List&lt;InputFile&gt;
   ///   - `name` String
   ///
   ///     File name
@@ -3179,6 +3300,9 @@ abstract interface class Page {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -3215,9 +3339,12 @@ abstract interface class Page {
   ///   - `depth` int *(optional)*
   ///
   ///     When specified, limits the depth of the snapshot.
-  ///   - `mode` String *(optional)*
+  ///   - `mode` SnapshotMode *(optional)*
   ///
   ///     When set to `"ai"`, returns a snapshot optimized for AI consumption: including element references like `[ref=e2]` and snapshots of `<iframe>`s. Defaults to `"default"`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3227,7 +3354,7 @@ abstract interface class Page {
   Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
 
-    String? mode,
+    SnapshotMode? mode,
 
     String? track,
 
@@ -3521,7 +3648,7 @@ abstract interface class Page {
 
   /// Sets network interception patterns for the page.
   Future<void> setNetworkInterceptionPatterns(
-    List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
+    List<PageSetNetworkInterceptionPatternsItems> patterns,
   );
 
   /// This method allows to modify websocket connections that are made by the page.
@@ -3720,7 +3847,7 @@ abstract interface class Page {
   });
 
   Future<void> setWebSocketInterceptionPatterns(
-    List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
+    List<PageSetWebSocketInterceptionPatternsItems> patterns,
   );
 
   Future<void> startJSCoverage({
@@ -3758,7 +3885,7 @@ abstract interface class Page {
   Future<void> screencastHideActions();
 
   Future<void> updateSubscription({
-    required PageUpdateSubscriptionEventEnum event,
+    required PageUpdateSubscriptionEvent event,
 
     required bool enabled,
   });
@@ -3767,37 +3894,23 @@ abstract interface class Page {
 
   /// Returns all items from `localStorage` or `sessionStorage`.
 
-  Future<Map<String, String>> storageItems(PageWebStorageItemsKindEnum kind);
+  Future<Map<String, String>> storageItems(Kind kind);
 
   /// Returns the value of an item from `localStorage` or `sessionStorage`.
 
-  Future<String?> storageGetItem(
-    PageWebStorageGetItemKindEnum kind,
-
-    String name,
-  );
+  Future<String?> storageGetItem(Kind kind, String name);
 
   /// Sets an item in `localStorage` or `sessionStorage`.
 
-  Future<void> storageSetItem(
-    PageWebStorageSetItemKindEnum kind,
-
-    String name,
-
-    String value,
-  );
+  Future<void> storageSetItem(Kind kind, String name, String value);
 
   /// Removes an item from `localStorage` or `sessionStorage`.
 
-  Future<void> storageRemoveItem(
-    PageWebStorageRemoveItemKindEnum kind,
-
-    String name,
-  );
+  Future<void> storageRemoveItem(Kind kind, String name);
 
   /// Clears all items from `localStorage` or `sessionStorage`.
 
-  Future<void> storageClear(PageWebStorageClearKindEnum kind);
+  Future<void> storageClear(Kind kind);
 
   // ── Channel Method Aliases ────────────────────────────────────────────────
 
@@ -3807,34 +3920,28 @@ abstract interface class Page {
 
   /// Clears web storage (channel method alias for storageClear).
 
-  Future<void> webStorageClear({required PageWebStorageClearKindEnum kind});
+  Future<void> webStorageClear({required Kind kind});
 
   /// Gets an item from web storage (channel method alias).
 
   Future<PageWebStorageGetItemResult> webStorageGetItem({
-    required PageWebStorageGetItemKindEnum kind,
+    required Kind kind,
 
     required String name,
   });
 
   /// Gets all items from web storage (channel method alias).
 
-  Future<PageWebStorageItemsResult> webStorageItems({
-    required PageWebStorageItemsKindEnum kind,
-  });
+  Future<PageWebStorageItemsResult> webStorageItems({required Kind kind});
 
   /// Removes an item from web storage (channel method alias).
 
-  Future<void> webStorageRemoveItem({
-    required PageWebStorageRemoveItemKindEnum kind,
-
-    required String name,
-  });
+  Future<void> webStorageRemoveItem({required Kind kind, required String name});
 
   /// Sets an item in web storage (channel method alias).
 
   Future<void> webStorageSetItem({
-    required PageWebStorageSetItemKindEnum kind,
+    required Kind kind,
 
     required String name,
 
@@ -3870,13 +3977,10 @@ class PageImpl extends PageBase implements Page {
   String url() => mainFrame.url();
 
   @override
-  PageSetViewportSizeViewportSize? get viewportSize {
+  PageSetViewportSize? get viewportSize {
     final size = typedInitializer.viewportSize;
     if (size == null) return null;
-    return PageSetViewportSizeViewportSize(
-      width: size.width,
-      height: size.height,
-    );
+    return PageSetViewportSize(width: size.width, height: size.height);
   }
 
   @override
@@ -4020,7 +4124,7 @@ class PageImpl extends PageBase implements Page {
     channel.updateSubscription(
       enabled: true,
 
-      event: PageUpdateSubscriptionEventEnum.console,
+      event: PageUpdateSubscriptionEvent.console,
     );
 
     return (context as BrowserContextImpl).onEvent
@@ -4046,7 +4150,7 @@ class PageImpl extends PageBase implements Page {
     channel.updateSubscription(
       enabled: true,
 
-      event: PageUpdateSubscriptionEventEnum.fileChooser,
+      event: PageUpdateSubscriptionEvent.fileChooser,
     );
 
     return onEvent.where((e) => e['event'] == 'fileChooser').map((e) {
@@ -4065,7 +4169,7 @@ class PageImpl extends PageBase implements Page {
     channel.updateSubscription(
       enabled: true,
 
-      event: PageUpdateSubscriptionEventEnum.dialog,
+      event: PageUpdateSubscriptionEvent.dialog,
     );
 
     return onEvent.where((e) => e['event'] == 'dialog').map((e) {
@@ -4080,7 +4184,7 @@ class PageImpl extends PageBase implements Page {
     channel.updateSubscription(
       enabled: true,
 
-      event: PageUpdateSubscriptionEventEnum.request,
+      event: PageUpdateSubscriptionEvent.request,
     );
 
     return (context as BrowserContextImpl).onEvent
@@ -4102,7 +4206,7 @@ class PageImpl extends PageBase implements Page {
     channel.updateSubscription(
       enabled: true,
 
-      event: PageUpdateSubscriptionEventEnum.response,
+      event: PageUpdateSubscriptionEvent.response,
     );
 
     return (context as BrowserContextImpl).onEvent
@@ -4124,7 +4228,7 @@ class PageImpl extends PageBase implements Page {
     channel.updateSubscription(
       enabled: true,
 
-      event: PageUpdateSubscriptionEventEnum.requestFinished,
+      event: PageUpdateSubscriptionEvent.requestFinished,
     );
 
     return (context as BrowserContextImpl).onEvent
@@ -4142,7 +4246,7 @@ class PageImpl extends PageBase implements Page {
     channel.updateSubscription(
       enabled: true,
 
-      event: PageUpdateSubscriptionEventEnum.requestFailed,
+      event: PageUpdateSubscriptionEvent.requestFailed,
     );
 
     return (context as BrowserContextImpl).onEvent
@@ -4416,7 +4520,7 @@ class PageImpl extends PageBase implements Page {
   Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
 
-    FrameWaitForSelectorStateEnum? state,
+    SelectorState? state,
 
     double? timeout,
   }) async {
@@ -4570,9 +4674,7 @@ class PageImpl extends PageBase implements Page {
   Clock get clock => (context as BrowserContextImpl).clock;
 
   @override
-  Future<void> setViewportSize(
-    PageSetViewportSizeViewportSize viewportSize,
-  ) async {
+  Future<void> setViewportSize(PageSetViewportSize viewportSize) async {
     await channel.setViewportSize(viewportSize: viewportSize);
   }
 
@@ -4582,7 +4684,7 @@ class PageImpl extends PageBase implements Page {
 
     bool? fullPage,
 
-    String? type,
+    ElementHandleScreenshotType? type,
 
     int? quality,
 
@@ -4597,9 +4699,7 @@ class PageImpl extends PageBase implements Page {
     final result = await channel.screenshot(
       timeout: timeout ?? 30000.0,
 
-      type: type != null
-          ? PageScreenshotTypeEnum.values.firstWhere((e) => e.value == type)
-          : null,
+      type: type,
 
       quality: quality,
 
@@ -4744,15 +4844,15 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> emulateMedia({
-    PageEmulateMediaMediaEnum? media,
+    Media? media,
 
-    PageEmulateMediaColorSchemeEnum? colorScheme,
+    Scheme? colorScheme,
 
-    PageEmulateMediaReducedMotionEnum? reducedMotion,
+    Motion? reducedMotion,
 
-    PageEmulateMediaForcedColorsEnum? forcedColors,
+    Colors? forcedColors,
 
-    PageEmulateMediaContrastEnum? contrast,
+    Contrast? contrast,
   }) async {
     await channel.emulateMedia(
       media: media,
@@ -5115,7 +5215,7 @@ class PageImpl extends PageBase implements Page {
   Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
 
-    String? mode,
+    SnapshotMode? mode,
 
     String? track,
 
@@ -5128,9 +5228,7 @@ class PageImpl extends PageBase implements Page {
     return mainFrame.ariaSnapshot(
       selector,
 
-      mode: mode != null
-          ? FrameAriaSnapshotModeEnum.values.firstWhere((e) => e.value == mode)
-          : null,
+      mode: mode,
 
       track: track,
 
@@ -5343,16 +5441,14 @@ class PageImpl extends PageBase implements Page {
     }
   }
 
-  PageSetWebSocketInterceptionPatternsPatternsItems _urlToPattern(Pattern url) {
+  PageSetWebSocketInterceptionPatternsItems _urlToPattern(Pattern url) {
     if (url is RegExp) {
-      return PageSetWebSocketInterceptionPatternsPatternsItems(
+      return PageSetWebSocketInterceptionPatternsItems(
         regexSource: url.pattern,
         regexFlags: _regexFlags(url),
       );
     } else {
-      return PageSetWebSocketInterceptionPatternsPatternsItems(
-        glob: url as String,
-      );
+      return PageSetWebSocketInterceptionPatternsItems(glob: url as String);
     }
   }
 
@@ -5372,7 +5468,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> setNetworkInterceptionPatterns(
-    List<PageSetNetworkInterceptionPatternsPatternsItems> patterns,
+    List<PageSetNetworkInterceptionPatternsItems> patterns,
   ) async {
     await channel.setNetworkInterceptionPatterns(patterns: patterns);
   }
@@ -5525,7 +5621,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> setWebSocketInterceptionPatterns(
-    List<PageSetWebSocketInterceptionPatternsPatternsItems> patterns,
+    List<PageSetWebSocketInterceptionPatternsItems> patterns,
   ) async {
     await channel.setWebSocketInterceptionPatterns(patterns: patterns);
   }
@@ -5612,7 +5708,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> updateSubscription({
-    required PageUpdateSubscriptionEventEnum event,
+    required PageUpdateSubscriptionEvent event,
 
     required bool enabled,
   }) async {
@@ -5622,9 +5718,7 @@ class PageImpl extends PageBase implements Page {
   // ── Web Storage ───────────────────────────────────────────────────────────
 
   @override
-  Future<Map<String, String>> storageItems(
-    PageWebStorageItemsKindEnum kind,
-  ) async {
+  Future<Map<String, String>> storageItems(Kind kind) async {
     final result = await channel.webStorageItems(kind: kind);
 
     final items = result.items;
@@ -5633,38 +5727,24 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
-  Future<String?> storageGetItem(
-    PageWebStorageGetItemKindEnum kind,
-
-    String name,
-  ) async {
+  Future<String?> storageGetItem(Kind kind, String name) async {
     final result = await channel.webStorageGetItem(kind: kind, name: name);
 
     return result.value;
   }
 
   @override
-  Future<void> storageSetItem(
-    PageWebStorageSetItemKindEnum kind,
-
-    String name,
-
-    String value,
-  ) async {
+  Future<void> storageSetItem(Kind kind, String name, String value) async {
     await channel.webStorageSetItem(kind: kind, name: name, value: value);
   }
 
   @override
-  Future<void> storageRemoveItem(
-    PageWebStorageRemoveItemKindEnum kind,
-
-    String name,
-  ) async {
+  Future<void> storageRemoveItem(Kind kind, String name) async {
     await channel.webStorageRemoveItem(kind: kind, name: name);
   }
 
   @override
-  Future<void> storageClear(PageWebStorageClearKindEnum kind) async {
+  Future<void> storageClear(Kind kind) async {
     await channel.webStorageClear(kind: kind);
   }
 
@@ -5676,15 +5756,13 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
-  Future<void> webStorageClear({
-    required PageWebStorageClearKindEnum kind,
-  }) async {
+  Future<void> webStorageClear({required Kind kind}) async {
     await channel.webStorageClear(kind: kind);
   }
 
   @override
   Future<PageWebStorageGetItemResult> webStorageGetItem({
-    required PageWebStorageGetItemKindEnum kind,
+    required Kind kind,
 
     required String name,
   }) async {
@@ -5693,14 +5771,14 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<PageWebStorageItemsResult> webStorageItems({
-    required PageWebStorageItemsKindEnum kind,
+    required Kind kind,
   }) async {
     return await channel.webStorageItems(kind: kind);
   }
 
   @override
   Future<void> webStorageRemoveItem({
-    required PageWebStorageRemoveItemKindEnum kind,
+    required Kind kind,
 
     required String name,
   }) async {
@@ -5709,7 +5787,7 @@ class PageImpl extends PageBase implements Page {
 
   @override
   Future<void> webStorageSetItem({
-    required PageWebStorageSetItemKindEnum kind,
+    required Kind kind,
 
     required String name,
 

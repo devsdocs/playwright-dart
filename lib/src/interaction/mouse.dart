@@ -44,7 +44,7 @@ class Mouse {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
-  ///   - `button` PageMouseDownButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `clickCount` int *(optional)*
@@ -53,7 +53,7 @@ class Mouse {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> down({PageMouseDownButtonEnum? button, int? clickCount}) async {
+  Future<void> down({Button? button, int? clickCount}) async {
     await (page as PageImpl).channel.mouseDown(
       button: button,
       clickCount: clickCount,
@@ -71,7 +71,7 @@ class Mouse {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
-  ///   - `button` PageMouseUpButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `clickCount` int *(optional)*
@@ -80,7 +80,7 @@ class Mouse {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> up({PageMouseUpButtonEnum? button, int? clickCount}) async {
+  Future<void> up({Button? button, int? clickCount}) async {
     await (page as PageImpl).channel.mouseUp(
       button: button,
       clickCount: clickCount,
@@ -104,7 +104,7 @@ class Mouse {
   ///
   ///   Y coordinate relative to the main frame's viewport in CSS pixels.
   /// - `options` Map *(optional)*
-  ///   - `button` PageMouseClickButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `clickCount` int *(optional)*
@@ -120,7 +120,7 @@ class Mouse {
     double x,
     double y, {
     double? delay,
-    PageMouseClickButtonEnum? button,
+    Button? button,
     int? clickCount,
   }) async {
     await (page as PageImpl).channel.mouseClick(
@@ -149,7 +149,7 @@ class Mouse {
   ///
   ///   Y coordinate relative to the main frame's viewport in CSS pixels.
   /// - `options` Map *(optional)*
-  ///   - `button` PageMouseClickButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `delay` double *(optional)*
@@ -191,7 +191,7 @@ class Mouse {
     double x,
     double y, {
     double? delay,
-    PageMouseClickButtonEnum? button,
+    Button? button,
   }) async {
     await click(x, y, delay: delay, button: button, clickCount: 2);
   }
@@ -289,6 +289,7 @@ class Mouse {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -343,7 +344,7 @@ class Mouse {
       x,
       y,
       delay: delay,
-      button: PageMouseClickButtonEnum.left,
+      button: Button.left,
       clickCount: clickCount,
     );
   }
@@ -388,7 +389,7 @@ class Mouse {
       x,
       y,
       delay: delay,
-      button: PageMouseClickButtonEnum.right,
+      button: Button.right,
       clickCount: clickCount,
     );
   }
@@ -433,7 +434,7 @@ class Mouse {
       x,
       y,
       delay: delay,
-      button: PageMouseClickButtonEnum.middle,
+      button: Button.middle,
       clickCount: clickCount,
     );
   }
@@ -466,7 +467,7 @@ class Mouse {
     ///
     /// **Returns**
     /// - Future&lt;void&gt;
-    await dblclick(x, y, delay: delay, button: PageMouseClickButtonEnum.left);
+    await dblclick(x, y, delay: delay, button: Button.left);
   }
 
   /// Double right-clicks at the specified coordinates.
@@ -497,7 +498,7 @@ class Mouse {
     ///
     /// **Returns**
     /// - Future&lt;void&gt;
-    await dblclick(x, y, delay: delay, button: PageMouseClickButtonEnum.right);
+    await dblclick(x, y, delay: delay, button: Button.right);
   }
 
   /// Double middle-clicks at the specified coordinates.
@@ -528,7 +529,7 @@ class Mouse {
     ///
     /// **Returns**
     /// - Future&lt;void&gt;
-    await dblclick(x, y, delay: delay, button: PageMouseClickButtonEnum.middle);
+    await dblclick(x, y, delay: delay, button: Button.middle);
   }
 
   /// Scrolls up by the specified amount.

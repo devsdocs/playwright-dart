@@ -34,52 +34,35 @@ void main() {
     });
 
     test('returns null for undefined v', () {
-      expect(
-        parseSerializedValue(
-          SerializedValue(v: SerializedValueVEnum.undefined),
-        ),
-        isNull,
-      );
+      expect(parseSerializedValue(SerializedValue(v: V.undefined)), isNull);
     });
 
     test('returns null for null v', () {
-      expect(
-        parseSerializedValue(
-          SerializedValue(v: SerializedValueVEnum.nullValue),
-        ),
-        isNull,
-      );
+      expect(parseSerializedValue(SerializedValue(v: V.nullValue)), isNull);
     });
 
     test('returns NaN for nan v', () {
-      final result = parseSerializedValue(
-        SerializedValue(v: SerializedValueVEnum.nan),
-      );
+      final result = parseSerializedValue(SerializedValue(v: V.nan));
       expect(result is double && (result).isNaN, isTrue);
     });
 
     test('returns Infinity for infinity v', () {
       expect(
-        parseSerializedValue(SerializedValue(v: SerializedValueVEnum.infinity)),
+        parseSerializedValue(SerializedValue(v: V.infinity)),
         equals(double.infinity),
       );
     });
 
     test('returns -Infinity for minusInfinity v', () {
       expect(
-        parseSerializedValue(
-          SerializedValue(v: SerializedValueVEnum.minusInfinity),
-        ),
+        parseSerializedValue(SerializedValue(v: V.minusInfinity)),
         equals(double.negativeInfinity),
       );
     });
 
     test('returns -0.0 for minusZero v', () {
       final result =
-          parseSerializedValue(
-                SerializedValue(v: SerializedValueVEnum.minusZero),
-              )
-              as double;
+          parseSerializedValue(SerializedValue(v: V.minusZero)) as double;
       expect(result, equals(-0.0));
       expect(result.isNegative, isTrue);
     });
@@ -161,7 +144,7 @@ void main() {
   group('serializeValue', () {
     test('serializes null', () {
       final sv = serializeValue(null);
-      expect(sv.v, equals(SerializedValueVEnum.undefined));
+      expect(sv.v, equals(V.undefined));
     });
 
     test('serializes int as double n', () {
@@ -176,22 +159,22 @@ void main() {
 
     test('serializes NaN', () {
       final sv = serializeValue(double.nan);
-      expect(sv.v, equals(SerializedValueVEnum.nan));
+      expect(sv.v, equals(V.nan));
     });
 
     test('serializes Infinity', () {
       final sv = serializeValue(double.infinity);
-      expect(sv.v, equals(SerializedValueVEnum.infinity));
+      expect(sv.v, equals(V.infinity));
     });
 
     test('serializes -Infinity', () {
       final sv = serializeValue(double.negativeInfinity);
-      expect(sv.v, equals(SerializedValueVEnum.minusInfinity));
+      expect(sv.v, equals(V.minusInfinity));
     });
 
     test('serializes -0.0', () {
       final sv = serializeValue(-0.0);
-      expect(sv.v, equals(SerializedValueVEnum.minusZero));
+      expect(sv.v, equals(V.minusZero));
     });
 
     test('serializes true', () {
@@ -264,7 +247,7 @@ void main() {
 
     test('unknown type returns undefined', () {
       final sv = serializeValue(Object());
-      expect(sv.v, equals(SerializedValueVEnum.undefined));
+      expect(sv.v, equals(V.undefined));
     });
   });
 
@@ -278,7 +261,7 @@ void main() {
 
     test('works with null', () {
       final arg = serializeArgument(null);
-      expect(arg.value.v, equals(SerializedValueVEnum.undefined));
+      expect(arg.value.v, equals(V.undefined));
     });
 
     test('works with string', () {

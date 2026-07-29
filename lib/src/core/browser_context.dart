@@ -302,7 +302,7 @@ abstract interface class BrowserContext {
   /// ```
   ///
   /// **Arguments**
-  /// - `permissions` List&lt;String&gt;
+  /// - `permissions` List&lt;BrowserPermission&gt;
   ///
   ///   A list of permissions to grant.
   ///
@@ -384,7 +384,7 @@ abstract interface class BrowserContext {
   /// **NOTE**
   /// Consider using [browserContext.grantPermissions()] to grant permissions for the browser context pages to read its geolocation.
   /// **Arguments**
-  /// - `geolocation` BrowserContextSetGeolocationGeolocation
+  /// - `geolocation` BrowserContextSetGeolocation
   ///   - `latitude` num
   ///
   ///     Latitude between -90 and 90.
@@ -397,9 +397,7 @@ abstract interface class BrowserContext {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> setGeolocation(
-    BrowserContextSetGeolocationGeolocation? geolocation,
-  );
+  Future<void> setGeolocation(BrowserContextSetGeolocation? geolocation);
 
   /// **WARNING**
   /// [Deprecated]
@@ -495,6 +493,7 @@ abstract interface class BrowserContext {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -522,7 +521,7 @@ abstract interface class BrowserContext {
   /// - Future&lt;void&gt;
   Future<void> setOffline(bool offline);
 
-  /// Returns storage state for this browser context, contains current cookies, local storage snapshot and IndexedDB snapshot.
+  /// Returns storage state for this browser context, contains current cookies, local storage snapshot, IndexedDB snapshot and virtual WebAuthn credentials.
   ///
   /// **Usage**
   ///
@@ -533,6 +532,9 @@ abstract interface class BrowserContext {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
+  ///   - `credentials` bool *(optional)*
+  ///
+  ///     Set to `true` to include the context's virtual WebAuthn [browserContext.credentials] (passkeys) in the storage state snapshot. The captured credentials carry their private keys, so they can be re-seeded into a later context via the [storageState] option or [browserContext.setStorageState()]. Note that restoring the storage state that contains credentials will automatically install the virtual WebAuthn authenticator (see [credentials.install()]), and prevent all real authenticators from working in this context.
   ///   - `indexedDB` bool *(optional)*
   ///
   ///     Set to `true` to include [IndexedDB] in the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase Authentication, enable this.
@@ -579,7 +581,7 @@ abstract interface class BrowserContext {
   ///       - `value` String
   Future<BrowserContextStorageStateResult> storageState({bool? indexedDB});
 
-  /// Clears the existing cookies, local storage and IndexedDB entries for all origins and sets the new storage state.
+  /// Clears the existing cookies, local storage, IndexedDB entries and virtual WebAuthn credentials, and sets the new storage state. When the storage state contains credentials, the virtual WebAuthn authenticator is installed (equivalent to [credentials.install()]), preventing all real authenticators from working in this context.
   ///
   /// **Usage**
   ///
@@ -589,7 +591,7 @@ abstract interface class BrowserContext {
   /// ```
   ///
   /// **Arguments**
-  /// - `storageState` BrowserContextSetStorageStateStorageState
+  /// - `storageState` BrowserContextSetStorageState
   ///   - `cookies` List&lt;Map&gt;
   ///     - `name` String
   ///
@@ -637,9 +639,7 @@ abstract interface class BrowserContext {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<void> setStorageState(
-    BrowserContextSetStorageStateStorageState storageState,
-  );
+  Future<void> setStorageState(BrowserContextSetStorageState storageState);
 
   /// Adds a script which would be evaluated in one of the following scenarios:
   /// * Whenever a page is created in the browser context or is navigated.
@@ -678,6 +678,10 @@ abstract interface class BrowserContext {
   /// - `arg` [Serializable] *(optional)*
   ///
   ///   Optional argument to pass to [script] (only supported when passing a function).
+  /// - `options` Map *(optional)*
+  ///   - `exposeFunctions` bool *(optional)*
+  ///
+  ///     When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the init script. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Unlike functions passed to [page.evaluate()], functions passed to an init script are exposed in every new document, so they survive navigations. Defaults to `false`, in which case functions are not serializable and are silently dropped.
   ///
   /// **Returns**
   /// - Future&lt;[Disposable]&gt;
@@ -787,7 +791,7 @@ abstract interface class BrowserContext {
 
   /// Sets network interception patterns for this context.
   Future<void> setNetworkInterceptionPatterns(
-    List<BrowserContextSetNetworkInterceptionPatternsPatternsItems> patterns,
+    List<BrowserContextSetNetworkInterceptionPatternsItems> patterns,
   );
 
   /// Pauses the context for debugging.
@@ -990,16 +994,16 @@ abstract interface class BrowserContext {
 
   /// Sets WebSocket interception patterns.
   Future<void> setWebSocketInterceptionPatterns(
-    List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems> patterns,
+    List<BrowserContextSetWebSocketInterceptionPatternsItems> patterns,
   );
 
   /// Enables the recorder.
   Future<void> enableRecorder({
     String? language,
 
-    BrowserContextEnableRecorderModeEnum? mode,
+    EnableRecorderMode? mode,
 
-    BrowserContextEnableRecorderRecorderModeEnum? recorderMode,
+    RecorderRecorderMode? recorderMode,
 
     bool? pauseOnNextStatement,
 
@@ -1049,12 +1053,12 @@ abstract interface class BrowserContext {
   Future<BrowserContextCreateTempFilesResult> createTempFiles({
     String? rootDirName,
 
-    required List<BrowserContextCreateTempFilesItemsItems> items,
+    required List<BrowserContextCreateTempFilesItems> items,
   });
 
   /// Updates the subscription for events.
   Future<void> updateSubscription({
-    required BrowserContextUpdateSubscriptionEventEnum event,
+    required ContextUpdateSubscriptionEvent event,
 
     required bool enabled,
   });
@@ -1181,6 +1185,9 @@ abstract interface class BrowserContext {
   ///
   ///   Path to a [HAR] file with prerecorded network data. If `path` is a relative path, then it is resolved relative to the current working directory.
   /// - `options` Map *(optional)*
+  ///   - `interceptAPIRequests` bool *(optional)*
+  ///
+  ///     If set to `true`, requests made via [APIRequestContext] (such as [browserContext.request] or [page.request]) are also served from the HAR file. By default these requests are sent to the network, matching the behavior prior to v1.62. Defaults to `false` for backward compatibility.
   ///   - `notFound` "abort" | "fallback" *(optional)*
   ///     * If set to 'abort' any request not found in the HAR file will be aborted.
   ///     * If set to 'fallback' falls through to the next route handler in the handler chain.
@@ -1529,9 +1536,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   }
 
   @override
-  Future<void> setGeolocation(
-    BrowserContextSetGeolocationGeolocation? geolocation,
-  ) async {
+  Future<void> setGeolocation(BrowserContextSetGeolocation? geolocation) async {
     Logger.debug('setGeolocation', name: 'playwright.context');
     await channel.setGeolocation(geolocation: geolocation);
   }
@@ -1561,7 +1566,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> setStorageState(
-    BrowserContextSetStorageStateStorageState storageState,
+    BrowserContextSetStorageState storageState,
   ) async {
     await channel.setStorageState(storageState: storageState);
   }
@@ -1583,7 +1588,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> setNetworkInterceptionPatterns(
-    List<BrowserContextSetNetworkInterceptionPatternsPatternsItems> patterns,
+    List<BrowserContextSetNetworkInterceptionPatternsItems> patterns,
   ) async {
     await channel.setNetworkInterceptionPatterns(patterns: patterns);
   }
@@ -1792,7 +1797,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> setWebSocketInterceptionPatterns(
-    List<BrowserContextSetWebSocketInterceptionPatternsPatternsItems> patterns,
+    List<BrowserContextSetWebSocketInterceptionPatternsItems> patterns,
   ) async {
     await channel.setWebSocketInterceptionPatterns(patterns: patterns);
   }
@@ -1801,9 +1806,9 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   Future<void> enableRecorder({
     String? language,
 
-    BrowserContextEnableRecorderModeEnum? mode,
+    EnableRecorderMode? mode,
 
-    BrowserContextEnableRecorderRecorderModeEnum? recorderMode,
+    RecorderRecorderMode? recorderMode,
 
     bool? pauseOnNextStatement,
 
@@ -1875,7 +1880,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
   Future<BrowserContextCreateTempFilesResult> createTempFiles({
     String? rootDirName,
 
-    required List<BrowserContextCreateTempFilesItemsItems> items,
+    required List<BrowserContextCreateTempFilesItems> items,
   }) async {
     return await channel.createTempFiles(
       rootDirName: rootDirName,
@@ -1886,7 +1891,7 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> updateSubscription({
-    required BrowserContextUpdateSubscriptionEventEnum event,
+    required ContextUpdateSubscriptionEvent event,
 
     required bool enabled,
   }) async {

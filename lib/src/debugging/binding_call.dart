@@ -26,11 +26,9 @@ class BindingCallImpl extends BindingCallBase implements BindingCall {
     // Basic error serialization mapping for now
     await channel.reject(
       error: SerializedError(
-        error: SerializedErrorError.fromJson({
-          'message': error.toString(),
-          'name': 'Error',
-          'stack': '',
-        }),
+        value: SerializedValue(
+          e: SerializedValueE(m: error.toString(), n: 'Error', s: ''),
+        ),
       ),
     );
   }

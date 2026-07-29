@@ -85,10 +85,7 @@ void main() {
       final ctx = await browser.newContext();
       try {
         await ctx.setGeolocation(
-          BrowserContextSetGeolocationGeolocation(
-            latitude: 37.7749,
-            longitude: -122.4194,
-          ),
+          BrowserContextSetGeolocation(latitude: 37.7749, longitude: -122.4194),
         );
       } finally {
         await ctx.close();
@@ -126,7 +123,7 @@ void main() {
         expect(state, isNotNull);
 
         await ctx.setStorageState(
-          BrowserContextSetStorageStateStorageState(cookies: [], origins: []),
+          BrowserContextSetStorageState(cookies: [], origins: []),
         );
       } finally {
         await ctx.close();
@@ -250,7 +247,7 @@ void main() {
       final ctx = await browser.newContext();
       try {
         await ctx.setNetworkInterceptionPatterns([
-          BrowserContextSetNetworkInterceptionPatternsPatternsItems(
+          BrowserContextSetNetworkInterceptionPatternsItems(
             urlPattern: URLPattern(
               hash: '',
               hostname: '',

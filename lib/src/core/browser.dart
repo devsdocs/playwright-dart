@@ -291,6 +291,9 @@ abstract interface class Browser {
   ///       - `fontSize` num *(optional)*
   ///
   ///         Font size of the action title in pixels. Defaults to `24`.
+  ///       - `cursor` "none" | "pointer" *(optional)*
+  ///
+  ///         Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
   ///
   ///       If specified, enables visual annotations on interacted elements during video recording.
   ///
@@ -688,6 +691,9 @@ abstract interface class Browser {
   ///       - `fontSize` num *(optional)*
   ///
   ///         Font size of the action title in pixels. Defaults to `24`.
+  ///       - `cursor` "none" | "pointer" *(optional)*
+  ///
+  ///         Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
   ///
   ///       If specified, enables visual annotations on interacted elements during video recording.
   ///

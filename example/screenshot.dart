@@ -9,7 +9,10 @@ void main() async {
   await page.goto('https://example.com');
 
   print('Taking full page screenshot...');
-  final bytes = await page.screenshot(fullPage: true, type: 'png');
+  final bytes = await page.screenshot(
+    fullPage: true,
+    type: ElementHandleScreenshotType.png,
+  );
 
   print('Screenshot taken! Size: ${bytes.length} bytes');
 

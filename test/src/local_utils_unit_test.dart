@@ -101,10 +101,7 @@ void main() {
       expect(msg['params']['isNavigationRequest'], isFalse);
 
       expect(result, isA<LocalUtilsHarLookupResult>());
-      expect(
-        result.action,
-        equals(LocalUtilsHarLookupResultActionEnum.fulfill),
-      );
+      expect(result.action, equals(Action.fulfill));
       expect(result.status, equals(200));
     });
 
@@ -164,12 +161,7 @@ void main() {
 
     test('zip sends zip message with required params', () async {
       final lu = testConn.getObject('LocalUtils_1') as LocalUtilsImpl;
-      await lu.zip(
-        'output.zip',
-        [],
-        mode: LocalUtilsZipModeEnum.write,
-        includeSources: true,
-      );
+      await lu.zip('output.zip', [], mode: ZipMode.write, includeSources: true);
 
       final msg = testConn.transport.sentMessages.lastWhere(
         (m) => m['method'] == 'zip',
@@ -184,7 +176,7 @@ void main() {
       await lu.zip(
         'output.zip',
         [],
-        mode: LocalUtilsZipModeEnum.append,
+        mode: ZipMode.append,
         includeSources: false,
         stacksId: 'stacks_001',
       );

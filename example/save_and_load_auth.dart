@@ -34,7 +34,7 @@ void main() async {
 
   final context2 = await browser.newContext();
   await context2.setStorageState(
-    BrowserContextSetStorageStateStorageState.fromJson(savedStateJson),
+    BrowserContextSetStorageState.fromJson(savedStateJson),
   );
 
   final page2 = await context2.newPage();

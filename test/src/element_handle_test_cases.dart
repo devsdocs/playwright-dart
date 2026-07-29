@@ -209,9 +209,7 @@ void main() {
       await target.scrollIntoViewIfNeeded();
 
       // wait for element state
-      await target.waitForElementState(
-        ElementHandleWaitForElementStateStateEnum.visible,
-      );
+      await target.waitForElementState(ElementState.visible);
     });
   });
 }

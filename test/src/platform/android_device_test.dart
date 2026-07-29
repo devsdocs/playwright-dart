@@ -51,10 +51,7 @@ void main() {
       expect(dragReq['params']['dest'], {'x': 10, 'y': 20});
       expect(dragReq['params']['speed'], 50);
 
-      await device.fling(
-        AndroidSelector(checkable: true),
-        AndroidDeviceFlingDirectionEnum.down,
-      );
+      await device.fling(AndroidSelector(checkable: true), Direction.down);
       final flingReq = testConnection.transport.sentMessages.firstWhere(
         (m) => m['method'] == 'fling',
       );
@@ -82,7 +79,7 @@ void main() {
 
       await device.scroll(
         AndroidSelector(focusable: true),
-        AndroidDeviceScrollDirectionEnum.left,
+        Direction.left,
         20.0,
       );
       final scrollReq = testConnection.transport.sentMessages.firstWhere(
@@ -90,11 +87,7 @@ void main() {
       );
       expect(scrollReq['params']['direction'], 'left');
 
-      await device.swipe(
-        AndroidSelector(focused: true),
-        AndroidDeviceSwipeDirectionEnum.right,
-        30.0,
-      );
+      await device.swipe(AndroidSelector(focused: true), Direction.right, 30.0);
       final swipeReq = testConnection.transport.sentMessages.firstWhere(
         (m) => m['method'] == 'swipe',
       );

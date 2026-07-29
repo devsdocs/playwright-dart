@@ -38,7 +38,7 @@ abstract interface class APIRequestContext {
   ///
   ///   Target URL or Request to get all parameters from.
   /// - `options` Map *(optional)*
-  ///   - `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+  ///   - `data` Object *(optional)*
   ///
   ///     Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
   ///   - `failOnStatusCode` bool *(optional)*
@@ -77,6 +77,9 @@ abstract interface class APIRequestContext {
   ///   - `params` List&lt;NameValue&gt; *(optional)*
   ///
   ///     Query parameters to be sent with the URL.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -168,6 +171,9 @@ abstract interface class APIRequestContext {
   ///   - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
   ///
   ///     Query parameters to be sent with the URL.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -223,7 +229,7 @@ abstract interface class APIRequestContext {
   ///
   ///   Target URL.
   /// - `options` Map *(optional)*
-  ///   - `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+  ///   - `data` Object *(optional)*
   ///
   ///     Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
   ///   - `failOnStatusCode` bool *(optional)*
@@ -259,6 +265,9 @@ abstract interface class APIRequestContext {
   ///   - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
   ///
   ///     Query parameters to be sent with the URL.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -288,7 +297,7 @@ abstract interface class APIRequestContext {
   ///
   ///   Target URL.
   /// - `options` Map *(optional)*
-  ///   - `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+  ///   - `data` Object *(optional)*
   ///
   ///     Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
   ///   - `failOnStatusCode` bool *(optional)*
@@ -324,6 +333,9 @@ abstract interface class APIRequestContext {
   ///   - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
   ///
   ///     Query parameters to be sent with the URL.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -353,7 +365,7 @@ abstract interface class APIRequestContext {
   ///
   ///   Target URL.
   /// - `options` Map *(optional)*
-  ///   - `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+  ///   - `data` Object *(optional)*
   ///
   ///     Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
   ///   - `failOnStatusCode` bool *(optional)*
@@ -389,6 +401,9 @@ abstract interface class APIRequestContext {
   ///   - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
   ///
   ///     Query parameters to be sent with the URL.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -416,7 +431,7 @@ abstract interface class APIRequestContext {
   ///
   ///   Target URL.
   /// - `options` Map *(optional)*
-  ///   - `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+  ///   - `data` Object *(optional)*
   ///
   ///     Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
   ///   - `failOnStatusCode` bool *(optional)*
@@ -452,6 +467,9 @@ abstract interface class APIRequestContext {
   ///   - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
   ///
   ///     Query parameters to be sent with the URL.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -517,6 +535,9 @@ abstract interface class APIRequestContext {
   ///   - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
   ///
   ///     Query parameters to be sent with the URL.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.

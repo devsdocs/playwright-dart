@@ -59,18 +59,18 @@ SerializedArgument serializeArgument(dynamic value) {
 }
 
 SerializedValue serializeValue(dynamic value) {
-  if (value == null) return SerializedValue(v: SerializedValueVEnum.undefined);
+  if (value == null) return SerializedValue(v: V.undefined);
   if (value is int) return SerializedValue(n: value.toDouble());
   if (value is double) {
-    if (value.isNaN) return SerializedValue(v: SerializedValueVEnum.nan);
+    if (value.isNaN) return SerializedValue(v: V.nan);
     if (value == double.infinity) {
-      return SerializedValue(v: SerializedValueVEnum.infinity);
+      return SerializedValue(v: V.infinity);
     }
     if (value == double.negativeInfinity) {
-      return SerializedValue(v: SerializedValueVEnum.minusInfinity);
+      return SerializedValue(v: V.minusInfinity);
     }
     if (value == 0.0 && value.isNegative) {
-      return SerializedValue(v: SerializedValueVEnum.minusZero);
+      return SerializedValue(v: V.minusZero);
     }
     return SerializedValue(n: value);
   }
@@ -96,7 +96,7 @@ SerializedValue serializeValue(dynamic value) {
         .toList();
     return SerializedValue(o: objects);
   }
-  return SerializedValue(v: SerializedValueVEnum.undefined);
+  return SerializedValue(v: V.undefined);
 }
 
 class SelectOptionParams {

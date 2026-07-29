@@ -42,7 +42,7 @@ abstract interface class Worker {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the worker context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
   ///
@@ -67,7 +67,7 @@ abstract interface class Worker {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the worker context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
   ///
@@ -98,7 +98,7 @@ abstract interface class Worker {
   ]);
 
   Future<void> updateSubscription({
-    required WorkerUpdateSubscriptionEventEnum event,
+    required ElectronApplicationUpdateSubscriptionEvent event,
 
     required bool enabled,
   });
@@ -205,7 +205,7 @@ class WorkerImpl extends WorkerBase implements Worker {
 
   @override
   Future<void> updateSubscription({
-    required WorkerUpdateSubscriptionEventEnum event,
+    required ElectronApplicationUpdateSubscriptionEvent event,
 
     required bool enabled,
   }) async {

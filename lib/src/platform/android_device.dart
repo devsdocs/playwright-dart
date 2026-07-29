@@ -21,7 +21,7 @@ abstract interface class AndroidDevice {
   ///
   ///   Selector to wait for.
   /// - `options` Map *(optional)*
-  ///   - `state` AndroidDeviceWaitStateEnum *(optional)*
+  ///   - `state` WaitState *(optional)*
   ///
   ///     Optional state. Can be either:
   ///     * default - wait for element to be present.
@@ -34,7 +34,7 @@ abstract interface class AndroidDevice {
   /// - Future&lt;void&gt;
   Future<void> wait(
     AndroidSelector androidSelector, {
-    AndroidDeviceWaitStateEnum? state,
+    WaitState? state,
     required double timeout,
   });
 
@@ -147,7 +147,7 @@ abstract interface class AndroidDevice {
   /// - `selector` [AndroidSelector]
   ///
   ///   Selector to fling.
-  /// - `direction` AndroidDeviceFlingDirectionEnum
+  /// - `direction` Direction
   ///
   ///   Fling direction.
   /// - `options` Map *(optional)*
@@ -162,7 +162,7 @@ abstract interface class AndroidDevice {
   /// - Future&lt;void&gt;
   Future<void> fling(
     AndroidSelector androidSelector,
-    AndroidDeviceFlingDirectionEnum direction, {
+    Direction direction, {
     double? speed,
     double timeout,
   });
@@ -268,7 +268,7 @@ abstract interface class AndroidDevice {
   /// - `selector` [AndroidSelector]
   ///
   ///   Selector to scroll.
-  /// - `direction` AndroidDeviceScrollDirectionEnum
+  /// - `direction` Direction
   ///
   ///   Scroll direction.
   /// - `percent` double
@@ -286,7 +286,7 @@ abstract interface class AndroidDevice {
   /// - Future&lt;void&gt;
   Future<void> scroll(
     AndroidSelector androidSelector,
-    AndroidDeviceScrollDirectionEnum direction,
+    Direction direction,
     double percent, {
     double? speed,
     double timeout,
@@ -305,7 +305,7 @@ abstract interface class AndroidDevice {
   /// - `selector` [AndroidSelector]
   ///
   ///   Selector to swipe.
-  /// - `direction` AndroidDeviceSwipeDirectionEnum
+  /// - `direction` Direction
   ///
   ///   Swipe direction.
   /// - `percent` double
@@ -323,7 +323,7 @@ abstract interface class AndroidDevice {
   /// - Future&lt;void&gt;
   Future<void> swipe(
     AndroidSelector androidSelector,
-    AndroidDeviceSwipeDirectionEnum direction,
+    Direction direction,
     double percent, {
     double? speed,
     double timeout,
@@ -524,6 +524,9 @@ abstract interface class AndroidDevice {
   ///       - `fontSize` num *(optional)*
   ///
   ///         Font size of the action title in pixels. Defaults to `24`.
+  ///       - `cursor` "none" | "pointer" *(optional)*
+  ///
+  ///         Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
   ///
   ///       If specified, enables visual annotations on interacted elements during video recording.
   ///
@@ -703,7 +706,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
   @override
   Future<void> wait(
     AndroidSelector androidSelector, {
-    AndroidDeviceWaitStateEnum? state,
+    WaitState? state,
     required double timeout,
   }) async {
     await channel.wait(
@@ -757,7 +760,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
   @override
   Future<void> fling(
     AndroidSelector androidSelector,
-    AndroidDeviceFlingDirectionEnum direction, {
+    Direction direction, {
     double? speed,
     double timeout = 30000.0,
   }) async {
@@ -810,7 +813,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
   @override
   Future<void> scroll(
     AndroidSelector androidSelector,
-    AndroidDeviceScrollDirectionEnum direction,
+    Direction direction,
     double percent, {
     double? speed,
     double timeout = 30000.0,
@@ -827,7 +830,7 @@ class AndroidDeviceImpl extends AndroidDeviceBase implements AndroidDevice {
   @override
   Future<void> swipe(
     AndroidSelector androidSelector,
-    AndroidDeviceSwipeDirectionEnum direction,
+    Direction direction,
     double percent, {
     double? speed,
     double timeout = 30000.0,

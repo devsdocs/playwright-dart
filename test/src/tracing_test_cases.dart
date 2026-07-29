@@ -20,9 +20,7 @@ void main() {
       await page.goto('https://example.com');
       await page.locator('h1').isVisible();
 
-      final result = await context.tracing.stopChunk(
-        mode: TracingTracingStopChunkModeEnum.archive,
-      );
+      final result = await context.tracing.stopChunk(mode: ChunkMode.archive);
 
       expect(result.artifact, isNotNull);
 

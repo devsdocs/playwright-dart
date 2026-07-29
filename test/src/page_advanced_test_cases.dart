@@ -186,9 +186,7 @@ void main() {
 
   group('Page setViewportSize', () {
     test('should change viewport size', (page) async {
-      await page.setViewportSize(
-        PageSetViewportSizeViewportSize(width: 800, height: 600),
-      );
+      await page.setViewportSize(PageSetViewportSize(width: 800, height: 600));
       final width = await page.evaluate('() => window.innerWidth');
       final height = await page.evaluate('() => window.innerHeight');
       expect(width, equals(800));

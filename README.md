@@ -7,7 +7,7 @@
 
 A Dart port of [Playwright](https://playwright.dev) — browser automation for Chromium, Firefox, and WebKit.
 
-This is an actively developed port that covers the core Playwright surface area used in most real-world automation and testing workflows. It targets Playwright protocol v1.61.0 and keeps up with the upstream API as development continues.
+This is an actively developed port that covers the core Playwright surface area used in most real-world automation and testing workflows. It targets Playwright protocol v1.62.0 and keeps up with the upstream API as development continues.
 
 ## Features
 
@@ -68,7 +68,7 @@ Or by manually installing the packages via `apt-get` as indicated in the error m
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.11.2
+  playwright_dart: ^3.12.0
 ```
 
 ## Quick Start
@@ -342,6 +342,8 @@ dart analyze
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+**Note on Licensing**: This project is a Dart port of the Playwright API and uses the MIT license. The original Playwright project is licensed under Apache 2.0. This port implements the Playwright protocol using original Dart code and is compatible with both licenses. The MIT license was chosen for this port to provide maximum flexibility to Dart developers while maintaining proper attribution to the original Playwright project.
 
 ---
 

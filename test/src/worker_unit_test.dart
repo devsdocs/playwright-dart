@@ -176,7 +176,7 @@ void main() {
       () async {
         final worker = testConn.getObject('Worker_1') as WorkerImpl;
         await worker.updateSubscription(
-          event: WorkerUpdateSubscriptionEventEnum.console,
+          event: ElectronApplicationUpdateSubscriptionEvent.console,
           enabled: true,
         );
 
@@ -191,7 +191,7 @@ void main() {
     test('updateSubscription passes enabled=false', () async {
       final worker = testConn.getObject('Worker_1') as WorkerImpl;
       await worker.updateSubscription(
-        event: WorkerUpdateSubscriptionEventEnum.console,
+        event: ElectronApplicationUpdateSubscriptionEvent.console,
         enabled: false,
       );
 

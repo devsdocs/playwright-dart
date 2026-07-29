@@ -6,7 +6,7 @@ abstract interface class LocalUtils {
     String zipFile,
     List<NameValue> entries, {
     String? stacksId,
-    required LocalUtilsZipModeEnum mode,
+    required ZipMode mode,
     required bool includeSources,
     List<String>? additionalSources,
   });
@@ -56,7 +56,7 @@ class LocalUtilsImpl extends LocalUtilsBase implements LocalUtils {
     String zipFile,
     List<NameValue> entries, {
     String? stacksId,
-    required LocalUtilsZipModeEnum mode,
+    required ZipMode mode,
     required bool includeSources,
     List<String>? additionalSources,
   }) async {

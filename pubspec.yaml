@@ -1,8 +1,8 @@
 name: playwright_dart
 description: >-
   A Dart port of Playwright — browser automation for Chromium, Firefox, and
-  WebKit. Covers the core Playwright API targeting protocol v1.61.0.
-version: 3.11.2
+  WebKit. Covers the core Playwright API targeting protocol v1.62.0.
+version: 3.12.0
 homepage: https://playwright.dev
 repository: https://github.com/devsdocs/playwright-dart
 issue_tracker: https://github.com/devsdocs/playwright-dart/issues

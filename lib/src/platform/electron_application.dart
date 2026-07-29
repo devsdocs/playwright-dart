@@ -34,7 +34,7 @@ abstract interface class ElectronApplication {
     Object? arg,
   });
   Future<void> updateSubscription(
-    ElectronApplicationUpdateSubscriptionEventEnum event,
+    ElectronApplicationUpdateSubscriptionEvent event,
     bool enabled,
   );
 }
@@ -102,7 +102,7 @@ class ElectronApplicationImpl extends ElectronApplicationBase
 
   @override
   Future<void> updateSubscription(
-    ElectronApplicationUpdateSubscriptionEventEnum event,
+    ElectronApplicationUpdateSubscriptionEvent event,
     bool enabled,
   ) async {
     await channel.updateSubscription(event: event, enabled: enabled);

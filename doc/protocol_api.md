@@ -1,7 +1,7 @@
 # Playwright Protocol API Reference
 
-> Auto-generated from Playwright protocol **v1.61.1**.
-> Source: `.protocol_cache/1.61.1/*.yml`
+> Auto-generated from Playwright protocol **v1.62.0**.
+> Source: `.protocol_cache/1.62.0/*.yml`
 > Regenerate: `dart tool/generate_protocol_docs.dart`
 
 ## Contents
@@ -58,7 +58,7 @@
 
 **Commands**
 
-#### `fetch`(url: string, encodedParams: string?, params: Array<NameValue>?, method: string?, headers: Array<NameValue>?, postData: binary?, jsonData: string?, formData: Array<NameValue>?, multipartData: Array<FormField>?, timeout: float, failOnStatusCode: boolean?, ignoreHTTPSErrors: boolean?, maxRedirects: int?, maxRetries: int?)
+#### `fetch`(url: string, encodedParams: string?, params: Array<NameValue>?, method: string?, headers: Array<NameValue>?, postData: binary?, jsonData: string?, formData: Array<NameValue>?, multipartData: Array<FormField>?, failOnStatusCode: boolean?, ignoreHTTPSErrors: boolean?, maxRedirects: int?, maxRetries: int?)
 
 *{method} "{url}"*
 
@@ -99,15 +99,15 @@
 
 → `context`: `BrowserContext`
 
-#### `drag`(androidSelector: AndroidSelector, dest: Point, speed: float?, timeout: float)
+#### `drag`(androidSelector: AndroidSelector, dest: Point, speed: float?)
 
 *Drag*
 
-#### `fill`(androidSelector: AndroidSelector, text: string, timeout: float)
+#### `fill`(androidSelector: AndroidSelector, text: string)
 
 *Fill "{text}"*
 
-#### `fling`(androidSelector: AndroidSelector, direction: ("up" | "down" | "left" | "right"), speed: float?, timeout: float)
+#### `fling`(androidSelector: AndroidSelector, direction: ("up" | "down" | "left" | "right"), speed: float?)
 
 *Fling*
 
@@ -141,7 +141,7 @@
 
 → `context`: `BrowserContext`
 
-#### `longTap`(androidSelector: AndroidSelector, timeout: float)
+#### `longTap`(androidSelector: AndroidSelector)
 
 *Long tap*
 
@@ -151,11 +151,11 @@
 
 → `socket`: `AndroidSocket`
 
-#### `pinchClose`(androidSelector: AndroidSelector, percent: float, speed: float?, timeout: float)
+#### `pinchClose`(androidSelector: AndroidSelector, percent: float, speed: float?)
 
 *Pinch close*
 
-#### `pinchOpen`(androidSelector: AndroidSelector, percent: float, speed: float?, timeout: float)
+#### `pinchOpen`(androidSelector: AndroidSelector, percent: float, speed: float?)
 
 *Pinch open*
 
@@ -169,7 +169,7 @@
 
 → `binary`: `binary`
 
-#### `scroll`(androidSelector: AndroidSelector, direction: ("up" | "down" | "left" | "right"), percent: float, speed: float?, timeout: float)
+#### `scroll`(androidSelector: AndroidSelector, direction: ("up" | "down" | "left" | "right"), percent: float, speed: float?)
 
 *Scroll*
 
@@ -179,15 +179,15 @@
 
 → `result`: `binary`
 
-#### `swipe`(androidSelector: AndroidSelector, direction: ("up" | "down" | "left" | "right"), percent: float, speed: float?, timeout: float)
+#### `swipe`(androidSelector: AndroidSelector, direction: ("up" | "down" | "left" | "right"), percent: float, speed: float?)
 
 *Swipe*
 
-#### `tap`(androidSelector: AndroidSelector, duration: float?, timeout: float)
+#### `tap`(androidSelector: AndroidSelector, duration: float?)
 
 *Tap*
 
-#### `wait`(androidSelector: AndroidSelector, state: ("gone")?, timeout: float)
+#### `wait`(androidSelector: AndroidSelector, state: ("gone")?)
 
 *Wait*
 
@@ -256,7 +256,7 @@
 
 → `session`: `CDPSession`
 
-#### `newContext`(...$mixin, proxy: {server: string, bypass: string?, username: string?, password: string?}?, storageState: {cookies: Array<SetNetworkCookie>?, origins: Array<SetOriginStorage>?}?)
+#### `newContext`(...$mixin, proxy: {server: string, bypass: string?, username: string?, password: string?}?, storageState: {cookies: Array<SetNetworkCookie>?, origins: Array<SetOriginStorage>?, credentials: Array<VirtualCredential>?}?)
 
 *Create context*
 
@@ -380,7 +380,7 @@
 
 *Install virtual WebAuthn authenticator · group: `configuration`*
 
-#### `exposeBinding`(name: string)
+#### `exposeBinding`(name: string, noGlobal: boolean?)
 
 *Expose binding · group: `configuration`*
 
@@ -426,7 +426,7 @@
 
 *Set offline mode*
 
-#### `setStorageState`(storageState: {cookies: Array<SetNetworkCookie>?, origins: Array<SetOriginStorage>?}?)
+#### `setStorageState`(storageState: {cookies: Array<SetNetworkCookie>?, origins: Array<SetOriginStorage>?, credentials: Array<VirtualCredential>?}?)
 
 *Set storage state · group: `configuration`*
 
@@ -434,11 +434,11 @@
 
 *Route WebSockets · group: `route`*
 
-#### `storageState`(indexedDB: boolean?)
+#### `storageState`(indexedDB: boolean?, credentials: boolean?)
 
 *Get storage state · group: `configuration`*
 
-→ `cookies`: `Array<NetworkCookie>`, `origins`: `Array<OriginStorage>`
+→ `cookies`: `Array<NetworkCookie>`, `origins`: `Array<OriginStorage>`, `credentials`: `Array<VirtualCredential>?`
 
 **Events**
 
@@ -472,13 +472,13 @@
 
 **Commands**
 
-#### `connectOverCDP`(endpointURL: string?, headers: Array<NameValue>?, slowMo: float?, timeout: float, isLocal: boolean?, noDefaults: boolean?, artifactsDir: string?, transport: binary?)
+#### `connectOverCDP`(endpointURL: string?, headers: Array<NameValue>?, slowMo: float?, isLocal: boolean?, noDefaults: boolean?, artifactsDir: string?, transport: binary?)
 
 *Connect over CDP*
 
 → `browser`: `Browser`, `defaultContext`: `BrowserContext?`
 
-#### `connectToWorker`(endpoint: string, timeout: float)
+#### `connectToWorker`(endpoint: string)
 
 *Connect to worker*
 
@@ -594,7 +594,7 @@
 
 **Commands**
 
-#### `launch`(executablePath: string?, args: Array<string>?, chromiumSandbox: boolean?, cwd: string?, env: Array<NameValue>?, timeout: float, acceptDownloads: ("accept" | "deny" | "internal-browser-default")?, bypassCSP: boolean?, colorScheme: ("dark" | "light" | "no-preference" | "no-override")?, extraHTTPHeaders: Array<NameValue>?, geolocation: {longitude: float, latitude: float, accuracy: float?}?, httpCredentials: {username: string, password: string, origin: string?}?, ignoreHTTPSErrors: boolean?, locale: string?, offline: boolean?, recordVideo: {dir: string?, size: {width: int, height: int}?, showActions: {$mixin: ShowActionsOptions}?}?, strictSelectors: boolean?, timezoneId: string?, tracesDir: string?, artifactsDir: string?, selectorEngines: Array<SelectorEngine>?, testIdAttributeName: string?)
+#### `launch`(executablePath: string?, args: Array<string>?, chromiumSandbox: boolean?, cwd: string?, env: Array<NameValue>?, acceptDownloads: ("accept" | "deny" | "internal-browser-default")?, bypassCSP: boolean?, colorScheme: ("dark" | "light" | "no-preference" | "no-override")?, extraHTTPHeaders: Array<NameValue>?, geolocation: {longitude: float, latitude: float, accuracy: float?}?, httpCredentials: {username: string, password: string, origin: string?}?, ignoreHTTPSErrors: boolean?, locale: string?, offline: boolean?, recordVideo: {dir: string?, size: {width: int, height: int}?, showActions: {$mixin: ShowActionsOptions}?}?, strictSelectors: boolean?, timezoneId: string?, tracesDir: string?, artifactsDir: string?, selectorEngines: Array<SelectorEngine>?, testIdAttributeName: string?)
 
 *Launch electron*
 
@@ -643,11 +643,11 @@
 
 → `value`: `Rect?`
 
-#### `check`(force: boolean?, position: Point?, timeout: float, trial: boolean?)
+#### `check`(force: boolean?, scroll: ("auto" | "none")?, position: Point?, trial: boolean?)
 
 *Check*
 
-#### `click`(force: boolean?, noWaitAfter: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, clickCount: int?, timeout: float, trial: boolean?, steps: int?)
+#### `click`(force: boolean?, scroll: ("auto" | "none")?, noWaitAfter: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, clickCount: int?, trial: boolean?, steps: int?)
 
 *Click*
 
@@ -657,7 +657,7 @@
 
 → `frame`: `Frame?`
 
-#### `dblclick`(force: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, timeout: float, trial: boolean?, steps: int?)
+#### `dblclick`(force: boolean?, scroll: ("auto" | "none")?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, trial: boolean?, steps: int?)
 
 *Double click*
 
@@ -677,7 +677,7 @@
 
 → `value`: `SerializedValue`
 
-#### `fill`(value: string, force: boolean?, timeout: float)
+#### `fill`(value: string, force: boolean?)
 
 *Fill "{value}"*
 
@@ -691,7 +691,7 @@
 
 → `value`: `string?`
 
-#### `hover`(force: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, timeout: float, trial: boolean?)
+#### `hover`(force: boolean?, scroll: ("auto" | "none")?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, trial: boolean?)
 
 *Hover*
 
@@ -755,7 +755,7 @@
 
 → `frame`: `Frame?`
 
-#### `press`(key: string, delay: float?, timeout: float, noWaitAfter: boolean?)
+#### `press`(key: string, delay: float?, noWaitAfter: boolean?)
 
 *Press "{key}"*
 
@@ -771,31 +771,31 @@
 
 → `elements`: `Array<ElementHandle>`
 
-#### `screenshot`(timeout: float, type: ("png" | "jpeg")?, quality: int?, ...$mixin)
+#### `screenshot`(type: ("png" | "jpeg" | "webp")?, quality: int?, ...$mixin)
 
 *Screenshot*
 
 → `binary`: `binary`
 
-#### `scrollIntoViewIfNeeded`(timeout: float)
+#### `scrollIntoViewIfNeeded`()
 
 *Scroll into view*
 
-#### `selectOption`(elements: Array<ElementHandle>?, options: Array<{valueOrLabel: string?, value: string?, label: string?, index: int?}>?, force: boolean?, timeout: float)
+#### `selectOption`(elements: Array<ElementHandle>?, options: Array<{valueOrLabel: string?, value: string?, label: string?, index: int?}>?, force: boolean?)
 
 *Select option*
 
 → `values`: `Array<string>`
 
-#### `selectText`(force: boolean?, timeout: float)
+#### `selectText`(force: boolean?)
 
 *Select text*
 
-#### `setInputFiles`(payloads: Array<{name: string, mimeType: string?, buffer: binary}>?, localDirectory: string?, directoryStream: WritableStream?, localPaths: Array<string>?, streams: Array<WritableStream>?, timeout: float)
+#### `setInputFiles`(payloads: Array<{name: string, mimeType: string?, buffer: binary}>?, localDirectory: string?, directoryStream: WritableStream?, localPaths: Array<string>?, streams: Array<WritableStream>?)
 
 *Set input files*
 
-#### `tap`(force: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, timeout: float, trial: boolean?)
+#### `tap`(force: boolean?, scroll: ("auto" | "none")?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, trial: boolean?)
 
 *Tap*
 
@@ -805,19 +805,19 @@
 
 → `value`: `string?`
 
-#### `type`(text: string, delay: float?, timeout: float)
+#### `type`(text: string, delay: float?)
 
 *Type*
 
-#### `uncheck`(force: boolean?, position: Point?, timeout: float, trial: boolean?)
+#### `uncheck`(force: boolean?, scroll: ("auto" | "none")?, position: Point?, trial: boolean?)
 
 *Uncheck*
 
-#### `waitForElementState`(state: ("visible" | "hidden" | "stable" | "enabled" | "disabled" | "editable"), timeout: float)
+#### `waitForElementState`(state: ("visible" | "hidden" | "stable" | "enabled" | "disabled" | "editable"))
 
 *Wait for state*
 
-#### `waitForSelector`(selector: string, strict: boolean?, timeout: float, state: ("attached" | "detached" | "visible" | "hidden")?)
+#### `waitForSelector`(selector: string, strict: boolean?, state: ("attached" | "detached" | "visible" | "hidden")?)
 
 *Wait for selector*
 
@@ -850,21 +850,21 @@
 
 → `element`: `ElementHandle`
 
-#### `ariaSnapshot`(mode: ("ai" | "default")?, track: string?, selector: string?, depth: int?, boxes: boolean?, timeout: float)
+#### `ariaSnapshot`(mode: ("ai" | "default")?, selector: string?, depth: int?, boxes: boolean?)
 
 *Aria snapshot · group: `getter`*
 
 → `snapshot`: `string`
 
-#### `blur`(selector: string, strict: boolean?, timeout: float)
+#### `blur`(selector: string, strict: boolean?)
 
 *Blur*
 
-#### `check`(selector: string, strict: boolean?, force: boolean?, position: Point?, timeout: float, trial: boolean?)
+#### `check`(selector: string, strict: boolean?, force: boolean?, scroll: ("auto" | "none")?, position: Point?, trial: boolean?)
 
 *Check*
 
-#### `click`(selector: string, strict: boolean?, force: boolean?, noWaitAfter: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, clickCount: int?, timeout: float, trial: boolean?, steps: int?)
+#### `click`(selector: string, strict: boolean?, force: boolean?, scroll: ("auto" | "none")?, noWaitAfter: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, clickCount: int?, trial: boolean?, steps: int?)
 
 *Click*
 
@@ -874,19 +874,19 @@
 
 → `value`: `string`
 
-#### `dblclick`(selector: string, strict: boolean?, force: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, timeout: float, trial: boolean?, steps: int?)
+#### `dblclick`(selector: string, strict: boolean?, force: boolean?, scroll: ("auto" | "none")?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, delay: float?, button: ("left" | "right" | "middle")?, trial: boolean?, steps: int?)
 
 *Double click*
 
-#### `dispatchEvent`(selector: string, strict: boolean?, type: string, eventInit: SerializedArgument, timeout: float)
+#### `dispatchEvent`(selector: string, strict: boolean?, type: string, eventInit: SerializedArgument)
 
 *Dispatch "{type}"*
 
-#### `dragAndDrop`(source: string, target: string, force: boolean?, timeout: float, trial: boolean?, sourcePosition: Point?, targetPosition: Point?, strict: boolean?, steps: int?)
+#### `dragAndDrop`(source: string, target: string, force: boolean?, scroll: ("auto" | "none")?, trial: boolean?, sourcePosition: Point?, targetPosition: Point?, strict: boolean?, steps: int?)
 
 *Drag and drop*
 
-#### `drop`(selector: string, strict: boolean?, position: Point?, payloads: Array<{name: string, mimeType: string?, buffer: binary}>?, localPaths: Array<string>?, streams: Array<WritableStream>?, data: Array<{mimeType: string, value: string}>?, timeout: float)
+#### `drop`(selector: string, strict: boolean?, position: Point?, payloads: Array<{name: string, mimeType: string?, buffer: binary}>?, localPaths: Array<string>?, streams: Array<WritableStream>?, data: Array<{mimeType: string, value: string}>?)
 
 *Drop files or data onto an element*
 
@@ -914,15 +914,15 @@
 
 → `handle`: `JSHandle`
 
-#### `expect`(selector: string?, expression: string, expressionArg: json?, pseudo: ("before" | "after")?, expectedText: Array<ExpectedTextValue>?, expectedNumber: float?, expectedValue: SerializedArgument?, useInnerText: boolean?, isNot: boolean, timeout: float)
+#### `expect`(selector: string?, expression: string, expressionArg: json?, pseudo: ("before" | "after")?, expectedText: Array<ExpectedTextValue>?, expectedNumber: float?, expectedValue: SerializedArgument?, useInnerText: boolean?, isNot: boolean)
 
 *Expect "{expression}"*
 
-#### `fill`(selector: string, strict: boolean?, value: string, force: boolean?, timeout: float)
+#### `fill`(selector: string, strict: boolean?, value: string, force: boolean?)
 
 *Fill "{value}"*
 
-#### `focus`(selector: string, strict: boolean?, timeout: float)
+#### `focus`(selector: string, strict: boolean?)
 
 *Focus*
 
@@ -932,59 +932,59 @@
 
 → `element`: `ElementHandle`
 
-#### `getAttribute`(selector: string, strict: boolean?, name: string, timeout: float)
+#### `getAttribute`(selector: string, strict: boolean?, name: string)
 
 *Get attribute "{name}" · group: `getter`*
 
 → `value`: `string?`
 
-#### `goto`(url: string, timeout: float, waitUntil: LifecycleEvent?, referer: string?)
+#### `goto`(url: string, waitUntil: LifecycleEvent?, referer: string?)
 
 *Navigate to "{url}"*
 
 → `response`: `Response?`
 
-#### `hover`(selector: string, strict: boolean?, force: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, timeout: float, trial: boolean?)
+#### `hover`(selector: string, strict: boolean?, force: boolean?, scroll: ("auto" | "none")?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, trial: boolean?)
 
 *Hover*
 
-#### `innerHTML`(selector: string, strict: boolean?, timeout: float)
+#### `innerHTML`(selector: string, strict: boolean?)
 
 *Get HTML · group: `getter`*
 
 → `value`: `string`
 
-#### `innerText`(selector: string, strict: boolean?, timeout: float)
+#### `innerText`(selector: string, strict: boolean?)
 
 *Get inner text · group: `getter`*
 
 → `value`: `string`
 
-#### `inputValue`(selector: string, strict: boolean?, timeout: float)
+#### `inputValue`(selector: string, strict: boolean?)
 
 *Get input value · group: `getter`*
 
 → `value`: `string`
 
-#### `isChecked`(selector: string, strict: boolean?, timeout: float)
+#### `isChecked`(selector: string, strict: boolean?)
 
 *Is checked · group: `getter`*
 
 → `value`: `boolean`
 
-#### `isDisabled`(selector: string, strict: boolean?, timeout: float)
+#### `isDisabled`(selector: string, strict: boolean?)
 
 *Is disabled · group: `getter`*
 
 → `value`: `boolean`
 
-#### `isEditable`(selector: string, strict: boolean?, timeout: float)
+#### `isEditable`(selector: string, strict: boolean?)
 
 *Is editable · group: `getter`*
 
 → `value`: `boolean`
 
-#### `isEnabled`(selector: string, strict: boolean?, timeout: float)
+#### `isEnabled`(selector: string, strict: boolean?)
 
 *Is enabled · group: `getter`*
 
@@ -1002,7 +1002,7 @@
 
 → `value`: `boolean`
 
-#### `press`(selector: string, strict: boolean?, key: string, delay: float?, noWaitAfter: boolean?, timeout: float)
+#### `press`(selector: string, strict: boolean?, key: string, delay: float?, noWaitAfter: boolean?)
 
 *Press "{key}"*
 
@@ -1024,25 +1024,25 @@
 
 → `elements`: `Array<ElementHandle>`
 
-#### `selectOption`(selector: string, strict: boolean?, elements: Array<ElementHandle>?, options: Array<{valueOrLabel: string?, value: string?, label: string?, index: int?}>?, force: boolean?, timeout: float)
+#### `selectOption`(selector: string, strict: boolean?, elements: Array<ElementHandle>?, options: Array<{valueOrLabel: string?, value: string?, label: string?, index: int?}>?, force: boolean?)
 
 *Select option*
 
 → `values`: `Array<string>`
 
-#### `setContent`(html: string, timeout: float, waitUntil: LifecycleEvent?)
+#### `setContent`(html: string, waitUntil: LifecycleEvent?)
 
 *Set content*
 
-#### `setInputFiles`(selector: string, strict: boolean?, payloads: Array<{name: string, mimeType: string?, buffer: binary}>?, localDirectory: string?, directoryStream: WritableStream?, localPaths: Array<string>?, streams: Array<WritableStream>?, timeout: float)
+#### `setInputFiles`(selector: string, strict: boolean?, payloads: Array<{name: string, mimeType: string?, buffer: binary}>?, localDirectory: string?, directoryStream: WritableStream?, localPaths: Array<string>?, streams: Array<WritableStream>?)
 
 *Set input files*
 
-#### `tap`(selector: string, strict: boolean?, force: boolean?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, timeout: float, trial: boolean?)
+#### `tap`(selector: string, strict: boolean?, force: boolean?, scroll: ("auto" | "none")?, modifiers: Array<("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")>?, position: Point?, trial: boolean?)
 
 *Tap*
 
-#### `textContent`(selector: string, strict: boolean?, timeout: float)
+#### `textContent`(selector: string, strict: boolean?)
 
 *Get text content · group: `getter`*
 
@@ -1054,21 +1054,21 @@
 
 → `value`: `string`
 
-#### `type`(selector: string, strict: boolean?, text: string, delay: float?, timeout: float)
+#### `type`(selector: string, strict: boolean?, text: string, delay: float?)
 
 *Type "{text}"*
 
-#### `uncheck`(selector: string, strict: boolean?, force: boolean?, position: Point?, timeout: float, trial: boolean?)
+#### `uncheck`(selector: string, strict: boolean?, force: boolean?, scroll: ("auto" | "none")?, position: Point?, trial: boolean?)
 
 *Uncheck*
 
-#### `waitForFunction`(expression: string, isFunction: boolean?, arg: SerializedArgument, timeout: float, pollingInterval: float?)
+#### `waitForFunction`(expression: string, isFunction: boolean?, arg: SerializedArgument, pollingInterval: float?, selector: string?, strict: boolean?)
 
 *Wait for function*
 
-→ `handle`: `JSHandle`
+→ `handle`: `JSHandle?`
 
-#### `waitForSelector`(selector: string, strict: boolean?, timeout: float, state: ("attached" | "detached" | "visible" | "hidden")?, omitReturnValue: boolean?)
+#### `waitForSelector`(selector: string, strict: boolean?, state: ("attached" | "detached" | "visible" | "hidden")?, omitReturnValue: boolean?)
 
 *Wait for selector*
 
@@ -1206,25 +1206,25 @@
 
 *Emulate media*
 
-#### `expectScreenshot`(expected: binary?, timeout: float, isNot: boolean, locator: {frame: Frame, selector: string}?, comparator: string?, maxDiffPixels: int?, maxDiffPixelRatio: float?, threshold: float?, fullPage: boolean?, clip: Rect?, ...$mixin)
+#### `expectScreenshot`(expected: binary?, isNot: boolean, locator: {frame: Frame, selector: string}?, comparator: string?, maxDiffPixels: int?, maxDiffPixelRatio: float?, threshold: float?, fullPage: boolean?, clip: Rect?, type: ("png" | "webp")?, ...$mixin)
 
 *Expect screenshot*
 
 → `actual`: `binary?`
 
-#### `exposeBinding`(name: string)
+#### `exposeBinding`(name: string, noGlobal: boolean?)
 
 *Expose binding · group: `configuration`*
 
 → `disposable`: `Disposable`
 
-#### `goBack`(timeout: float, waitUntil: LifecycleEvent?)
+#### `goBack`(waitUntil: LifecycleEvent?)
 
 *Go back*
 
 → `response`: `Response?`
 
-#### `goForward`(timeout: float, waitUntil: LifecycleEvent?)
+#### `goForward`(waitUntil: LifecycleEvent?)
 
 *Go forward*
 
@@ -1298,7 +1298,7 @@
 
 → `uid`: `int`
 
-#### `reload`(timeout: float, waitUntil: LifecycleEvent?)
+#### `reload`(waitUntil: LifecycleEvent?)
 
 *Reload*
 
@@ -1354,7 +1354,7 @@
 
 *Stop screencast · group: `configuration`*
 
-#### `screenshot`(timeout: float, type: ("png" | "jpeg")?, quality: int?, fullPage: boolean?, clip: Rect?, ...$mixin)
+#### `screenshot`(type: ("png" | "jpeg" | "webp")?, quality: int?, fullPage: boolean?, clip: Rect?, ...$mixin)
 
 *Screenshot*
 
@@ -1441,7 +1441,7 @@
 | `frameDetached` | `frame`: `Frame` |
 | `locatorHandlerTriggered` | `uid`: `int` |
 | `route` | `route`: `Route` |
-| `screencastFrame` | `data`: `binary`, `timestamp`: `float`, `viewportWidth`: `int`, `viewportHeight`: `int` |
+| `screencastFrame` | `frameId`: `int`, `data`: `binary`, `timestamp`: `float`, `viewportWidth`: `int`, `viewportHeight`: `int` |
 | `viewportSizeChanged` | `viewportSize`: `{width: int, height: int}?` |
 | `webSocket` | `webSocket`: `WebSocket` |
 | `webSocketRoute` | `webSocketRoute`: `WebSocketRoute` |
@@ -1703,6 +1703,8 @@
 | `headers` | `Array<NameValue>` |
 | `securityDetails` | `SecurityDetails?` |
 | `serverAddr` | `RemoteAddr?` |
+| `timing` | `ResourceTiming?` |
+| `responseEndTiming` | `float?` |
 
 ### `AndroidElementInfo` *(object)*
 
@@ -1857,7 +1859,6 @@
 | `handleSIGINT` | `boolean?` |
 | `handleSIGTERM` | `boolean?` |
 | `handleSIGHUP` | `boolean?` |
-| `timeout` | `float` |
 | `env` | `Array<NameValue>?` |
 | `headless` | `boolean?` |
 | `proxy` | `{server: string, bypass: string?, username: string?, password: string?}?` |
@@ -1876,6 +1877,7 @@
 | `title` | `string?` |
 | `internal` | `boolean?` |
 | `stepId` | `string?` |
+| `timeout` | `float?` |
 
 ### `NameValue` *(object)*
 
@@ -2026,6 +2028,7 @@
 | `a` | `Array<SerializedValue>?` |
 | `o` | `Array<{k: string, v: SerializedValue}>?` |
 | `h` | `int?` |
+| `fn` | `string?` |
 | `id` | `int?` |
 | `ref` | `int?` |
 

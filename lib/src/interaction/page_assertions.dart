@@ -101,6 +101,7 @@ class PageAssertions {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -124,6 +125,9 @@ class PageAssertions {
   ///
   ///   Expected title or RegExp.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -174,6 +178,9 @@ class PageAssertions {
   ///   - `ignoreCase` bool *(optional)*
   ///
   ///     Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression parameter if specified. A provided predicate ignores this flag.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
   ///   - `timeout` double *(optional)*
   ///
   ///     Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.

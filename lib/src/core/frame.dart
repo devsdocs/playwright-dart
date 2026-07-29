@@ -547,6 +547,9 @@ abstract interface class Frame {
   ///   - `referer` String *(optional)*
   ///
   ///     Referer header value. If provided it will take preference over the referer header value set by [page.setExtraHTTPHeaders()].
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -589,6 +592,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -641,9 +647,13 @@ abstract interface class Frame {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
+  /// - `options` Map *(optional)*
+  ///   - `exposeFunctions` bool *(optional)*
+  ///
+  ///     When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
@@ -684,7 +694,10 @@ abstract interface class Frame {
   ///
   ///   A selector to query for.
   /// - `options` Map *(optional)*
-  ///   - `state` FrameWaitForSelectorStateEnum *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
+  ///   - `state` SelectorState *(optional)*
   ///
   ///     Defaults to `'visible'`. Can be either:
   ///     * `'attached'` - wait for element to be present in DOM.
@@ -703,7 +716,7 @@ abstract interface class Frame {
   Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
 
-    FrameWaitForSelectorStateEnum? state,
+    SelectorState? state,
 
     double? timeout,
 
@@ -735,7 +748,7 @@ abstract interface class Frame {
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -760,7 +773,7 @@ abstract interface class Frame {
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -806,11 +819,11 @@ abstract interface class Frame {
   /// - `options` Map *(optional)*
   ///   - `signal` [AbortSignal] *(optional)*
   ///
-  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+  ///     Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
-  ///   - `url` String *(optional)*
+  ///   - `url` RouteMatcher *(optional)*
   ///
   ///     A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to the string.
   ///   - `waitUntil` LifecycleEvent *(optional)*
@@ -855,6 +868,12 @@ abstract interface class Frame {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `sourcePosition` Point *(optional)*
   ///     - `x` num
   ///
@@ -932,7 +951,7 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
-  ///   - `button` FrameClickButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `clickCount` int *(optional)*
@@ -944,7 +963,7 @@ abstract interface class Frame {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;FrameClickModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -961,6 +980,12 @@ abstract interface class Frame {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -986,13 +1011,13 @@ abstract interface class Frame {
 
     bool? noWaitAfter,
 
-    List<FrameClickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
 
     double? delay,
 
-    FrameClickButtonEnum? button,
+    Button? button,
 
     int? clickCount,
 
@@ -1034,6 +1059,9 @@ abstract interface class Frame {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1099,6 +1127,12 @@ abstract interface class Frame {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1169,6 +1203,12 @@ abstract interface class Frame {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1243,6 +1283,12 @@ abstract interface class Frame {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1299,7 +1345,7 @@ abstract interface class Frame {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;FrameHoverModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -1316,6 +1362,12 @@ abstract interface class Frame {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1339,7 +1391,7 @@ abstract interface class Frame {
 
     bool? trial,
 
-    List<FrameHoverModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
   });
@@ -1363,6 +1415,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1404,7 +1459,7 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
-  ///   - `button` FrameDblclickButtonEnum *(optional)*
+  ///   - `button` Button *(optional)*
   ///
   ///     Defaults to `left`.
   ///   - `delay` double *(optional)*
@@ -1413,7 +1468,7 @@ abstract interface class Frame {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;FrameDblclickModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -1430,6 +1485,12 @@ abstract interface class Frame {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1453,13 +1514,13 @@ abstract interface class Frame {
 
     bool? trial,
 
-    List<FrameDblclickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
 
     double? delay,
 
-    FrameDblclickButtonEnum? button,
+    Button? button,
 
     int? steps,
   });
@@ -1492,6 +1553,9 @@ abstract interface class Frame {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1554,6 +1618,9 @@ abstract interface class Frame {
   /// [Deprecated]
   ///     This option will default to `true` in the future.
   ///     Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1607,7 +1674,7 @@ abstract interface class Frame {
   ///   - `force` bool *(optional)*
   ///
   ///     Whether to bypass the [actionability] checks. Defaults to `false`.
-  ///   - `modifiers` List&lt;FrameTapModifiersEnum&gt; *(optional)*
+  ///   - `modifiers` List&lt;Modifiers&gt; *(optional)*
   ///
   ///     Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows and Linux and to "Meta" on macOS.
   ///   - `noWaitAfter` bool *(optional)*
@@ -1624,6 +1691,12 @@ abstract interface class Frame {
   ///
   ///
   ///     A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+  ///   - `scroll` "auto" | "none" *(optional)*
+  ///
+  ///     Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1647,7 +1720,7 @@ abstract interface class Frame {
 
     bool? trial,
 
-    List<FrameTapModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
   });
@@ -1678,6 +1751,9 @@ abstract interface class Frame {
   ///
   ///   HTML markup to assign to the page.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -1745,6 +1821,9 @@ abstract interface class Frame {
   ///
   ///   Attribute name to get the value for.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1783,6 +1862,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1813,6 +1895,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1845,6 +1930,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1887,6 +1975,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1917,6 +2008,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -1942,6 +2036,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2034,6 +2131,9 @@ abstract interface class Frame {
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2197,6 +2297,7 @@ abstract interface class Frame {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -2237,13 +2338,16 @@ abstract interface class Frame {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
   /// - `options` Map *(optional)*
   ///   - `polling` num | "raf" *(optional)*
   ///
   ///     If [polling] is `'raf'`, then [pageFunction] is constantly executed in `requestAnimationFrame` callback. If [polling] is a number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to `raf`.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `timeout` double *(optional)*
   ///
   ///     Maximum time to wait for in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -2304,10 +2408,13 @@ abstract interface class Frame {
   /// - `type` String
   ///
   ///   DOM event type: `"click"`, `"dragstart"`, etc.
-  /// - `eventInit` dynamic *(optional)*
+  /// - `eventInit` Map&lt;String, dynamic&gt; *(optional)*
   ///
   ///   Optional event-specific initialization properties.
   /// - `options` Map *(optional)*
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2359,7 +2466,7 @@ abstract interface class Frame {
   Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
 
-    FrameAriaSnapshotModeEnum? mode,
+    SnapshotMode? mode,
 
     String? track,
 
@@ -2423,7 +2530,7 @@ abstract interface class Frame {
 
     Object? expressionArg,
 
-    FrameExpectPseudoEnum? pseudo,
+    Pseudo? pseudo,
   });
 
   Locator querySelector(String selector, {bool? strict});
@@ -2462,7 +2569,7 @@ abstract interface class Frame {
   /// - `selector` String
   ///
   ///   A selector to query for.
-  /// - `values` dynamic
+  /// - `values` List&lt;SelectOption&gt;
   ///   - `value` String *(optional)*
   ///
   ///     Matches by `option.value`. Optional.
@@ -2484,6 +2591,9 @@ abstract interface class Frame {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2529,7 +2639,7 @@ abstract interface class Frame {
   /// - `selector` String
   ///
   ///   A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
-  /// - `files` dynamic
+  /// - `files` List&lt;InputFile&gt;
   ///   - `name` String
   ///
   ///     File name
@@ -2546,6 +2656,9 @@ abstract interface class Frame {
   /// [Deprecated]
   ///     This option has no effect.
   ///     This option has no effect.
+  ///   - `signal` [AbortSignal] *(optional)*
+  ///
+  ///     Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
   ///   - `strict` bool *(optional)*
   ///
   ///     When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -2778,7 +2891,7 @@ class FrameImpl extends FrameBase implements Frame {
   Future<FrameWaitForSelectorResult> waitForSelector(
     String selector, {
 
-    FrameWaitForSelectorStateEnum? state,
+    SelectorState? state,
 
     double? timeout,
 
@@ -2975,13 +3088,13 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? noWaitAfter,
 
-    List<FrameClickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
 
     double? delay,
 
-    FrameClickButtonEnum? button,
+    Button? button,
 
     int? clickCount,
 
@@ -3154,7 +3267,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? trial,
 
-    List<FrameHoverModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
   }) async {
@@ -3209,13 +3322,13 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? trial,
 
-    List<FrameDblclickModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
 
     double? delay,
 
-    FrameDblclickButtonEnum? button,
+    Button? button,
 
     int? steps,
   }) async {
@@ -3306,7 +3419,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     bool? trial,
 
-    List<FrameTapModifiersEnum>? modifiers,
+    List<Modifiers>? modifiers,
 
     Point? position,
   }) async {
@@ -3708,7 +3821,7 @@ class FrameImpl extends FrameBase implements Frame {
   Future<FrameAriaSnapshotResult> ariaSnapshot(
     String selector, {
 
-    FrameAriaSnapshotModeEnum? mode,
+    SnapshotMode? mode,
 
     String? track,
 
@@ -3722,8 +3835,6 @@ class FrameImpl extends FrameBase implements Frame {
       selector: selector,
 
       mode: mode,
-
-      track: track,
 
       depth: depth,
 
@@ -3802,7 +3913,7 @@ class FrameImpl extends FrameBase implements Frame {
 
     Object? expressionArg,
 
-    FrameExpectPseudoEnum? pseudo,
+    Pseudo? pseudo,
   }) async {
     // channel.expect now returns void (protocol change in v1.61+).
 

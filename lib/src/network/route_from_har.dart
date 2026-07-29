@@ -65,13 +65,13 @@ Future<void> sharedRouteFromHAR(
         name: 'playwright.har',
       );
 
-      if (result.action == LocalUtilsHarLookupResultActionEnum.redirect) {
+      if (result.action == Action.redirect) {
         await route.continueRoute(url: result.redirectURL, isFallback: true);
 
         return;
       }
 
-      if (result.action == LocalUtilsHarLookupResultActionEnum.fulfill) {
+      if (result.action == Action.fulfill) {
         await route.fulfill(
           status: result.status,
 
@@ -85,13 +85,13 @@ Future<void> sharedRouteFromHAR(
         return;
       }
 
-      if (result.action == LocalUtilsHarLookupResultActionEnum.error) {
+      if (result.action == Action.error) {
         await route.abort();
 
         return;
       }
 
-      if (result.action == LocalUtilsHarLookupResultActionEnum.noentry) {
+      if (result.action == Action.noentry) {
         if (notFoundFallback) {
           await route.continueRoute(isFallback: true);
         } else {

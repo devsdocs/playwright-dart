@@ -192,7 +192,7 @@ void main() {
 
     test('stopChunk sends tracingStopChunk with mode', () async {
       final tracing = testConn.getObject('Tracing_1') as TracingImpl;
-      await tracing.stopChunk(mode: TracingTracingStopChunkModeEnum.discard);
+      await tracing.stopChunk(mode: ChunkMode.discard);
 
       final msg = testConn.transport.sentMessages.lastWhere(
         (m) => m['method'] == 'tracingStopChunk',
@@ -258,10 +258,7 @@ void main() {
 
     test('harExport sends harExport message', () async {
       final tracing = testConn.getObject('Tracing_1') as TracingImpl;
-      await tracing.harExport(
-        harId: 'har_001',
-        mode: TracingHarExportModeEnum.archive,
-      );
+      await tracing.harExport(harId: 'har_001', mode: ExportMode.archive);
 
       final msg = testConn.transport.sentMessages.lastWhere(
         (m) => m['method'] == 'harExport',

@@ -13,9 +13,7 @@ void main() {
     browser = await playwright.chromium.launch();
     // Enable downloads for this context
     context = await browser.newContext(
-      options: ContextOptions(
-        acceptDownloads: ContextOptionsAcceptDownloadsEnum.accept,
-      ),
+      options: ContextOptions(acceptDownloads: Downloads.accept),
     );
   });
 

@@ -18,9 +18,7 @@ void main() async {
   await page.getByRole('link', name: 'Get started').click();
 
   print('Stopping tracing and saving to trace.zip...');
-  final result = await context.tracing.stopChunk(
-    mode: TracingTracingStopChunkModeEnum.archive,
-  );
+  final result = await context.tracing.stopChunk(mode: ChunkMode.archive);
 
   if (result.artifact != null) {
     final artifact = result.artifact! as Artifact;

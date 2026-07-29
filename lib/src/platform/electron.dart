@@ -13,7 +13,7 @@ abstract interface class Electron {
   ///
   /// **Arguments**
   /// - `options` Map *(optional)*
-  ///   - `acceptDownloads` ElectronLaunchAcceptDownloadsEnum *(optional)*
+  ///   - `acceptDownloads` Downloads *(optional)*
   ///
   ///     Whether to automatically download all the attachments. Defaults to `true` where all the downloads are accepted.
   ///   - `args` List&lt;String&gt; *(optional)*
@@ -28,7 +28,7 @@ abstract interface class Electron {
   ///   - `chromiumSandbox` bool *(optional)*
   ///
   ///     Enable Chromium sandboxing. Defaults to `false`.
-  ///   - `colorScheme` ElectronLaunchColorSchemeEnum *(optional)*
+  ///   - `colorScheme` Scheme *(optional)*
   ///
   ///     Emulates [prefers-colors-scheme] media feature, supported values are `'light'` and `'dark'`. See [page.emulateMedia()] for more details. Passing `null` resets emulation to system defaults. Defaults to `'light'`.
   ///   - `cwd` String *(optional)*
@@ -118,6 +118,9 @@ abstract interface class Electron {
   ///       - `fontSize` num *(optional)*
   ///
   ///         Font size of the action title in pixels. Defaults to `24`.
+  ///       - `cursor` "none" | "pointer" *(optional)*
+  ///
+  ///         Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
   ///
   ///       If specified, enables visual annotations on interacted elements during video recording.
   ///
@@ -207,6 +210,7 @@ abstract interface class Electron {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -222,9 +226,9 @@ abstract interface class Electron {
     String? cwd,
     List<NameValue>? env,
     required double timeout,
-    ElectronLaunchAcceptDownloadsEnum? acceptDownloads,
+    Downloads? acceptDownloads,
     bool? bypassCSP,
-    ElectronLaunchColorSchemeEnum? colorScheme,
+    Scheme? colorScheme,
     List<NameValue>? extraHTTPHeaders,
     Map<String, dynamic>? geolocation,
     Map<String, dynamic>? httpCredentials,
@@ -258,9 +262,9 @@ class ElectronImpl extends ElectronBase implements Electron {
     String? cwd,
     List<NameValue>? env,
     required double timeout,
-    ElectronLaunchAcceptDownloadsEnum? acceptDownloads,
+    Downloads? acceptDownloads,
     bool? bypassCSP,
-    ElectronLaunchColorSchemeEnum? colorScheme,
+    Scheme? colorScheme,
     List<NameValue>? extraHTTPHeaders,
     Map<String, dynamic>? geolocation,
     Map<String, dynamic>? httpCredentials,

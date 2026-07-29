@@ -144,7 +144,7 @@ void main() {
         </script>
       ''');
 
-      await page.mouse.click(50, 50, button: PageMouseClickButtonEnum.right);
+      await page.mouse.click(50, 50, button: Button.right);
       expect(await page.evaluate('() => rightClicked'), isTrue);
     });
 

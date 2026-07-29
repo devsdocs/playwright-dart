@@ -149,9 +149,7 @@ abstract interface class Tracing {
   ///
   /// **Returns**
   /// - Future&lt;void&gt;
-  Future<TracingTracingStopChunkResult> stopChunk({
-    TracingTracingStopChunkModeEnum mode,
-  });
+  Future<TracingTracingStopChunkResult> stopChunk({ChunkMode mode});
 
   /// Stop tracing.
   ///
@@ -183,12 +181,10 @@ abstract interface class Tracing {
     TracingTracingGroupLocation? location,
   });
   Future<void> tracingGroupEnd();
-  Future<TracingTracingStopChunkResult> tracingStopChunk({
-    TracingTracingStopChunkModeEnum mode,
-  });
+  Future<TracingTracingStopChunkResult> tracingStopChunk({ChunkMode mode});
   Future<void> tracingStop();
   Future<dynamic> harStart({Page? page, RecordHarOptions? options});
-  Future<dynamic> harExport({String? harId, TracingHarExportModeEnum? mode});
+  Future<dynamic> harExport({String? harId, ExportMode? mode});
 }
 
 class TracingImpl extends TracingBase implements Tracing {
@@ -238,8 +234,7 @@ class TracingImpl extends TracingBase implements Tracing {
 
   @override
   Future<TracingTracingStopChunkResult> stopChunk({
-    TracingTracingStopChunkModeEnum mode =
-        TracingTracingStopChunkModeEnum.discard,
+    ChunkMode mode = ChunkMode.discard,
   }) async {
     return await channel.tracingStopChunk(mode: mode);
   }
@@ -273,8 +268,7 @@ class TracingImpl extends TracingBase implements Tracing {
   Future<void> tracingGroupEnd() => groupEnd();
   @override
   Future<TracingTracingStopChunkResult> tracingStopChunk({
-    TracingTracingStopChunkModeEnum mode =
-        TracingTracingStopChunkModeEnum.discard,
+    ChunkMode mode = ChunkMode.discard,
   }) => stopChunk(mode: mode);
   @override
   Future<void> tracingStop() => stop();
@@ -285,9 +279,6 @@ class TracingImpl extends TracingBase implements Tracing {
         options: options ?? RecordHarOptions(),
       );
   @override
-  Future<dynamic> harExport({String? harId, TracingHarExportModeEnum? mode}) =>
-      channel.harExport(
-        harId: harId,
-        mode: mode ?? TracingHarExportModeEnum.archive,
-      );
+  Future<dynamic> harExport({String? harId, ExportMode? mode}) =>
+      channel.harExport(harId: harId, mode: mode ?? ExportMode.archive);
 }

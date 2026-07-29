@@ -43,9 +43,13 @@ abstract interface class JSHandle<T extends Object?> {
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
+  /// - `options` Map *(optional)*
+  ///   - `exposeFunctions` bool *(optional)*
+  ///
+  ///     When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
   ///
   /// **Returns**
   /// - Future&lt;[Serializable]&gt;
@@ -65,16 +69,20 @@ abstract interface class JSHandle<T extends Object?> {
   ///
   /// ```dart
   /// await jsHandle.evaluateHandle(pageFunction);
-  /// await jsHandle.evaluateHandle(pageFunction, arg);
+  /// await jsHandle.evaluateHandle(pageFunction, arg, options);
   /// ```
   ///
   /// **Arguments**
   /// - `pageFunction` Function | String
   ///
   ///   Function to be evaluated in the page context.
-  /// - `arg` dynamic *(optional)*
+  /// - `arg` Object *(optional)*
   ///
   ///   Optional argument to pass to [pageFunction].
+  /// - `options` Map *(optional)*
+  ///   - `exposeFunctions` bool *(optional)*
+  ///
+  ///     When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
   ///
   /// **Returns**
   /// - Future&lt;[JSHandle]&gt;
@@ -213,6 +221,7 @@ abstract interface class JSHandle<T extends Object?> {
   /// [TestCase]: /api/class-testcase.mdx "TestCase"
   /// [TestError]: /api/class-testerror.mdx "TestError"
   /// [TestResult]: /api/class-testresult.mdx "TestResult"
+  /// [TestRun]: /api/class-testrun.mdx "TestRun"
   /// [TestStep]: /api/class-teststep.mdx "TestStep"
   /// [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
   /// [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
