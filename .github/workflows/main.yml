@@ -18,6 +18,8 @@ jobs:
             echo 'Waiting for apt...'
             sleep 1
           done
+      - name: Pre-install Playwright browsers
+        run: dart run tool/install_browsers.dart
       - name: Run tests & test coverage
         run: |
           dart pub global activate coverage
