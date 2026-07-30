@@ -12,6 +12,16 @@ jobs:
           sdk: 'stable'
       - name: Install dependencies
         run: dart pub get
+      - name: Wait for apt locks
+        run: |
+          sudo systemctl stop apt-daily.timer || true
+          sudo systemctl stop apt-daily-upgrade.timer || true
+          sudo systemctl kill --kill-who=all apt-daily.service || true
+          sudo systemctl kill --kill-who=all apt-daily-upgrade.service || true
+          while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 || sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1 || sudo fuser /var/cache/apt/archives/lock >/dev/null 2>&1; do
+            echo 'Waiting for apt...'
+            sleep 1
+          done
       - name: Run tests & test coverage
         run: |
           dart pub global activate coverage
