@@ -7,6 +7,21 @@ import 'package:path/path.dart' as p;
 
 import '../utils/version.dart';
 
+Future<T> _withLock<T>(String lockPath, Future<T> Function() action) async {
+  final file = File(lockPath);
+  if (!file.existsSync()) {
+    file.createSync(recursive: true);
+  }
+  final raf = file.openSync(mode: FileMode.write);
+  try {
+    await raf.lock(FileLock.exclusive);
+    return await action();
+  } finally {
+    raf.unlockSync();
+    raf.closeSync();
+  }
+}
+
 Future<String> fetchNodeVersion(
   String driverVersion, {
   http.Client? client,
@@ -100,120 +115,129 @@ Future<String> downloadDriver({
     return driverDir.path;
   }
 
-  Logger.info('Assembling Playwright driver $driverVersion...');
-
-  if (!driverDir.existsSync()) {
-    driverDir.createSync(recursive: true);
-  }
-
-  // 1. Download and extract playwright-core
-  final coreUrl =
-      'https://registry.npmjs.org/playwright-core/-/playwright-core-$driverVersion.tgz';
-  Logger.info('Downloading playwright-core...');
-  final coreResponse = await (client != null
-      ? client.get(Uri.parse(coreUrl))
-      : http.get(Uri.parse(coreUrl)));
-  if (coreResponse.statusCode != 200) {
-    throw StateError(
-      'Failed to download playwright-core: ${coreResponse.statusCode}',
-    );
-  }
-
-  Logger.info('Extracting playwright-core package...');
-  final coreArchive = TarDecoder().decodeBytes(
-    GZipDecoder().decodeBytes(coreResponse.bodyBytes),
-  );
-  for (final file in coreArchive) {
-    if (file.isFile) {
-      final outputPath = p.join(driverDir.path, p.normalize(file.name));
-      File(outputPath)
-        ..createSync(recursive: true)
-        ..writeAsBytesSync(file.content as List<int>);
+  return _withLock(p.join(driverDir.path, '.download.lock'), () async {
+    if (File(cliPath).existsSync() && File(markerPath).existsSync()) {
+      return driverDir.path;
     }
-  }
 
-  // 2. Download and extract Node.js binary
-  final platform = _getNodePlatform(processRunSync: processRunSync);
-  final nodeVersion = await fetchNodeVersion(driverVersion, client: client);
-  final nodeDirName = 'node-v$nodeVersion-${platform.suffix}';
-  final nodeUrl =
-      'https://nodejs.org/dist/v$nodeVersion/$nodeDirName.${platform.extension}';
-  Logger.info('Downloading Node.js $nodeVersion...');
-  final nodeResponse = await (client != null
-      ? client.get(Uri.parse(nodeUrl))
-      : http.get(Uri.parse(nodeUrl)));
-  if (nodeResponse.statusCode != 200) {
-    throw StateError('Failed to download Node.js: ${nodeResponse.statusCode}');
-  }
+    Logger.info('Assembling Playwright driver $driverVersion...');
 
-  Logger.info('Extracting Node.js binary...');
-  Archive nodeArchive;
-  if (platform.extension == 'zip') {
-    nodeArchive = ZipDecoder().decodeBytes(nodeResponse.bodyBytes);
-  } else {
-    nodeArchive = TarDecoder().decodeBytes(
-      GZipDecoder().decodeBytes(nodeResponse.bodyBytes),
+    if (!driverDir.existsSync()) {
+      driverDir.createSync(recursive: true);
+    }
+
+    // 1. Download and extract playwright-core
+    final coreUrl =
+        'https://registry.npmjs.org/playwright-core/-/playwright-core-$driverVersion.tgz';
+    Logger.info('Downloading playwright-core...');
+    final coreResponse = await (client != null
+        ? client.get(Uri.parse(coreUrl))
+        : http.get(Uri.parse(coreUrl)));
+    if (coreResponse.statusCode != 200) {
+      throw StateError(
+        'Failed to download playwright-core: ${coreResponse.statusCode}',
+      );
+    }
+
+    Logger.info('Extracting playwright-core package...');
+    final coreArchive = TarDecoder().decodeBytes(
+      GZipDecoder().decodeBytes(coreResponse.bodyBytes),
     );
-  }
-
-  final runSync = processRunSync ?? Process.runSync;
-  for (final file in nodeArchive) {
-    if (file.isFile) {
-      final name = file.name;
-      if (name.endsWith('node.exe') || name.endsWith('bin/node')) {
-        final out = File(
-          p.join(driverDir.path, platform.isWindows ? 'node.exe' : 'node'),
-        );
-        out.createSync(recursive: true);
-        out.writeAsBytesSync(file.content as List<int>);
-        if (!platform.isWindows) {
-          runSync('chmod', ['+x', out.path]);
-        }
-      } else if (name.endsWith('LICENSE')) {
-        final out = File(p.join(driverDir.path, 'LICENSE'));
-        out.createSync(recursive: true);
-        out.writeAsBytesSync(file.content as List<int>);
+    for (final file in coreArchive) {
+      if (file.isFile) {
+        final outputPath = p.join(driverDir.path, p.normalize(file.name));
+        File(outputPath)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(file.content as List<int>);
       }
     }
-  }
 
-  File(markerPath).writeAsStringSync('done');
-  Logger.info('Driver assembled successfully.');
-  return driverDir.path;
+    // 2. Download and extract Node.js binary
+    final platform = _getNodePlatform(processRunSync: processRunSync);
+    final nodeVersion = await fetchNodeVersion(driverVersion, client: client);
+    final nodeDirName = 'node-v$nodeVersion-${platform.suffix}';
+    final nodeUrl =
+        'https://nodejs.org/dist/v$nodeVersion/$nodeDirName.${platform.extension}';
+    Logger.info('Downloading Node.js $nodeVersion...');
+    final nodeResponse = await (client != null
+        ? client.get(Uri.parse(nodeUrl))
+        : http.get(Uri.parse(nodeUrl)));
+    if (nodeResponse.statusCode != 200) {
+      throw StateError('Failed to download Node.js: ${nodeResponse.statusCode}');
+    }
+
+    Logger.info('Extracting Node.js binary...');
+    Archive nodeArchive;
+    if (platform.extension == 'zip') {
+      nodeArchive = ZipDecoder().decodeBytes(nodeResponse.bodyBytes);
+    } else {
+      nodeArchive = TarDecoder().decodeBytes(
+        GZipDecoder().decodeBytes(nodeResponse.bodyBytes),
+      );
+    }
+
+    final runSync = processRunSync ?? Process.runSync;
+    for (final file in nodeArchive) {
+      if (file.isFile) {
+        final name = file.name;
+        if (name.endsWith('node.exe') || name.endsWith('bin/node')) {
+          final out = File(
+            p.join(driverDir.path, platform.isWindows ? 'node.exe' : 'node'),
+          );
+          out.createSync(recursive: true);
+          out.writeAsBytesSync(file.content as List<int>);
+          if (!platform.isWindows) {
+            runSync('chmod', ['+x', out.path]);
+          }
+        } else if (name.endsWith('LICENSE')) {
+          final out = File(p.join(driverDir.path, 'LICENSE'));
+          out.createSync(recursive: true);
+          out.writeAsBytesSync(file.content as List<int>);
+        }
+      }
+    }
+
+    File(markerPath).writeAsStringSync('done');
+    Logger.info('Driver assembled successfully.');
+    return driverDir.path;
+  });
 }
 
 Future<void> ensureBrowsersInstalled({
   ProcessResult Function(String, List<String>)? processRunSync,
   String? driverDirOverride,
 }) async {
-  final runSync = processRunSync ?? Process.runSync;
   final driverDirPath = driverDirOverride ?? await downloadDriver();
-  final cliPath = p.join(driverDirPath, 'package', 'cli.js');
-  final browserMarkerPath = p.join(driverDirPath, '.browsers-installed');
+  
+  return _withLock(p.join(driverDirPath, '.install.lock'), () async {
+    final runSync = processRunSync ?? Process.runSync;
+    final cliPath = p.join(driverDirPath, 'package', 'cli.js');
+    final browserMarkerPath = p.join(driverDirPath, '.browsers-installed');
 
-  if (File(browserMarkerPath).existsSync()) {
-    return;
-  }
+    if (File(browserMarkerPath).existsSync()) {
+      return;
+    }
 
-  Logger.info('Installing browsers (this may take a few minutes)...');
-  final nodePath = p.join(
-    driverDirPath,
-    Platform.isWindows ? 'node.exe' : 'node',
-  );
-  final installProcess = runSync(nodePath, [cliPath, 'install']);
-  if (installProcess.exitCode != 0) {
-    Logger.info(installProcess.stdout.toString());
-    Logger.error(installProcess.stderr.toString());
-    throw StateError('Failed to install browsers: ${installProcess.exitCode}');
-  }
+    Logger.info('Installing browsers (this may take a few minutes)...');
+    final nodePath = p.join(
+      driverDirPath,
+      Platform.isWindows ? 'node.exe' : 'node',
+    );
+    final installProcess = runSync(nodePath, [cliPath, 'install']);
+    if (installProcess.exitCode != 0) {
+      Logger.info(installProcess.stdout.toString());
+      Logger.error(installProcess.stderr.toString());
+      throw StateError('Failed to install browsers: ${installProcess.exitCode}');
+    }
 
-  // Linux requires OS-level shared libraries
-  if (Platform.isLinux) {
-    await _installLinuxDeps(nodePath, cliPath, runSync: runSync);
-  }
+    // Linux requires OS-level shared libraries
+    if (Platform.isLinux) {
+      await _installLinuxDeps(nodePath, cliPath, runSync: runSync);
+    }
 
-  File(browserMarkerPath).writeAsStringSync('done');
-  Logger.info('Browsers installed successfully.');
+    File(browserMarkerPath).writeAsStringSync('done');
+    Logger.info('Browsers installed successfully.');
+  });
 }
 
 /// Installs OS-level browser dependencies on Linux via `install-deps`.
