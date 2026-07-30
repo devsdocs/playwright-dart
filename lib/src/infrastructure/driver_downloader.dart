@@ -248,27 +248,36 @@ Future<void> _installLinuxDeps(
 }) async {
   Logger.info('Installing Linux browser dependencies...');
 
-  final direct = runSync(nodePath, [cliPath, 'install-deps']);
-  if (direct.exitCode == 0) {
-    Logger.info('Linux browser dependencies installed.');
-    return;
+  int retries = 30;
+  while (retries > 0) {
+    final direct = runSync(nodePath, [cliPath, 'install-deps']);
+    if (direct.exitCode == 0) {
+      Logger.info('Linux browser dependencies installed.');
+      return;
+    }
+
+    final withSudo = runSync('sudo', [nodePath, cliPath, 'install-deps']);
+    if (withSudo.exitCode == 0) {
+      Logger.info('Linux browser dependencies installed (via sudo).');
+      return;
+    }
+
+    final stderrStr = direct.stderr.toString() + '\n' + withSudo.stderr.toString();
+    if (stderrStr.contains('Could not get lock') || 
+        stderrStr.contains('Unable to acquire the dpkg frontend lock') ||
+        stderrStr.contains('is another process using it')) {
+      Logger.info('apt-get lock is held by another process, retrying in 2 seconds ($retries retries left)...');
+      await Future.delayed(Duration(seconds: 2));
+      retries--;
+    } else {
+      Logger.error(withSudo.stderr.toString());
+      throw StateError(
+        'Failed to install Linux browser dependencies.\n'
+        'Please run the following command manually and try again:\n\n'
+        '  sudo $nodePath $cliPath install-deps\n',
+      );
+    }
   }
 
-  Logger.debug(
-    'install-deps without sudo failed (exit ${direct.exitCode}), retrying with sudo...',
-    name: 'playwright.driver',
-  );
-
-  final withSudo = runSync('sudo', [nodePath, cliPath, 'install-deps']);
-  if (withSudo.exitCode == 0) {
-    Logger.info('Linux browser dependencies installed (via sudo).');
-    return;
-  }
-
-  Logger.error(withSudo.stderr.toString());
-  throw StateError(
-    'Failed to install Linux browser dependencies.\n'
-    'Please run the following command manually and try again:\n\n'
-    '  sudo $nodePath $cliPath install-deps\n',
-  );
+  throw StateError('Timed out waiting for apt-get lock while installing Linux dependencies.');
 }
