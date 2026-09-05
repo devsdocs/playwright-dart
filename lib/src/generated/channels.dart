@@ -7,6 +7,10 @@ import '../infrastructure/connection.dart';
 
 /// Arbitrary JSON value (Playwright protocol type `json` / `any`).
 typedef JsonValue = Object?;
+typedef SnapshotMode = FrameAriaSnapshotMode;
+typedef BrowserContextSetHTTPCredentialsHttpCredentials = HttpCredentials;
+typedef PlaywrightNewRequestHttpCredentials = HttpCredentials;
+typedef ElectronLaunchHttpCredentials = HttpCredentials;
 
 enum Action {
   error('error'),
@@ -81,6 +85,7 @@ enum Content {
 enum ContextUpdateSubscriptionEvent {
   console('console'),
   dialog('dialog'),
+  dialogClosed('dialogClosed'),
   request('request'),
   response('response'),
   requestFinished('requestFinished'),
@@ -162,6 +167,14 @@ enum EnableRecorderMode {
   const EnableRecorderMode(this.value);
 }
 
+enum EntryType {
+  file('file'),
+  directory('directory');
+
+  final String value;
+  const EntryType(this.value);
+}
+
 enum ExpectScreenshotType {
   png('png'),
   webp('webp');
@@ -176,6 +189,14 @@ enum ExportMode {
 
   final String value;
   const ExportMode(this.value);
+}
+
+enum FrameAriaSnapshotMode {
+  ai('ai'),
+  defaultValue('default');
+
+  final String value;
+  const FrameAriaSnapshotMode(this.value);
 }
 
 enum K {
@@ -262,6 +283,7 @@ enum OptionsMode {
 enum PageUpdateSubscriptionEvent {
   console('console'),
   dialog('dialog'),
+  dialogClosed('dialogClosed'),
   fileChooser('fileChooser'),
   request('request'),
   response('response'),
@@ -390,12 +412,13 @@ enum Site {
   const Site(this.value);
 }
 
-enum SnapshotMode {
-  ai('ai'),
-  defaultValue('default');
+enum Status {
+  running('running'),
+  success('success'),
+  error('error');
 
   final String value;
-  const SnapshotMode(this.value);
+  const Status(this.value);
 }
 
 enum V {
@@ -1501,6 +1524,29 @@ class BrowserContextCredentialsGetResult {
   }
 }
 
+class BrowserContextDialogClosedEvent {
+  final DialogBase dialog;
+
+  BrowserContextDialogClosedEvent({required this.dialog});
+
+  factory BrowserContextDialogClosedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return BrowserContextDialogClosedEvent(
+      dialog: (connection != null && json[r'dialog'] != null
+          ? ChannelOwner.from<DialogBase>(connection, json[r'dialog'])
+          : null)!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      r'dialog': {'guid': dialog.guid},
+    };
+  }
+}
+
 class BrowserContextDialogEvent {
   final DialogBase dialog;
 
@@ -2024,37 +2070,6 @@ class BrowserContextSetGeolocation {
       if (accuracy != null) r'accuracy': accuracy,
       r'latitude': latitude,
       r'longitude': longitude,
-    };
-  }
-}
-
-class BrowserContextSetHTTPCredentialsHttpCredentials {
-  final String? origin;
-  final String password;
-  final String username;
-
-  BrowserContextSetHTTPCredentialsHttpCredentials({
-    this.origin,
-    required this.password,
-    required this.username,
-  });
-
-  factory BrowserContextSetHTTPCredentialsHttpCredentials.fromJson(
-    Map<String, dynamic> json, {
-    Connection? connection,
-  }) {
-    return BrowserContextSetHTTPCredentialsHttpCredentials(
-      origin: json[r'origin'],
-      password: (json[r'password'])!,
-      username: (json[r'username'])!,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (origin != null) r'origin': origin,
-      r'password': password,
-      r'username': username,
     };
   }
 }
@@ -2911,7 +2926,7 @@ class ContextOptions {
   final Colors? forcedColors;
   final ContextOptionsGeolocation? geolocation;
   final bool? hasTouch;
-  final ContextOptionsHttpCredentials? httpCredentials;
+  final List<HttpCredentials>? httpCredentials;
   final bool? ignoreHTTPSErrors;
   final bool? isMobile;
   final bool? javaScriptEnabled;
@@ -3004,12 +3019,9 @@ class ContextOptions {
               connection: connection,
             ),
       hasTouch: json[r'hasTouch'],
-      httpCredentials: json[r'httpCredentials'] == null
-          ? null
-          : ContextOptionsHttpCredentials.fromJson(
-              json[r'httpCredentials'],
-              connection: connection,
-            ),
+      httpCredentials: (json[r'httpCredentials'] as List?)
+          ?.map((e) => HttpCredentials.fromJson(e, connection: connection))
+          .toList(),
       ignoreHTTPSErrors: json[r'ignoreHTTPSErrors'],
       isMobile: json[r'isMobile'],
       javaScriptEnabled: json[r'javaScriptEnabled'],
@@ -3077,7 +3089,7 @@ class ContextOptions {
       if (geolocation != null) r'geolocation': geolocation?.toJson(),
       if (hasTouch != null) r'hasTouch': hasTouch,
       if (httpCredentials != null)
-        r'httpCredentials': httpCredentials?.toJson(),
+        r'httpCredentials': httpCredentials?.map((e) => e.toJson()).toList(),
       if (ignoreHTTPSErrors != null) r'ignoreHTTPSErrors': ignoreHTTPSErrors,
       if (isMobile != null) r'isMobile': isMobile,
       if (javaScriptEnabled != null) r'javaScriptEnabled': javaScriptEnabled,
@@ -3168,43 +3180,6 @@ class ContextOptionsGeolocation {
       if (accuracy != null) r'accuracy': accuracy,
       r'latitude': latitude,
       r'longitude': longitude,
-    };
-  }
-}
-
-class ContextOptionsHttpCredentials {
-  final String? origin;
-  final String password;
-  final Send? send;
-  final String username;
-
-  ContextOptionsHttpCredentials({
-    this.origin,
-    required this.password,
-    this.send,
-    required this.username,
-  });
-
-  factory ContextOptionsHttpCredentials.fromJson(
-    Map<String, dynamic> json, {
-    Connection? connection,
-  }) {
-    return ContextOptionsHttpCredentials(
-      origin: json[r'origin'],
-      password: (json[r'password'])!,
-      send: json[r'send'] == null
-          ? null
-          : Send.values.firstWhere((e) => e.value == json[r'send']),
-      username: (json[r'username'])!,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (origin != null) r'origin': origin,
-      r'password': password,
-      if (send != null) r'send': send?.value,
-      r'username': username,
     };
   }
 }
@@ -3447,6 +3422,121 @@ class DebugControllerStateChangedEvent {
 
   Map<String, dynamic> toJson() {
     return {r'pageCount': pageCount};
+  }
+}
+
+class DebuggerApiCallsUpdatedEvent {
+  final List<DebuggerApiCallsUpdatedEventApiCallsItems> apiCalls;
+
+  DebuggerApiCallsUpdatedEvent({required this.apiCalls});
+
+  factory DebuggerApiCallsUpdatedEvent.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebuggerApiCallsUpdatedEvent(
+      apiCalls:
+          ((json[r'apiCalls'] as List?)
+              ?.map(
+                (e) => DebuggerApiCallsUpdatedEventApiCallsItems.fromJson(
+                  e,
+                  connection: connection,
+                ),
+              )
+              .toList()) ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {r'apiCalls': apiCalls.map((e) => e.toJson()).toList()};
+  }
+}
+
+class DebuggerApiCallsUpdatedEventApiCallsItems {
+  final Point? actionPoint;
+  final String? error;
+  final String id;
+  final DebuggerApiCallsUpdatedEventApiCallsItemsLocation? location;
+  final List<String> newLogEntries;
+  final Status status;
+  final String title;
+
+  DebuggerApiCallsUpdatedEventApiCallsItems({
+    this.actionPoint,
+    this.error,
+    required this.id,
+    this.location,
+    required this.newLogEntries,
+    required this.status,
+    required this.title,
+  });
+
+  factory DebuggerApiCallsUpdatedEventApiCallsItems.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebuggerApiCallsUpdatedEventApiCallsItems(
+      actionPoint: json[r'actionPoint'] == null
+          ? null
+          : Point.fromJson(json[r'actionPoint'], connection: connection),
+      error: json[r'error'],
+      id: (json[r'id'])!,
+      location: json[r'location'] == null
+          ? null
+          : DebuggerApiCallsUpdatedEventApiCallsItemsLocation.fromJson(
+              json[r'location'],
+              connection: connection,
+            ),
+      newLogEntries: ((json[r'newLogEntries'] as List?)?.cast<String>()) ?? [],
+      status: (json[r'status'] == null
+          ? null
+          : Status.values.firstWhere((e) => e.value == json[r'status']))!,
+      title: (json[r'title'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (actionPoint != null) r'actionPoint': actionPoint?.toJson(),
+      if (error != null) r'error': error,
+      r'id': id,
+      if (location != null) r'location': location?.toJson(),
+      r'newLogEntries': newLogEntries,
+      r'status': status.value,
+      r'title': title,
+    };
+  }
+}
+
+class DebuggerApiCallsUpdatedEventApiCallsItemsLocation {
+  final int? column;
+  final String file;
+  final int? line;
+
+  DebuggerApiCallsUpdatedEventApiCallsItemsLocation({
+    this.column,
+    required this.file,
+    this.line,
+  });
+
+  factory DebuggerApiCallsUpdatedEventApiCallsItemsLocation.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return DebuggerApiCallsUpdatedEventApiCallsItemsLocation(
+      column: json[r'column'],
+      file: (json[r'file'])!,
+      line: json[r'line'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (column != null) r'column': column,
+      r'file': file,
+      if (line != null) r'line': line,
+    };
   }
 }
 
@@ -3745,37 +3835,6 @@ class ElectronLaunchGeolocation {
       if (accuracy != null) r'accuracy': accuracy,
       r'latitude': latitude,
       r'longitude': longitude,
-    };
-  }
-}
-
-class ElectronLaunchHttpCredentials {
-  final String? origin;
-  final String password;
-  final String username;
-
-  ElectronLaunchHttpCredentials({
-    this.origin,
-    required this.password,
-    required this.username,
-  });
-
-  factory ElectronLaunchHttpCredentials.fromJson(
-    Map<String, dynamic> json, {
-    Connection? connection,
-  }) {
-    return ElectronLaunchHttpCredentials(
-      origin: json[r'origin'],
-      password: (json[r'password'])!,
-      username: (json[r'username'])!,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (origin != null) r'origin': origin,
-      r'password': password,
-      r'username': username,
     };
   }
 }
@@ -4506,6 +4565,23 @@ class FrameAddStyleTagResult {
     return {
       r'element': {'guid': element.guid},
     };
+  }
+}
+
+class FrameAriaSnapshotJSONResult {
+  final JsonValue snapshot;
+
+  FrameAriaSnapshotJSONResult({this.snapshot});
+
+  factory FrameAriaSnapshotJSONResult.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return FrameAriaSnapshotJSONResult(snapshot: json[r'snapshot']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {if (snapshot != null) r'snapshot': snapshot};
   }
 }
 
@@ -5281,6 +5357,43 @@ class FrameWaitForSelectorResult {
   Map<String, dynamic> toJson() {
     return {
       if (element != null) r'element': {'guid': element?.guid},
+    };
+  }
+}
+
+class HttpCredentials {
+  final String? origin;
+  final String password;
+  final Send? send;
+  final String username;
+
+  HttpCredentials({
+    this.origin,
+    required this.password,
+    this.send,
+    required this.username,
+  });
+
+  factory HttpCredentials.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return HttpCredentials(
+      origin: json[r'origin'],
+      password: (json[r'password'])!,
+      send: json[r'send'] == null
+          ? null
+          : Send.values.firstWhere((e) => e.value == json[r'send']),
+      username: (json[r'username'])!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (origin != null) r'origin': origin,
+      r'password': password,
+      if (send != null) r'send': send?.value,
+      r'username': username,
     };
   }
 }
@@ -6258,14 +6371,45 @@ class NetworkCookie {
   }
 }
 
+class OPFSEntry {
+  final String? base64;
+  final String path;
+  final EntryType type;
+
+  OPFSEntry({this.base64, required this.path, required this.type});
+
+  factory OPFSEntry.fromJson(
+    Map<String, dynamic> json, {
+    Connection? connection,
+  }) {
+    return OPFSEntry(
+      base64: json[r'base64'],
+      path: (json[r'path'])!,
+      type: (json[r'type'] == null
+          ? null
+          : EntryType.values.firstWhere((e) => e.value == json[r'type']))!,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (base64 != null) r'base64': base64,
+      r'path': path,
+      r'type': type.value,
+    };
+  }
+}
+
 class OriginStorage {
   final List<IndexedDBDatabase>? indexedDB;
   final List<NameValue> localStorage;
+  final List<OPFSEntry>? opfs;
   final String origin;
 
   OriginStorage({
     this.indexedDB,
     required this.localStorage,
+    this.opfs,
     required this.origin,
   });
 
@@ -6282,6 +6426,9 @@ class OriginStorage {
               ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
+      opfs: (json[r'opfs'] as List?)
+          ?.map((e) => OPFSEntry.fromJson(e, connection: connection))
+          .toList(),
       origin: (json[r'origin'])!,
     );
   }
@@ -6291,6 +6438,7 @@ class OriginStorage {
       if (indexedDB != null)
         r'indexedDB': indexedDB?.map((e) => e.toJson()).toList(),
       r'localStorage': localStorage.map((e) => e.toJson()).toList(),
+      if (opfs != null) r'opfs': opfs?.map((e) => e.toJson()).toList(),
       r'origin': origin,
     };
   }
@@ -7609,43 +7757,6 @@ class PlaywrightNewRequestClientCertificatesItems {
   }
 }
 
-class PlaywrightNewRequestHttpCredentials {
-  final String? origin;
-  final String password;
-  final Send? send;
-  final String username;
-
-  PlaywrightNewRequestHttpCredentials({
-    this.origin,
-    required this.password,
-    this.send,
-    required this.username,
-  });
-
-  factory PlaywrightNewRequestHttpCredentials.fromJson(
-    Map<String, dynamic> json, {
-    Connection? connection,
-  }) {
-    return PlaywrightNewRequestHttpCredentials(
-      origin: json[r'origin'],
-      password: (json[r'password'])!,
-      send: json[r'send'] == null
-          ? null
-          : Send.values.firstWhere((e) => e.value == json[r'send']),
-      username: (json[r'username'])!,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (origin != null) r'origin': origin,
-      r'password': password,
-      if (send != null) r'send': send?.value,
-      r'username': username,
-    };
-  }
-}
-
 class PlaywrightNewRequestProxy {
   final String? bypass;
   final String? password;
@@ -8734,11 +8845,13 @@ class SetNetworkCookie {
 class SetOriginStorage {
   final List<IndexedDBDatabase>? indexedDB;
   final List<NameValue> localStorage;
+  final List<OPFSEntry>? opfs;
   final String origin;
 
   SetOriginStorage({
     this.indexedDB,
     required this.localStorage,
+    this.opfs,
     required this.origin,
   });
 
@@ -8755,6 +8868,9 @@ class SetOriginStorage {
               ?.map((e) => NameValue.fromJson(e, connection: connection))
               .toList()) ??
           [],
+      opfs: (json[r'opfs'] as List?)
+          ?.map((e) => OPFSEntry.fromJson(e, connection: connection))
+          .toList(),
       origin: (json[r'origin'])!,
     );
   }
@@ -8764,6 +8880,7 @@ class SetOriginStorage {
       if (indexedDB != null)
         r'indexedDB': indexedDB?.map((e) => e.toJson()).toList(),
       r'localStorage': localStorage.map((e) => e.toJson()).toList(),
+      if (opfs != null) r'opfs': opfs?.map((e) => e.toJson()).toList(),
       r'origin': origin,
     };
   }
@@ -9504,7 +9621,7 @@ class APIRequestContextChannel extends Channel {
     return;
   }
 
-  /// {method} "{url}"
+  /// {method}
   Future<APIRequestContextFetchResult> fetch({
     String? encodedParams,
     bool? failOnStatusCode,
@@ -9589,10 +9706,12 @@ class APIRequestContextChannel extends Channel {
   /// Get storage state
   Future<APIRequestContextStorageStateResult> storageState({
     bool? indexedDB,
+    bool? opfs,
     double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (indexedDB != null) payload['indexedDB'] = indexedDB;
+    if (opfs != null) payload['opfs'] = opfs;
     if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11049,12 +11168,11 @@ class BrowserContextChannel extends Channel {
 
   /// Set HTTP credentials
   Future<void> setHTTPCredentials({
-    BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
+    List<HttpCredentials>? httpCredentials,
     double? timeout,
   }) async {
     final payload = <String, dynamic>{};
-    if (httpCredentials != null)
-      payload['httpCredentials'] = httpCredentials?.toJson();
+    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
     if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11144,11 +11262,13 @@ class BrowserContextChannel extends Channel {
   Future<BrowserContextStorageStateResult> storageState({
     bool? credentials,
     bool? indexedDB,
+    bool? opfs,
     double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (credentials != null) payload['credentials'] = credentials;
     if (indexedDB != null) payload['indexedDB'] = indexedDB;
+    if (opfs != null) payload['opfs'] = opfs;
     if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,
@@ -11205,6 +11325,7 @@ class BrowserTypeChannel extends Channel {
     String? endpointURL,
     List<NameValue>? headers,
     bool? isLocal,
+    bool? isWebView,
     bool? noDefaults,
     double? slowMo,
     double? timeout,
@@ -11215,6 +11336,7 @@ class BrowserTypeChannel extends Channel {
     if (endpointURL != null) payload['endpointURL'] = endpointURL;
     if (headers != null) payload['headers'] = headers;
     if (isLocal != null) payload['isLocal'] = isLocal;
+    if (isWebView != null) payload['isWebView'] = isWebView;
     if (noDefaults != null) payload['noDefaults'] = noDefaults;
     if (slowMo != null) payload['slowMo'] = slowMo;
     if (timeout != null) payload['timeout'] = timeout;
@@ -11476,6 +11598,17 @@ abstract class DebuggerBase extends ChannelOwner {
 class DebuggerChannel extends Channel {
   DebuggerChannel(super.owner);
 
+  Future<void> enable({double? timeout}) async {
+    final payload = <String, dynamic>{};
+    if (timeout != null) payload['timeout'] = timeout;
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'enable',
+      payload,
+    );
+    return;
+  }
+
   /// Step to next call
   Future<void> next({double? timeout}) async {
     final payload = <String, dynamic>{};
@@ -11623,7 +11756,7 @@ class ElectronChannel extends Channel {
     String? executablePath,
     List<NameValue>? extraHTTPHeaders,
     ElectronLaunchGeolocation? geolocation,
-    ElectronLaunchHttpCredentials? httpCredentials,
+    List<HttpCredentials>? httpCredentials,
     bool? ignoreHTTPSErrors,
     String? locale,
     bool? offline,
@@ -11649,8 +11782,7 @@ class ElectronChannel extends Channel {
     if (extraHTTPHeaders != null)
       payload['extraHTTPHeaders'] = extraHTTPHeaders;
     if (geolocation != null) payload['geolocation'] = geolocation?.toJson();
-    if (httpCredentials != null)
-      payload['httpCredentials'] = httpCredentials?.toJson();
+    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
     if (ignoreHTTPSErrors != null)
       payload['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
     if (locale != null) payload['locale'] = locale;
@@ -12544,7 +12676,7 @@ class FrameChannel extends Channel {
   Future<FrameAriaSnapshotResult> ariaSnapshot({
     bool? boxes,
     int? depth,
-    SnapshotMode? mode,
+    FrameAriaSnapshotMode? mode,
     Pattern? selector,
     double? timeout,
   }) async {
@@ -12560,6 +12692,31 @@ class FrameChannel extends Channel {
       payload,
     );
     return FrameAriaSnapshotResult.fromJson(
+      response,
+      connection: owner.connection,
+    );
+  }
+
+  /// Aria snapshot JSON
+  Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON({
+    bool? boxes,
+    int? depth,
+    FrameAriaSnapshotMode? mode,
+    Pattern? selector,
+    double? timeout,
+  }) async {
+    final payload = <String, dynamic>{};
+    if (boxes != null) payload['boxes'] = boxes;
+    if (depth != null) payload['depth'] = depth;
+    if (mode != null) payload['mode'] = mode?.value;
+    if (selector != null) payload['selector'] = selector?.toString();
+    if (timeout != null) payload['timeout'] = timeout;
+    final response = await owner.connection.sendMessageToServer(
+      owner.guid,
+      'ariaSnapshotJSON',
+      payload,
+    );
+    return FrameAriaSnapshotJSONResult.fromJson(
       response,
       connection: owner.connection,
     );
@@ -12986,7 +13143,7 @@ class FrameChannel extends Channel {
     );
   }
 
-  /// Navigate to "{url}"
+  /// Navigate
   Future<FrameGotoResult> goto({
     String? referer,
     double? timeout,
@@ -15069,7 +15226,7 @@ class PlaywrightChannel extends Channel {
     List<PlaywrightNewRequestClientCertificatesItems>? clientCertificates,
     List<NameValue>? extraHTTPHeaders,
     bool? failOnStatusCode,
-    PlaywrightNewRequestHttpCredentials? httpCredentials,
+    List<HttpCredentials>? httpCredentials,
     bool? ignoreHTTPSErrors,
     int? maxRedirects,
     PlaywrightNewRequestProxy? proxy,
@@ -15086,8 +15243,7 @@ class PlaywrightChannel extends Channel {
       payload['extraHTTPHeaders'] = extraHTTPHeaders;
     if (failOnStatusCode != null)
       payload['failOnStatusCode'] = failOnStatusCode;
-    if (httpCredentials != null)
-      payload['httpCredentials'] = httpCredentials?.toJson();
+    if (httpCredentials != null) payload['httpCredentials'] = httpCredentials;
     if (ignoreHTTPSErrors != null)
       payload['ignoreHTTPSErrors'] = ignoreHTTPSErrors;
     if (maxRedirects != null) payload['maxRedirects'] = maxRedirects;
@@ -15608,15 +15764,19 @@ class TracingChannel extends Channel {
   Future<void> tracingStart({
     bool? live,
     String? name,
-    bool? screenshots,
-    bool? snapshots,
+    bool? screencast,
+    bool? snapshotAria,
+    bool? snapshotDom,
+    bool? snapshotScreen,
     double? timeout,
   }) async {
     final payload = <String, dynamic>{};
     if (live != null) payload['live'] = live;
     if (name != null) payload['name'] = name;
-    if (screenshots != null) payload['screenshots'] = screenshots;
-    if (snapshots != null) payload['snapshots'] = snapshots;
+    if (screencast != null) payload['screencast'] = screencast;
+    if (snapshotAria != null) payload['snapshotAria'] = snapshotAria;
+    if (snapshotDom != null) payload['snapshotDom'] = snapshotDom;
+    if (snapshotScreen != null) payload['snapshotScreen'] = snapshotScreen;
     if (timeout != null) payload['timeout'] = timeout;
     final response = await owner.connection.sendMessageToServer(
       owner.guid,

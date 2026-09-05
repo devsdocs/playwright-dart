@@ -163,7 +163,9 @@ Future<String> downloadDriver({
         ? client.get(Uri.parse(nodeUrl))
         : http.get(Uri.parse(nodeUrl)));
     if (nodeResponse.statusCode != 200) {
-      throw StateError('Failed to download Node.js: ${nodeResponse.statusCode}');
+      throw StateError(
+        'Failed to download Node.js: ${nodeResponse.statusCode}',
+      );
     }
 
     Logger.info('Extracting Node.js binary...');
@@ -208,7 +210,7 @@ Future<void> ensureBrowsersInstalled({
   String? driverDirOverride,
 }) async {
   final driverDirPath = driverDirOverride ?? await downloadDriver();
-  
+
   return _withLock(p.join(driverDirPath, '.install.lock'), () async {
     final runSync = processRunSync ?? Process.runSync;
     final cliPath = p.join(driverDirPath, 'package', 'cli.js');
@@ -227,7 +229,9 @@ Future<void> ensureBrowsersInstalled({
     if (installProcess.exitCode != 0) {
       Logger.info(installProcess.stdout.toString());
       Logger.error(installProcess.stderr.toString());
-      throw StateError('Failed to install browsers: ${installProcess.exitCode}');
+      throw StateError(
+        'Failed to install browsers: ${installProcess.exitCode}',
+      );
     }
 
     // Linux requires OS-level shared libraries
@@ -262,11 +266,13 @@ Future<void> _installLinuxDeps(
       return;
     }
 
-    final stderrStr = direct.stderr.toString() + '\n' + withSudo.stderr.toString();
-    if (stderrStr.contains('Could not get lock') || 
+    final stderrStr = '${direct.stderr}\n${withSudo.stderr}';
+    if (stderrStr.contains('Could not get lock') ||
         stderrStr.contains('Unable to acquire the dpkg frontend lock') ||
         stderrStr.contains('is another process using it')) {
-      Logger.info('apt-get lock is held by another process, retrying in 2 seconds ($retries retries left)...');
+      Logger.info(
+        'apt-get lock is held by another process, retrying in 2 seconds ($retries retries left)...',
+      );
       await Future.delayed(Duration(seconds: 2));
       retries--;
     } else {
@@ -279,5 +285,7 @@ Future<void> _installLinuxDeps(
     }
   }
 
-  throw StateError('Timed out waiting for apt-get lock while installing Linux dependencies.');
+  throw StateError(
+    'Timed out waiting for apt-get lock while installing Linux dependencies.',
+  );
 }

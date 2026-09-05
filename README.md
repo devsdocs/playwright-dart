@@ -7,7 +7,7 @@
 
 A Dart port of [Playwright](https://playwright.dev) — browser automation for Chromium, Firefox, and WebKit.
 
-This is an actively developed port that covers the core Playwright surface area used in most real-world automation and testing workflows. It targets Playwright protocol v1.62.0 and keeps up with the upstream API as development continues.
+This is an actively developed port that covers the core Playwright surface area used in most real-world automation and testing workflows. It targets Playwright protocol v1.63.0 and keeps up with the upstream API as development continues.
 
 ## Features
 
@@ -68,7 +68,7 @@ Or by manually installing the packages via `apt-get` as indicated in the error m
 
 ```yaml
 dependencies:
-  playwright_dart: ^3.12.0
+  playwright_dart: ^3.13.0
 ```
 
 ## Quick Start

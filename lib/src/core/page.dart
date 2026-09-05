@@ -3365,6 +3365,24 @@ abstract interface class Page {
     double? timeout,
   });
 
+  /// Returns the ARIA snapshot of the page or element in JSON format.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await page.ariaSnapshotJSON();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;FrameAriaSnapshotJSONResult&gt;
+  Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON({
+    Pattern? selector,
+    SnapshotMode? mode,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  });
+
   /// Performs an assertion on the element matching the selector.
   Future<ExpectResult> expect(
     String selector,
@@ -3883,6 +3901,12 @@ abstract interface class Page {
   Future<void> screencastShowActions(ShowActionsOptions options);
 
   Future<void> screencastHideActions();
+
+  /// Acknowledges receiving a screencast frame.
+  Future<void> screencastFrameAck({
+    required int frameId,
+    double? timeout,
+  });
 
   Future<void> updateSubscription({
     required PageUpdateSubscriptionEvent event,
@@ -5241,6 +5265,23 @@ class PageImpl extends PageBase implements Page {
   }
 
   @override
+  Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON({
+    Pattern? selector,
+    SnapshotMode? mode,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  }) {
+    return mainFrame.ariaSnapshotJSON(
+      selector: selector,
+      mode: mode,
+      depth: depth,
+      boxes: boxes,
+      timeout: timeout,
+    );
+  }
+
+  @override
   Future<ExpectResult> expect(
     String selector,
 
@@ -5702,6 +5743,17 @@ class PageImpl extends PageBase implements Page {
   @override
   Future<void> screencastHideActions() async {
     await channel.screencastHideActions();
+  }
+
+  @override
+  Future<void> screencastFrameAck({
+    required int frameId,
+    double? timeout,
+  }) async {
+    await channel.screencastFrameAck(
+      frameId: frameId,
+      timeout: timeout,
+    );
   }
 
   // --- Subscription ---

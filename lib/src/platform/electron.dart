@@ -295,7 +295,7 @@ class ElectronImpl extends ElectronBase implements Electron {
           : ElectronLaunchGeolocation.fromJson(geolocation),
       httpCredentials: httpCredentials == null
           ? null
-          : ElectronLaunchHttpCredentials.fromJson(httpCredentials),
+          : [HttpCredentials.fromJson(httpCredentials)],
       ignoreHTTPSErrors: ignoreHTTPSErrors,
       locale: locale,
       offline: offline,

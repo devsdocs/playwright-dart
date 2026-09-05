@@ -382,6 +382,9 @@ Position of the action title overlay. Defaults to `"top-right"`.
 - `fontSize` num *(optional)*
 
 Font size of the action title in pixels. Defaults to `24`.
+- `cursor` "none" | "pointer" *(optional)*
+
+Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
 
 If specified, enables visual annotations on interacted elements during video recording.
 
@@ -776,6 +779,9 @@ Position of the action title overlay. Defaults to `"top-right"`.
 - `fontSize` num *(optional)*
 
 Font size of the action title in pixels. Defaults to `24`.
+- `cursor` "none" | "pointer" *(optional)*
+
+Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
 
 If specified, enables visual annotations on interacted elements during video recording.
 
@@ -1280,7 +1286,7 @@ await browserContext.grantPermissions(permissions, options);
 ```
 
 **Arguments**
-- `permissions` List&lt;String&gt;
+- `permissions` List&lt;BrowserPermission&gt;
 
 A list of permissions to grant.
 
@@ -1395,7 +1401,7 @@ Non-negative accuracy value. Defaults to `0`.
 - Future&lt;void&gt;
 
 ```dart
-Future<void> setGeolocation( BrowserContextSetGeolocation? geolocation, )
+Future<void> setGeolocation(BrowserContextSetGeolocation? geolocation)
 ```
 
 ### `setHTTPCredentials`
@@ -1496,6 +1502,7 @@ await browserContext.setHTTPCredentials(httpCredentials);
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -1506,7 +1513,7 @@ await browserContext.setHTTPCredentials(httpCredentials);
 [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
 
 ```dart
-Future<void> setHTTPCredentials( BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials, )
+Future<void> setHTTPCredentials( HttpCredentials? httpCredentials, )
 ```
 
 ### `setOffline`
@@ -1535,7 +1542,7 @@ Future<void> setOffline(bool offline)
 
 *⚙️ Method*
 
-Returns storage state for this browser context, contains current cookies, local storage snapshot and IndexedDB snapshot.
+Returns storage state for this browser context, contains current cookies, local storage snapshot, IndexedDB snapshot and virtual WebAuthn credentials.
 
 **Usage**
 
@@ -1546,6 +1553,9 @@ await browserContext.storageState(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `credentials` bool *(optional)*
+
+Set to `true` to include the context's virtual WebAuthn [browserContext.credentials] (passkeys) in the storage state snapshot. The captured credentials carry their private keys, so they can be re-seeded into a later context via the [storageState] option or [browserContext.setStorageState()]. Note that restoring the storage state that contains credentials will automatically install the virtual WebAuthn authenticator (see [credentials.install()]), and prevent all real authenticators from working in this context.
 - `indexedDB` bool *(optional)*
 
 Set to `true` to include [IndexedDB] in the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase Authentication, enable this.
@@ -1599,7 +1609,7 @@ Future<BrowserContextStorageStateResult> storageState(
 
 *⚙️ Method*
 
-Clears the existing cookies, local storage and IndexedDB entries for all origins and sets the new storage state.
+Clears the existing cookies, local storage, IndexedDB entries and virtual WebAuthn credentials, and sets the new storage state. When the storage state contains credentials, the virtual WebAuthn authenticator is installed (equivalent to [credentials.install()]), preventing all real authenticators from working in this context.
 
 **Usage**
 
@@ -1659,7 +1669,7 @@ Populates context with given storage state. This option can be used to initializ
 - Future&lt;void&gt;
 
 ```dart
-Future<void> setStorageState( BrowserContextSetStorageState storageState, )
+Future<void> setStorageState(BrowserContextSetStorageState storageState)
 ```
 
 ### `addInitScript`
@@ -1703,6 +1713,10 @@ Script to be evaluated in all pages in the browser context.
 - `arg` [Serializable] *(optional)*
 
 Optional argument to pass to [script] (only supported when passing a function).
+- `options` Map *(optional)*
+- `exposeFunctions` bool *(optional)*
+
+When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the init script. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Unlike functions passed to [page.evaluate()], functions passed to an init script are exposed in every new document, so they survive navigations. Defaults to `false`, in which case functions are not serializable and are silently dropped.
 
 **Returns**
 - Future&lt;[Disposable]&gt;
@@ -2296,6 +2310,9 @@ await browserContext.routeFromHAR(har, options);
 
 Path to a [HAR] file with prerecorded network data. If `path` is a relative path, then it is resolved relative to the current working directory.
 - `options` Map *(optional)*
+- `interceptAPIRequests` bool *(optional)*
+
+If set to `true`, requests made via [APIRequestContext] (such as [browserContext.request] or [page.request]) are also served from the HAR file. By default these requests are sent to the network, matching the behavior prior to v1.62. Defaults to `false` for backward compatibility.
 - `notFound` "abort" | "fallback" *(optional)*
 * If set to 'abort' any request not found in the HAR file will be aborted.
 * If set to 'fallback' falls through to the next route handler in the handler chain.
@@ -2414,6 +2431,7 @@ browserType.name;
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -2796,6 +2814,9 @@ Position of the action title overlay. Defaults to `"top-right"`.
 - `fontSize` num *(optional)*
 
 Font size of the action title in pixels. Defaults to `24`.
+- `cursor` "none" | "pointer" *(optional)*
+
+Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
 
 If specified, enables visual annotations on interacted elements during video recording.
 
@@ -3562,6 +3583,9 @@ URL to navigate frame to. The url should include scheme, e.g. `https://`.
 - `referer` String *(optional)*
 
 Referer header value. If provided it will take preference over the referer header value set by [page.setExtraHTTPHeaders()].
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3603,6 +3627,9 @@ await frame.textContent(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -3656,9 +3683,13 @@ await bodyHandle.dispose();
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
+- `options` Map *(optional)*
+- `exposeFunctions` bool *(optional)*
+
+When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
 
 **Returns**
 - Future&lt;[Serializable]&gt;
@@ -3706,6 +3737,9 @@ await browser.close();
 
 A selector to query for.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
@@ -3754,7 +3788,7 @@ Optional load state to wait for, defaults to `load`. If the state has been alrea
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3786,7 +3820,7 @@ A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to matc
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -3833,11 +3867,11 @@ Usage of the [History API] to change the URL is considered a navigation.
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
-- `url` String *(optional)*
+- `url` RouteMatcher *(optional)*
 
 A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to the string.
 - `waitUntil` LifecycleEvent *(optional)*
@@ -3883,6 +3917,12 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `sourcePosition` Point *(optional)*
 - `x` num
 
@@ -3978,6 +4018,12 @@ Actions that initiate navigations are waiting for these navigations to happen an
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4034,6 +4080,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4096,6 +4145,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4161,6 +4216,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4230,6 +4291,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4296,6 +4363,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4336,6 +4409,9 @@ await frame.focus(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4417,6 +4493,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4466,6 +4548,9 @@ Time to wait between key presses in milliseconds. Defaults to 0.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4525,6 +4610,9 @@ Time to wait between `keydown` and `keyup` in milliseconds. Defaults to 0.
 [Deprecated]
 This option will default to `true` in the future.
 Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4590,6 +4678,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4644,6 +4738,9 @@ await frame.setContent(html, options);
 
 HTML markup to assign to the page.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -4708,6 +4805,9 @@ A selector to search for an element. If there are multiple elements satisfying t
 
 Attribute name to get the value for.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4745,6 +4845,9 @@ await frame.innerHTML(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4782,6 +4885,9 @@ await frame.innerText(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4821,6 +4927,9 @@ await frame.inputValue(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4877,6 +4986,9 @@ await frame.isChecked(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4914,6 +5026,9 @@ await frame.isDisabled(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -4946,6 +5061,9 @@ await frame.isEnabled(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -5059,6 +5177,9 @@ await frame.isEditable(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -5243,6 +5364,7 @@ A timeout to wait for
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -5290,13 +5412,16 @@ await frame.waitForFunction((selector) => !!document.querySelector(selector), se
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
 - `options` Map *(optional)*
 - `polling` num | "raf" *(optional)*
 
 If [polling] is `'raf'`, then [pageFunction] is constantly executed in `requestAnimationFrame` callback. If [polling] is a number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to `raf`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time to wait for in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -5354,10 +5479,13 @@ A selector to search for an element. If there are multiple elements satisfying t
 - `type` String
 
 DOM event type: `"click"`, `"dragstart"`, etc.
-- `eventInit` dynamic *(optional)*
+- `eventInit` Map&lt;String, dynamic&gt; *(optional)*
 
 Optional event-specific initialization properties.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -5400,6 +5528,25 @@ Drops files on the element matching the selector.
 
 ```dart
 Future<void> drop( String selector,
+```
+
+### `ariaSnapshotJSON`
+
+*⚙️ Method*
+
+Returns the ARIA snapshot of the frame or element in JSON format.
+
+**Usage**
+
+```dart
+await frame.ariaSnapshotJSON();
+```
+
+**Returns**
+- Future&lt;FrameAriaSnapshotJSONResult&gt;
+
+```dart
+Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON(
 ```
 
 ### `frameElement`
@@ -5461,7 +5608,7 @@ frame.selectOption('select#colors', 'red', 'green', 'blue');
 - `selector` String
 
 A selector to query for.
-- `values` dynamic
+- `values` List&lt;SelectOption&gt;
 - `value` String *(optional)*
 
 Matches by `option.value`. Optional.
@@ -5483,6 +5630,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -5521,7 +5671,7 @@ await frame.setInputFiles(selector, files, options);
 - `selector` String
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
-- `files` dynamic
+- `files` List&lt;InputFile&gt;
 - `name` String
 
 File name
@@ -5538,6 +5688,9 @@ File content
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -5797,6 +5950,7 @@ frameLocator.nth(index);
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -7496,6 +7650,12 @@ Actions that initiate navigations are waiting for these navigations to happen an
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `steps` num *(optional)*
 
 Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -7551,6 +7711,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7593,6 +7756,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7636,6 +7802,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` timeout: *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7689,6 +7858,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7746,6 +7921,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` timeout: *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7804,6 +7985,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7862,6 +8049,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7908,6 +8101,9 @@ await locator.innerText(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7938,6 +8134,9 @@ await locator.textContent(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -7983,6 +8182,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8023,6 +8228,9 @@ await locator.focus(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8049,6 +8257,9 @@ await locator.blur(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8101,6 +8312,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `steps` num *(optional)*
 
 Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -8154,6 +8371,9 @@ await locator.getAttribute(name, options);
 
 Attribute name to get the value for.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8183,6 +8403,9 @@ final value = await page.getByRole('textbox').inputValue();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8243,6 +8466,9 @@ await locator.innerHTML(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8272,6 +8498,9 @@ final editable = await page.getByRole('textbox').isEditable();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8331,6 +8560,9 @@ final enabled = await page.getByRole('button').isEnabled();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8360,6 +8592,9 @@ final disabled = await page.getByRole('button').isDisabled();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8389,6 +8624,9 @@ final checked = await page.getByRole('checkbox').isChecked();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8417,7 +8655,7 @@ final moreThanTen = await locator.evaluateAll((divs, min) => divs.length > min, 
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
 
@@ -8465,6 +8703,9 @@ Time to wait between key presses in milliseconds. Defaults to 0.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8544,6 +8785,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -8595,6 +8837,9 @@ Time to wait between key presses in milliseconds. Defaults to 0.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8632,6 +8877,9 @@ Time to wait between `keydown` and `keyup` in milliseconds. Defaults to 0.
 [Deprecated]
 This option will default to `true` in the future.
 Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8694,6 +8942,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8750,7 +9004,7 @@ element.selectOption(['red', 'green', 'blue']);
 ```
 
 **Arguments**
-- `values` dynamic
+- `values` List&lt;SelectOption&gt;
 - `value` String *(optional)*
 
 Matches by `option.value`. Optional.
@@ -8772,6 +9026,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8826,7 +9083,7 @@ buffer: utf8.encode('this is test')
 ```
 
 **Arguments**
-- `files` dynamic
+- `files` List&lt;InputFile&gt;
 - `name` String
 
 File name
@@ -8843,6 +9100,9 @@ File content
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -8876,10 +9136,13 @@ await locator.dispatchEvent('click');
 - `type` String
 
 DOM event type: `"click"`, `"dragstart"`, etc.
-- `eventInit` dynamic *(optional)*
+- `eventInit` Map&lt;String, dynamic&gt; *(optional)*
 
 Optional event-specific initialization properties.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -9020,6 +9283,9 @@ Data to drop onto the target. Provide `files` (file paths or in-memory buffers),
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -9060,6 +9326,9 @@ When specified, limits the depth of the snapshot.
 - `mode` SnapshotMode *(optional)*
 
 When set to `"ai"`, returns a snapshot optimized for AI consumption. Defaults to `"default"`. See details for more information.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -9098,6 +9367,25 @@ An AI-optimized snapshot, controlled by [mode], is different from a default snap
 
 ```dart
 Future<FrameAriaSnapshotResult> ariaSnapshot(
+```
+
+### `ariaSnapshotJSON`
+
+*⚙️ Method*
+
+Returns the ARIA snapshot of this locator in JSON format.
+
+**Usage**
+
+```dart
+await locator.ariaSnapshotJSON();
+```
+
+**Returns**
+- Future&lt;FrameAriaSnapshotJSONResult&gt;
+
+```dart
+Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON(
 ```
 
 ### `locator`
@@ -9167,10 +9455,16 @@ print(result); // prints "myId text 56"
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
 - `options` Map *(optional)*
+- `exposeFunctions` bool *(optional)*
+
+When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` num *(optional)*
 
 Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation itself is not limited by the timeout. Defaults to `0` - no timeout.
@@ -9207,6 +9501,9 @@ await orderSent.waitFor();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
@@ -9259,6 +9556,12 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `sourcePosition` Map *(optional)*
 - `x` num
 
@@ -9411,6 +9714,9 @@ await locator.elementHandle(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -9461,6 +9767,9 @@ await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -9536,19 +9845,22 @@ Hides default white background and allows capturing screenshots with transparenc
 The file path to save the image to. The screenshot type will be inferred from file extension. If [path] is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk.
 - `quality` int *(optional)*
 
-The quality of the image, between 0-100. Not applicable to `png` images.
+The quality of the image, between 0-100. Not applicable to `png` images. For `jpeg` the default is `80`. For `webp`, a quality of `100` (the default) produces a lossless image, while lower values use lossy compression.
 - `scale` "css" | "device" *(optional)*
 
 When set to `"css"`, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will keep screenshots small. Using `"device"` option will produce a single pixel per each device pixel, so screenshots of high-dpi devices will be twice as large or even larger.
 
 Defaults to `"device"`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `style` String *(optional)*
 
 Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM and applies to the inner frames.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-- `type` String *(optional)*
+- `type` ElementHandleScreenshotType *(optional)*
 
 Specify screenshot type, defaults to `png`.
 
@@ -9992,13 +10304,13 @@ final request = await requestFuture;
 ```
 
 **Arguments**
-- `urlOrPredicate` dynamic
+- `urlOrPredicate` RouteMatcher
 
 Request URL string, regex or predicate receiving [Request] object.
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to disable the timeout. The default value can be changed by using the [page.setDefaultTimeout()] method.
@@ -10034,13 +10346,13 @@ final response = await responseFuture;
 ```
 
 **Arguments**
-- `urlOrPredicate` dynamic
+- `urlOrPredicate` RouteMatcher
 
 Request URL string, regex or predicate receiving [Response] object. When a [baseURL] via the context options was provided and the passed URL is a path, it gets merged via the [`new URL()`] constructor.
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to disable the timeout. The default value can be changed by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -10208,6 +10520,9 @@ URL to navigate page to. The url should include scheme, e.g. `https://`. When a 
 - `referer` String *(optional)*
 
 Referer header value. If provided it will take preference over the referer header value set by [page.setExtraHTTPHeaders()].
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -10261,7 +10576,7 @@ Optional load state to wait for, defaults to `load`. If the state has been alrea
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -10293,7 +10608,7 @@ A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to matc
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -10340,11 +10655,11 @@ Usage of the [History API] to change the URL is considered a navigation.
 - `options` Map *(optional)*
 - `signal` [AbortSignal] *(optional)*
 
-Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout; pass `timeout: 0` to disable the timeout entirely.
+Allows to cancel the waiting using an [`AbortSignal`]. If the signal is aborted, the waiting will be aborted and the operation will throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
-- `url` String *(optional)*
+- `url` RouteMatcher *(optional)*
 
 A glob pattern, regex pattern, URL pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to the string.
 - `waitUntil` LifecycleEvent *(optional)*
@@ -10497,9 +10812,13 @@ await bodyHandle.dispose();
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
+- `options` Map *(optional)*
+- `exposeFunctions` bool *(optional)*
+
+When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
 
 **Returns**
 - Future&lt;[Serializable]&gt;
@@ -10547,6 +10866,9 @@ await browser.close();
 
 A selector to query for.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
@@ -11230,19 +11552,22 @@ Hides default white background and allows capturing screenshots with transparenc
 The file path to save the image to. The screenshot type will be inferred from file extension. If [path] is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk.
 - `quality` int *(optional)*
 
-The quality of the image, between 0-100. Not applicable to `png` images.
+The quality of the image, between 0-100. Not applicable to `png` images. For `jpeg` the default is `80`. For `webp`, a quality of `100` (the default) produces a lossless image, while lower values use lossy compression.
 - `scale` "css" | "device" *(optional)*
 
 When set to `"css"`, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will keep screenshots small. Using `"device"` option will produce a single pixel per each device pixel, so screenshots of high-dpi devices will be twice as large or even larger.
 
 Defaults to `"device"`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `style` String *(optional)*
 
 Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM and applies to the inner frames.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-- `type` String *(optional)*
+- `type` ElementHandleScreenshotType *(optional)*
 
 Specify screenshot type, defaults to `png`.
 
@@ -11307,7 +11632,7 @@ Display header and footer. Defaults to `false`.
 - `footerTemplate` String *(optional)*
 
 HTML template for the print footer. Should use the same format as the [headerTemplate].
-- `format` String *(optional)*
+- `format` PdfFormat *(optional)*
 
 Paper format. If set, takes priority over [width] or [height] options. Defaults to 'Letter'.
 - `headerTemplate` String *(optional)*
@@ -11318,7 +11643,7 @@ HTML template for the print header. Should be valid HTML markup with following c
 * `'url'` document location
 * `'pageNumber'` current page number
 * `'totalPages'` total pages in the document
-- `height` dynamic *(optional)*
+- `height` PdfDimension *(optional)*
 
 Paper height, accepts values labeled with units.
 - `landscape` bool *(optional)*
@@ -11360,7 +11685,7 @@ Scale of the webpage rendering. Defaults to `1`. Scale amount must be between 0.
 - `tagged` bool *(optional)*
 
 Whether or not to generate tagged (accessible) PDF. Defaults to `false`.
-- `width` dynamic *(optional)*
+- `width` PdfDimension *(optional)*
 
 Paper width, accepts values labeled with units.
 
@@ -11386,6 +11711,9 @@ await page.reload(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -11412,6 +11740,8 @@ Returns the main resource response. In case of multiple redirects, the navigatio
 
 Navigate to the previous page in history.
 
+**WARNING**
+**Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because BFCache restores unfreeze the DOM without firing these events, using `page.goBack()` or `page.goForward()` to trigger a BFCache restore will result in timeouts and a desynchronized `Page` state.
 **Usage**
 
 ```dart
@@ -11421,6 +11751,9 @@ await page.goBack(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -11447,6 +11780,8 @@ Returns the main resource response. In case of multiple redirects, the navigatio
 
 Navigate to the next page in history.
 
+**WARNING**
+**Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because BFCache restores unfreeze the DOM without firing these events, using `page.goBack()` or `page.goForward()` to trigger a BFCache restore will result in timeouts and a desynchronized `Page` state.
 **Usage**
 
 ```dart
@@ -11456,6 +11791,9 @@ await page.goForward(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -11519,6 +11857,10 @@ Script to be evaluated in the page.
 - `arg` [Serializable] *(optional)*
 
 Optional argument to pass to [script] (only supported when passing a function).
+- `options` Map *(optional)*
+- `exposeFunctions` bool *(optional)*
+
+When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the init script. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Unlike functions passed to [page.evaluate()], functions passed to an init script are exposed in every new document, so they survive navigations. Defaults to `false`, in which case functions are not serializable and are silently dropped.
 
 **Returns**
 - Future&lt;[Disposable]&gt;
@@ -11679,6 +12021,12 @@ Actions that initiate navigations are waiting for these navigations to happen an
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -11735,6 +12083,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -11797,6 +12148,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -11862,6 +12219,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -11931,6 +12294,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -11997,6 +12366,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12037,6 +12412,9 @@ await page.focus(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12118,6 +12496,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12167,6 +12551,9 @@ Time to wait between key presses in milliseconds. Defaults to 0.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12235,6 +12622,9 @@ Time to wait between `keydown` and `keyup` in milliseconds. Defaults to 0.
 [Deprecated]
 This option will default to `true` in the future.
 Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12300,6 +12690,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12354,6 +12750,9 @@ await page.setContent(html, options);
 
 HTML markup to assign to the page.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum operation time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `navigationTimeout` option in the config, or by using the [browserContext.setDefaultNavigationTimeout()], [browserContext.setDefaultTimeout()], [page.setDefaultNavigationTimeout()] or [page.setDefaultTimeout()] methods.
@@ -12418,6 +12817,9 @@ A selector to search for an element. If there are multiple elements satisfying t
 
 Attribute name to get the value for.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12455,6 +12857,9 @@ await page.innerHTML(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12492,6 +12897,9 @@ await page.innerText(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12531,6 +12939,9 @@ await page.inputValue(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12568,6 +12979,9 @@ await page.isChecked(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12605,6 +13019,9 @@ await page.isDisabled(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12642,6 +13059,9 @@ await page.isEnabled(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12755,6 +13175,9 @@ await page.isEditable(selector, options);
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -12936,6 +13359,7 @@ A timeout to wait for
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -12983,13 +13407,16 @@ await page.waitForFunction((selector) => !!document.querySelector(selector), sel
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
 - `options` Map *(optional)*
 - `polling` num | "raf" *(optional)*
 
 If [polling] is `'raf'`, then [pageFunction] is constantly executed in `requestAnimationFrame` callback. If [polling] is a number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to `raf`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time to wait for in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -13047,10 +13474,13 @@ A selector to search for an element. If there are multiple elements satisfying t
 - `type` String
 
 DOM event type: `"click"`, `"dragstart"`, etc.
-- `eventInit` dynamic *(optional)*
+- `eventInit` Map&lt;String, dynamic&gt; *(optional)*
 
 Optional event-specific initialization properties.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -13169,7 +13599,7 @@ page.selectOption('select#colors', ['red', 'green', 'blue']);
 - `selector` String
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
-- `values` dynamic
+- `values` List&lt;SelectOption&gt;
 - `value` String *(optional)*
 
 Matches by `option.value`. Optional.
@@ -13191,6 +13621,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -13229,7 +13662,7 @@ await page.setInputFiles(selector, files, options);
 - `selector` String
 
 A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
-- `files` dynamic
+- `files` List&lt;InputFile&gt;
 - `name` String
 
 File name
@@ -13246,6 +13679,9 @@ File content
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `strict` bool *(optional)*
 
 When true, the call requires selector to resolve to a single element. If given selector resolves to more than one element, the call throws an exception.
@@ -13281,9 +13717,12 @@ When `true`, appends each element's bounding box as `[box=x,y,width,height]` to 
 - `depth` int *(optional)*
 
 When specified, limits the depth of the snapshot.
-- `mode` String *(optional)*
+- `mode` SnapshotMode *(optional)*
 
 When set to `"ai"`, returns a snapshot optimized for AI consumption: including element references like `[ref=e2]` and snapshots of `<iframe>`s. Defaults to `"default"`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -13293,6 +13732,25 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 
 ```dart
 Future<FrameAriaSnapshotResult> ariaSnapshot( String selector,
+```
+
+### `ariaSnapshotJSON`
+
+*⚙️ Method*
+
+Returns the ARIA snapshot of the page or element in JSON format.
+
+**Usage**
+
+```dart
+await page.ariaSnapshotJSON();
+```
+
+**Returns**
+- Future&lt;FrameAriaSnapshotJSONResult&gt;
+
+```dart
+Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON(
 ```
 
 ### `expect`
@@ -13878,6 +14336,16 @@ await page.requests();
 Future<PageRequestsResult> requests()
 ```
 
+### `screencastFrameAck`
+
+*⚙️ Method*
+
+Acknowledges receiving a screencast frame.
+
+```dart
+Future<void> screencastFrameAck(
+```
+
 ## `PdfDimension`
 
 ```dart
@@ -14217,6 +14685,7 @@ Test id attribute name. To match elements with any of several attributes, pass t
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -14354,6 +14823,7 @@ await expect(response).not.toBeOK();
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -14578,6 +15048,7 @@ dialog.type;
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -14758,6 +15229,12 @@ Actions that initiate navigations are waiting for these navigations to happen an
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `steps` int *(optional)*
 
 Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -14830,6 +15307,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `steps` int *(optional)*
 
 Defaults to 1. Sends `n` interpolated `mousemove` events to represent travel between Playwright's current cursor position and the provided destination. When set to 1, emits a single `mousemove` event at the destination location.
@@ -14883,6 +15366,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -14941,6 +15427,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15008,6 +15500,9 @@ Time to wait between key presses in milliseconds. Defaults to 0.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15063,6 +15558,9 @@ Time to wait between `keydown` and `keyup` in milliseconds. Defaults to 0.
 [Deprecated]
 This option will default to `true` in the future.
 Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to `false`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15123,6 +15621,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15183,6 +15687,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15243,6 +15753,12 @@ This option has no effect.
 
 
 A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
+- `scroll` "auto" | "none" *(optional)*
+
+Controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15281,6 +15797,9 @@ await elementHandle.scrollIntoViewIfNeeded(options);
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15393,8 +15912,9 @@ await elementHandle.inputValue(options);
 - `options` Map *(optional)*
 - `timeout` num *(optional)*
 
-Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-
+**WARNING**
+[Deprecated]
+This option is ignored. The value is returned immediately.
 **Returns**
 - Future&lt;String&gt;
 
@@ -15689,7 +16209,7 @@ await elementHandle.dispatchEvent('dragstart', { dataTransfer );
 - `type` String
 
 DOM event type: `"click"`, `"dragstart"`, etc.
-- `eventInit` dynamic *(optional)*
+- `eventInit` Map&lt;String, dynamic&gt; *(optional)*
 
 Optional event-specific initialization properties.
 
@@ -15748,19 +16268,22 @@ Hides default white background and allows capturing screenshots with transparenc
 The file path to save the image to. The screenshot type will be inferred from file extension. If [path] is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk.
 - `quality` int *(optional)*
 
-The quality of the image, between 0-100. Not applicable to `png` images.
+The quality of the image, between 0-100. Not applicable to `png` images. For `jpeg` the default is `80`. For `webp`, a quality of `100` (the default) produces a lossless image, while lower values use lossy compression.
 - `scale` "css" | "device" *(optional)*
 
 When set to `"css"`, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will keep screenshots small. Using `"device"` option will produce a single pixel per each device pixel, so screenshots of high-dpi devices will be twice as large or even larger.
 
 Defaults to `"device"`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `style` String *(optional)*
 
 Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM and applies to the inner frames.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
-- `type` String *(optional)*
+- `type` ElementHandleScreenshotType *(optional)*
 
 Specify screenshot type, defaults to `png`.
 
@@ -15802,7 +16325,7 @@ handle.selectOption(['red', 'green', 'blue']);
 ```
 
 **Arguments**
-- `values` dynamic
+- `values` List&lt;SelectOption&gt;
 - `value` String *(optional)*
 
 Matches by `option.value`. Optional.
@@ -15824,6 +16347,9 @@ Whether to bypass the [actionability] checks. Defaults to `false`.
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15860,6 +16386,9 @@ await elementHandle.selectText(options);
 - `force` bool *(optional)*
 
 Whether to bypass the [actionability] checks. Defaults to `false`.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15909,6 +16438,9 @@ File content
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15948,6 +16480,9 @@ await elementHandle.waitForElementState(state, options);
 
 A state to wait for, see below for more details.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -15956,7 +16491,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 - Future&lt;void&gt;
 
 ```dart
-Future<void> waitForElementState( ElementState state,
+Future<void> waitForElementState(ElementState state,
 ```
 
 ### `waitForSelector`
@@ -15988,6 +16523,9 @@ This method does not work across navigations, use [page.waitForSelector()] inste
 
 A selector to query for.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `state` SelectorState *(optional)*
 
 Defaults to `'visible'`. Can be either:
@@ -16077,6 +16615,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -16129,6 +16668,9 @@ File content
 [Deprecated]
 This option has no effect.
 This option has no effect.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Maximum time in milliseconds. Defaults to `0` - no timeout. The default value can be changed via `actionTimeout` option in the config, or by using the [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()] methods.
@@ -16208,6 +16750,7 @@ Maximum time in milliseconds. Defaults to `0` - no timeout. The default value ca
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -16280,9 +16823,13 @@ expect(await tweetHandle.evaluate((node) => node.innerText)).toBe('10 retweets')
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
+- `options` Map *(optional)*
+- `exposeFunctions` bool *(optional)*
+
+When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
 
 **Returns**
 - Future&lt;[Serializable]&gt;
@@ -16309,16 +16856,20 @@ See [page.evaluateHandle()] for more details.
 
 ```dart
 await jsHandle.evaluateHandle(pageFunction);
-await jsHandle.evaluateHandle(pageFunction, arg);
+await jsHandle.evaluateHandle(pageFunction, arg, options);
 ```
 
 **Arguments**
 - `pageFunction` Function | String
 
 Function to be evaluated in the page context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
+- `options` Map *(optional)*
+- `exposeFunctions` bool *(optional)*
+
+When set to `true`, functions passed inside [arg] are exposed in the page and can be called from the page function. Calling one returns a Future of its result. Under the hood, each function is exposed via [page.exposeFunction()], so it is technically accessible from all frames and worlds of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error.
 
 **Returns**
 - Future&lt;[JSHandle]&gt;
@@ -16463,6 +17014,7 @@ await jsHandle.jsonValue();
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -16702,6 +17254,7 @@ Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -16817,6 +17370,7 @@ Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -17133,6 +17687,9 @@ page.getByRole('button', { name: 'Sign in' )
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17160,6 +17717,9 @@ await expect(locator).toBeHidden();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17224,6 +17784,9 @@ Expected string or RegExp or a list of those.
 - `ignoreCase` bool *(optional)*
 
 Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17296,6 +17859,9 @@ Expected substring or RegExp or a list of those.
 - `ignoreCase` bool *(optional)*
 
 Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17330,6 +17896,9 @@ await expect(locator).toBeEnabled();
 **Arguments**
 - `options` Map *(optional)*
 - `enabled` bool *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17356,6 +17925,9 @@ await expect(locator).toBeDisabled();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17392,6 +17964,9 @@ await expect(locator).toHaveAttribute(name, options);
 
 Attribute name.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17433,6 +18008,9 @@ await expect(locator).toHaveClass(['component', 'component selected', 'component
 
 Expected class or RegExp or a list of those.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17462,6 +18040,9 @@ await expect(locator).toHaveId('lastname');
 
 Element id.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17491,6 +18072,9 @@ await expect(locator).toHaveValue(/[0-9]/);
 
 Expected value.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17523,6 +18107,9 @@ Provides state to assert for. Asserts for input to be checked by default. This o
 - `indeterminate` bool *(optional)*
 
 Asserts that the element is in the indeterminate (mixed) state. Only supported for checkboxes and radio buttons. This option can't be true when [checked] is provided.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17549,6 +18136,9 @@ await expect(page.getByText('Hidden text')).toBeAttached();
 **Arguments**
 - `options` Map *(optional)*
 - `attached` bool *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17576,6 +18166,9 @@ await expect(locator).toBeEditable();
 **Arguments**
 - `options` Map *(optional)*
 - `editable` bool *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17602,6 +18195,9 @@ await expect(locator).toBeEmpty();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17628,6 +18224,9 @@ await expect(locator).toBeFocused();
 
 **Arguments**
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17662,6 +18261,9 @@ await expect(locator).toBeInViewport( ratio: 0.5 );
 - `ratio` double *(optional)*
 
 The minimal ratio of the element to intersect viewport. If equals to `0`, then element should intersect viewport at any positive ratio. Defaults to `0`.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17708,10 +18310,13 @@ await expect(locator).toContainClass(['inactive', 'active', 'inactive']);
 ```
 
 **Arguments**
-- `expected` dynamic
+- `expected` Object
 
 A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17744,6 +18349,9 @@ Expected accessible description.
 - `ignoreCase` bool *(optional)*
 
 Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17776,6 +18384,9 @@ Expected accessible error message.
 - `ignoreCase` bool *(optional)*
 
 Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17808,6 +18419,9 @@ Expected accessible name.
 - `ignoreCase` bool *(optional)*
 
 Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression flag if specified.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17843,6 +18457,9 @@ CSS property value.
 - `pseudo` String *(optional)*
 
 Pseudo-element to read computed styles from.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17871,10 +18488,13 @@ await expect(locator).toHaveJSProperty('loaded', true);
 - `name` String
 
 Property name.
-- `value` dynamic
+- `value` Object
 
 Property value.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17906,6 +18526,9 @@ await expect(locator).toHaveRole('button');
 
 Required aria role.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17942,10 +18565,13 @@ await expect(locator).toHaveValues([/R/, /G/]);
 ```
 
 **Arguments**
-- `values` dynamic
+- `values` Object
 
 Expected options currently selected.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -17977,6 +18603,9 @@ await expect(page.locator('body')).toMatchAriaSnapshot( name: 'body.aria.yml' );
 - `name` String *(optional)*
 
 Name of the snapshot to store in the snapshot folder corresponding to this test. Generates sequential names if not specified.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -18006,6 +18635,9 @@ await expect(list).toHaveCount(3);
 
 Expected count.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -18283,6 +18915,7 @@ Pixels to scroll vertically.
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -18532,6 +19165,9 @@ await expect(page).toHaveTitle(/.*checkout/);
 
 Expected title or RegExp.
 - `options` Map *(optional)*
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -18577,6 +19213,9 @@ Expected URL string, RegExp, or predicate receiving [URL] to match. When [baseUR
 - `ignoreCase` bool *(optional)*
 
 Whether to perform case-insensitive match. [ignoreCase] option takes precedence over the corresponding regular expression parameter if specified. A provided predicate ignores this flag.
+- `signal` [AbortSignal] *(optional)*
+
+An optional [`AbortSignal`] that can cancel the assertion. Aborting the signal fails the assertion like a timeout: if the signal is aborted while the assertion is retrying, or is already aborted before the assertion starts, the assertion fails without retrying further.
 - `timeout` double *(optional)*
 
 Time to retry the assertion for in milliseconds. Defaults to `timeout` in `TestConfig.expect`.
@@ -18691,6 +19330,7 @@ Y coordinate relative to the main frame's viewport in CSS pixels.
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -18754,7 +19394,7 @@ multipart: form
 
 Target URL or Request to get all parameters from.
 - `options` Map *(optional)*
-- `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+- `data` Object *(optional)*
 
 Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
 - `failOnStatusCode` bool *(optional)*
@@ -18793,6 +19433,9 @@ Provides an object that will be serialized as html form using `multipart/form-da
 - `params` List&lt;NameValue&gt; *(optional)*
 
 Query parameters to be sent with the URL.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -18875,6 +19518,9 @@ Provides an object that will be serialized as html form using `multipart/form-da
 - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
 
 Query parameters to be sent with the URL.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -18933,7 +19579,7 @@ multipart: form
 
 Target URL.
 - `options` Map *(optional)*
-- `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+- `data` Object *(optional)*
 
 Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
 - `failOnStatusCode` bool *(optional)*
@@ -18969,6 +19615,9 @@ Provides an object that will be serialized as html form using `multipart/form-da
 - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
 
 Query parameters to be sent with the URL.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -18998,7 +19647,7 @@ await apiRequestContext.put(url, options);
 
 Target URL.
 - `options` Map *(optional)*
-- `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+- `data` Object *(optional)*
 
 Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
 - `failOnStatusCode` bool *(optional)*
@@ -19034,6 +19683,9 @@ Provides an object that will be serialized as html form using `multipart/form-da
 - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
 
 Query parameters to be sent with the URL.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -19063,7 +19715,7 @@ await apiRequestContext.delete(url, options);
 
 Target URL.
 - `options` Map *(optional)*
-- `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+- `data` Object *(optional)*
 
 Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
 - `failOnStatusCode` bool *(optional)*
@@ -19099,6 +19751,9 @@ Provides an object that will be serialized as html form using `multipart/form-da
 - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
 
 Query parameters to be sent with the URL.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -19128,7 +19783,7 @@ await apiRequestContext.patch(url, options);
 
 Target URL.
 - `options` Map *(optional)*
-- `data` String | List&lt;int&gt; | [Serializable] *(optional)*
+- `data` Object *(optional)*
 
 Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and `content-type` header will be set to `application/json` if not explicitly set. Otherwise the `content-type` header will be set to `application/octet-stream` if not explicitly set.
 - `failOnStatusCode` bool *(optional)*
@@ -19164,6 +19819,9 @@ Provides an object that will be serialized as html form using `multipart/form-da
 - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
 
 Query parameters to be sent with the URL.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -19229,6 +19887,9 @@ Provides an object that will be serialized as html form using `multipart/form-da
 - `params` Map&lt;String, String | num | bool&gt; | [URLSearchParams] | String *(optional)*
 
 Query parameters to be sent with the URL.
+- `signal` [AbortSignal] *(optional)*
+
+Allows to cancel the operation using an [`AbortSignal`]. If the signal is aborted, the operation will be aborted and throw an error. Note that providing a signal does not disable the default timeout, which can be changed using [browserContext.setDefaultTimeout()] or [page.setDefaultTimeout()]; pass `timeout: 0` to disable the timeout entirely.
 - `timeout` double *(optional)*
 
 Request timeout in milliseconds. Defaults to `30000` (30 seconds). Pass `0` to disable timeout.
@@ -19423,6 +20084,7 @@ request.url;
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -19591,28 +20253,28 @@ print(request.timing);
 Request start time in milliseconds elapsed since January 1, 1970 00:00:00 UTC
 - `domainLookupStart` num
 
-Time immediately before the browser starts the domain name lookup for the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately before the client starts the domain name lookup for the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
 - `domainLookupEnd` num
 
-Time immediately after the browser starts the domain name lookup for the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately after the client ends the domain name lookup for the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
 - `connectStart` num
 
-Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately before the client starts establishing the connection to the server to retrieve the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
 - `secureConnectionStart` num
 
-Time immediately before the browser starts the handshake process to secure the current connection. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately before the client starts the handshake process to secure the current connection. The value is given in milliseconds relative to `startTime`, -1 if not available.
 - `connectEnd` num
 
-Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately after the client establishes the connection to the server to retrieve the resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
 - `requestStart` num
 
-Time immediately before the browser starts requesting the resource from the server, cache, or local resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately before the client starts requesting the resource from the server, cache, or local resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
 - `responseStart` num
 
-Time immediately after the browser receives the first byte of the response from the server, cache, or local resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately after the client receives the first byte of the response from the server, cache, or local resource. The value is given in milliseconds relative to `startTime`, -1 if not available.
 - `responseEnd` num
 
-Time immediately after the browser receives the last byte of the resource or immediately before the transport connection is closed, whichever comes first. The value is given in milliseconds relative to `startTime`, -1 if not available.
+Time immediately after the client receives the last byte of the resource or immediately before the transport connection is closed, whichever comes first. The value is given in milliseconds relative to `startTime`, -1 if not available.
 
 ```dart
 Map<String, dynamic> get timing
@@ -19929,6 +20591,7 @@ response.url;
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -20332,6 +20995,7 @@ route.request;
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -20359,7 +21023,7 @@ await route.abort(errorCode);
 ```
 
 **Arguments**
-- `errorCode` String *(optional)*
+- `errorCode` RouteErrorCode *(optional)*
 
 Optional error code. Defaults to `failed`, could be one of the following:
 * `'aborted'` - An operation was aborted (due to user action)
@@ -21180,6 +21844,9 @@ Position of the action title overlay. Defaults to `"top-right"`.
 - `fontSize` num *(optional)*
 
 Font size of the action title in pixels. Defaults to `24`.
+- `cursor` "none" | "pointer" *(optional)*
+
+Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
 
 If specified, enables visual annotations on interacted elements during video recording.
 
@@ -21536,6 +22203,9 @@ Position of the action title overlay. Defaults to `"top-right"`.
 - `fontSize` num *(optional)*
 
 Font size of the action title in pixels. Defaults to `24`.
+- `cursor` "none" | "pointer" *(optional)*
+
+Cursor decoration shown for pointer actions. `"pointer"` (the default) renders a mouse pointer that animates from the previous action point to the next one. `"none"` disables the cursor decoration.
 
 If specified, enables visual annotations on interacted elements during video recording.
 
@@ -21625,6 +22295,7 @@ If specified, traces are saved into this directory.
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -22009,6 +22680,7 @@ Time to be set in milliseconds.
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -22437,6 +23109,7 @@ Path where the video should be saved.
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -22513,7 +23186,7 @@ await worker.evaluate(pageFunction, arg);
 - `pageFunction` Function | String
 
 Function to be evaluated in the worker context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
 
@@ -22545,7 +23218,7 @@ await worker.evaluateHandle(pageFunction, arg);
 - `pageFunction` Function | String
 
 Function to be evaluated in the worker context.
-- `arg` dynamic *(optional)*
+- `arg` Object *(optional)*
 
 Optional argument to pass to [pageFunction].
 
@@ -22677,6 +23350,25 @@ The source location to pause at.
 Future<void> runTo(DebuggerRunToLocation location)
 ```
 
+### `enable`
+
+*⚙️ Method*
+
+Enables the debugger.
+
+**Usage**
+
+```dart
+await debugger.enable();
+```
+
+**Returns**
+- Future&lt;void&gt;
+
+```dart
+Future<void> enable(
+```
+
 ## `Disposable`
 
 Interface for Disposable
@@ -22772,6 +23464,7 @@ await disposable.dispose();
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"
@@ -23103,6 +23796,7 @@ await browser.close();
 [TestCase]: /api/class-testcase.mdx "TestCase"
 [TestError]: /api/class-testerror.mdx "TestError"
 [TestResult]: /api/class-testresult.mdx "TestResult"
+[TestRun]: /api/class-testrun.mdx "TestRun"
 [TestStep]: /api/class-teststep.mdx "TestStep"
 [EvaluationArgument]: /evaluating.mdx#evaluation-argument "EvaluationArgument"
 [UIEvent.detail]: https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail "UIEvent.detail"

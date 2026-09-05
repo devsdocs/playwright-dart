@@ -64,7 +64,7 @@ abstract interface class Playwright {
 
     int? maxRedirects,
 
-    PlaywrightNewRequestHttpCredentials? httpCredentials,
+    HttpCredentials? httpCredentials,
 
     PlaywrightNewRequestProxy? proxy,
 
@@ -182,7 +182,7 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
 
     int? maxRedirects,
 
-    PlaywrightNewRequestHttpCredentials? httpCredentials,
+    HttpCredentials? httpCredentials,
 
     PlaywrightNewRequestProxy? proxy,
 
@@ -209,7 +209,7 @@ class PlaywrightImpl extends PlaywrightBase implements Playwright {
 
       maxRedirects: maxRedirects,
 
-      httpCredentials: httpCredentials,
+      httpCredentials: httpCredentials == null ? null : [httpCredentials],
 
       proxy: proxy,
 

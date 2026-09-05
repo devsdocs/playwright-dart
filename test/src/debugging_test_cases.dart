@@ -65,8 +65,8 @@ void main() {
         (m) => m['method'] == 'reject',
       );
       expect(req['guid'], 'BindingCall_1');
-      expect(req['params']['error']['error']['message'], 'test error');
-      expect(req['params']['error']['error']['name'], 'Error');
+      expect(req['params']['error']['value']['e']['m'], 'test error');
+      expect(req['params']['error']['value']['e']['n'], 'Error');
     });
 
     test('EventTargetImpl can be instantiated', () {
@@ -125,6 +125,14 @@ void main() {
       expect(
         testConnection.transport.sentMessages.any(
           (m) => m['method'] == 'runTo',
+        ),
+        isTrue,
+      );
+
+      await debugger.enable();
+      expect(
+        testConnection.transport.sentMessages.any(
+          (m) => m['method'] == 'enable',
         ),
         isTrue,
       );

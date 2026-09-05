@@ -48,6 +48,10 @@ abstract interface class Tracing {
     String? name,
     bool? snapshots,
     bool? screenshots,
+    bool? snapshotDom,
+    bool? snapshotAria,
+    bool? snapshotScreen,
+    bool? screencast,
     bool? live,
   });
 
@@ -201,12 +205,18 @@ class TracingImpl extends TracingBase implements Tracing {
     String? name,
     bool? snapshots,
     bool? screenshots,
+    bool? snapshotDom,
+    bool? snapshotAria,
+    bool? snapshotScreen,
+    bool? screencast,
     bool? live,
   }) async {
     await channel.tracingStart(
       name: name,
-      snapshots: snapshots,
-      screenshots: screenshots,
+      snapshotDom: snapshotDom ?? snapshots,
+      snapshotAria: snapshotAria ?? snapshots,
+      snapshotScreen: snapshotScreen ?? (snapshots ?? screenshots),
+      screencast: screencast ?? screenshots,
       live: live,
     );
   }

@@ -503,7 +503,7 @@ abstract interface class BrowserContext {
   /// [Microsoft Artifact Registry]: https://mcr.microsoft.com/en-us/product/playwright/about "Microsoft Artifact Registry"
   /// [Dockerfile.noble]: https://github.com/microsoft/playwright/blob/main/utils/docker/Dockerfile.noble "Dockerfile.noble"
   Future<void> setHTTPCredentials(
-    BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
+    HttpCredentials? httpCredentials,
   );
 
   /// **Usage**
@@ -1543,10 +1543,12 @@ class BrowserContextImpl extends BrowserContextBase implements BrowserContext {
 
   @override
   Future<void> setHTTPCredentials(
-    BrowserContextSetHTTPCredentialsHttpCredentials? httpCredentials,
+    HttpCredentials? httpCredentials,
   ) async {
     Logger.debug('setHTTPCredentials', name: 'playwright.context');
-    await channel.setHTTPCredentials(httpCredentials: httpCredentials);
+    await channel.setHTTPCredentials(
+      httpCredentials: httpCredentials == null ? null : [httpCredentials],
+    );
   }
 
   @override

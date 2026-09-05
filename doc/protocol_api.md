@@ -1,7 +1,7 @@
 # Playwright Protocol API Reference
 
-> Auto-generated from Playwright protocol **v1.62.0**.
-> Source: `.protocol_cache/1.62.0/*.yml`
+> Auto-generated from Playwright protocol **v1.63.0**.
+> Source: `.protocol_cache/1.63.0/*.yml`
 > Regenerate: `dart tool/generate_protocol_docs.dart`
 
 ## Contents
@@ -60,7 +60,7 @@
 
 #### `fetch`(url: string, encodedParams: string?, params: Array<NameValue>?, method: string?, headers: Array<NameValue>?, postData: binary?, jsonData: string?, formData: Array<NameValue>?, multipartData: Array<FormField>?, failOnStatusCode: boolean?, ignoreHTTPSErrors: boolean?, maxRedirects: int?, maxRetries: int?)
 
-*{method} "{url}"*
+*{method}*
 
 → `response`: `APIResponse`
 
@@ -70,7 +70,7 @@
 
 → `binary`: `binary?`
 
-#### `storageState`(indexedDB: boolean?)
+#### `storageState`(indexedDB: boolean?, opfs: boolean?)
 
 *Get storage state · group: `configuration`*
 
@@ -414,7 +414,7 @@
 
 *Set geolocation · group: `configuration`*
 
-#### `setHTTPCredentials`(httpCredentials: {username: string, password: string, origin: string?}?)
+#### `setHTTPCredentials`(httpCredentials: Array<HttpCredentials>?)
 
 *Set HTTP credentials · group: `configuration`*
 
@@ -434,7 +434,7 @@
 
 *Route WebSockets · group: `route`*
 
-#### `storageState`(indexedDB: boolean?, credentials: boolean?)
+#### `storageState`(indexedDB: boolean?, opfs: boolean?, credentials: boolean?)
 
 *Get storage state · group: `configuration`*
 
@@ -448,6 +448,7 @@
 | `close` | — |
 | `console` | `$mixin`: `ConsoleMessage`, `page`: `Page?`, `worker`: `Worker?` |
 | `dialog` | `dialog`: `Dialog` |
+| `dialogClosed` | `dialog`: `Dialog` |
 | `page` | `page`: `Page` |
 | `pageError` | `error`: `SerializedError`, `page`: `Page`, `location`: `{url: string, line: int, column: int}` |
 | `recorderEvent` | `event`: `("actionAdded" | "actionUpdated" | "signalAdded")`, `data`: `json`, `page`: `Page`, `code`: `string` |
@@ -472,7 +473,7 @@
 
 **Commands**
 
-#### `connectOverCDP`(endpointURL: string?, headers: Array<NameValue>?, slowMo: float?, isLocal: boolean?, noDefaults: boolean?, artifactsDir: string?, transport: binary?)
+#### `connectOverCDP`(endpointURL: string?, headers: Array<NameValue>?, slowMo: float?, isLocal: boolean?, noDefaults: boolean?, isWebView: boolean?, artifactsDir: string?, transport: binary?)
 
 *Connect over CDP*
 
@@ -559,6 +560,7 @@
 
 | Event | Parameters |
 |-------|------------|
+| `apiCallsUpdated` | `apiCalls`: `Array<{id: string, title: string, location: {file: string, line: int?, column: int?}?, newLogEntries: Array<string>, actionPoint: Point?, status: ("running" | "success" | "error"), error: string?}>` |
 | `pausedStateChanged` | `pausedDetails`: `{location: {file: string, line: int?, column: int?}, title: string, stack: string?}?` |
 
 ---
@@ -594,7 +596,7 @@
 
 **Commands**
 
-#### `launch`(executablePath: string?, args: Array<string>?, chromiumSandbox: boolean?, cwd: string?, env: Array<NameValue>?, acceptDownloads: ("accept" | "deny" | "internal-browser-default")?, bypassCSP: boolean?, colorScheme: ("dark" | "light" | "no-preference" | "no-override")?, extraHTTPHeaders: Array<NameValue>?, geolocation: {longitude: float, latitude: float, accuracy: float?}?, httpCredentials: {username: string, password: string, origin: string?}?, ignoreHTTPSErrors: boolean?, locale: string?, offline: boolean?, recordVideo: {dir: string?, size: {width: int, height: int}?, showActions: {$mixin: ShowActionsOptions}?}?, strictSelectors: boolean?, timezoneId: string?, tracesDir: string?, artifactsDir: string?, selectorEngines: Array<SelectorEngine>?, testIdAttributeName: string?)
+#### `launch`(executablePath: string?, args: Array<string>?, chromiumSandbox: boolean?, cwd: string?, env: Array<NameValue>?, acceptDownloads: ("accept" | "deny" | "internal-browser-default")?, bypassCSP: boolean?, colorScheme: ("dark" | "light" | "no-preference" | "no-override")?, extraHTTPHeaders: Array<NameValue>?, geolocation: {longitude: float, latitude: float, accuracy: float?}?, httpCredentials: Array<HttpCredentials>?, ignoreHTTPSErrors: boolean?, locale: string?, offline: boolean?, recordVideo: {dir: string?, size: {width: int, height: int}?, showActions: {$mixin: ShowActionsOptions}?}?, strictSelectors: boolean?, timezoneId: string?, tracesDir: string?, artifactsDir: string?, selectorEngines: Array<SelectorEngine>?, testIdAttributeName: string?)
 
 *Launch electron*
 
@@ -856,6 +858,12 @@
 
 → `snapshot`: `string`
 
+#### `ariaSnapshotJSON`(mode: ("ai" | "default")?, selector: string?, depth: int?, boxes: boolean?)
+
+*Aria snapshot JSON · group: `getter`*
+
+→ `snapshot`: `json`
+
 #### `blur`(selector: string, strict: boolean?)
 
 *Blur*
@@ -940,7 +948,7 @@
 
 #### `goto`(url: string, waitUntil: LifecycleEvent?, referer: string?)
 
-*Navigate to "{url}"*
+*Navigate*
 
 → `response`: `Response?`
 
@@ -1467,7 +1475,7 @@
 
 **Commands**
 
-#### `newRequest`(baseURL: string?, userAgent: string?, ignoreHTTPSErrors: boolean?, extraHTTPHeaders: Array<NameValue>?, failOnStatusCode: boolean?, clientCertificates: Array<{origin: string, cert: binary?, key: binary?, passphrase: string?, pfx: binary?}>?, maxRedirects: int?, httpCredentials: {username: string, password: string, origin: string?, send: ("always" | "unauthorized")?}?, proxy: {server: string, bypass: string?, username: string?, password: string?}?, storageState: {cookies: Array<NetworkCookie>?, origins: Array<SetOriginStorage>?}?, tracesDir: string?)
+#### `newRequest`(baseURL: string?, userAgent: string?, ignoreHTTPSErrors: boolean?, extraHTTPHeaders: Array<NameValue>?, failOnStatusCode: boolean?, clientCertificates: Array<{origin: string, cert: binary?, key: binary?, passphrase: string?, pfx: binary?}>?, maxRedirects: int?, httpCredentials: Array<HttpCredentials>?, proxy: {server: string, bypass: string?, username: string?, password: string?}?, storageState: {cookies: Array<NetworkCookie>?, origins: Array<SetOriginStorage>?}?, tracesDir: string?)
 
 *Create request context*
 
@@ -1573,7 +1581,7 @@
 
 *Group end*
 
-#### `tracingStart`(name: string?, snapshots: boolean?, screenshots: boolean?, live: boolean?)
+#### `tracingStart`(name: string?, snapshotDom: boolean?, snapshotAria: boolean?, snapshotScreen: boolean?, screencast: boolean?, live: boolean?)
 
 *Start tracing · group: `configuration`*
 
@@ -1804,7 +1812,7 @@
 | `permissions` | `Array<string>?` |
 | `extraHTTPHeaders` | `Array<NameValue>?` |
 | `offline` | `boolean?` |
-| `httpCredentials` | `{username: string, password: string, origin: string?, send: ("always" | "unauthorized")?}?` |
+| `httpCredentials` | `Array<HttpCredentials>?` |
 | `deviceScaleFactor` | `float?` |
 | `isMobile` | `boolean?` |
 | `hasTouch` | `boolean?` |
@@ -1838,6 +1846,15 @@
 | `name` | `string` |
 | `value` | `string?` |
 | `file` | `{name: string, mimeType: string?, buffer: binary}?` |
+
+### `HttpCredentials` *(object)*
+
+| Property | Type |
+|----------|------|
+| `username` | `string` |
+| `password` | `string` |
+| `origin` | `string?` |
+| `send` | `("always" | "unauthorized")?` |
 
 ### `IndexedDBDatabase` *(object)*
 
@@ -1901,6 +1918,14 @@
 | `partitionKey` | `string?` |
 | `_crHasCrossSiteAncestor` | `boolean?` |
 
+### `OPFSEntry` *(object)*
+
+| Property | Type |
+|----------|------|
+| `path` | `string` |
+| `type` | `("file" | "directory")` |
+| `base64` | `string?` |
+
 ### `OriginStorage` *(object)*
 
 | Property | Type |
@@ -1908,6 +1933,7 @@
 | `origin` | `string` |
 | `localStorage` | `Array<NameValue>` |
 | `indexedDB` | `Array<IndexedDBDatabase>?` |
+| `opfs` | `Array<OPFSEntry>?` |
 
 ### `Point` *(object)*
 
@@ -2055,6 +2081,7 @@
 | `origin` | `string` |
 | `localStorage` | `Array<NameValue>` |
 | `indexedDB` | `Array<IndexedDBDatabase>?` |
+| `opfs` | `Array<OPFSEntry>?` |
 
 ### `ShowActionsOptions` *(mixin)*
 

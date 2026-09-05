@@ -68,6 +68,18 @@ abstract interface class Debugger {
   /// **Returns**
   /// - Future&lt;void&gt;
   Future<void> runTo(DebuggerRunToLocation location);
+
+  /// Enables the debugger.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await debugger.enable();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;void&gt;
+  Future<void> enable({double? timeout});
 }
 
 class DebuggerImpl extends DebuggerBase implements Debugger {
@@ -105,5 +117,10 @@ class DebuggerImpl extends DebuggerBase implements Debugger {
   @override
   Future<void> runTo(DebuggerRunToLocation location) async {
     await channel.runTo(location: location);
+  }
+
+  @override
+  Future<void> enable({double? timeout}) async {
+    await channel.enable(timeout: timeout);
   }
 }

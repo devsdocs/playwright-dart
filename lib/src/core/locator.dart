@@ -2930,6 +2930,31 @@ class Locator {
     );
   }
 
+  /// Returns the ARIA snapshot of this locator in JSON format.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await locator.ariaSnapshotJSON();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;FrameAriaSnapshotJSONResult&gt;
+  Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON({
+    SnapshotMode? mode,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  }) async {
+    return await frame.ariaSnapshotJSON(
+      selector: selector,
+      mode: mode,
+      depth: depth,
+      boxes: boxes,
+      timeout: timeout,
+    );
+  }
+
   Locator querySelector(String subSelector) {
     /// The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options, similar to [locator.filter()] method.
     ///

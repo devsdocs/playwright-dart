@@ -2477,6 +2477,24 @@ abstract interface class Frame {
     double? timeout,
   });
 
+  /// Returns the ARIA snapshot of the frame or element in JSON format.
+  ///
+  /// **Usage**
+  ///
+  /// ```dart
+  /// await frame.ariaSnapshotJSON();
+  /// ```
+  ///
+  /// **Returns**
+  /// - Future&lt;FrameAriaSnapshotJSONResult&gt;
+  Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON({
+    Pattern? selector,
+    SnapshotMode? mode,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  });
+
   Future<T> evaluateExpression<T>(
     String expression, {
 
@@ -3840,6 +3858,23 @@ class FrameImpl extends FrameBase implements Frame {
 
       boxes: boxes,
 
+      timeout: timeout ?? 30000.0,
+    );
+  }
+
+  @override
+  Future<FrameAriaSnapshotJSONResult> ariaSnapshotJSON({
+    Pattern? selector,
+    SnapshotMode? mode,
+    int? depth,
+    bool? boxes,
+    double? timeout,
+  }) async {
+    return await channel.ariaSnapshotJSON(
+      selector: selector,
+      mode: mode,
+      depth: depth,
+      boxes: boxes,
       timeout: timeout ?? 30000.0,
     );
   }

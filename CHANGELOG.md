@@ -1,3 +1,13 @@
+## 3.13.0
+
+- **Breaking**: Updated Playwright protocol from v1.62.0 to v1.63.0, including updated commands, parameters, and generated types.
+- **Feature**: Added `ariaSnapshotJSON()` to `Frame`, `Page`, and `Locator` to retrieve accessibility tree snapshots as structured JSON (`FrameAriaSnapshotJSONResult`).
+- **Feature**: Added `Page.screencastFrameAck()` method to acknowledge incoming screencast frames during video and frame streaming sessions.
+- **Feature**: Added `Debugger.enable()` method to activate the Playwright debugger.
+- **Feature**: Updated `Tracing.start()` to support new granular snapshot options introduced in protocol v1.63.0 (`snapshotDom`, `snapshotAria`, `snapshotScreen`, `screencast`, `live`), with backward compatibility for legacy `snapshots` and `screenshots` flags.
+- **Refactor**: Unified `HttpCredentials` type across `BrowserContext.setHTTPCredentials()`, `Playwright.newRequest()`, and `Electron.launch()`, supporting credentials list per protocol v1.63.0.
+- **Compatibility**: Added backward-compatible typedefs for `SnapshotMode`, `BrowserContextSetHTTPCredentialsHttpCredentials`, `PlaywrightNewRequestHttpCredentials`, and `ElectronLaunchHttpCredentials`.
+
 ## 3.12.0
 
 - **Breaking**: Updated Playwright protocol from v1.61.0 to v1.62.0, bringing in new protocol features and changes.
